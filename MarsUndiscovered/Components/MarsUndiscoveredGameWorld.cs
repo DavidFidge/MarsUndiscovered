@@ -47,39 +47,8 @@ namespace MarsUndiscovered.Components
             SceneGraph.LoadContent();
         }
 
-        public void RecreateHeightMap()
-        {
-            _terrain.CreateHeightMap(new TerrainParameters(WorldSize.Medium, HillHeight.Medium));
-            _terrain.LoadContent();
-        }
-
         public void Update()
         {
-        }
-
-        public void Select(Ray ray)
-        {
-            SceneGraph.DeselectAll();
-
-            var selectedEntity = SceneGraph.Select(ray);
-
-            if (selectedEntity != null && selectedEntity is ISelectable selectable)
-            {
-                selectable.IsSelected = true;
-            }
-        }
-
-        public void Action(Ray ray)
-        {
-            var terrainPoint = _terrain.RayToTerrainPoint(ray, SceneGraph);
-
-            if (terrainPoint == null)
-                return;
-
-            foreach (var marsUndiscoveredEntity in _marsUndiscoveredEntities.Where(e => e.IsSelected))
-            {
-                marsUndiscoveredEntity.WorldTransform.ChangeTranslation(terrainPoint.Value);
-            }
         }
     }
 }

@@ -60,7 +60,6 @@
     <Compile Include="Installers\GameInstaller.cs" />
     <Compile Include="Interfaces\IAssetProvider.cs" />
     <Compile Include="Messages\Console\ExecuteConsoleCommandRequest.cs" />
-    <Compile Include="Messages\GameSpeed\ChangeGameSpeedRequest.cs" />
     <Compile Include="Messages\Game\NewGameRequest.cs" />
     <Compile Include="Messages\InGameOptions\CloseInGameOptionsRequest.cs" />
     <Compile Include="Messages\InGameOptions\ExitCurrentGameRequest.cs" />
@@ -79,7 +78,6 @@
     <Compile Include="Messages\Options\CloseVideoOptionsRequest.cs" />
     <Compile Include="Messages\Options\SaveVideoOptionsRequest.cs" />
     <Compile Include="Messages\Options\OpenVideoOptionsRequest.cs" />
-    <Compile Include="UserInterface\Data\GameSpeedData.cs" />
     <Compile Include="UserInterface\Data\GameData.cs" />
     <Compile Include="UserInterface\Data\ConsoleData.cs" />
     <Compile Include="UserInterface\Data\InGameOptionsData.cs" />
@@ -94,7 +92,6 @@
     <Compile Include="UserInterface\Input\NullMouseHandler.cs" />
     <Compile Include="UserInterface\Input\GameViewMouseHandler.cs" />
     <Compile Include="UserInterface\Input\OptionsKeyboardHandler.cs" />
-    <Compile Include="UserInterface\Input\GameSpeedKeyboardHandler.cs" />
     <Compile Include="UserInterface\Input\VideoOptionsKeyboardHandler.cs" />
     <Compile Include="UserInterface\Input\InGameOptionsKeyboardHandler.cs" />
     <Compile Include="UserInterface\Input\TitleViewKeyboardHandler.cs" />
@@ -103,14 +100,12 @@
     <Compile Include="UserInterface\Screens\ScreenManager.cs" />
     <Compile Include="UserInterface\Screens\GameScreen.cs" />
     <Compile Include="UserInterface\ViewModels\CreateHeightMapConsoleCommand.cs" />
-    <Compile Include="UserInterface\ViewModels\GameSpeedViewModel.cs" />
     <Compile Include="UserInterface\ViewModels\GameViewModel.cs" />
     <Compile Include="UserInterface\ViewModels\ConsoleViewModel.cs" />
     <Compile Include="UserInterface\ViewModels\InGameOptionsViewModel.cs" />
     <Compile Include="Messages\Console\RecallConsoleHistoryBackRequest.cs" />
     <Compile Include="Messages\Console\RecallConsoleHistoryForwardRequest.cs" />
     <Compile Include="UserInterface\ViewModels\TitleViewModel.cs" />
-    <Compile Include="UserInterface\Views\GameSpeedView.cs" />
     <Compile Include="UserInterface\Views\ConsoleView.cs" />
     <Compile Include="UserInterface\Views\InGameOptionsView.cs" />
     <Compile Include="UserInterface\Views\GameView.cs" />

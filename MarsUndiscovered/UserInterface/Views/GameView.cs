@@ -24,44 +24,22 @@ namespace MarsUndiscovered.UserInterface.Views
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
-        private readonly GameSpeedView _gameSpeedView;
 
         public GameView(
             GameViewModel gameViewModel,
             InGameOptionsView inGameOptionsView,
-            ConsoleView consoleView,
-            GameSpeedView gameSpeedView
+            ConsoleView consoleView
         )
             : base(gameViewModel)
         {
             _inGameOptionsView = inGameOptionsView;
             _consoleView = consoleView;
-            _gameSpeedView = gameSpeedView;
-            _components.Add(_gameSpeedView);
         }
 
         protected override void InitializeInternal()
         {
             SetupInGameOptions();
             SetupConsole();
-            SetupGameSpeedView();
-        }
-
-        private void SetupGameSpeedView()
-        {
-            _gameSpeedView.Initialize();
-
-            var timePanel = new Panel(
-                new Vector2(300f, 110f),
-                PanelSkin.Simple,
-                Anchor.TopRight)
-                .NoPadding();
-
-            timePanel.Opacity = 50;
-
-            _gameSpeedView.RootPanel.AddAsChildOf(timePanel);
-
-            RootPanel.AddChild(timePanel);
         }
 
         private void SetupInGameOptions()

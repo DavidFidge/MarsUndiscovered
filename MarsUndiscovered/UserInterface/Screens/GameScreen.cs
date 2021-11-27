@@ -36,8 +36,6 @@ namespace MarsUndiscovered.UserInterface.Screens
             _marsUndiscoveredGameWorld.StartNewGame();
             _gameView3D.StartNewGame();
 
-            Mediator.Send(new ChangeGameSpeedRequest().ResetRequest());
-
             _gameTimeService.Start();
         }
 

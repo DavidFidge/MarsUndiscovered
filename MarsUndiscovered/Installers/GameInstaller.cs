@@ -54,7 +54,6 @@ namespace MarsUndiscovered.Installers
             RegisterInGameOptionsView(container, store);
             RegisterConsoleView(container, store);
             RegisterGameView(container, store);
-            RegisterGameSpeedView(container, store);
 
             RegisterKeyboardHandlers(container);
             RegisterMouseHandlers(container);
@@ -236,19 +235,6 @@ namespace MarsUndiscovered.Installers
                 Classes.FromThisAssembly()
                     .BasedOn<IConsoleCommand>()
                     .WithServiceDefaultInterfaces()
-            );
-        }
-
-        private void RegisterGameSpeedView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<GameSpeedView>()
-                    .Forward<IRequestHandler<UpdateViewRequest<GameSpeedData>, Unit>>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, GameSpeedKeyboardHandler>()),
-
-                Component.For<GameSpeedViewModel>()
-                    .Forward<INotificationHandler<GameTimeUpdateNotification>>()
-                    .Forward<IRequestHandler<ChangeGameSpeedRequest, Unit>>()
             );
         }
     }

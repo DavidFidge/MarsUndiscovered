@@ -51,7 +51,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ConsoleCommandServiceFactoryTests.cs" />
     <Compile Include="ViewModels\ConsoleViewModelTests.cs" />
-    <Compile Include="ViewModels\GameSpeedViewModelTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
