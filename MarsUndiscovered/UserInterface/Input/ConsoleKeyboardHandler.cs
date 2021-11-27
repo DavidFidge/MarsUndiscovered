@@ -1,5 +1,5 @@
-﻿using Augmented.Messages;
-using Augmented.Messages.Console;
+﻿using MarsUndiscovered.Messages;
+using MarsUndiscovered.Messages.Console;
 
 using DavidFidge.MonoGame.Core.UserInterface;
 
@@ -7,7 +7,7 @@ using InputHandlers.Keyboard;
 
 using Microsoft.Xna.Framework.Input;
 
-namespace Augmented.UserInterface.Input
+namespace MarsUndiscovered.UserInterface.Input
 {
     public class ConsoleKeyboardHandler : BaseKeyboardHandler
     {

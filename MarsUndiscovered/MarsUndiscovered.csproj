@@ -9,8 +9,8 @@
     <ProjectGuid>{2E06337E-7E36-40F0-B436-541E6D439E8F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Augmented</RootNamespace>
-    <AssemblyName>Augmented</AssemblyName>
+    <RootNamespace>MarsUndiscovered</RootNamespace>
+    <AssemblyName>MarsUndiscovered</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -44,19 +44,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Graphics\AssetProvider.cs" />
-    <Compile Include="Graphics\Models\AugmentedModel.cs" />
+    <Compile Include="Graphics\Models\MarsUndiscoveredModel.cs" />
     <Compile Include="Graphics\Models\SelectionModelDrawer.cs" />
     <Compile Include="Graphics\Models\SelectionModel.cs" />
-    <Compile Include="Graphics\Models\AugmentedModelDrawer.cs" />
+    <Compile Include="Graphics\Models\MarsUndiscoveredModelDrawer.cs" />
     <Compile Include="Interfaces\ISelectionModelDrawer.cs" />
-    <Compile Include="Interfaces\IAugmentedModelDrawer.cs" />
-    <Compile Include="Interfaces\IAugmentedEntityFactory.cs" />
-    <Compile Include="Components\AugmentedGameWorld.cs" />
+    <Compile Include="Interfaces\IMarsUndiscoveredModelDrawer.cs" />
+    <Compile Include="Interfaces\IMarsUndiscoveredEntityFactory.cs" />
+    <Compile Include="Components\MarsUndiscoveredGameWorld.cs" />
     <Compile Include="Graphics\GameView3D.cs" />
-    <Compile Include="Graphics\Models\AugmentedEntity.cs" />
+    <Compile Include="Graphics\Models\MarsUndiscoveredEntity.cs" />
     <Compile Include="Graphics\TerrainSpace\TerrainParameters.cs" />
     <Compile Include="Graphics\TerrainSpace\Terrain.cs" />
-    <Compile Include="Interfaces\IAugmentedGameWorld.cs" />
+    <Compile Include="Interfaces\IMarsUndiscoveredGameWorld.cs" />
     <Compile Include="Installers\GameInstaller.cs" />
     <Compile Include="Interfaces\IAssetProvider.cs" />
     <Compile Include="Messages\Console\ExecuteConsoleCommandRequest.cs" />
@@ -120,7 +120,7 @@
     <Compile Include="Messages\Options\VideoOptionsVerticalSyncToggle.cs" />
     <Compile Include="UserInterface\Views\VideoOptionsView.cs" />
     <Compile Include="UserInterface\Views\OptionsView.cs" />
-    <Compile Include="AugmentedGame.cs" />
+    <Compile Include="MarsUndiscoveredGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserInterface\Screens\TitleScreen.cs" />
@@ -277,7 +277,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="app.manifest" />
-    <Content Include="Content\Models\Augmented.fbx" />
+    <Content Include="Content\Models\MarsUndiscovered.fbx" />
     <None Include="Content\GeonBit.UI\themes\editor\effects\disabled.xnb" />
     <None Include="Content\GeonBit.UI\themes\editor\effects\silhouette.xnb" />
     <None Include="Content\GeonBit.UI\themes\editor\fonts\Bold.xnb" />

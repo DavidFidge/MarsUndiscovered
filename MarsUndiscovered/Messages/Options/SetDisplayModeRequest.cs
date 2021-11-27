@@ -2,7 +2,7 @@
 
 using MediatR;
 
-namespace Augmented.Messages
+namespace MarsUndiscovered.Messages
 {
     public class SetDisplayModeRequest : IRequest
     {

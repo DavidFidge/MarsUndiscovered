@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
 
-using Augmented.UserInterface.Data;
-using Augmented.UserInterface.ViewModels;
+using MarsUndiscovered.UserInterface.Data;
+using MarsUndiscovered.UserInterface.ViewModels;
 
 using DavidFidge.Monogame.Core.View;
 
@@ -10,7 +10,7 @@ using GeonBit.UI.Entities;
 
 using Microsoft.Xna.Framework;
 
-namespace Augmented.UserInterface.Views
+namespace MarsUndiscovered.UserInterface.Views
 {
     public class ConsoleView : BaseView<ConsoleViewModel, ConsoleData>
     {

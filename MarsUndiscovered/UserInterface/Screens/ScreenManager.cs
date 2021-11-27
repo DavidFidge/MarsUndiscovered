@@ -1,14 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-using Augmented.Interfaces;
-using Augmented.Messages;
+using MarsUndiscovered.Interfaces;
+using MarsUndiscovered.Messages;
 
 using DavidFidge.Monogame.Core.View;
 
 using MediatR;
 
-namespace Augmented.UserInterface.Screens
+namespace MarsUndiscovered.UserInterface.Screens
 {
     public class ScreenManager : IScreenManager,
         IRequestHandler<NewGameRequest>,

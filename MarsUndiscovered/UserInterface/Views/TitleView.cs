@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-using Augmented.Messages;
-using Augmented.UserInterface.Data;
-using Augmented.UserInterface.ViewModels;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Data;
+using MarsUndiscovered.UserInterface.ViewModels;
 
 using DavidFidge.MonoGame.Core.Messages;
 using DavidFidge.Monogame.Core.View;
@@ -15,7 +15,7 @@ using MediatR;
 
 using Microsoft.Xna.Framework;
 
-namespace Augmented.UserInterface.Views
+namespace MarsUndiscovered.UserInterface.Views
 {
     public class TitleView : BaseView<TitleViewModel, TitleData>,
         IRequestHandler<OptionsButtonClickedRequest>,

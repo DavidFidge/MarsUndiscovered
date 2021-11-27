@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 
-using Augmented.Messages;
+using MarsUndiscovered.Messages;
 
 using DavidFidge.MonoGame.Core.Components;
 using DavidFidge.MonoGame.Core.Graphics.Camera;
 
 using Microsoft.Xna.Framework.Input;
 
-namespace Augmented.UserInterface.Input.CameraMovementSpace
+namespace MarsUndiscovered.UserInterface.Input.CameraMovementSpace
 {
     public class StrategyCameraMovement : BaseComponent, ICameraMovement
     {

@@ -1,10 +1,10 @@
-﻿using Augmented.Graphics.Models;
+﻿using MarsUndiscovered.Graphics.Models;
 
-namespace Augmented.Interfaces
+namespace MarsUndiscovered.Interfaces
 {
-    public interface IAugmentedEntityFactory
+    public interface IMarsUndiscoveredEntityFactory
     {
-        AugmentedEntity Create();
-        void Release(AugmentedEntity augmentedEntity);
+        MarsUndiscoveredEntity Create();
+        void Release(MarsUndiscoveredEntity marsUndiscoveredEntity);
     }
 }

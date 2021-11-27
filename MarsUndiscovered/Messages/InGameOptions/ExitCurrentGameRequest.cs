@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Augmented.Messages
+namespace MarsUndiscovered.Messages
 {
     public class ExitCurrentGameRequest : IRequest
     {

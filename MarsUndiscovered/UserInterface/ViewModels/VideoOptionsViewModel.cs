@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using Augmented.Messages;
-using Augmented.UserInterface.Data;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Data;
 
 using DavidFidge.MonoGame.Core.Interfaces.Components;
 using DavidFidge.MonoGame.Core.Interfaces.Services;
@@ -12,7 +12,7 @@ using DavidFidge.MonoGame.Core.UserInterface;
 
 using MediatR;
 
-namespace Augmented.UserInterface.ViewModels
+namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class VideoOptionsViewModel : BaseViewModel<VideoOptionsData>,
         IRequestHandler<SetDisplayModeRequest>,

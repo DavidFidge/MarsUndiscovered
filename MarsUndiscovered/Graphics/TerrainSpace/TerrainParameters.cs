@@ -1,5 +1,5 @@
 ﻿
-namespace Augmented.Graphics.TerrainSpace
+namespace MarsUndiscovered.Graphics.TerrainSpace
 {
     public class TerrainParameters
     {

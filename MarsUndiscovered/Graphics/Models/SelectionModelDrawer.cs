@@ -1,10 +1,10 @@
-﻿using Augmented.Interfaces;
+﻿using MarsUndiscovered.Interfaces;
 
 using DavidFidge.MonoGame.Core.Graphics.Extensions;
 
 using Microsoft.Xna.Framework;
 
-namespace Augmented.Graphics.Models
+namespace MarsUndiscovered.Graphics.Models
 {
     public class SelectionModelDrawer : ISelectionModelDrawer
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 
-using Augmented.Messages;
-using Augmented.UserInterface.Input.CameraMovementSpace;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
 
 using DavidFidge.MonoGame.Core.Graphics.Camera;
 using DavidFidge.MonoGame.Core.UserInterface;
@@ -10,7 +10,7 @@ using InputHandlers.Keyboard;
 
 using Microsoft.Xna.Framework.Input;
 
-namespace Augmented.UserInterface.Input
+namespace MarsUndiscovered.UserInterface.Input
 {
     public class GameViewKeyboardHandler : BaseKeyboardHandler
     {

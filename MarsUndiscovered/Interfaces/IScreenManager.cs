@@ -1,4 +1,4 @@
-﻿namespace Augmented.Interfaces
+﻿namespace MarsUndiscovered.Interfaces
 {
     public interface IScreenManager
     {

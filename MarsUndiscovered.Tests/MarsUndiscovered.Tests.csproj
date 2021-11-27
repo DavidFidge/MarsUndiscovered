@@ -6,8 +6,8 @@
     <ProjectGuid>{29EB27EF-34F8-4D9F-8E3D-1FBB8BC74302}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Augmented.Tests</RootNamespace>
-    <AssemblyName>Augmented.Tests</AssemblyName>
+    <RootNamespace>MarsUndiscovered.Tests</RootNamespace>
+    <AssemblyName>MarsUndiscovered.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -68,9 +68,9 @@
     <None Include="Content\GeonBit.UI\themes\lowres\fonts\Regular.spritefont" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Augmented\Augmented.csproj">
+    <ProjectReference Include="..\MarsUndiscovered\MarsUndiscovered.csproj">
       <Project>{2E06337E-7E36-40F0-B436-541E6D439E8F}</Project>
-      <Name>Augmented</Name>
+      <Name>MarsUndiscovered</Name>
     </ProjectReference>
     <ProjectReference Include="..\DavidFidge.MonoGame.Core\DavidFidge.MonoGame.Core.csproj">
       <Project>{1571c1a1-a891-482e-b878-d512219de057}</Project>

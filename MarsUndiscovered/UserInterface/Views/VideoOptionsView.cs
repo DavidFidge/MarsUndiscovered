@@ -1,6 +1,6 @@
-﻿using Augmented.Messages;
-using Augmented.UserInterface.Data;
-using Augmented.UserInterface.ViewModels;
+﻿using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Data;
+using MarsUndiscovered.UserInterface.ViewModels;
 
 using DavidFidge.MonoGame.Core.Services;
 using DavidFidge.Monogame.Core.View;
@@ -10,7 +10,7 @@ using GeonBit.UI.Entities;
 
 using Microsoft.Xna.Framework;
 
-namespace Augmented.UserInterface.Views
+namespace MarsUndiscovered.UserInterface.Views
 {
     public class VideoOptionsView : 
         BaseView<VideoOptionsViewModel, VideoOptionsData>

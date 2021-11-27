@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 using DavidFidge.MonoGame.Core.Services;
 
-namespace Augmented.UserInterface.Data
+namespace MarsUndiscovered.UserInterface.Data
 {
     public class VideoOptionsData
     {

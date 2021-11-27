@@ -1,8 +1,8 @@
-﻿using Augmented.UserInterface.Data;
+﻿using MarsUndiscovered.UserInterface.Data;
 
 using DavidFidge.MonoGame.Core.UserInterface;
 
-namespace Augmented.UserInterface.ViewModels
+namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class InGameOptionsViewModel : BaseViewModel<InGameOptionsData>
     {

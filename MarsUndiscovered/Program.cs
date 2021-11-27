@@ -1,12 +1,12 @@
 ﻿using System;
 
-using Augmented.Installers;
+using MarsUndiscovered.Installers;
 
 using Castle.Windsor;
 
 using DavidFidge.MonoGame.Core.Interfaces.Components;
 
-namespace Augmented
+namespace MarsUndiscovered
 {
 #if WINDOWS || LINUX
     /// <summary>

@@ -1,27 +1,27 @@
-﻿using Augmented.Graphics.Camera;
-using Augmented.Interfaces;
-using Augmented.Messages;
-using Augmented.UserInterface.Views;
+﻿using MarsUndiscovered.Graphics.Camera;
+using MarsUndiscovered.Interfaces;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Views;
 
 using DavidFidge.MonoGame.Core.Interfaces.Services;
 using DavidFidge.Monogame.Core.View;
 
-namespace Augmented.UserInterface.Screens
+namespace MarsUndiscovered.UserInterface.Screens
 {
     public class GameScreen : Screen
     {
         private readonly GameView3D _gameView3D;
         private readonly IGameTimeService _gameTimeService;
-        private IAugmentedGameWorld _augmentedGameWorld;
+        private IMarsUndiscoveredGameWorld _marsUndiscoveredGameWorld;
 
         public GameScreen(
-            IAugmentedGameWorld augmentedGameWorld,
+            IMarsUndiscoveredGameWorld marsUndiscoveredGameWorld,
             GameView gameView,
             GameView3D gameView3D,
             IGameTimeService gameTimeService
             ) : base(gameView)
         {
-            _augmentedGameWorld = augmentedGameWorld;
+            _marsUndiscoveredGameWorld = marsUndiscoveredGameWorld;
             _gameView3D = gameView3D;
             _gameTimeService = gameTimeService;
         }
@@ -33,7 +33,7 @@ namespace Augmented.UserInterface.Screens
 
         public void StartNewGame()
         {
-            _augmentedGameWorld.StartNewGame();
+            _marsUndiscoveredGameWorld.StartNewGame();
             _gameView3D.StartNewGame();
 
             Mediator.Send(new ChangeGameSpeedRequest().ResetRequest());
@@ -43,7 +43,7 @@ namespace Augmented.UserInterface.Screens
 
         public override void Update()
         {
-            _augmentedGameWorld.Update();
+            _marsUndiscoveredGameWorld.Update();
             _gameView3D.Update();
         }
 

@@ -4,7 +4,7 @@ using DavidFidge.TestInfrastructure;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Augmented.Tests.ViewModels
+namespace MarsUndiscovered.Tests.ViewModels
 {
     [TestClass]
     public class ConsoleViewModConsoleCommandServiceFactoryTests : BaseTest

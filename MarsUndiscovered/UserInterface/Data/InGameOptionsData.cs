@@ -1,4 +1,4 @@
-﻿namespace Augmented.UserInterface.Data
+﻿namespace MarsUndiscovered.UserInterface.Data
 {
     public class InGameOptionsData
     {

@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using Augmented.Graphics;
-using Augmented.Graphics.Models;
-using Augmented.Interfaces;
-using Augmented.UserInterface.Data;
+using MarsUndiscovered.Graphics;
+using MarsUndiscovered.Graphics.Models;
+using MarsUndiscovered.Interfaces;
+using MarsUndiscovered.UserInterface.Data;
 
 using DavidFidge.MonoGame.Core.Graphics;
 using DavidFidge.MonoGame.Core.Graphics.Models;
@@ -23,9 +23,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 using Serilog;
 
-namespace Augmented
+namespace MarsUndiscovered
 {
-    public class AugmentedGame : Game, IGame
+    public class MarsUndiscoveredGame : Game, IGame
     {
         private readonly ILogger _logger;
         private readonly IGameProvider _gameProvider;
@@ -43,7 +43,7 @@ namespace Augmented
         { get; }
         private SpriteBatch _spriteBatch;
 
-        public AugmentedGame(
+        public MarsUndiscoveredGame(
             ILogger logger,
             IGameProvider gameProvider,
             IGameTimeService gameTimeService,

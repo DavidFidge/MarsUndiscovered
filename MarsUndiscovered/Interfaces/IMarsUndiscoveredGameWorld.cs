@@ -2,9 +2,9 @@
 
 using Microsoft.Xna.Framework;
 
-namespace Augmented.Interfaces
+namespace MarsUndiscovered.Interfaces
 {
-    public interface IAugmentedGameWorld
+    public interface IMarsUndiscoveredGameWorld
     {
         ISceneGraph SceneGraph { get; }
         void RecreateHeightMap();

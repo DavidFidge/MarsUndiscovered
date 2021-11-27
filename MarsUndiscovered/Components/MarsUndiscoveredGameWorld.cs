@@ -1,31 +1,31 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using Augmented.Graphics.Models;
-using Augmented.Graphics.TerrainSpace;
-using Augmented.Interfaces;
+using MarsUndiscovered.Graphics.Models;
+using MarsUndiscovered.Graphics.TerrainSpace;
+using MarsUndiscovered.Interfaces;
 
 using DavidFidge.MonoGame.Core.Graphics;
 using DavidFidge.MonoGame.Core.Interfaces.Graphics;
 
 using Microsoft.Xna.Framework;
 
-namespace Augmented.Components
+namespace MarsUndiscovered.Components
 {
-    public class AugmentedGameWorld : IAugmentedGameWorld
+    public class MarsUndiscoveredGameWorld : IMarsUndiscoveredGameWorld
     {
-        private readonly IAugmentedEntityFactory _augmentedEntityFactory;
+        private readonly IMarsUndiscoveredEntityFactory _marsUndiscoveredEntityFactory;
         public ISceneGraph SceneGraph { get; }
         private readonly Terrain _terrain;
-        private readonly List<AugmentedEntity> _augmentedEntities = new List<AugmentedEntity>();
+        private readonly List<MarsUndiscoveredEntity> _marsUndiscoveredEntities = new List<MarsUndiscoveredEntity>();
 
-        public AugmentedGameWorld(
-            IAugmentedEntityFactory augmentedEntityFactory,
+        public MarsUndiscoveredGameWorld(
+            IMarsUndiscoveredEntityFactory marsUndiscoveredEntityFactory,
             ISceneGraph sceneGraph,
             Terrain terrain
             )
         {
-            _augmentedEntityFactory = augmentedEntityFactory;
+            _marsUndiscoveredEntityFactory = marsUndiscoveredEntityFactory;
             SceneGraph = sceneGraph;
             _terrain = terrain;
         }
@@ -34,14 +34,14 @@ namespace Augmented.Components
         {
             _terrain.CreateHeightMap(new TerrainParameters(WorldSize.Medium, HillHeight.Medium));
 
-            _augmentedEntities.Add(_augmentedEntityFactory.Create());
-            _augmentedEntities.Add(_augmentedEntityFactory.Create());
+            _marsUndiscoveredEntities.Add(_marsUndiscoveredEntityFactory.Create());
+            _marsUndiscoveredEntities.Add(_marsUndiscoveredEntityFactory.Create());
 
-            _augmentedEntities[0].WorldTransform.ChangeTranslation(new Vector3(50, 0, 0));
+            _marsUndiscoveredEntities[0].WorldTransform.ChangeTranslation(new Vector3(50, 0, 0));
 
             SceneGraph.Initialise(_terrain);
 
-            foreach (var entity in _augmentedEntities)
+            foreach (var entity in _marsUndiscoveredEntities)
                 SceneGraph.Add(entity, _terrain);
 
             SceneGraph.LoadContent();
@@ -76,9 +76,9 @@ namespace Augmented.Components
             if (terrainPoint == null)
                 return;
 
-            foreach (var augmentedEntity in _augmentedEntities.Where(e => e.IsSelected))
+            foreach (var marsUndiscoveredEntity in _marsUndiscoveredEntities.Where(e => e.IsSelected))
             {
-                augmentedEntity.WorldTransform.ChangeTranslation(terrainPoint.Value);
+                marsUndiscoveredEntity.WorldTransform.ChangeTranslation(terrainPoint.Value);
             }
         }
     }

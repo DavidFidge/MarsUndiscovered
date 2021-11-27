@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Augmented.Messages;
-using Augmented.Messages.Console;
-using Augmented.UserInterface.Data;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.Messages.Console;
+using MarsUndiscovered.UserInterface.Data;
 
 using DavidFidge.MonoGame.Core.ConsoleCommands;
 using DavidFidge.MonoGame.Core.Interfaces.ConsoleCommands;
@@ -14,7 +14,7 @@ using DavidFidge.MonoGame.Core.UserInterface;
 
 using MediatR;
 
-namespace Augmented.UserInterface.ViewModels
+namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class ConsoleViewModel : BaseViewModel<ConsoleData>,
         IRequestHandler<ExecuteConsoleCommandRequest>,

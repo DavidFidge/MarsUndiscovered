@@ -1,4 +1,4 @@
-﻿using Augmented.Interfaces;
+﻿using MarsUndiscovered.Interfaces;
 
 using DavidFidge.MonoGame.Core.Graphics.Quads;
 using DavidFidge.MonoGame.Core.Interfaces.Components;
@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 using IDrawable = DavidFidge.MonoGame.Core.Graphics.IDrawable;
 
-namespace Augmented.Graphics.Models
+namespace MarsUndiscovered.Graphics.Models
 {
     public class SelectionModel : IDrawable
     {

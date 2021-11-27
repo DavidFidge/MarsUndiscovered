@@ -1,14 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-using Augmented.Interfaces;
-using Augmented.Messages;
+using MarsUndiscovered.Interfaces;
+using MarsUndiscovered.Messages;
 
 using DavidFidge.MonoGame.Core.Graphics.Camera;
 
 using MediatR;
 
-namespace Augmented.Graphics.Camera
+namespace MarsUndiscovered.Graphics.Camera
 {
     public class GameView3D :
         IRequestHandler<Select3DViewRequest>,
@@ -18,12 +18,12 @@ namespace Augmented.Graphics.Camera
         IRequestHandler<Zoom3DViewRequest>
     {
         private readonly IGameCamera _camera;
-        private readonly IAugmentedGameWorld _augmentedGameWorld;
+        private readonly IMarsUndiscoveredGameWorld _marsUndiscoveredGameWorld;
 
-        public GameView3D(IGameCamera gameCamera, IAugmentedGameWorld augmentedGameWorld)
+        public GameView3D(IGameCamera gameCamera, IMarsUndiscoveredGameWorld marsUndiscoveredGameWorld)
         {
             _camera = gameCamera;
-            _augmentedGameWorld = augmentedGameWorld;
+            _marsUndiscoveredGameWorld = marsUndiscoveredGameWorld;
         }
 
         public void StartNewGame()
@@ -38,7 +38,7 @@ namespace Augmented.Graphics.Camera
 
         public void Draw()
         {
-            _augmentedGameWorld.SceneGraph.Draw(_camera.View, _camera.Projection);
+            _marsUndiscoveredGameWorld.SceneGraph.Draw(_camera.View, _camera.Projection);
         }
 
         public Task<Unit> Handle(Zoom3DViewRequest request, CancellationToken cancellationToken)
@@ -73,7 +73,7 @@ namespace Augmented.Graphics.Camera
         {
             var ray = _camera.GetPointerRay(request.X, request.Y);
 
-            _augmentedGameWorld.Select(ray);
+            _marsUndiscoveredGameWorld.Select(ray);
 
             return Unit.Task;
         }
@@ -82,7 +82,7 @@ namespace Augmented.Graphics.Camera
         {
             var ray = _camera.GetPointerRay(request.X, request.Y);
 
-            _augmentedGameWorld.Action(ray);
+            _marsUndiscoveredGameWorld.Action(ray);
 
             return Unit.Task;
         }

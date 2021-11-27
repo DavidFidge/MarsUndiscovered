@@ -1,17 +1,17 @@
-﻿using Augmented.Components;
-using Augmented.Graphics;
-using Augmented.Graphics.Camera;
-using Augmented.Graphics.Models;
-using Augmented.Graphics.TerrainSpace;
-using Augmented.Interfaces;
-using Augmented.Messages;
-using Augmented.Messages.Console;
-using Augmented.UserInterface.Data;
-using Augmented.UserInterface.Input;
-using Augmented.UserInterface.Input.CameraMovementSpace;
-using Augmented.UserInterface.Screens;
-using Augmented.UserInterface.ViewModels;
-using Augmented.UserInterface.Views;
+﻿using MarsUndiscovered.Components;
+using MarsUndiscovered.Graphics;
+using MarsUndiscovered.Graphics.Camera;
+using MarsUndiscovered.Graphics.Models;
+using MarsUndiscovered.Graphics.TerrainSpace;
+using MarsUndiscovered.Interfaces;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.Messages.Console;
+using MarsUndiscovered.UserInterface.Data;
+using MarsUndiscovered.UserInterface.Input;
+using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
+using MarsUndiscovered.UserInterface.Screens;
+using MarsUndiscovered.UserInterface.ViewModels;
+using MarsUndiscovered.UserInterface.Views;
 
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.Registration;
@@ -39,7 +39,7 @@ using InputHandlers.Mouse;
 
 using MediatR;
 
-namespace Augmented.Installers
+namespace MarsUndiscovered.Installers
 {
     public class GameInstaller : IWindsorInstaller
     {
@@ -66,7 +66,7 @@ namespace Augmented.Installers
 
                 Component.For<IGame>()
                     .Forward<IRequestHandler<ExitGameRequest, Unit>>()
-                    .ImplementedBy<AugmentedGame>(),
+                    .ImplementedBy<MarsUndiscoveredGame>(),
 
                 Component.For<IScreenManager>()
                     .Forward<IRequestHandler<NewGameRequest, Unit>>()
@@ -91,14 +91,14 @@ namespace Augmented.Installers
                 Component.For<Terrain>()
                     .LifeStyle.Transient,
 
-                Component.For<AugmentedEntity>()
+                Component.For<MarsUndiscoveredEntity>()
                     .LifeStyle.Transient,
 
-                Component.For<IAugmentedEntityFactory>()
+                Component.For<IMarsUndiscoveredEntityFactory>()
                     .AsFactory(),
 
-                Component.For<IAugmentedModelDrawer>()
-                    .ImplementedBy<AugmentedModelDrawer>()
+                Component.For<IMarsUndiscoveredModelDrawer>()
+                    .ImplementedBy<MarsUndiscoveredModelDrawer>()
                     .LifeStyle.Transient,
 
                 Component.For<ISelectionModelDrawer>()
@@ -116,8 +116,8 @@ namespace Augmented.Installers
                     .LifestyleTransient()
                     .WithServiceDefaultInterfaces(),
 
-                Component.For<IAugmentedGameWorld>()
-                    .ImplementedBy<AugmentedGameWorld>(),
+                Component.For<IMarsUndiscoveredGameWorld>()
+                    .ImplementedBy<MarsUndiscoveredGameWorld>(),
 
                 Component.For<IActionMapStore>()
                     .ImplementedBy<DefaultActionMapStore>()

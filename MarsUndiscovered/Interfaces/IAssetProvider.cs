@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Augmented.Graphics.Models;
+using MarsUndiscovered.Graphics.Models;
 
 using DavidFidge.MonoGame.Core.Graphics.Models;
 
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Augmented.Interfaces
+namespace MarsUndiscovered.Interfaces
 {
     public interface IAssetProvider
     {
@@ -16,7 +16,7 @@ namespace Augmented.Interfaces
         Texture2D GrassTexture { get; }
         Texture2D WoodTexture { get; }
         SelectionModel SelectionModel { get; }
-        GameModel AugmentedModel { get; }
+        GameModel MarsUndiscoveredModel { get; }
         void LoadContent();
     }
 }

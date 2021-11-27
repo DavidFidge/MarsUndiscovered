@@ -4,7 +4,7 @@ using MediatR;
 
 using Microsoft.Xna.Framework.Input;
 
-namespace Augmented.Messages
+namespace MarsUndiscovered.Messages
 {
     [ActionMap(Name = "Execute Console Command", DefaultKey = Keys.Enter)]
     public class ExecuteConsoleCommandRequest : IRequest

@@ -4,7 +4,7 @@ using MediatR;
 
 using Microsoft.Xna.Framework.Input;
 
-namespace Augmented.Messages.Console
+namespace MarsUndiscovered.Messages.Console
 {
     [ActionMap(Name = "Next Console Command", DefaultKey = Keys.Down)]
     public class RecallConsoleHistoryForwardRequest : IRequest<Unit>

@@ -1,4 +1,4 @@
-﻿using Augmented.Messages;
+﻿using MarsUndiscovered.Messages;
 
 using DavidFidge.MonoGame.Core.UserInterface;
 
@@ -6,7 +6,7 @@ using InputHandlers.Keyboard;
 
 using Microsoft.Xna.Framework.Input;
 
-namespace Augmented.UserInterface.Input
+namespace MarsUndiscovered.UserInterface.Input
 {
     public class GameSpeedKeyboardHandler : BaseKeyboardHandler
     {

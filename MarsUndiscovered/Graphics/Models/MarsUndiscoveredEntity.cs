@@ -1,4 +1,4 @@
-﻿using Augmented.Interfaces;
+﻿using MarsUndiscovered.Interfaces;
 
 using DavidFidge.MonoGame.Core.Components;
 using DavidFidge.MonoGame.Core.Graphics;
@@ -8,28 +8,28 @@ using Microsoft.Xna.Framework;
 
 using IDrawable = DavidFidge.MonoGame.Core.Graphics.IDrawable;
 
-namespace Augmented.Graphics.Models
+namespace MarsUndiscovered.Graphics.Models
 {
-    public class AugmentedEntity : Entity, IDrawable, ISelectable
+    public class MarsUndiscoveredEntity : Entity, IDrawable, ISelectable
     {
         protected readonly IGameProvider _gameProvider;
-        private readonly IAugmentedModelDrawer _augmentedModelDrawer;
+        private readonly IMarsUndiscoveredModelDrawer _marsUndiscoveredModelDrawer;
         private readonly ISelectionModelDrawer _selectionModelDrawer;
 
         public bool IsSelected { get; set; }
 
-        public AugmentedEntity(
+        public MarsUndiscoveredEntity(
             IGameProvider gameProvider,
-            IAugmentedModelDrawer augmentedModelDrawer,
+            IMarsUndiscoveredModelDrawer marsUndiscoveredModelDrawer,
             ISelectionModelDrawer selectionModelDrawer)
         {
             _gameProvider = gameProvider;
-            _augmentedModelDrawer = augmentedModelDrawer;
+            _marsUndiscoveredModelDrawer = marsUndiscoveredModelDrawer;
             _selectionModelDrawer = selectionModelDrawer;
 
-            _selectionModelDrawer.BoundingBox = _augmentedModelDrawer.BoundingBox;
+            _selectionModelDrawer.BoundingBox = _marsUndiscoveredModelDrawer.BoundingBox;
 
-            LocalTransform.ChangeTranslation(new Vector3(0, 0, _augmentedModelDrawer.BoundingBox.Max.Z - _augmentedModelDrawer.BoundingBox.Min.Z) / 2f);
+            LocalTransform.ChangeTranslation(new Vector3(0, 0, _marsUndiscoveredModelDrawer.BoundingBox.Max.Z - _marsUndiscoveredModelDrawer.BoundingBox.Min.Z) / 2f);
 
         }
 
@@ -38,12 +38,12 @@ namespace Augmented.Graphics.Models
             if (IsSelected)
                 _selectionModelDrawer.Draw(view, projection, world);
 
-            _augmentedModelDrawer.Draw(view, projection, world);
+            _marsUndiscoveredModelDrawer.Draw(view, projection, world);
         }
 
         public float? Intersects(Ray ray, Matrix worldTransform)
         {
-            return ray.Intersects(_augmentedModelDrawer.BoundingSphere.Transform(worldTransform));
+            return ray.Intersects(_marsUndiscoveredModelDrawer.BoundingSphere.Transform(worldTransform));
         }
     }
 }

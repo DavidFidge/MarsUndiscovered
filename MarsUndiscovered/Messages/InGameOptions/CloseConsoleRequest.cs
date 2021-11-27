@@ -4,7 +4,7 @@ using MediatR;
 
 using Microsoft.Xna.Framework.Input;
 
-namespace Augmented.Messages
+namespace MarsUndiscovered.Messages
 {
     [ActionMap(DefaultKey = Keys.OemTilde, Name = "Close Console")]
     public class CloseConsoleRequest : IRequest

@@ -2,7 +2,7 @@
 
 using DavidFidge.MonoGame.Core.ConsoleCommands;
 
-namespace Augmented.UserInterface.Data
+namespace MarsUndiscovered.UserInterface.Data
 {
     public class ConsoleData
     {

@@ -1,6 +1,6 @@
 ﻿using DavidFidge.MonoGame.Core.UserInterface;
 
-namespace Augmented.Messages
+namespace MarsUndiscovered.Messages
 {
     public class VideoOptionsVerticalSyncToggle : ToggleRequest
     {

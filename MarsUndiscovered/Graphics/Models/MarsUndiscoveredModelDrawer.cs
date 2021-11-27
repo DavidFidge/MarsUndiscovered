@@ -1,19 +1,19 @@
-﻿using Augmented.Interfaces;
+﻿using MarsUndiscovered.Interfaces;
 
 using DavidFidge.MonoGame.Core.Graphics.Models;
 
 using Microsoft.Xna.Framework;
 
-namespace Augmented.Graphics.Models
+namespace MarsUndiscovered.Graphics.Models
 {
-    public class AugmentedModelDrawer : ModelDrawer, IAugmentedModelDrawer
+    public class MarsUndiscoveredModelDrawer : ModelDrawer, IMarsUndiscoveredModelDrawer
     {
         public BoundingBox BoundingBox => Model.BoundingBox;
         public BoundingSphere BoundingSphere => Model.BoundingSphere;
 
-        public AugmentedModelDrawer(IAssetProvider assetProvider)
+        public MarsUndiscoveredModelDrawer(IAssetProvider assetProvider)
         {
-            Model = assetProvider.AugmentedModel;
+            Model = assetProvider.MarsUndiscoveredModel;
         }
     }
 }

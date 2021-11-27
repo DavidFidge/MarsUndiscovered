@@ -1,8 +1,8 @@
-﻿using Augmented.UserInterface.Views;
+﻿using MarsUndiscovered.UserInterface.Views;
 
 using DavidFidge.Monogame.Core.View;
 
-namespace Augmented.UserInterface.Screens
+namespace MarsUndiscovered.UserInterface.Screens
 {
     public class TitleScreen : Screen
     {

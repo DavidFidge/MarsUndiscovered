@@ -1,6 +1,6 @@
 ﻿using DavidFidge.MonoGame.Core.UserInterface;
 
-namespace Augmented.UserInterface.Input
+namespace MarsUndiscovered.UserInterface.Input
 {
     public class NullKeyboardHandler : BaseKeyboardHandler
     {

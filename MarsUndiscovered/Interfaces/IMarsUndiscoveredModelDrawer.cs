@@ -2,9 +2,9 @@
 
 using Microsoft.Xna.Framework;
 
-namespace Augmented.Interfaces
+namespace MarsUndiscovered.Interfaces
 {
-    public interface IAugmentedModelDrawer : IModelDrawer
+    public interface IMarsUndiscoveredModelDrawer : IModelDrawer
     {
         BoundingBox BoundingBox { get; }
         BoundingSphere BoundingSphere { get; }

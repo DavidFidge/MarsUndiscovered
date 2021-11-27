@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Augmented.Interfaces;
+using MarsUndiscovered.Interfaces;
 
 using DavidFidge.MonoGame.Core.Components;
 using DavidFidge.MonoGame.Core.Graphics;
@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using IDrawable = DavidFidge.MonoGame.Core.Graphics.IDrawable;
 
-namespace Augmented.Graphics.TerrainSpace
+namespace MarsUndiscovered.Graphics.TerrainSpace
 {
     public class Terrain : Entity, IDrawable, ILoadContent
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 
-namespace Augmented.UserInterface.Input.CameraMovementSpace
+namespace MarsUndiscovered.UserInterface.Input.CameraMovementSpace
 {
     public interface ICameraMovement
     {

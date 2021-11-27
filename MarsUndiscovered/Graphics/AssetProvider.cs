@@ -1,12 +1,12 @@
-﻿using Augmented.Graphics.Models;
-using Augmented.Interfaces;
+﻿using MarsUndiscovered.Graphics.Models;
+using MarsUndiscovered.Interfaces;
 
 using DavidFidge.MonoGame.Core.Graphics.Models;
 using DavidFidge.MonoGame.Core.Interfaces.Components;
 
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Augmented.Graphics
+namespace MarsUndiscovered.Graphics
 {
     public class AssetProvider : IAssetProvider
     {
@@ -16,7 +16,7 @@ namespace Augmented.Graphics
         public Texture2D GrassTexture { get; private set; }
         public Texture2D WoodTexture { get; private set; }
         public SelectionModel SelectionModel { get; private set; }
-        public GameModel AugmentedModel { get; private set; }
+        public GameModel MarsUndiscoveredModel { get; private set; }
 
         public AssetProvider(IGameProvider gameProvider)
         {
@@ -31,8 +31,8 @@ namespace Augmented.Graphics
 
             SelectionEffect = _gameProvider.Game.Content.Load<Effect>(@"Effects\Selection");
 
-            AugmentedModel = new GameModel(@"Models\Augmented", _gameProvider);
-            AugmentedModel.LoadContent();
+            MarsUndiscoveredModel = new GameModel(@"Models\MarsUndiscovered", _gameProvider);
+            MarsUndiscoveredModel.LoadContent();
 
             SelectionModel = new SelectionModel(_gameProvider, this);
             SelectionModel.LoadContent();

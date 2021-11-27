@@ -4,7 +4,7 @@ using MediatR;
 
 using Microsoft.Xna.Framework.Input;
 
-namespace Augmented.Messages
+namespace MarsUndiscovered.Messages
 {
     [ActionMap(Name = "Close Options", DefaultKey = Keys.Escape)]
     public class CloseOptionsViewRequest : IRequest

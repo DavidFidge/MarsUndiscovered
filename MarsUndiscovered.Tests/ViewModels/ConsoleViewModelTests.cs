@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading;
 
-using Augmented.Messages;
-using Augmented.Messages.Console;
-using Augmented.UserInterface.Data;
-using Augmented.UserInterface.ViewModels;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.Messages.Console;
+using MarsUndiscovered.UserInterface.Data;
+using MarsUndiscovered.UserInterface.ViewModels;
 
 using DavidFidge.MonoGame.Core.ConsoleCommands;
 using DavidFidge.MonoGame.Core.Interfaces.ConsoleCommands;
@@ -16,7 +16,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NSubstitute;
 
-namespace Augmented.Tests.ViewModels
+namespace MarsUndiscovered.Tests.ViewModels
 {
     [TestClass]
     public class ConsoleViewModelTests : BaseTest

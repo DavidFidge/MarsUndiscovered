@@ -2,7 +2,7 @@
 
 using IDrawable = DavidFidge.MonoGame.Core.Graphics.IDrawable;
 
-namespace Augmented.Interfaces
+namespace MarsUndiscovered.Interfaces
 {
     public interface ISelectionModelDrawer : IDrawable
     {

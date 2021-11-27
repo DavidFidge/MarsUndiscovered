@@ -4,7 +4,7 @@ using MediatR;
 
 using Microsoft.Xna.Framework.Input;
 
-namespace Augmented.Messages
+namespace MarsUndiscovered.Messages
 {
     [ActionMap(Name = "Increase Game Speed", DefaultKey = Keys.OemPlus)]
     [ActionMap(Name = "Decrease Game Speed", DefaultKey = Keys.OemMinus)]

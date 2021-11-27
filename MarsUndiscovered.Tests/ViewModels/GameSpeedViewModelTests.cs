@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 
-using Augmented.Messages;
-using Augmented.UserInterface.Data;
-using Augmented.UserInterface.ViewModels;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Data;
+using MarsUndiscovered.UserInterface.ViewModels;
 
 using DavidFidge.MonoGame.Core.Interfaces.Services;
 using DavidFidge.MonoGame.Core.Messages;
@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NSubstitute;
 
-namespace Augmented.Tests.ViewModels
+namespace MarsUndiscovered.Tests.ViewModels
 {
     [TestClass]
     public class GameSpeedViewModelTests : BaseTest

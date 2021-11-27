@@ -5,7 +5,7 @@ using InputHandlers.Keyboard;
 
 using Microsoft.Xna.Framework.Input;
 
-namespace Augmented.UserInterface.Input
+namespace MarsUndiscovered.UserInterface.Input
 {
     public class TitleViewKeyboardHandler : BaseKeyboardHandler
     {

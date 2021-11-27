@@ -1,11 +1,11 @@
 ﻿using DavidFidge.MonoGame.Core.Graphics.Models;
 using DavidFidge.MonoGame.Core.Interfaces.Components;
 
-namespace Augmented.Graphics.Models
+namespace MarsUndiscovered.Graphics.Models
 {
-    public class AugmentedModel : GameModel
+    public class MarsUndiscoveredModel : GameModel
     {
-        public AugmentedModel(string model, IGameProvider gameProvider) : base(model, gameProvider)
+        public MarsUndiscoveredModel(string model, IGameProvider gameProvider) : base(model, gameProvider)
         {
         }
     }
