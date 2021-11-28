@@ -3,8 +3,8 @@
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
 
-using DavidFidge.MonoGame.Core.Graphics.Camera;
-using DavidFidge.MonoGame.Core.UserInterface;
+using FrigidRogue.MonoGame.Core.Graphics.Camera;
+using FrigidRogue.MonoGame.Core.UserInterface;
 
 using InputHandlers.Keyboard;
 

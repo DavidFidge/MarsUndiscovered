@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-using DavidFidge.MonoGame.Core.Services;
+using FrigidRogue.MonoGame.Core.Services;
 
 namespace MarsUndiscovered.UserInterface.Data
 {

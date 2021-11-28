@@ -1,6 +1,6 @@
-﻿using DavidFidge.MonoGame.Core.ConsoleCommands;
-using DavidFidge.MonoGame.Core.Interfaces.ConsoleCommands;
-using DavidFidge.TestInfrastructure;
+﻿using FrigidRogue.MonoGame.Core.ConsoleCommands;
+using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
+using FrigidRogue.TestInfrastructure;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

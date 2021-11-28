@@ -4,7 +4,7 @@ using MarsUndiscovered.Installers;
 
 using Castle.Windsor;
 
-using DavidFidge.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Interfaces.Components;
 
 namespace MarsUndiscovered
 {

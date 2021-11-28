@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-using DavidFidge.MonoGame.Core.ConsoleCommands;
+using FrigidRogue.MonoGame.Core.ConsoleCommands;
 
 namespace MarsUndiscovered.UserInterface.Data
 {

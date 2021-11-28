@@ -8,9 +8,9 @@ using MarsUndiscovered.Messages;
 using MarsUndiscovered.Messages.Console;
 using MarsUndiscovered.UserInterface.Data;
 
-using DavidFidge.MonoGame.Core.ConsoleCommands;
-using DavidFidge.MonoGame.Core.Interfaces.ConsoleCommands;
-using DavidFidge.MonoGame.Core.UserInterface;
+using FrigidRogue.MonoGame.Core.ConsoleCommands;
+using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
+using FrigidRogue.MonoGame.Core.UserInterface;
 
 using MediatR;
 

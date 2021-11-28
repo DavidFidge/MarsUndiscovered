@@ -1,7 +1,7 @@
 ﻿using MarsUndiscovered.Interfaces;
 
-using DavidFidge.MonoGame.Core.ConsoleCommands;
-using DavidFidge.MonoGame.Core.Interfaces.ConsoleCommands;
+using FrigidRogue.MonoGame.Core.ConsoleCommands;
+using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {

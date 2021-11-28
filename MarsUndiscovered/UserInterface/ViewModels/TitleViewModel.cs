@@ -1,6 +1,6 @@
 ﻿using MarsUndiscovered.UserInterface.Data;
 
-using DavidFidge.MonoGame.Core.UserInterface;
+using FrigidRogue.MonoGame.Core.UserInterface;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {

@@ -71,13 +71,13 @@
       <Project>{2E06337E-7E36-40F0-B436-541E6D439E8F}</Project>
       <Name>MarsUndiscovered</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DavidFidge.MonoGame.Core\DavidFidge.MonoGame.Core.csproj">
+    <ProjectReference Include="..\FrigidRogue.MonoGame.Core\FrigidRogue.MonoGame.Core.csproj">
       <Project>{1571c1a1-a891-482e-b878-d512219de057}</Project>
-      <Name>DavidFidge.MonoGame.Core</Name>
+      <Name>FrigidRogue.MonoGame.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DavidFidge.TestInfrastructure\DavidFidge.TestInfrastructure.csproj">
+    <ProjectReference Include="..\FrigidRogue.TestInfrastructure\FrigidRogue.TestInfrastructure.csproj">
       <Project>{0c1dad00-66a7-425c-9105-fc7fde006166}</Project>
-      <Name>DavidFidge.TestInfrastructure</Name>
+      <Name>FrigidRogue.TestInfrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

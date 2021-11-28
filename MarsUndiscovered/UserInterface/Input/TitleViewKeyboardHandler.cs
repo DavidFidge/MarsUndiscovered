@@ -1,5 +1,5 @@
-﻿using DavidFidge.MonoGame.Core.Messages;
-using DavidFidge.MonoGame.Core.UserInterface;
+﻿using FrigidRogue.MonoGame.Core.Messages;
+using FrigidRogue.MonoGame.Core.UserInterface;
 
 using InputHandlers.Keyboard;
 

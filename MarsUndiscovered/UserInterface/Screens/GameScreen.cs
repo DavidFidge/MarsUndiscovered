@@ -3,8 +3,8 @@ using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Views;
 
-using DavidFidge.MonoGame.Core.Interfaces.Services;
-using DavidFidge.Monogame.Core.View;
+using FrigidRogue.MonoGame.Core.Interfaces.Services;
+using FrigidRogue.Monogame.Core.View;
 
 namespace MarsUndiscovered.UserInterface.Screens
 {

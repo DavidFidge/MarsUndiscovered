@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 
-using DavidFidge.MonoGame.Core.Interfaces.Components;
-using DavidFidge.MonoGame.Core.Interfaces.Services;
-using DavidFidge.MonoGame.Core.Services;
-using DavidFidge.MonoGame.Core.UserInterface;
+using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Interfaces.Services;
+using FrigidRogue.MonoGame.Core.Services;
+using FrigidRogue.MonoGame.Core.UserInterface;
 
 using MediatR;
 

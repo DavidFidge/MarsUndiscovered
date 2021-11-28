@@ -1,4 +1,4 @@
-﻿using DavidFidge.MonoGame.Core.UserInterface;
+﻿using FrigidRogue.MonoGame.Core.UserInterface;
 
 using MediatR;
 

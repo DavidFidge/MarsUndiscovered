@@ -1,4 +1,4 @@
-﻿using DavidFidge.MonoGame.Core.Graphics.Camera;
+﻿using FrigidRogue.MonoGame.Core.Graphics.Camera;
 
 using MediatR;
 

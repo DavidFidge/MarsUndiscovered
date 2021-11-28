@@ -5,8 +5,8 @@ using MarsUndiscovered.Graphics.Models;
 using MarsUndiscovered.Graphics.TerrainSpace;
 using MarsUndiscovered.Interfaces;
 
-using DavidFidge.MonoGame.Core.Graphics;
-using DavidFidge.MonoGame.Core.Interfaces.Graphics;
+using FrigidRogue.MonoGame.Core.Graphics;
+using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 
 using Microsoft.Xna.Framework;
 

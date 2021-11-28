@@ -5,8 +5,8 @@ using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
-using DavidFidge.Monogame.Core.View;
-using DavidFidge.Monogame.Core.View.Extensions;
+using FrigidRogue.Monogame.Core.View;
+using FrigidRogue.Monogame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
 

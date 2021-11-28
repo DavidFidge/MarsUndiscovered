@@ -4,7 +4,7 @@ using System.Text;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
-using DavidFidge.Monogame.Core.View;
+using FrigidRogue.Monogame.Core.View;
 
 using GeonBit.UI.Entities;
 

@@ -1,4 +1,4 @@
-﻿using DavidFidge.MonoGame.Core.Services;
+﻿using FrigidRogue.MonoGame.Core.Services;
 
 using MediatR;
 

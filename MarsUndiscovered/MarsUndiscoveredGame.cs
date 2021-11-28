@@ -7,14 +7,14 @@ using MarsUndiscovered.Graphics.Models;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
 
-using DavidFidge.MonoGame.Core.Graphics;
-using DavidFidge.MonoGame.Core.Graphics.Models;
-using DavidFidge.MonoGame.Core.Interfaces.Components;
-using DavidFidge.MonoGame.Core.Interfaces.Graphics;
-using DavidFidge.MonoGame.Core.Interfaces.Services;
-using DavidFidge.MonoGame.Core.Messages;
-using DavidFidge.MonoGame.Core.Services;
-using DavidFidge.Monogame.Core.View.Interfaces;
+using FrigidRogue.MonoGame.Core.Graphics;
+using FrigidRogue.MonoGame.Core.Graphics.Models;
+using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
+using FrigidRogue.MonoGame.Core.Interfaces.Services;
+using FrigidRogue.MonoGame.Core.Messages;
+using FrigidRogue.MonoGame.Core.Services;
+using FrigidRogue.Monogame.Core.View.Interfaces;
 
 using MediatR;
 

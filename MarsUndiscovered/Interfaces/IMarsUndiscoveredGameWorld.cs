@@ -1,4 +1,4 @@
-﻿using DavidFidge.MonoGame.Core.Interfaces.Graphics;
+﻿using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 
 using Microsoft.Xna.Framework;
 

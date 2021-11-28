@@ -1,7 +1,7 @@
 ﻿using MarsUndiscovered.Messages;
 using MarsUndiscovered.Messages.Console;
 
-using DavidFidge.MonoGame.Core.UserInterface;
+using FrigidRogue.MonoGame.Core.UserInterface;
 
 using InputHandlers.Keyboard;
 

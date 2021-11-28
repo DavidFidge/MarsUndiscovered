@@ -7,10 +7,10 @@ using MarsUndiscovered.Messages.Console;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
-using DavidFidge.MonoGame.Core.ConsoleCommands;
-using DavidFidge.MonoGame.Core.Interfaces.ConsoleCommands;
-using DavidFidge.MonoGame.Core.Messages;
-using DavidFidge.TestInfrastructure;
+using FrigidRogue.MonoGame.Core.ConsoleCommands;
+using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
+using FrigidRogue.MonoGame.Core.Messages;
+using FrigidRogue.TestInfrastructure;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

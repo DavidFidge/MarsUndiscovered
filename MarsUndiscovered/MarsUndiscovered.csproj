@@ -665,17 +665,17 @@
     <None Include="Content\GeonBit.UI\themes\hd\ThemeData.xnb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DavidFidge.MonoGame.Core.ContentPipeline\DavidFidge.MonoGame.Core.ContentPipeline.csproj">
+    <ProjectReference Include="..\FrigidRogue.MonoGame.Core.ContentPipeline\FrigidRogue.MonoGame.Core.ContentPipeline.csproj">
       <Project>{60ca6ef2-68c4-4c31-bd28-308b48aaa94f}</Project>
-      <Name>DavidFidge.MonoGame.Core.ContentPipeline</Name>
+      <Name>FrigidRogue.MonoGame.Core.ContentPipeline</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DavidFidge.Monogame.Core.View\DavidFidge.Monogame.Core.View.csproj">
+    <ProjectReference Include="..\FrigidRogue.Monogame.Core.View\FrigidRogue.Monogame.Core.View.csproj">
       <Project>{a9152a6e-5489-4f3f-b1d0-8d1a516c4122}</Project>
-      <Name>DavidFidge.Monogame.Core.View</Name>
+      <Name>FrigidRogue.Monogame.Core.View</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DavidFidge.MonoGame.Core\DavidFidge.MonoGame.Core.csproj">
+    <ProjectReference Include="..\FrigidRogue.MonoGame.Core\FrigidRogue.MonoGame.Core.csproj">
       <Project>{1571c1a1-a891-482e-b878-d512219de057}</Project>
-      <Name>DavidFidge.MonoGame.Core</Name>
+      <Name>FrigidRogue.MonoGame.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

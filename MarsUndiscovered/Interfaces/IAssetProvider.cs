@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using MarsUndiscovered.Graphics.Models;
 
-using DavidFidge.MonoGame.Core.Graphics.Models;
+using FrigidRogue.MonoGame.Core.Graphics.Models;
 
 using Microsoft.Xna.Framework.Graphics;
 
