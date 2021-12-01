@@ -27,4 +27,9 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\FrigidRogue\FrigidRogue.Monogame.Core.View\FrigidRogue.Monogame.Core.View.csproj" />
+    <ProjectReference Include="..\..\FrigidRogue\FrigidRogue.MonoGame.Core\FrigidRogue.MonoGame.Core.csproj" />
+    <ProjectReference Include="..\..\GeonBit.UI\GeonBit.UI\GeonBit.UI.csproj" />
+  </ItemGroup>
 </Project>

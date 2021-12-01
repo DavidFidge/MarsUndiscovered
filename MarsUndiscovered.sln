@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarsUndiscovered", "MarsUndiscovered\MarsUndiscovered.csproj", "{05892955-8B84-42DC-BFBE-BC6821D3915D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrigidRogue.MonoGame.Core", "..\FrigidRogue\FrigidRogue.MonoGame.Core\FrigidRogue.MonoGame.Core.csproj", "{B0C1B450-91F8-44F5-9CDE-92FB0AD42FC9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrigidRogue.Monogame.Core.View", "..\FrigidRogue\FrigidRogue.Monogame.Core.View\FrigidRogue.Monogame.Core.View.csproj", "{7DFFA17F-D69F-4ECA-A515-63045C3ECCEF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrigidRogue.MonoGame.Core.ContentPipeline", "..\FrigidRogue\FrigidRogue.MonoGame.Core.ContentPipeline\FrigidRogue.MonoGame.Core.ContentPipeline.csproj", "{6FE68289-5100-4E2A-938E-AB65BEEDB59E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeonBit.UI", "..\GeonBit.UI\GeonBit.UI\GeonBit.UI.csproj", "{3DF28DF8-74EB-469F-8FE1-DF78706749C4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeonBit.UI.DataTypes", "..\GeonBit.UI\GeonBit.UI.DataTypes\GeonBit.UI.DataTypes.csproj", "{E99CE853-FF96-4494-AFF8-4A23C0FD8E5B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05892955-8B84-42DC-BFBE-BC6821D3915D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05892955-8B84-42DC-BFBE-BC6821D3915D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05892955-8B84-42DC-BFBE-BC6821D3915D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05892955-8B84-42DC-BFBE-BC6821D3915D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0C1B450-91F8-44F5-9CDE-92FB0AD42FC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0C1B450-91F8-44F5-9CDE-92FB0AD42FC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0C1B450-91F8-44F5-9CDE-92FB0AD42FC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0C1B450-91F8-44F5-9CDE-92FB0AD42FC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DFFA17F-D69F-4ECA-A515-63045C3ECCEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DFFA17F-D69F-4ECA-A515-63045C3ECCEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DFFA17F-D69F-4ECA-A515-63045C3ECCEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DFFA17F-D69F-4ECA-A515-63045C3ECCEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FE68289-5100-4E2A-938E-AB65BEEDB59E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FE68289-5100-4E2A-938E-AB65BEEDB59E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FE68289-5100-4E2A-938E-AB65BEEDB59E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FE68289-5100-4E2A-938E-AB65BEEDB59E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DF28DF8-74EB-469F-8FE1-DF78706749C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DF28DF8-74EB-469F-8FE1-DF78706749C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DF28DF8-74EB-469F-8FE1-DF78706749C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DF28DF8-74EB-469F-8FE1-DF78706749C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E99CE853-FF96-4494-AFF8-4A23C0FD8E5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E99CE853-FF96-4494-AFF8-4A23C0FD8E5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E99CE853-FF96-4494-AFF8-4A23C0FD8E5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E99CE853-FF96-4494-AFF8-4A23C0FD8E5B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7C9D46B4-8157-4928-83A8-136BFADD0D34}
+	EndGlobalSection
+EndGlobal
