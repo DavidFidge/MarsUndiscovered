@@ -2,20 +2,15 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using MarsUndiscovered.Graphics;
-using MarsUndiscovered.Graphics.Models;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
 
 using FrigidRogue.MonoGame.Core.Graphics;
-using FrigidRogue.MonoGame.Core.Graphics.Models;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.Services;
-using FrigidRogue.Monogame.Core.View.Interfaces;
-
+using FrigidRogue.MonoGame.Core.View.Interfaces;
 using MediatR;
 
 using Microsoft.Xna.Framework;

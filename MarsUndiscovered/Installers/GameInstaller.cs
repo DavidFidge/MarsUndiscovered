@@ -1,8 +1,6 @@
-﻿using MarsUndiscovered.Components;
+﻿using System.Reflection;
+using MarsUndiscovered.Components;
 using MarsUndiscovered.Graphics;
-using MarsUndiscovered.Graphics.Camera;
-using MarsUndiscovered.Graphics.Models;
-using MarsUndiscovered.Graphics.TerrainSpace;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.Messages.Console;
@@ -13,17 +11,13 @@ using MarsUndiscovered.UserInterface.Screens;
 using MarsUndiscovered.UserInterface.ViewModels;
 using MarsUndiscovered.UserInterface.Views;
 
-using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 
-using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Graphics.Cylinder;
-using FrigidRogue.MonoGame.Core.Graphics.Models;
 using FrigidRogue.MonoGame.Core.Graphics.Terrain;
-using FrigidRogue.MonoGame.Core.Graphics.Trees;
 using FrigidRogue.MonoGame.Core.Installers;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
@@ -31,9 +25,8 @@ using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
-using FrigidRogue.Monogame.Core.View;
-using FrigidRogue.Monogame.Core.View.Installers;
-
+using FrigidRogue.MonoGame.Core.View;
+using FrigidRogue.MonoGame.Core.View.Installers;
 using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
 
@@ -72,44 +65,12 @@ namespace MarsUndiscovered.Installers
                     .Forward<IRequestHandler<ExitCurrentGameRequest, Unit>>()
                     .ImplementedBy<ScreenManager>(),
                 
-                Classes.FromThisAssembly()
+                Classes.FromAssemblyInThisApplication(Assembly.GetExecutingAssembly())
                     .BasedOn<Screen>(),
-
-                Component.For<GameView3D>()
-                    .Forward<IRequestHandler<Move3DViewRequest, Unit>>()
-                    .Forward<IRequestHandler<Zoom3DViewRequest, Unit>>()
-                    .Forward<IRequestHandler<Rotate3DViewRequest, Unit>>()
-                    .Forward<IRequestHandler<Select3DViewRequest, Unit>>()
-                    .Forward<IRequestHandler<Action3DViewRequest, Unit>>()
-                    .DependsOn(Dependency.OnComponent<IGameCamera, StrategyGameCamera>()
-                ),
-
+                
                 Component.For<IHeightMapGenerator>()
                     .ImplementedBy<HeightMapGenerator>(),
-
-                Component.For<Terrain>()
-                    .LifeStyle.Transient,
-
-                Component.For<MarsUndiscoveredEntity>()
-                    .LifeStyle.Transient,
-
-                Component.For<IMarsUndiscoveredEntityFactory>()
-                    .AsFactory(),
-
-                Component.For<IMarsUndiscoveredModelDrawer>()
-                    .ImplementedBy<MarsUndiscoveredModelDrawer>()
-                    .LifeStyle.Transient,
-
-                Component.For<ISelectionModelDrawer>()
-                    .ImplementedBy<SelectionModelDrawer>()
-                    .LifeStyle.Transient,
-
-                Component.For<Cylinder>()
-                    .LifeStyle.Transient,
-
-                Component.For<Tree>()
-                    .LifeStyle.Transient,
-
+                
                 Classes.FromAssemblyContaining<IGameCamera>()
                     .BasedOn<IGameCamera>()
                     .LifestyleTransient()
@@ -126,7 +87,7 @@ namespace MarsUndiscovered.Installers
         private void RegisterMouseHandlers(IWindsorContainer container)
         {
             container.Register(
-                Classes.FromThisAssembly()
+                Classes.FromAssemblyInThisApplication(Assembly.GetExecutingAssembly())
                     .BasedOn<IMouseHandler>()
                     .ConfigureFor<NullMouseHandler>(c => c.IsDefault())
                     .WithServiceDefaultInterfaces()
@@ -136,7 +97,7 @@ namespace MarsUndiscovered.Installers
         private void RegisterKeyboardHandlers(IWindsorContainer container)
         {
             container.Register(
-                Classes.FromThisAssembly()
+                Classes.FromAssemblyInThisApplication(Assembly.GetExecutingAssembly())
                     .BasedOn<IKeyboardHandler>()
                     .ConfigureFor<NullKeyboardHandler>(c => c.IsDefault())
                     .ConfigureFor<GameViewKeyboardHandler>(c => c.DependsOn(Dependency.OnComponent<ICameraMovement, StrategyCameraMovement>()))
@@ -198,10 +159,7 @@ namespace MarsUndiscovered.Installers
                 Component.For<GameViewModel>(),
 
                 Component.For<ICameraMovement>()
-                    .ImplementedBy<StrategyCameraMovement>(),
-
-                Component.For<ICameraMovement>()
-                    .ImplementedBy<FreeCameraMovement>()
+                    .ImplementedBy<StrategyCameraMovement>()
             );
         }
 
@@ -232,7 +190,7 @@ namespace MarsUndiscovered.Installers
                     .Forward<IRequestHandler<RecallConsoleHistoryForwardRequest, Unit>>()
                     .Forward<IRequestHandler<ExecuteConsoleCommandRequest, Unit>>(),
 
-                Classes.FromThisAssembly()
+                Classes.FromAssemblyInThisApplication(Assembly.GetExecutingAssembly())
                     .BasedOn<IConsoleCommand>()
                     .WithServiceDefaultInterfaces()
             );

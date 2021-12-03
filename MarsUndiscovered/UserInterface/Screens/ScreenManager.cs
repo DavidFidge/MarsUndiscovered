@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 
-using FrigidRogue.Monogame.Core.View;
+using FrigidRogue.MonoGame.Core.View;
 
 using MediatR;
 

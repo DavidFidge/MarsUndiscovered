@@ -1,6 +1,6 @@
 ﻿using MarsUndiscovered.UserInterface.Views;
 
-using FrigidRogue.Monogame.Core.View;
+using FrigidRogue.MonoGame.Core.View;
 
 namespace MarsUndiscovered.UserInterface.Screens
 {

@@ -3,8 +3,8 @@ using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using FrigidRogue.MonoGame.Core.Services;
-using FrigidRogue.Monogame.Core.View;
-using FrigidRogue.Monogame.Core.View.Extensions;
+using FrigidRogue.MonoGame.Core.View;
+using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
 

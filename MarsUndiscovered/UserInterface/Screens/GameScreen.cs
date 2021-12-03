@@ -1,16 +1,13 @@
-﻿using MarsUndiscovered.Graphics.Camera;
-using MarsUndiscovered.Interfaces;
-using MarsUndiscovered.Messages;
+﻿using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Views;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
-using FrigidRogue.Monogame.Core.View;
+using FrigidRogue.MonoGame.Core.View;
 
 namespace MarsUndiscovered.UserInterface.Screens
 {
     public class GameScreen : Screen
     {
-        private readonly GameView3D _gameView3D;
         private readonly IGameTimeService _gameTimeService;
         private IMarsUndiscoveredGameWorld _marsUndiscoveredGameWorld;
 
@@ -34,20 +31,16 @@ namespace MarsUndiscovered.UserInterface.Screens
         public void StartNewGame()
         {
             _marsUndiscoveredGameWorld.StartNewGame();
-            _gameView3D.StartNewGame();
-
             _gameTimeService.Start();
         }
 
         public override void Update()
         {
             _marsUndiscoveredGameWorld.Update();
-            _gameView3D.Update();
         }
 
         public override void Draw()
         {
-            _gameView3D.Draw();
             base.Draw();
         }
     }

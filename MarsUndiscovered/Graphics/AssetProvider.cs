@@ -1,10 +1,6 @@
-﻿using MarsUndiscovered.Graphics.Models;
-using MarsUndiscovered.Interfaces;
+﻿using MarsUndiscovered.Interfaces;
 
-using FrigidRogue.MonoGame.Core.Graphics.Models;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
-
-using Microsoft.Xna.Framework.Graphics;
 
 namespace MarsUndiscovered.Graphics
 {
