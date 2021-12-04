@@ -16,9 +16,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class VideoOptionsViewModel : BaseViewModel<VideoOptionsData>,
         IRequestHandler<SetDisplayModeRequest>,
-        IRequestHandler<SaveVideoOptionsRequest>,
-        IRequestHandler<VideoOptionsFullScreenToggle>,
-        IRequestHandler<VideoOptionsVerticalSyncToggle>
+        IRequestHandler<SaveVideoOptionsRequest>
     {
         private readonly IGameOptionsStore _gameOptionsStore;
         public IGameProvider GameProvider { get; set; }
@@ -36,12 +34,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 .CustomGraphicsDeviceManager
                 .GetSupportedDisplayModes();
 
-            if (!Data.DisplayModes.Any(dm => Equals(dm, Data.SelectedDisplayMode)))
+            if (!Data.DisplayModes.Any(dm => Equals(dm, Data.SelectedDisplayDimensions)))
             {
                 Data.IsVerticalSync = true;
-                Data.IsFullScreen = false;
+                Data.IsFullScreen = true;
+                Data.IsBorderlessWindowed = true;
 
-                Data.SelectedDisplayMode = Data.DisplayModes
+                Data.SelectedDisplayDimensions = Data.DisplayModes
                     .Where(dm => dm.Width == GameProvider.Game.CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Width)
                     .Where(dm => dm.Height == GameProvider.Game.CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Height)
                     .FirstOrDefault();
@@ -56,9 +55,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             // Geonbit UI doesn't appear to detect changes in resolution at full screen properly which makes the text all fuzzy.
             // Get around this by changing to windowed mode, setting the resolution,
             // then going back to full screen mode.
-            Data.SelectedDisplayMode = request.DisplayMode;
+            Data.SelectedDisplayDimensions = request.DisplayDimensions;
 
-            if (Data.IsFullScreen)
+            if (Data.IsFullScreen && !Data.IsBorderlessWindowed)
             {
                 Data.IsFullScreen = false;
                 SetGraphicsDisplayMode();
@@ -72,12 +71,17 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private void SetGraphicsDisplayMode()
         {
-            GameProvider.Game
+            var displaySettings = new DisplaySettings(
+                Data.SelectedDisplayDimensions,
+                Data.IsFullScreen,
+                Data.IsVerticalSync,
+                Data.IsFullScreen && Data.IsBorderlessWindowed
+            );
+
+            GameProvider
+                .Game
                 .CustomGraphicsDeviceManager
-                .SetDisplayMode(
-                    Data.SelectedDisplayMode,
-                    Data.IsFullScreen
-                );
+                .SetDisplayMode(displaySettings);
 
             GameProvider.Game.CustomGraphicsDeviceManager.ApplyChanges();
         }
@@ -89,23 +93,23 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             return Unit.Task;
         }
 
-        public Task<Unit> Handle(VideoOptionsFullScreenToggle request, CancellationToken cancellationToken)
+        public Task<Unit> HandleIsFullScreen(InterfaceRequest<VideoOptionsData> request, CancellationToken cancellationToken)
         {
-            Data.IsFullScreen = request.IsChecked;
             SetGraphicsDisplayMode();
 
             return Unit.Task;
         }
 
-        public Task<Unit> Handle(VideoOptionsVerticalSyncToggle request, CancellationToken cancellationToken)
+        public Task<Unit> HandleIsVerticalSync(InterfaceRequest<VideoOptionsData> request, CancellationToken cancellationToken)
         {
-            Data.IsVerticalSync = request.IsChecked;
+            SetGraphicsDisplayMode();
 
-            GameProvider.Game
-                .CustomGraphicsDeviceManager
-                .IsVerticalSync = request.IsChecked;
+            return Unit.Task;
+        }
 
-            GameProvider.Game.CustomGraphicsDeviceManager.ApplyChanges();
+        public Task<Unit> HandleIsBorderlessWindowed(InterfaceRequest<VideoOptionsData> request, CancellationToken cancellationToken)
+        {
+            SetGraphicsDisplayMode();
 
             return Unit.Task;
         }
