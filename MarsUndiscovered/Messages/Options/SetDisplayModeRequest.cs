@@ -1,0 +1,16 @@
+﻿using FrigidRogue.MonoGame.Core.Services;
+
+using MediatR;
+
+namespace MarsUndiscovered.Messages
+{
+    public class SetDisplayModeRequest : IRequest
+    {
+        public DisplayMode DisplayMode { get; }
+
+        public SetDisplayModeRequest(DisplayMode displayMode)
+        {
+            DisplayMode = displayMode;
+        }
+    }
+}
