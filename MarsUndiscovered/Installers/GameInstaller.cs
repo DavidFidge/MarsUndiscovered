@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
@@ -27,7 +26,6 @@ using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Installers;
-
 using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
 
@@ -137,8 +135,7 @@ namespace MarsUndiscovered.Installers
                 Component.For<VideoOptionsViewModel>()
                     .Forward<IRequestHandler<SetDisplayModeRequest, Unit>>()
                     .Forward<IRequestHandler<SaveVideoOptionsRequest, Unit>>()
-                    .Forward<IRequestHandler<VideoOptionsFullScreenToggle, Unit>>()
-                    .Forward<IRequestHandler<VideoOptionsVerticalSyncToggle, Unit>>()
+                    .Forward<IRequestHandler<InterfaceRequest<VideoOptionsData>, Unit>>()
                     .ImplementedBy<VideoOptionsViewModel>(),
 
                 Component.For<VideoOptionsView>()

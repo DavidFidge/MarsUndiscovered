@@ -90,31 +90,38 @@ namespace MarsUndiscovered
 
         private void InitializeDisplaySettings()
         {
-            var screenWidth = CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Width;
-            var screenHeight = CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Height;
             var isFullScreen = false;
             var isVerticalSync = true;
+            var isBorderlessWindowed = true;
 
             var gameOptions = _gameOptionsStore.GetFromStore<VideoOptionsData>()?.State;
 
-            if (gameOptions != null && gameOptions.SelectedDisplayMode != null)
+            var displayDimensions = new DisplayDimensions(
+                CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Width,
+                CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Height,
+                0);
+
+            if (gameOptions != null && gameOptions.SelectedDisplayDimensions != null)
             {
                 var displayModes = CustomGraphicsDeviceManager.GetSupportedDisplayModes();
 
-                if (displayModes.Any(dm => Equals(dm, gameOptions.SelectedDisplayMode)))
+                if (displayModes.Any(dm => Equals(dm, gameOptions.SelectedDisplayDimensions)))
                 {
-                    screenWidth = gameOptions.SelectedDisplayMode.Width;
-                    screenHeight = gameOptions.SelectedDisplayMode.Height;
+                    displayDimensions = gameOptions.SelectedDisplayDimensions;
                     isFullScreen = gameOptions.IsFullScreen;
                     isVerticalSync = gameOptions.IsVerticalSync;
+                    isBorderlessWindowed = gameOptions.IsBorderlessWindowed;
                 }
             }
 
-            CustomGraphicsDeviceManager.PreferredBackBufferWidth = screenWidth;
-            CustomGraphicsDeviceManager.PreferredBackBufferHeight = screenHeight;
-            CustomGraphicsDeviceManager.IsFullScreen = isFullScreen;
-            CustomGraphicsDeviceManager.IsVerticalSync = isVerticalSync;
-            CustomGraphicsDeviceManager.ApplyChanges();
+            var displaySettings = new DisplaySettings(
+                displayDimensions,
+                isFullScreen,
+                isVerticalSync,
+                isBorderlessWindowed
+            );
+
+            CustomGraphicsDeviceManager.SetDisplayMode(displaySettings);
         }
 
         /// <summary>

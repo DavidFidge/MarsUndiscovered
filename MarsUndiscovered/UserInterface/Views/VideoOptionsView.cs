@@ -2,7 +2,9 @@
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
+using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Services;
+using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 
@@ -88,29 +90,51 @@ namespace MarsUndiscovered.UserInterface.Views
 
             leftPanel.AddChild(displayModesLabel);
 
-            var displayModesSelectList = new SelectList<DisplayMode>(
+            var displayModesSelectList = new SelectList<DisplayDimensions>(
                 Data.DisplayModes,
                 new Vector2(500, 500)
             );
 
-            displayModesSelectList.SelectedIndex = Data.DisplayModes.IndexOf(Data.SelectedDisplayMode);
+            displayModesSelectList.SelectedIndex = Data.DisplayModes.IndexOf(Data.SelectedDisplayDimensions);
 
-            leftPanel.AddChild(displayModesSelectList);
+            var isBorderlessWindowedCheckBox = new CheckBox("Borderless Windowed", offset: new Vector2(Constants.UiIndentLevel1, 0f))
+            {
+                Checked = Data.IsBorderlessWindowed,
+                OnValueChange = entity =>
+                    Mediator.Send(new InterfaceRequest<VideoOptionsData>(Data.GetPropertyInfo(nameof(Data.IsBorderlessWindowed)), ((CheckBox)entity).Checked))
+            };
 
             var fullScreenCheckbox = new CheckBox("Full Screen")
             {
                 Checked = Data.IsFullScreen,
                 OnValueChange = entity =>
-                    Mediator.Send(new VideoOptionsFullScreenToggle(((CheckBox) entity).Checked))
+                {
+                    var isFullScreen = ((CheckBox)entity).Checked;
+
+                    isBorderlessWindowedCheckBox.Enabled = isFullScreen;
+                    displayModesSelectList.Enabled = isFullScreen;
+
+                    Mediator.Send(
+                        new InterfaceRequest<VideoOptionsData>(
+                            Data.GetPropertyInfo(nameof(Data.IsFullScreen)),
+                            isFullScreen
+                        )
+                    );
+                }
             };
 
+            isBorderlessWindowedCheckBox.Enabled = Data.IsFullScreen;
+            displayModesSelectList.Enabled = Data.IsFullScreen;
+
+            leftPanel.AddChild(displayModesSelectList);
             leftPanel.AddChild(fullScreenCheckbox);
+            leftPanel.AddChild(isBorderlessWindowedCheckBox);
 
             var verticalSyncCheckbox = new CheckBox("Vertical Sync")
             {
                 Checked = Data.IsVerticalSync,
                 OnValueChange = entity =>
-                    Mediator.Send(new VideoOptionsVerticalSyncToggle(((CheckBox) entity).Checked))
+                    Mediator.Send(new InterfaceRequest<VideoOptionsData>(Data.GetPropertyInfo(nameof(Data.IsVerticalSync)), ((CheckBox)entity).Checked))
             };
 
             leftPanel.AddChild(verticalSyncCheckbox);
@@ -118,7 +142,7 @@ namespace MarsUndiscovered.UserInterface.Views
             displayModesSelectList.OnValueChange = entity =>
             {
                 var request = new SetDisplayModeRequest(
-                    ((SelectList<DisplayMode>)entity).SelectedValueTyped
+                    ((SelectList<DisplayDimensions>)entity).SelectedValueTyped
                 );
 
                 Mediator.Send(request);
