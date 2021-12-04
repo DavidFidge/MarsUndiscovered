@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrigidRogue.MonoGame.Core.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeonBit.UI", "..\GeonBit.UI\GeonBit.UI\GeonBit.UI.csproj", "{3DF28DF8-74EB-469F-8FE1-DF78706749C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeonBit.UI.DataTypes", "..\GeonBit.UI\GeonBit.UI.DataTypes\GeonBit.UI.DataTypes.csproj", "{E99CE853-FF96-4494-AFF8-4A23C0FD8E5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeonBit.UI.DataTypes", "..\GeonBit.UI\GeonBit.UI\Libs\DataTypes\GeonBit.UI.DataTypes.csproj", "{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{3DF28DF8-74EB-469F-8FE1-DF78706749C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DF28DF8-74EB-469F-8FE1-DF78706749C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DF28DF8-74EB-469F-8FE1-DF78706749C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E99CE853-FF96-4494-AFF8-4A23C0FD8E5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E99CE853-FF96-4494-AFF8-4A23C0FD8E5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E99CE853-FF96-4494-AFF8-4A23C0FD8E5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E99CE853-FF96-4494-AFF8-4A23C0FD8E5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

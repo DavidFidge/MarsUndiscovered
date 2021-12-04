@@ -1,5 +1,11 @@
 ﻿using System;
 
+using Castle.Windsor;
+
+using FrigidRogue.MonoGame.Core.Interfaces.Components;
+
+using MarsUndiscovered.Installers;
+
 namespace MarsUndiscovered
 {
     public static class Program
@@ -7,8 +13,13 @@ namespace MarsUndiscovered
         [STAThread]
         static void Main()
         {
-            using (var game = new Game1())
-                game.Run();
+            var container = new WindsorContainer();
+
+            container.Install(new GameInstaller());
+
+            using var game = container.Resolve<IGame>();
+
+            game.Run();
         }
     }
 }

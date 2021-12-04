@@ -16,7 +16,6 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
-using FrigidRogue.MonoGame.Core.Graphics.Cylinder;
 using FrigidRogue.MonoGame.Core.Graphics.Terrain;
 using FrigidRogue.MonoGame.Core.Installers;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
@@ -64,8 +63,8 @@ namespace MarsUndiscovered.Installers
                     .Forward<IRequestHandler<NewGameRequest, Unit>>()
                     .Forward<IRequestHandler<ExitCurrentGameRequest, Unit>>()
                     .ImplementedBy<ScreenManager>(),
-                
-                Classes.FromAssemblyInThisApplication(Assembly.GetExecutingAssembly())
+
+                Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<Screen>(),
                 
                 Component.For<IHeightMapGenerator>()
@@ -87,7 +86,7 @@ namespace MarsUndiscovered.Installers
         private void RegisterMouseHandlers(IWindsorContainer container)
         {
             container.Register(
-                Classes.FromAssemblyInThisApplication(Assembly.GetExecutingAssembly())
+                Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IMouseHandler>()
                     .ConfigureFor<NullMouseHandler>(c => c.IsDefault())
                     .WithServiceDefaultInterfaces()
@@ -97,7 +96,7 @@ namespace MarsUndiscovered.Installers
         private void RegisterKeyboardHandlers(IWindsorContainer container)
         {
             container.Register(
-                Classes.FromAssemblyInThisApplication(Assembly.GetExecutingAssembly())
+                Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IKeyboardHandler>()
                     .ConfigureFor<NullKeyboardHandler>(c => c.IsDefault())
                     .ConfigureFor<GameViewKeyboardHandler>(c => c.DependsOn(Dependency.OnComponent<ICameraMovement, StrategyCameraMovement>()))
@@ -190,7 +189,7 @@ namespace MarsUndiscovered.Installers
                     .Forward<IRequestHandler<RecallConsoleHistoryForwardRequest, Unit>>()
                     .Forward<IRequestHandler<ExecuteConsoleCommandRequest, Unit>>(),
 
-                Classes.FromAssemblyInThisApplication(Assembly.GetExecutingAssembly())
+                Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IConsoleCommand>()
                     .WithServiceDefaultInterfaces()
             );

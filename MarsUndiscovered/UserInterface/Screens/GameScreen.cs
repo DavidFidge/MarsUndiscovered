@@ -14,12 +14,10 @@ namespace MarsUndiscovered.UserInterface.Screens
         public GameScreen(
             IMarsUndiscoveredGameWorld marsUndiscoveredGameWorld,
             GameView gameView,
-            GameView3D gameView3D,
             IGameTimeService gameTimeService
             ) : base(gameView)
         {
             _marsUndiscoveredGameWorld = marsUndiscoveredGameWorld;
-            _gameView3D = gameView3D;
             _gameTimeService = gameTimeService;
         }
 

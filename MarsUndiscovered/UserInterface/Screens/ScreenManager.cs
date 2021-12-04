@@ -52,9 +52,7 @@ namespace MarsUndiscovered.UserInterface.Screens
         {
             if (_activeScreen == null)
             {
-                // Quickstart to ease debugging
-                NewGame();
-                // ShowScreen(_titleScreen);
+                ShowScreen(_titleScreen);
             }
 
             _activeScreen.Update();
