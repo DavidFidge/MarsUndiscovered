@@ -1,6 +1,6 @@
 ﻿namespace MarsUndiscovered.Interfaces
 {
-    public interface IAssetProvider
+    public interface IAssets
     {
         void LoadContent();
     }

@@ -5,8 +5,6 @@ using MarsUndiscovered.Interfaces;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 
-using Microsoft.Xna.Framework;
-
 namespace MarsUndiscovered.Components
 {
     public class MarsUndiscoveredGameWorld : IMarsUndiscoveredGameWorld

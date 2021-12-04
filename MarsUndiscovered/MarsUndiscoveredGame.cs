@@ -29,7 +29,7 @@ namespace MarsUndiscovered
         private readonly IUserInterface _userInterface;
         private readonly IGameOptionsStore _gameOptionsStore;
         private readonly IScreenManager _screenManager;
-        private readonly IAssetProvider _assetProvider;
+        private readonly IAssets _assets;
 
         private bool _isExiting;
 
@@ -46,7 +46,7 @@ namespace MarsUndiscovered
             IUserInterface userInterface,
             IGameOptionsStore gameOptionsStore,
             IScreenManager screenManager,
-            IAssetProvider assetProvider
+            IAssets assets
             )
         {
             _logger = logger;
@@ -62,7 +62,7 @@ namespace MarsUndiscovered
             Content.RootDirectory = "Content";
 
             _screenManager = screenManager;
-            _assetProvider = assetProvider;
+            _assets = assets;
 
             EffectCollection = new EffectCollection(_gameProvider);
         }
@@ -115,10 +115,6 @@ namespace MarsUndiscovered
             CustomGraphicsDeviceManager.IsFullScreen = isFullScreen;
             CustomGraphicsDeviceManager.IsVerticalSync = isVerticalSync;
             CustomGraphicsDeviceManager.ApplyChanges();
-
-            //GraphicsDevice.RasterizerState = new RasterizerState {
-            //    CullMode = CullMode.None
-            //};
         }
 
         /// <summary>
@@ -127,7 +123,7 @@ namespace MarsUndiscovered
         /// </summary>
         protected override void LoadContent()
         {
-            _assetProvider.LoadContent();
+            _assets.LoadContent();
         }
 
         /// <summary>

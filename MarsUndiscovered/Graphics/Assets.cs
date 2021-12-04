@@ -4,11 +4,11 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 
 namespace MarsUndiscovered.Graphics
 {
-    public class AssetProvider : IAssetProvider
+    public class Assets : IAssets
     {
         private readonly IGameProvider _gameProvider;
 
-        public AssetProvider(IGameProvider gameProvider)
+        public Assets(IGameProvider gameProvider)
         {
             _gameProvider = gameProvider;
         }

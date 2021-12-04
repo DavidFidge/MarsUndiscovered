@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
@@ -26,6 +27,7 @@ using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Installers;
+
 using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
 
@@ -52,8 +54,8 @@ namespace MarsUndiscovered.Installers
 
             container.Register(
 
-                Component.For<IAssetProvider>()
-                    .ImplementedBy<AssetProvider>(),
+                Component.For<IAssets>()
+                    .ImplementedBy<Assets>(),
 
                 Component.For<IGame>()
                     .Forward<IRequestHandler<ExitGameRequest, Unit>>()
