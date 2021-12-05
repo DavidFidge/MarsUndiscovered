@@ -10,11 +10,9 @@ namespace MarsUndiscovered.UserInterface.Data
         [Display(Name = "Screen Resolutions")]
         public IList<DisplayDimensions> DisplayModes { get; set; }
         public DisplayDimensions SelectedDisplayDimensions { get; set; }
-
         public bool IsFullScreen { get; set; }
         public bool IsBorderlessWindowed { get; set; }
         public bool IsVerticalSync { get; set; }
-
         public string Heading => "Video Options";
     }
 }

@@ -111,9 +111,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 {
                     var isFullScreen = ((CheckBox)entity).Checked;
 
-                    isBorderlessWindowedCheckBox.Enabled = isFullScreen;
-                    displayModesSelectList.Enabled = isFullScreen;
-
                     Mediator.Send(
                         new InterfaceRequest<VideoOptionsData>(
                             Data.GetPropertyInfo(nameof(Data.IsFullScreen)),
@@ -122,9 +119,6 @@ namespace MarsUndiscovered.UserInterface.Views
                     );
                 }
             };
-
-            isBorderlessWindowedCheckBox.Enabled = Data.IsFullScreen;
-            displayModesSelectList.Enabled = Data.IsFullScreen;
 
             leftPanel.AddChild(displayModesSelectList);
             leftPanel.AddChild(fullScreenCheckbox);
