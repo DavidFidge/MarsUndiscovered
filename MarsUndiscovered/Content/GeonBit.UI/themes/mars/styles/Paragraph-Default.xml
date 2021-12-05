@@ -3,8 +3,8 @@
   <Asset Type="GeonBit.UI.DataTypes.DefaultStyles">
     <Scale>1</Scale>
     <FillColor>FFFFFFFF</FillColor>
-    <OutlineColor>FF000000</OutlineColor>
-    <OutlineWidth>2</OutlineWidth>
+    <OutlineColor Null="true" />
+    <OutlineWidth Null="true" />
     <ForceAlignCenter>false</ForceAlignCenter>
     <FontStyle>Regular</FontStyle>
     <SelectedHighlightColor Null="true" />

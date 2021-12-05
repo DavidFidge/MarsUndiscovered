@@ -2,9 +2,9 @@
 <XnaContent xmlns:ns="Microsoft.Xna.Framework">
   <Asset Type="GeonBit.UI.DataTypes.DefaultStyles">
     <Scale Null="true" />
-    <FillColor>FFFFFFFF</FillColor>
-    <OutlineColor>FF000000</OutlineColor>
-    <OutlineWidth>2</OutlineWidth>
+    <FillColor Null="true" />
+    <OutlineColor Null="true" />
+    <OutlineWidth Null="true" />
     <ForceAlignCenter Null="true" />
     <FontStyle Null="true" />
     <SelectedHighlightColor Null="true" />
