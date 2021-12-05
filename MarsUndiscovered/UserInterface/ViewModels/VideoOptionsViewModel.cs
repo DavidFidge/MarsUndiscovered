@@ -29,10 +29,12 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public override void Initialize()
         {
             Data = _gameOptionsStore.GetFromStore<VideoOptionsData>()?.State ?? new VideoOptionsData();
-            
+
             Data.DisplayModes = GameProvider.Game
                 .CustomGraphicsDeviceManager
-                .GetSupportedDisplayModes();
+                .GetSupportedDisplayModes()
+                .OrderBy(dm => dm.Height)
+                .ToList();
 
             if (!Data.DisplayModes.Any(dm => Equals(dm, Data.SelectedDisplayDimensions)))
             {
@@ -75,15 +77,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 Data.SelectedDisplayDimensions,
                 Data.IsFullScreen,
                 Data.IsVerticalSync,
-                Data.IsFullScreen && Data.IsBorderlessWindowed
+                Data.IsBorderlessWindowed
             );
 
             GameProvider
                 .Game
                 .CustomGraphicsDeviceManager
                 .SetDisplayMode(displaySettings);
-
-            GameProvider.Game.CustomGraphicsDeviceManager.ApplyChanges();
         }
 
         public Task<Unit> Handle(SaveVideoOptionsRequest request, CancellationToken cancellationToken)
