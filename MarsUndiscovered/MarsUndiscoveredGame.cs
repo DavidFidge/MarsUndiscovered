@@ -77,7 +77,7 @@ namespace MarsUndiscovered
         {
             EffectCollection.Initialize();
 
-            _userInterface.Initialize(Content);
+            _userInterface.Initialize(Content, "mars");
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
