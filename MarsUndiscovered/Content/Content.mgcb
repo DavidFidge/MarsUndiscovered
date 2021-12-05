@@ -20,9 +20,6 @@
 #begin BuiltEffects/silhouette.xnb
 /copy:BuiltEffects/silhouette.xnb
 
-#begin Fonts/JetBrainsMono-Regular.ttf
-/copy:Fonts/JetBrainsMono-Regular.ttf
-
 #begin GeonBit.UI/themes/mars/effects/disabled.fx
 /importer:EffectImporter
 /processor:EffectProcessor
