@@ -85,17 +85,18 @@ namespace MarsUndiscovered.UserInterface.Views
 
         private void AddLeftPanelContent(Panel leftPanel)
         {
-            var displayModesLabel = new Label(LabelFor(() => Data.DisplayModes))
+            var displayModesLabel = new Label(LabelFor(() => Data.DisplayDimensions))
                 .H4Heading();
 
             leftPanel.AddChild(displayModesLabel);
 
-            var displayModesSelectList = new SelectList<DisplayDimensions>(
-                Data.DisplayModes,
-                new Vector2(500, 500)
-            );
+            var displayModesDropDown = new DropDown<DisplayDimension>(Data.DisplayDimensions);
+            displayModesDropDown.SelectedIndex = Data.DisplayDimensions.IndexOf(Data.SelectedDisplayDimension);
+            displayModesDropDown.AutoSetListHeight = true;
 
-            displayModesSelectList.SelectedIndex = Data.DisplayModes.IndexOf(Data.SelectedDisplayDimensions);
+            var renderResolutionDropDown = new DropDown<RenderResolution>(Data.RenderResolutions);
+            renderResolutionDropDown.SelectedIndex = Data.RenderResolutions.IndexOf(Data.SelectedRenderResolution);
+            renderResolutionDropDown.AutoSetListHeight = true;
 
             var isBorderlessWindowedCheckBox = new CheckBox("Borderless Windowed", offset: new Vector2(Constants.UiIndentLevel1, 0f))
             {
@@ -120,7 +121,8 @@ namespace MarsUndiscovered.UserInterface.Views
                 }
             };
 
-            leftPanel.AddChild(displayModesSelectList);
+            leftPanel.AddChild(displayModesDropDown);
+            leftPanel.AddChild(renderResolutionDropDown);
             leftPanel.AddChild(fullScreenCheckbox);
             leftPanel.AddChild(isBorderlessWindowedCheckBox);
 
@@ -133,10 +135,19 @@ namespace MarsUndiscovered.UserInterface.Views
 
             leftPanel.AddChild(verticalSyncCheckbox);
 
-            displayModesSelectList.OnValueChange = entity =>
+            displayModesDropDown.OnValueChange = entity =>
             {
                 var request = new SetDisplayModeRequest(
-                    ((SelectList<DisplayDimensions>)entity).SelectedValueTyped
+                    ((DropDown<DisplayDimension>)entity).SelectedValueTyped
+                );
+
+                Mediator.Send(request);
+            };
+
+            renderResolutionDropDown.OnValueChange = entity =>
+            {
+                var request = new SetRenderResolutionRequest(
+                    ((DropDown<RenderResolution>)entity).SelectedValueTyped
                 );
 
                 Mediator.Send(request);

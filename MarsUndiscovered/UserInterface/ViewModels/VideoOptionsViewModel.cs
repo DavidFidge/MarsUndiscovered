@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 using FrigidRogue.MonoGame.Core.UserInterface;
+using FrigidRogue.MonoGame.Core.View.Interfaces;
 
 using MediatR;
 
@@ -16,37 +18,47 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class VideoOptionsViewModel : BaseViewModel<VideoOptionsData>,
         IRequestHandler<SetDisplayModeRequest>,
-        IRequestHandler<SaveVideoOptionsRequest>
+        IRequestHandler<SaveVideoOptionsRequest>,
+        IRequestHandler<SetRenderResolutionRequest>
     {
         private readonly IGameOptionsStore _gameOptionsStore;
+        private readonly IUserInterface _userInterface;
         public IGameProvider GameProvider { get; set; }
 
-        public VideoOptionsViewModel(IGameOptionsStore gameOptionsStore)
+        public VideoOptionsViewModel(
+            IGameOptionsStore gameOptionsStore,
+            IUserInterface userInterface)
         {
             _gameOptionsStore = gameOptionsStore;
+            _userInterface = userInterface;
         }
 
         public override void Initialize()
         {
             Data = _gameOptionsStore.GetFromStore<VideoOptionsData>()?.State ?? new VideoOptionsData();
 
-            Data.DisplayModes = GameProvider.Game
+            Data.DisplayDimensions = GameProvider.Game
                 .CustomGraphicsDeviceManager
                 .GetSupportedDisplayModes()
                 .OrderBy(dm => dm.Height)
                 .ToList();
 
-            if (!Data.DisplayModes.Any(dm => Equals(dm, Data.SelectedDisplayDimensions)))
+            if (!Data.DisplayDimensions.Any(dm => Equals(dm, Data.SelectedDisplayDimension)))
             {
                 Data.IsVerticalSync = true;
                 Data.IsFullScreen = true;
                 Data.IsBorderlessWindowed = true;
 
-                Data.SelectedDisplayDimensions = Data.DisplayModes
+                Data.SelectedDisplayDimension = Data.DisplayDimensions
                     .Where(dm => dm.Width == GameProvider.Game.CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Width)
                     .Where(dm => dm.Height == GameProvider.Game.CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Height)
                     .FirstOrDefault();
             }
+
+            Data.RenderResolutions = RenderResolution.RenderResolutions;
+
+            if (Data.SelectedRenderResolution == null)
+                Data.SelectedRenderResolution = RenderResolution.Default;
         }
 
         public Task<Unit> Handle(
@@ -57,7 +69,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             // Geonbit UI doesn't appear to detect changes in resolution at full screen properly which makes the text all fuzzy.
             // Get around this by changing to windowed mode, setting the resolution,
             // then going back to full screen mode.
-            Data.SelectedDisplayDimensions = request.DisplayDimensions;
+            Data.SelectedDisplayDimension = request.DisplayDimension;
 
             if (Data.IsFullScreen && !Data.IsBorderlessWindowed)
             {
@@ -71,10 +83,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             return Unit.Task;
         }
 
+        public Task<Unit> Handle(SetRenderResolutionRequest request, CancellationToken cancellationToken)
+        {
+            Data.SelectedRenderResolution = request.RenderResolution;
+
+            _userInterface.RenderResolution = Data.SelectedRenderResolution;
+
+            return Unit.Task;
+        }
+
         private void SetGraphicsDisplayMode()
         {
             var displaySettings = new DisplaySettings(
-                Data.SelectedDisplayDimensions,
+                Data.SelectedDisplayDimension,
                 Data.IsFullScreen,
                 Data.IsVerticalSync,
                 Data.IsBorderlessWindowed

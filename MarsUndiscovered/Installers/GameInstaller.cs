@@ -135,6 +135,7 @@ namespace MarsUndiscovered.Installers
                 Component.For<VideoOptionsViewModel>()
                     .Forward<IRequestHandler<SetDisplayModeRequest, Unit>>()
                     .Forward<IRequestHandler<SaveVideoOptionsRequest, Unit>>()
+                    .Forward<IRequestHandler<SetRenderResolutionRequest, Unit>>()
                     .Forward<IRequestHandler<InterfaceRequest<VideoOptionsData>, Unit>>()
                     .ImplementedBy<VideoOptionsViewModel>(),
 

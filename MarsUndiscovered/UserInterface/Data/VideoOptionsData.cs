@@ -8,8 +8,10 @@ namespace MarsUndiscovered.UserInterface.Data
     public class VideoOptionsData
     {
         [Display(Name = "Screen Resolutions")]
-        public IList<DisplayDimensions> DisplayModes { get; set; }
-        public DisplayDimensions SelectedDisplayDimensions { get; set; }
+        public IList<DisplayDimension> DisplayDimensions { get; set; }
+        public DisplayDimension SelectedDisplayDimension { get; set; }
+        public IList<RenderResolution> RenderResolutions { get; set; }
+        public RenderResolution SelectedRenderResolution { get; set; }
         public bool IsFullScreen { get; set; }
         public bool IsBorderlessWindowed { get; set; }
         public bool IsVerticalSync { get; set; }

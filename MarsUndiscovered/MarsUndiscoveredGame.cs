@@ -79,6 +79,10 @@ namespace MarsUndiscovered
 
             _userInterface.Initialize(Content, "mars");
 
+            var gameOptions = _gameOptionsStore.GetFromStore<VideoOptionsData>()?.State;
+
+            _userInterface.RenderResolution = gameOptions?.SelectedRenderResolution;
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             InitializeDisplaySettings();
@@ -96,18 +100,18 @@ namespace MarsUndiscovered
 
             var gameOptions = _gameOptionsStore.GetFromStore<VideoOptionsData>()?.State;
 
-            var displayDimensions = new DisplayDimensions(
+            var displayDimensions = new DisplayDimension(
                 CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Width,
                 CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Height,
                 0);
 
-            if (gameOptions != null && gameOptions.SelectedDisplayDimensions != null)
+            if (gameOptions?.SelectedDisplayDimension != null)
             {
                 var displayModes = CustomGraphicsDeviceManager.GetSupportedDisplayModes();
 
-                if (displayModes.Any(dm => Equals(dm, gameOptions.SelectedDisplayDimensions)))
+                if (displayModes.Any(dm => Equals(dm, gameOptions.SelectedDisplayDimension)))
                 {
-                    displayDimensions = gameOptions.SelectedDisplayDimensions;
+                    displayDimensions = gameOptions.SelectedDisplayDimension;
                     isFullScreen = gameOptions.IsFullScreen;
                     isVerticalSync = gameOptions.IsVerticalSync;
                     isBorderlessWindowed = gameOptions.IsBorderlessWindowed;

@@ -6,11 +6,11 @@ namespace MarsUndiscovered.Messages
 {
     public class SetDisplayModeRequest : IRequest
     {
-        public DisplayDimensions DisplayDimensions { get; }
+        public DisplayDimension DisplayDimension { get; }
 
-        public SetDisplayModeRequest(DisplayDimensions displayDimensions)
+        public SetDisplayModeRequest(DisplayDimension displayDimension)
         {
-            DisplayDimensions = displayDimensions;
+            DisplayDimension = displayDimension;
         }
     }
 }
