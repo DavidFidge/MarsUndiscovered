@@ -9,15 +9,9 @@ namespace MarsUndiscovered.UserInterface.Input
 {
     public class GameViewMouseHandler : BaseMouseHandler
     {
-        private readonly IGameProvider _gameProvider;
         private MouseState? _mouseStateBeforeRotation;
         private int _halvedWindowX;
         private int _halvedWindowY;
-
-        public GameViewMouseHandler(IGameProvider gameProvider)
-        {
-            _gameProvider = gameProvider;
-        }
 
         public override void HandleRightMouseDragging(MouseState mouseState, MouseState originalMouseState)
         {
@@ -25,8 +19,8 @@ namespace MarsUndiscovered.UserInterface.Input
             {
                 _mouseStateBeforeRotation = originalMouseState;
 
-                _halvedWindowX = _gameProvider.Game.Window.ClientBounds.Width / 2;
-                _halvedWindowY = _gameProvider.Game.Window.ClientBounds.Height / 2;
+                _halvedWindowX = Game.Window.ClientBounds.Width / 2;
+                _halvedWindowY = Game.Window.ClientBounds.Height / 2;
             }
             else
             {

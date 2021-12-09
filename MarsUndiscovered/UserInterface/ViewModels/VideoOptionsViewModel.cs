@@ -23,7 +23,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     {
         private readonly IGameOptionsStore _gameOptionsStore;
         private readonly IUserInterface _userInterface;
-        public IGameProvider GameProvider { get; set; }
 
         public VideoOptionsViewModel(
             IGameOptionsStore gameOptionsStore,
@@ -37,7 +36,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             Data = _gameOptionsStore.GetFromStore<VideoOptionsData>()?.State ?? new VideoOptionsData();
 
-            Data.DisplayDimensions = GameProvider.Game
+            Data.DisplayDimensions = Game
                 .CustomGraphicsDeviceManager
                 .GetSupportedDisplayModes()
                 .OrderBy(dm => dm.Height)
@@ -50,8 +49,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 Data.IsBorderlessWindowed = true;
 
                 Data.SelectedDisplayDimension = Data.DisplayDimensions
-                    .Where(dm => dm.Width == GameProvider.Game.CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Width)
-                    .Where(dm => dm.Height == GameProvider.Game.CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Height)
+                    .Where(dm => dm.Width == Game.CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Width)
+                    .Where(dm => dm.Height == Game.CustomGraphicsDeviceManager.GraphicsDevice.Adapter.CurrentDisplayMode.Height)
                     .FirstOrDefault();
             }
 

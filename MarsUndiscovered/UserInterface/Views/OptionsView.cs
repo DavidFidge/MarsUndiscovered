@@ -12,8 +12,6 @@ using GeonBit.UI.Entities;
 
 using MediatR;
 
-using Microsoft.Xna.Framework;
-
 namespace MarsUndiscovered.UserInterface.Views
 {
     public class OptionsView : BaseView<OptionsViewModel, OptionsData>,
@@ -33,18 +31,11 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            _optionsMenuPanel = new Panel(new Vector2(500, 400));
+            _optionsMenuPanel = new Panel();
+            _optionsMenuPanel.AdjustHeightAutomatically = true;
+            _optionsMenuPanel.Opacity = 200;
 
             RootPanel.AddChild(_optionsMenuPanel);
-
-            var headingLabel = new Label(Data.Heading, Anchor.AutoCenter)
-                .H4Heading();
-
-            _optionsMenuPanel.AddChild(headingLabel);
-
-            var line = new HorizontalLine(Anchor.AutoCenter);
-
-            _optionsMenuPanel.AddChild(line);
 
             SetupVideoOptionsItem();
 
@@ -71,6 +62,7 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(OpenVideoOptionsRequest request, CancellationToken cancellationToken)
         {
             _videoOptionsView.Show();
+            _optionsMenuPanel.Visible = false;
 
             return Unit.Task;
         }
@@ -78,6 +70,7 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(CloseVideoOptionsRequest request, CancellationToken cancellationToken)
         {
             _videoOptionsView.Hide();
+            _optionsMenuPanel.Visible = true;
 
             return Unit.Task;
         }

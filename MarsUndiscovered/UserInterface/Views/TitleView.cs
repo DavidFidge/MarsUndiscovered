@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using MarsUndiscovered.Messages;
@@ -35,17 +36,13 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            _titleMenuPanel = new Panel(new Vector2(500, 350f));
+            _titleMenuPanel = new Panel();
+            _titleMenuPanel.AdjustHeightAutomatically = true;
+            _titleMenuPanel.Anchor = Anchor.BottomRight;
+            _titleMenuPanel.Offset = new Vector2(100f, 100f);
+            _titleMenuPanel.Opacity = 200;
+
             RootPanel.AddChild(_titleMenuPanel);
-
-            var headingLabel = new Label(Data.Heading, Anchor.AutoCenter)
-                .H4Heading();
-
-            _titleMenuPanel.AddChild(headingLabel);
-
-            var line = new HorizontalLine(Anchor.AutoCenter);
-
-            _titleMenuPanel.AddChild(line);
 
             new Button("New Game")
                 .SendOnClick<NewGameRequest>(Mediator)
@@ -72,6 +69,7 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(OptionsButtonClickedRequest request, CancellationToken cancellationToken)
         {
             _optionsView.Show();
+            _titleMenuPanel.Visible = false;
 
             return Unit.Task;
         }
@@ -79,6 +77,7 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(CloseOptionsViewRequest request, CancellationToken cancellationToken)
         {
             _optionsView.Hide();
+            _titleMenuPanel.Visible = true;
 
             return Unit.Task;
         }
