@@ -2,6 +2,5 @@
 {
     public class TitleData
     {
-        public string Heading => "Menu";
     }
 }

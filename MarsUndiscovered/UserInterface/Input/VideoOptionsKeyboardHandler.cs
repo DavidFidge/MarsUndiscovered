@@ -15,7 +15,7 @@ namespace MarsUndiscovered.UserInterface.Input
             if (ActionMap.ActionIs<CloseVideoOptionsRequest>(keyInFocus, keyboardModifier))
             {
                 Mediator.Send(new SaveVideoOptionsRequest());
-                Mediator.Send(new CloseOptionsViewRequest());
+                Mediator.Send(new CloseVideoOptionsRequest());
             }
         }
     }

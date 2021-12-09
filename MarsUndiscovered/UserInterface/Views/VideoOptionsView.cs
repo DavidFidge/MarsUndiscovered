@@ -6,7 +6,6 @@ using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Services;
 using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.MonoGame.Core.View;
-using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
 
@@ -24,37 +23,14 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            var containerPanel = new Panel(new Vector2(0, 0), PanelSkin.None)
-            {
-                Padding = new Vector2(20f, 20f)
-            };
+            var videoOptionsPanel = new Panel();
+            videoOptionsPanel.AdjustHeightAutomatically = true;
+            videoOptionsPanel.Opacity = 200;
 
-            RootPanel.AddChild(containerPanel);
+            RootPanel.AddChild(videoOptionsPanel);
 
-            var videoOptionsPanel = new Panel(new Vector2(0, 0))
-            {
-                Padding = new Vector2(30f, 30f)
-            };
-
-            containerPanel.AddChild(videoOptionsPanel);
-
-            var headingLabel = new Label(Data.Heading, Anchor.AutoCenter)
-                .H3Heading();
-
-            var line = new HorizontalLine(Anchor.AutoCenter);
-
-            var contentPanel = new Panel(new Vector2(1200f, 0.5f), PanelSkin.None, Anchor.AutoCenter);
-            contentPanel.Padding = new Vector2(0, 0);
-
-            var buttonPanel = new Panel(new Vector2(500f, 100f), PanelSkin.None, Anchor.BottomCenter);
-
-            videoOptionsPanel.AddChild(headingLabel);
-            videoOptionsPanel.AddChild(line);
-            videoOptionsPanel.AddChild(contentPanel);
-            videoOptionsPanel.AddChild(buttonPanel);
-
-            AddContentPanelContent(contentPanel);
-            AddButtonPanelContent(buttonPanel);
+            AddContentPanelContent(videoOptionsPanel);
+            AddButtonPanelContent(videoOptionsPanel);
         }
 
         private void AddButtonPanelContent(Panel buttonPanel)
@@ -73,29 +49,15 @@ namespace MarsUndiscovered.UserInterface.Views
 
         private void AddContentPanelContent(Panel contentPanel)
         {
-            var leftPanel = new Panel(new Vector2(600f, 1f), PanelSkin.None, Anchor.AutoInline);
+            var displayModesLabel = new Label(LabelFor(() => Data.DisplayDimensions));
+            var displayModesDropDown = new DropDown<DisplayDimension>(Data.DisplayDimensions);
+            displayModesDropDown.SelectedIndex = Data.DisplayDimensions.IndexOf(Data.SelectedDisplayDimension);
+            displayModesDropDown.AutoSetListHeight = true;
 
-            var rightPanel = new Panel(new Vector2(600f, 1f), PanelSkin.None, Anchor.AutoInline);
-
-            contentPanel.AddChild(leftPanel);
-            contentPanel.AddChild(rightPanel);
-
-            AddLeftPanelContent(leftPanel);
-        }
-
-        private void AddLeftPanelContent(Panel leftPanel)
-        {
-            var displayModesLabel = new Label(LabelFor(() => Data.DisplayModes))
-                .H4Heading();
-
-            leftPanel.AddChild(displayModesLabel);
-
-            var displayModesSelectList = new SelectList<DisplayDimensions>(
-                Data.DisplayModes,
-                new Vector2(500, 500)
-            );
-
-            displayModesSelectList.SelectedIndex = Data.DisplayModes.IndexOf(Data.SelectedDisplayDimensions);
+            var renderResolutionLabel = new Label(LabelFor(() => Data.RenderResolutions));
+            var renderResolutionDropDown = new DropDown<RenderResolution>(Data.RenderResolutions);
+            renderResolutionDropDown.SelectedIndex = Data.RenderResolutions.IndexOf(Data.SelectedRenderResolution);
+            renderResolutionDropDown.AutoSetListHeight = true;
 
             var isBorderlessWindowedCheckBox = new CheckBox("Borderless Windowed", offset: new Vector2(Constants.UiIndentLevel1, 0f))
             {
@@ -120,9 +82,12 @@ namespace MarsUndiscovered.UserInterface.Views
                 }
             };
 
-            leftPanel.AddChild(displayModesSelectList);
-            leftPanel.AddChild(fullScreenCheckbox);
-            leftPanel.AddChild(isBorderlessWindowedCheckBox);
+            contentPanel.AddChild(displayModesLabel);
+            contentPanel.AddChild(displayModesDropDown);
+            contentPanel.AddChild(renderResolutionLabel);
+            contentPanel.AddChild(renderResolutionDropDown);
+            contentPanel.AddChild(fullScreenCheckbox);
+            contentPanel.AddChild(isBorderlessWindowedCheckBox);
 
             var verticalSyncCheckbox = new CheckBox("Vertical Sync")
             {
@@ -131,12 +96,21 @@ namespace MarsUndiscovered.UserInterface.Views
                     Mediator.Send(new InterfaceRequest<VideoOptionsData>(Data.GetPropertyInfo(nameof(Data.IsVerticalSync)), ((CheckBox)entity).Checked))
             };
 
-            leftPanel.AddChild(verticalSyncCheckbox);
+            contentPanel.AddChild(verticalSyncCheckbox);
 
-            displayModesSelectList.OnValueChange = entity =>
+            displayModesDropDown.OnValueChange = entity =>
             {
                 var request = new SetDisplayModeRequest(
-                    ((SelectList<DisplayDimensions>)entity).SelectedValueTyped
+                    ((DropDown<DisplayDimension>)entity).SelectedValueTyped
+                );
+
+                Mediator.Send(request);
+            };
+
+            renderResolutionDropDown.OnValueChange = entity =>
+            {
+                var request = new SetRenderResolutionRequest(
+                    ((DropDown<RenderResolution>)entity).SelectedValueTyped
                 );
 
                 Mediator.Send(request);

@@ -1,12 +1,14 @@
 ﻿using MarsUndiscovered.Interfaces;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MarsUndiscovered.Graphics
 {
     public class Assets : IAssets
     {
         private readonly IGameProvider _gameProvider;
+        public Texture2D TitleTexture { get; set; }
 
         public Assets(IGameProvider gameProvider)
         {
@@ -15,6 +17,7 @@ namespace MarsUndiscovered.Graphics
 
         public void LoadContent()
         {
+            TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/title");
         }
     }
 }
