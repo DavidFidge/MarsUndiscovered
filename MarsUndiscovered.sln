@@ -15,6 +15,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeonBit.UI", "..\GeonBit.UI
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeonBit.UI.DataTypes", "..\GeonBit.UI\GeonBit.UI\Libs\DataTypes\GeonBit.UI.DataTypes.csproj", "{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarsUndiscovered.Tests", "MarsUndiscovered.Tests\MarsUndiscovered.Tests.csproj", "{1F47B8DE-A296-46E6-A5B2-1B9AE8B699BD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrigidRogue.TestInfrastructure", "..\FrigidRogue\FrigidRogue.TestInfrastructure\FrigidRogue.TestInfrastructure.csproj", "{B7E23A72-004C-44E2-BC5D-91F5F4A42C95}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrigidRogue.MonoGame.Core.Tests", "..\FrigidRogue\FrigidRogue.MonoGame.Core.Tests\FrigidRogue.MonoGame.Core.Tests.csproj", "{7A4589FE-6525-4A80-AB65-A30FD0AB8558}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrigidRogue.MonoGame.Core.View.Tests", "..\FrigidRogue\FrigidRogue.MonoGame.Core.View.Tests\FrigidRogue.MonoGame.Core.View.Tests.csproj", "{45752F2D-0706-4D9E-B5D0-792572CDAC87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +53,22 @@ Global
 		{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F47B8DE-A296-46E6-A5B2-1B9AE8B699BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F47B8DE-A296-46E6-A5B2-1B9AE8B699BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F47B8DE-A296-46E6-A5B2-1B9AE8B699BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F47B8DE-A296-46E6-A5B2-1B9AE8B699BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7E23A72-004C-44E2-BC5D-91F5F4A42C95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7E23A72-004C-44E2-BC5D-91F5F4A42C95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7E23A72-004C-44E2-BC5D-91F5F4A42C95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7E23A72-004C-44E2-BC5D-91F5F4A42C95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A4589FE-6525-4A80-AB65-A30FD0AB8558}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A4589FE-6525-4A80-AB65-A30FD0AB8558}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A4589FE-6525-4A80-AB65-A30FD0AB8558}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A4589FE-6525-4A80-AB65-A30FD0AB8558}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45752F2D-0706-4D9E-B5D0-792572CDAC87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45752F2D-0706-4D9E-B5D0-792572CDAC87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45752F2D-0706-4D9E-B5D0-792572CDAC87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45752F2D-0706-4D9E-B5D0-792572CDAC87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

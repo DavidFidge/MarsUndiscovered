@@ -13,7 +13,7 @@ using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.TestInfrastructure;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using NGenerics.Extensions;
 using NSubstitute;
 
 namespace MarsUndiscovered.Tests.ViewModels

@@ -13,4 +13,9 @@
     <PackageReference Include="coverlet.collector" Version="3.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\FrigidRogue\FrigidRogue.TestInfrastructure\FrigidRogue.TestInfrastructure.csproj" />
+    <ProjectReference Include="..\MarsUndiscovered\MarsUndiscovered.csproj" />
+  </ItemGroup>
+
 </Project>
