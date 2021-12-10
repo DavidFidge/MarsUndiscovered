@@ -19,7 +19,7 @@ namespace MarsUndiscovered.UserInterface.Screens
 
         public Task<Unit> Handle(QuitToTitleRequest request, CancellationToken cancellationToken)
         {
-            UserInterface.SetActive(this);
+            UserInterface.ShowScreen(this);
 
             return Unit.Task;
         }

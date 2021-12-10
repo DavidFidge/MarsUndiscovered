@@ -22,6 +22,8 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<OpenConsoleRequest>,
         IRequestHandler<CloseConsoleRequest>
     {
+        public bool IsMouseInGameView => RootPanel?.IsMouseInRootPanelEmptySpace ?? true;
+
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
 
@@ -77,8 +79,6 @@ namespace MarsUndiscovered.UserInterface.Views
             _inGameOptionsView.Hide();
             return Unit.Task;
         }
-
-        public bool IsMouseInGameView => RootPanel != null && RootPanel.IsMouseInRootPanelEmptySpace;
 
         public Task<Unit> Handle(OpenConsoleRequest request, CancellationToken cancellationToken)
         {

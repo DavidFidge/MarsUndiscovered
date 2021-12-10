@@ -18,7 +18,7 @@ namespace MarsUndiscovered.UserInterface.Screens
 
         public Task<Unit> Handle(NewGameRequest request, CancellationToken cancellationToken)
         {
-            UserInterface.SetActive(this);
+            UserInterface.ShowScreen(this);
 
             return Unit.Task;
         }

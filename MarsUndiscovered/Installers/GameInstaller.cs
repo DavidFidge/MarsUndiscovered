@@ -66,8 +66,8 @@ namespace MarsUndiscovered.Installers
                     .LifestyleTransient()
                     .WithServiceDefaultInterfaces(),
 
-                Component.For<IMarsUndiscoveredGameWorld>()
-                    .ImplementedBy<MarsUndiscoveredGameWorld>(),
+                Component.For<IGameWorld>()
+                    .ImplementedBy<GameWorld>(),
 
                 Component.For<IActionMapStore>()
                     .ImplementedBy<DefaultActionMapStore>()
