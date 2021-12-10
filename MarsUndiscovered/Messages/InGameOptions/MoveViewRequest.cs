@@ -4,11 +4,11 @@ using MediatR;
 
 namespace MarsUndiscovered.Messages
 {
-    public class Move3DViewRequest : IRequest
+    public class MoveViewRequest : IRequest
     {
         public CameraMovement CameraMovementFlags { get; }
 
-        public Move3DViewRequest(CameraMovement cameraMovementFlags)
+        public MoveViewRequest(CameraMovement cameraMovementFlags)
         {
             CameraMovementFlags = cameraMovementFlags;
         }

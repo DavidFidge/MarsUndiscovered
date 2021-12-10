@@ -2,11 +2,11 @@
 
 namespace MarsUndiscovered.Messages
 {
-    public class Zoom3DViewRequest : IRequest
+    public class ZoomViewRequest : IRequest
     {
         public int Difference { get; }
 
-        public Zoom3DViewRequest(int difference)
+        public ZoomViewRequest(int difference)
         {
             Difference = difference;
         }

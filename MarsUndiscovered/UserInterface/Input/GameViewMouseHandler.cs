@@ -27,7 +27,7 @@ namespace MarsUndiscovered.UserInterface.Input
                 var xDisplacement = mouseState.X - _halvedWindowX;
                 var yDisplacement = mouseState.Y - _halvedWindowY;
 
-                Mediator.Send(new Rotate3DViewRequest(-xDisplacement / 100f, yDisplacement / 100f));
+                Mediator.Send(new RotateViewRequest(-xDisplacement / 100f, yDisplacement / 100f));
             }
 
             Mouse.SetPosition(_halvedWindowX, _halvedWindowY);
@@ -46,30 +46,30 @@ namespace MarsUndiscovered.UserInterface.Input
 
         public override void HandleMouseScrollWheelMove(MouseState mouseState, int difference)
         {
-            Mediator.Send(new Zoom3DViewRequest(difference));
+            Mediator.Send(new ZoomViewRequest(difference));
         }
 
         public override void HandleLeftMouseClick(MouseState mouseState, MouseState origin)
         {
-            Mediator.Send(new Select3DViewRequest(mouseState.X,
+            Mediator.Send(new LeftClickViewRequest(mouseState.X,
                 mouseState.Y));
         }
 
         public override void HandleLeftMouseDoubleClick(MouseState mouseState, MouseState origin)
         {
-            Mediator.Send(new Select3DViewRequest(mouseState.X,
+            Mediator.Send(new LeftClickViewRequest(mouseState.X,
                 mouseState.Y));
         }
 
         public override void HandleRightMouseClick(MouseState mouseState, MouseState origin)
         {
-            Mediator.Send(new Action3DViewRequest(mouseState.X,
+            Mediator.Send(new RightClickViewRequest(mouseState.X,
                 mouseState.Y));
         }
 
         public override void HandleRightMouseDoubleClick(MouseState mouseState, MouseState origin)
         {
-            Mediator.Send(new Action3DViewRequest(mouseState.X,
+            Mediator.Send(new RightClickViewRequest(mouseState.X,
                 mouseState.Y));
         }
     }

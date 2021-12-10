@@ -40,7 +40,7 @@ namespace MarsUndiscovered.UserInterface.Input.CameraMovementSpace
                 cameraMovementFlags |= CameraMovement.RotateDown;
 
             if (cameraMovementFlags != CameraMovement.None)
-                Mediator.Send(new Move3DViewRequest(cameraMovementFlags));
+                Mediator.Send(new MoveViewRequest(cameraMovementFlags));
 
             if (keysDown.Contains(Keys.OemOpenBrackets) || keysDown.Contains(Keys.OemCloseBrackets))
             {
@@ -51,7 +51,7 @@ namespace MarsUndiscovered.UserInterface.Input.CameraMovementSpace
                 else if (keysDown.Contains(Keys.OemCloseBrackets))
                     zoomMagnitude -= 100;
 
-                Mediator.Send(new Zoom3DViewRequest(zoomMagnitude));
+                Mediator.Send(new ZoomViewRequest(zoomMagnitude));
             }
         }
     }

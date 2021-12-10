@@ -78,7 +78,7 @@ namespace MarsUndiscovered.UserInterface.Views
             return Unit.Task;
         }
 
-        public bool IsMouseIn3DView => RootPanel != null && RootPanel.IsMouseInRootPanelEmptySpace;
+        public bool IsMouseInGameView => RootPanel != null && RootPanel.IsMouseInRootPanelEmptySpace;
 
         public Task<Unit> Handle(OpenConsoleRequest request, CancellationToken cancellationToken)
         {
