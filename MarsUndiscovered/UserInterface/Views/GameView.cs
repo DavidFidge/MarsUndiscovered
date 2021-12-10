@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class GameView : BaseView<GameViewModel, GameData>,
+    public class GameView : BaseMarsUndiscoveredView<GameViewModel, GameData>,
         IRequestHandler<OpenInGameOptionsRequest>,
         IRequestHandler<CloseInGameOptionsRequest>,
         IRequestHandler<OpenConsoleRequest>,

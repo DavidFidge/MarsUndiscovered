@@ -4,15 +4,13 @@ using System.Text;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
-using FrigidRogue.MonoGame.Core.View;
-
 using GeonBit.UI.Entities;
 
 using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class ConsoleView : BaseView<ConsoleViewModel, ConsoleData>
+    public class ConsoleView : BaseMarsUndiscoveredView<ConsoleViewModel, ConsoleData>
     {
         private TextInput _consoleEntry;
         private Paragraph _consoleHistory;
@@ -84,7 +82,7 @@ namespace MarsUndiscovered.UserInterface.Views
             FocusConsoleEntry();
         }
 
-        protected override void UpdateView()
+        protected override void ViewModelChanged()
         {
             _consoleEntry.Value = Data.Command;
 
@@ -100,7 +98,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             _consoleHistory.Text = stringBuilder.ToString();
 
-            base.UpdateView();
+            base.ViewModelChanged();
         }
     }
 }

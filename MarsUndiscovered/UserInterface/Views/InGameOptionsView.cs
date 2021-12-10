@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class InGameOptionsView : BaseView<InGameOptionsViewModel, InGameOptionsData>
+    public class InGameOptionsView : BaseMarsUndiscoveredView<InGameOptionsViewModel, InGameOptionsData>
     {
         private Panel _inGameOptionsMenuPanel;
 
@@ -37,7 +37,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _inGameOptionsMenuPanel.AddChild(line);
 
             new Button("Exit Game")
-                .SendOnClick<CloseInGameOptionsRequest, ExitCurrentGameRequest>(Mediator)
+                .SendOnClick<CloseInGameOptionsRequest, QuitToTitleRequest>(Mediator)
                 .AddTo(_inGameOptionsMenuPanel);
 
             new Button("Back to Game")

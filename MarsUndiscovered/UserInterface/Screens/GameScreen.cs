@@ -1,45 +1,33 @@
-﻿using MarsUndiscovered.Interfaces;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using MarsUndiscovered.UserInterface.Views;
 
-using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.View;
+using MarsUndiscovered.Messages;
+using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Screens
 {
-    public class GameScreen : Screen
+    public class GameScreen : Screen,
+        IRequestHandler<NewGameRequest>,
+        IRequestHandler<EndCurrentGameRequest>
     {
-        private readonly IGameTimeService _gameTimeService;
-        private IMarsUndiscoveredGameWorld _marsUndiscoveredGameWorld;
-
-        public GameScreen(
-            IMarsUndiscoveredGameWorld marsUndiscoveredGameWorld,
-            GameView gameView,
-            IGameTimeService gameTimeService
-            ) : base(gameView)
+        public GameScreen(GameView gameView) : base(gameView)
         {
-            _marsUndiscoveredGameWorld = marsUndiscoveredGameWorld;
-            _gameTimeService = gameTimeService;
         }
 
-        public void EndGame()
+        public Task<Unit> Handle(NewGameRequest request, CancellationToken cancellationToken)
         {
-            _gameTimeService.Stop();
+            UserInterface.SetActive(this);
+
+            return Unit.Task;
         }
 
-        public void StartNewGame()
+        public Task<Unit> Handle(EndCurrentGameRequest request, CancellationToken cancellationToken)
         {
-            _marsUndiscoveredGameWorld.StartNewGame();
-            _gameTimeService.Start();
-        }
+            Mediator.Send(new QuitToTitleRequest());
 
-        public override void Update()
-        {
-            _marsUndiscoveredGameWorld.Update();
-        }
-
-        public override void Draw()
-        {
-            base.Draw();
+            return Unit.Task;
         }
     }
 }

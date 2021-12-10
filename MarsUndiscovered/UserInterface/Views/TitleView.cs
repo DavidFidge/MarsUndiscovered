@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-
+using FrigidRogue.MonoGame.Core.Extensions;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
@@ -11,20 +11,23 @@ using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
-
+using MarsUndiscovered.Interfaces;
 using MediatR;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class TitleView : BaseView<TitleViewModel, TitleData>,
+    public class TitleView : BaseMarsUndiscoveredView<TitleViewModel, TitleData>,
         IRequestHandler<OptionsButtonClickedRequest>,
         IRequestHandler<CloseOptionsViewRequest>
     {
         private readonly OptionsView _optionsView;
 
         private Panel _titleMenuPanel;
+
+        private SpriteBatch _spriteBatch;
 
         public TitleView(
             TitleViewModel titleViewModel,
@@ -53,6 +56,8 @@ namespace MarsUndiscovered.UserInterface.Views
             new Button("Exit")
                 .SendOnClick<ExitGameRequest>(Mediator)
                 .AddTo(_titleMenuPanel);
+
+            _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
         }
 
         private void SetupOptionsItem()
@@ -80,6 +85,13 @@ namespace MarsUndiscovered.UserInterface.Views
             _titleMenuPanel.Visible = true;
 
             return Unit.Task;
+        }
+
+        public override void Draw()
+        {
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            _spriteBatch.Draw(Assets.TitleTexture, Game.GraphicsDevice.ViewportRectangle(), Color.White);
+            _spriteBatch.End();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MarsUndiscovered.Messages
 {
-    public class ExitCurrentGameRequest : IRequest
+    public class QuitToTitleRequest : IRequest
     {
     }
 }

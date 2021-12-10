@@ -14,7 +14,7 @@ using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class OptionsView : BaseView<OptionsViewModel, OptionsData>,
+    public class OptionsView : BaseMarsUndiscoveredView<OptionsViewModel, OptionsData>,
         IRequestHandler<OpenVideoOptionsRequest>,
         IRequestHandler<CloseVideoOptionsRequest>
     {

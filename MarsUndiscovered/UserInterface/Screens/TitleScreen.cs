@@ -1,35 +1,27 @@
-﻿using FrigidRogue.MonoGame.Core.View;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
-using MarsUndiscovered.Interfaces;
+using FrigidRogue.MonoGame.Core.View;
+
+using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Views;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Screens
 {
-    public class TitleScreen : Screen
+    public class TitleScreen : Screen,
+        IRequestHandler<QuitToTitleRequest>
     {
-        public IAssets Assets { get; set; }
-
-        private SpriteBatch _spriteBatch;
-
         public TitleScreen(TitleView titleView) : base(titleView)
         {
         }
 
-        protected override void InitializeInternal()
+        public Task<Unit> Handle(QuitToTitleRequest request, CancellationToken cancellationToken)
         {
-            _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
-        }
+            UserInterface.SetActive(this);
 
-        public override void Draw()
-        {
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            _spriteBatch.Draw(Assets.TitleTexture, new Rectangle(0, 0, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height), Color.White);
-            _spriteBatch.End();
-
-            base.Draw();
+            return Unit.Task;
         }
     }
 }

@@ -99,7 +99,7 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Assert
             _consoleViewModel.Mediator
                 .Received()
-                .Send(Arg.Any<UpdateViewRequest<ConsoleData>>());
+                .Send(Arg.Any<NotifyViewModelChangedRequest<ConsoleData>>());
         }
 
         [TestMethod]
@@ -135,7 +135,7 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Assert
             _consoleViewModel.Mediator
                 .Received()
-                .Send(Arg.Any<UpdateViewRequest<ConsoleData>>());
+                .Send(Arg.Any<NotifyViewModelChangedRequest<ConsoleData>>());
         }
 
         [TestMethod]
@@ -151,7 +151,7 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Assert
             _consoleViewModel.Mediator
                 .DidNotReceive()
-                .Send(Arg.Any<UpdateViewRequest<ConsoleData>>());
+                .Send(Arg.Any<NotifyViewModelChangedRequest<ConsoleData>>());
 
             Assert.IsTrue(_consoleViewModel.Data.LastCommands.IsEmpty());
         }
