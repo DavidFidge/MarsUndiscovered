@@ -1,11 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Extensions;
+using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
-using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
@@ -21,29 +21,36 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<OpenInGameOptionsRequest>,
         IRequestHandler<CloseInGameOptionsRequest>,
         IRequestHandler<OpenConsoleRequest>,
-        IRequestHandler<CloseConsoleRequest>
+        IRequestHandler<CloseConsoleRequest>,
+        IRequestHandler<LeftClickViewRequest>,
+        IRequestHandler<RightClickViewRequest>
     {
         public bool IsMouseInGameView => RootPanel?.IsMouseInRootPanelEmptySpace ?? true;
 
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
+        private readonly IGameCamera _gameCamera;
         private SpriteBatch _spriteBatch;
 
         public GameView(
             GameViewModel gameViewModel,
             InGameOptionsView inGameOptionsView,
-            ConsoleView consoleView
+            ConsoleView consoleView,
+            IGameCamera gameCamera
         )
             : base(gameViewModel)
         {
             _inGameOptionsView = inGameOptionsView;
             _consoleView = consoleView;
+            _gameCamera = gameCamera;
         }
 
         protected override void InitializeInternal()
         {
             SetupInGameOptions();
             SetupConsole();
+
+            _gameCamera.Initialise();
 
             _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
         }
@@ -102,7 +109,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
             var wallString = "#";
-            var floorString = "ˑ";
+            var floorString = "·";
 
             for (var x = 0; x < Data.WallsFloors.Width; x++)
             {
@@ -117,6 +124,22 @@ namespace MarsUndiscovered.UserInterface.Views
             _spriteBatch.End();
 
             base.Draw();
+        }
+
+        public override void Update()
+        {
+            _gameCamera.Update();
+            base.Update();
+        }
+
+        public Task<Unit> Handle(LeftClickViewRequest request, CancellationToken cancellationToken)
+        {
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(RightClickViewRequest request, CancellationToken cancellationToken)
+        {
+            return Unit.Task;
         }
     }
 }

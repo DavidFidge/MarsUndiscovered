@@ -1,6 +1,7 @@
 ﻿using MarsUndiscovered.Messages;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
 
 using Microsoft.Xna.Framework.Input;

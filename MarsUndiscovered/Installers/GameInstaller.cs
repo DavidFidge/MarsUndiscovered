@@ -20,7 +20,6 @@ using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
 using FrigidRogue.MonoGame.Core.UserInterface;
-using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Installers;
 using FrigidRogue.MonoGame.Core.View.Interfaces;
 using InputHandlers.Keyboard;
@@ -63,7 +62,6 @@ namespace MarsUndiscovered.Installers
                 
                 Classes.FromAssemblyContaining<IGameCamera>()
                     .BasedOn<IGameCamera>()
-                    .LifestyleTransient()
                     .WithServiceDefaultInterfaces(),
 
                 Component.For<IGameWorld>()
@@ -90,7 +88,7 @@ namespace MarsUndiscovered.Installers
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IKeyboardHandler>()
                     .ConfigureFor<NullKeyboardHandler>(c => c.IsDefault())
-                    .ConfigureFor<GameViewKeyboardHandler>(c => c.DependsOn(Dependency.OnComponent<ICameraMovement, StrategyCameraMovement>()))
+                    .ConfigureFor<GameViewKeyboardHandler>(c => c.DependsOn(Dependency.OnComponent<ICameraMovement, CameraMovement>()))
                     .WithServiceDefaultInterfaces()
             );
         }
@@ -137,7 +135,7 @@ namespace MarsUndiscovered.Installers
                 Component.For<GameViewModel>(),
 
                 Component.For<ICameraMovement>()
-                    .ImplementedBy<StrategyCameraMovement>()
+                    .ImplementedBy<CameraMovement>()
             );
         }
 

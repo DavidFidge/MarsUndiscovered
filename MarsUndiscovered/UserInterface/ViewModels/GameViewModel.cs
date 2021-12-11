@@ -1,18 +1,23 @@
 ﻿using MarsUndiscovered.UserInterface.Data;
 
 using FrigidRogue.MonoGame.Core.UserInterface;
+
 using MarsUndiscovered.Interfaces;
+
 using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class GameViewModel : BaseViewModel<GameData>
     {
-        public GameViewModel(IGameWorld gameWorld)
+        public IGameWorld GameWorld { get; set; }
+
+        public override void Initialize()
         {
-            gameWorld.Generate();
-            Data = new GameData();
-            Data.WallsFloors = (ArrayView<bool>)gameWorld.WallsFloors.Clone();
+            base.Initialize();
+
+            GameWorld.Generate();
+            Data.WallsFloors = (ArrayView<bool>)GameWorld.WallsFloors.Clone();
         }
     }
 }
