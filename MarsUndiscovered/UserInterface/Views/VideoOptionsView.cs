@@ -13,8 +13,8 @@ using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class VideoOptionsView : 
-        BaseView<VideoOptionsViewModel, VideoOptionsData>
+    public class VideoOptionsView :
+        BaseMarsUndiscoveredView<VideoOptionsViewModel, VideoOptionsData>
     {
         public VideoOptionsView(VideoOptionsViewModel videoOptionsViewModel)
             : base(videoOptionsViewModel)

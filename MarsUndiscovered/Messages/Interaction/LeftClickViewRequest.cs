@@ -2,9 +2,9 @@
 
 namespace MarsUndiscovered.Messages
 {
-    public class Action3DViewRequest : IRequest
+    public class LeftClickViewRequest : IRequest
     {
-        public Action3DViewRequest(int x, int y)
+        public LeftClickViewRequest(int x, int y)
         {
             X = x;
             Y = y;

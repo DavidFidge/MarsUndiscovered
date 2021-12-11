@@ -10,7 +10,9 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.Services;
+using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Interfaces;
+using MarsUndiscovered.Components;
 using MediatR;
 
 using Microsoft.Xna.Framework;
@@ -28,8 +30,8 @@ namespace MarsUndiscovered
         private readonly IGameInputService _gameInputService;
         private readonly IUserInterface _userInterface;
         private readonly IGameOptionsStore _gameOptionsStore;
-        private readonly IScreenManager _screenManager;
         private readonly IAssets _assets;
+        private readonly ScreenCollection _screenCollection;
 
         private bool _isExiting;
 
@@ -45,8 +47,8 @@ namespace MarsUndiscovered
             IGameInputService gameInputService,
             IUserInterface userInterface,
             IGameOptionsStore gameOptionsStore,
-            IScreenManager screenManager,
-            IAssets assets
+            IAssets assets,
+            ScreenCollection screenCollection
             )
         {
             _logger = logger;
@@ -61,8 +63,8 @@ namespace MarsUndiscovered
             CustomGraphicsDeviceManager = new CustomGraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            _screenManager = screenManager;
             _assets = assets;
+            _screenCollection = screenCollection;
 
             EffectCollection = new EffectCollection(_gameProvider);
         }
@@ -87,7 +89,9 @@ namespace MarsUndiscovered
 
             InitializeDisplaySettings();
 
-            _screenManager.Initialize();
+            _screenCollection.Initialize();
+
+            _userInterface.ShowScreen(_screenCollection.StartupScreen);
 
             base.Initialize();
         }
@@ -156,10 +160,9 @@ namespace MarsUndiscovered
             if (_isExiting)
                 Exit();
 
-            _userInterface.Update(gameTime);
             _gameTimeService.Update(gameTime);
             _gameInputService.Poll();
-            _screenManager.Update();
+            _userInterface.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -171,17 +174,6 @@ namespace MarsUndiscovered
         protected override void Draw(GameTime gameTime)
         {
             _userInterface.Draw(_spriteBatch);
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // Reset graphics device properties after SpriteBatch drawing
-            // https://blogs.msdn.microsoft.com/shawnhar/2010/06/18/spritebatch-and-renderstates-in-xna-game-studio-4-0/
-            GraphicsDevice.BlendState = BlendState.Opaque;
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
-
-            _screenManager.Draw();
-
-            _userInterface.DrawMainRenderTarget(_spriteBatch);
 
             base.Draw(gameTime);
         }

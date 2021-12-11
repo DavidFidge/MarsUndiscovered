@@ -1,45 +1,72 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
+using FrigidRogue.MonoGame.Core.Graphics.Camera;
+using FrigidRogue.MonoGame.Core.Graphics.Quads;
+using FrigidRogue.MonoGame.Core.View.Extensions;
+
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
-
-using FrigidRogue.MonoGame.Core.View;
-using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
 
 using MediatR;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class GameView : BaseView<GameViewModel, GameData>,
+    public class GameView : BaseMarsUndiscoveredView<GameViewModel, GameData>,
         IRequestHandler<OpenInGameOptionsRequest>,
         IRequestHandler<CloseInGameOptionsRequest>,
         IRequestHandler<OpenConsoleRequest>,
-        IRequestHandler<CloseConsoleRequest>
+        IRequestHandler<CloseConsoleRequest>,
+        IRequestHandler<LeftClickViewRequest>,
+        IRequestHandler<RightClickViewRequest>
     {
+        public bool IsMouseInGameView => RootPanel?.IsMouseInRootPanelEmptySpace ?? true;
+
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
+        private readonly IGameCamera _gameCamera;
+        private SpriteBatch _spriteBatch;
+        private TexturedQuadTemplate _texturedQuadTemplate;
+        private RenderTarget2D _renderTarget;
 
         public GameView(
             GameViewModel gameViewModel,
             InGameOptionsView inGameOptionsView,
-            ConsoleView consoleView
+            ConsoleView consoleView,
+            IGameCamera gameCamera
         )
             : base(gameViewModel)
         {
             _inGameOptionsView = inGameOptionsView;
             _consoleView = consoleView;
+            _gameCamera = gameCamera;
         }
 
         protected override void InitializeInternal()
         {
             SetupInGameOptions();
             SetupConsole();
+
+            _gameCamera.Initialise();
+
+            _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
+            _texturedQuadTemplate = new TexturedQuadTemplate(GameProvider);
+
+            _renderTarget = new RenderTarget2D(Game.GraphicsDevice,
+                1024,
+                1024,
+                false,
+                Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
+                Game.GraphicsDevice.PresentationParameters.DepthStencilFormat, 0,
+                RenderTargetUsage.PreserveContents);
+
+            _texturedQuadTemplate.LoadContent(1024, 1024, _renderTarget);
         }
 
         private void SetupInGameOptions()
@@ -78,8 +105,6 @@ namespace MarsUndiscovered.UserInterface.Views
             return Unit.Task;
         }
 
-        public bool IsMouseIn3DView => RootPanel != null && RootPanel.IsMouseInRootPanelEmptySpace;
-
         public Task<Unit> Handle(OpenConsoleRequest request, CancellationToken cancellationToken)
         {
             _consoleView.Show();
@@ -89,6 +114,51 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(CloseConsoleRequest request, CancellationToken cancellationToken)
         {
             _consoleView.Hide();
+            return Unit.Task;
+        }
+        public override void Draw()
+        {
+            var cellSize = new Point(20, 20);
+
+            Game.GraphicsDevice.SetRenderTarget(_renderTarget);
+
+            _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
+
+            var wallString = "#";
+            var floorString = "·";
+
+            for (var x = 0; x < Data.WallsFloors.Width; x++)
+            {
+                for (var y = 0; y < Data.WallsFloors.Height; y++)
+                {
+                    var xd = Data.WallsFloors[x, y];
+
+                    _spriteBatch.DrawString(Assets.MapFont, xd ? floorString : wallString, new Vector2(x * cellSize.X, y * cellSize.Y), Color.White);
+                }
+            }
+
+            _spriteBatch.End();
+
+            Game.GraphicsDevice.SetRenderTarget(null);
+
+            _texturedQuadTemplate.Draw(_gameCamera.View, _gameCamera.Projection, Matrix.CreateTranslation(0, 0, -500));
+
+            base.Draw();
+        }
+
+        public override void Update()
+        {
+            _gameCamera.Update();
+            base.Update();
+        }
+
+        public Task<Unit> Handle(LeftClickViewRequest request, CancellationToken cancellationToken)
+        {
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(RightClickViewRequest request, CancellationToken cancellationToken)
+        {
             return Unit.Task;
         }
     }

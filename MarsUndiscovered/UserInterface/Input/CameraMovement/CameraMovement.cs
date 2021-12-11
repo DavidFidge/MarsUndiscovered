@@ -1,46 +1,45 @@
 ﻿using System.Linq;
 
-using MarsUndiscovered.Messages;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
+using FrigidRogue.MonoGame.Core.Messages;
 
 using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input.CameraMovementSpace
 {
-    public class StrategyCameraMovement : BaseComponent, ICameraMovement
+    public class CameraMovement : BaseComponent, ICameraMovement
     {
         public void MoveCamera(Keys[] keysDown)
         {
-            var cameraMovementFlags = CameraMovement.None;
+            var cameraMovementFlags = CameraMovementType.None;
 
             if (keysDown.Contains(Keys.A) || keysDown.Contains(Keys.Left))
-                cameraMovementFlags |= CameraMovement.PanLeft;
+                cameraMovementFlags |= CameraMovementType.PanLeft;
 
             if (keysDown.Contains(Keys.D) || keysDown.Contains(Keys.Right))
-                cameraMovementFlags |= CameraMovement.PanRight;
+                cameraMovementFlags |= CameraMovementType.PanRight;
 
             if (keysDown.Contains(Keys.W) || keysDown.Contains(Keys.Up))
-                cameraMovementFlags |= CameraMovement.PanUp;
+                cameraMovementFlags |= CameraMovementType.PanUp;
 
             if (keysDown.Contains(Keys.S) || keysDown.Contains(Keys.Down))
-                cameraMovementFlags |= CameraMovement.PanDown;
+                cameraMovementFlags |= CameraMovementType.PanDown;
 
             if (keysDown.Contains(Keys.Q))
-                cameraMovementFlags |= CameraMovement.RotateLeft;
+                cameraMovementFlags |= CameraMovementType.RotateLeft;
 
             if (keysDown.Contains(Keys.E))
-                cameraMovementFlags |= CameraMovement.RotateRight;
+                cameraMovementFlags |= CameraMovementType.RotateRight;
 
             if (keysDown.Contains(Keys.PageUp) || keysDown.Contains(Keys.R))
-                cameraMovementFlags |= CameraMovement.RotateUp;
+                cameraMovementFlags |= CameraMovementType.RotateUp;
 
             if (keysDown.Contains(Keys.PageDown) || keysDown.Contains(Keys.F))
-                cameraMovementFlags |= CameraMovement.RotateDown;
+                cameraMovementFlags |= CameraMovementType.RotateDown;
 
-            if (cameraMovementFlags != CameraMovement.None)
-                Mediator.Send(new Move3DViewRequest(cameraMovementFlags));
+            if (cameraMovementFlags != CameraMovementType.None)
+                Mediator.Send(new MoveViewRequest(cameraMovementFlags));
 
             if (keysDown.Contains(Keys.OemOpenBrackets) || keysDown.Contains(Keys.OemCloseBrackets))
             {
@@ -51,7 +50,7 @@ namespace MarsUndiscovered.UserInterface.Input.CameraMovementSpace
                 else if (keysDown.Contains(Keys.OemCloseBrackets))
                     zoomMagnitude -= 100;
 
-                Mediator.Send(new Zoom3DViewRequest(zoomMagnitude));
+                Mediator.Send(new ZoomViewRequest(zoomMagnitude));
             }
         }
     }

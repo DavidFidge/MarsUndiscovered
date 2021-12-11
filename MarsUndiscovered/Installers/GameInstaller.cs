@@ -1,13 +1,10 @@
 ﻿using System.Reflection;
+
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
-using MarsUndiscovered.Messages;
-using MarsUndiscovered.Messages.Console;
-using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.Input;
 using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
-using MarsUndiscovered.UserInterface.Screens;
 using MarsUndiscovered.UserInterface.ViewModels;
 using MarsUndiscovered.UserInterface.Views;
 
@@ -22,14 +19,11 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
-using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
-using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Installers;
+using FrigidRogue.MonoGame.Core.View.Interfaces;
 using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
-
-using MediatR;
 
 namespace MarsUndiscovered.Installers
 {
@@ -56,27 +50,22 @@ namespace MarsUndiscovered.Installers
                     .ImplementedBy<Assets>(),
 
                 Component.For<IGame>()
-                    .Forward<IRequestHandler<ExitGameRequest, Unit>>()
                     .ImplementedBy<MarsUndiscoveredGame>(),
 
-                Component.For<IScreenManager>()
-                    .Forward<IRequestHandler<NewGameRequest, Unit>>()
-                    .Forward<IRequestHandler<ExitCurrentGameRequest, Unit>>()
-                    .ImplementedBy<ScreenManager>(),
-
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
-                    .BasedOn<Screen>(),
-                
+                    .BasedOn<IScreen>(),
+
+                Component.For<ScreenCollection>(),
+
                 Component.For<IHeightMapGenerator>()
                     .ImplementedBy<HeightMapGenerator>(),
                 
                 Classes.FromAssemblyContaining<IGameCamera>()
                     .BasedOn<IGameCamera>()
-                    .LifestyleTransient()
                     .WithServiceDefaultInterfaces(),
 
-                Component.For<IMarsUndiscoveredGameWorld>()
-                    .ImplementedBy<MarsUndiscoveredGameWorld>(),
+                Component.For<IGameWorld>()
+                    .ImplementedBy<GameWorld>(),
 
                 Component.For<IActionMapStore>()
                     .ImplementedBy<DefaultActionMapStore>()
@@ -99,7 +88,7 @@ namespace MarsUndiscovered.Installers
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IKeyboardHandler>()
                     .ConfigureFor<NullKeyboardHandler>(c => c.IsDefault())
-                    .ConfigureFor<GameViewKeyboardHandler>(c => c.DependsOn(Dependency.OnComponent<ICameraMovement, StrategyCameraMovement>()))
+                    .ConfigureFor<GameViewKeyboardHandler>(c => c.DependsOn(Dependency.OnComponent<ICameraMovement, CameraMovement>()))
                     .WithServiceDefaultInterfaces()
             );
         }
@@ -108,8 +97,6 @@ namespace MarsUndiscovered.Installers
         {
             container.Register(
                 Component.For<TitleView>()
-                    .Forward<IRequestHandler<OptionsButtonClickedRequest, Unit>>()
-                    .Forward<IRequestHandler<CloseOptionsViewRequest, Unit>>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, TitleViewKeyboardHandler>()),
 
                 Component.For<TitleViewModel>()
@@ -120,8 +107,6 @@ namespace MarsUndiscovered.Installers
         {
             container.Register(
                 Component.For<OptionsView>()
-                    .Forward<IRequestHandler<OpenVideoOptionsRequest, Unit>>()
-                    .Forward<IRequestHandler<CloseVideoOptionsRequest, Unit>>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, OptionsKeyboardHandler>()),
 
                 Component.For<OptionsViewModel>()
@@ -133,10 +118,6 @@ namespace MarsUndiscovered.Installers
             container.Register(
 
                 Component.For<VideoOptionsViewModel>()
-                    .Forward<IRequestHandler<SetDisplayModeRequest, Unit>>()
-                    .Forward<IRequestHandler<SaveVideoOptionsRequest, Unit>>()
-                    .Forward<IRequestHandler<SetRenderResolutionRequest, Unit>>()
-                    .Forward<IRequestHandler<InterfaceRequest<VideoOptionsData>, Unit>>()
                     .ImplementedBy<VideoOptionsViewModel>(),
 
                 Component.For<VideoOptionsView>()
@@ -148,17 +129,13 @@ namespace MarsUndiscovered.Installers
         {
             container.Register(
                 Component.For<GameView>()
-                    .Forward<IRequestHandler<OpenInGameOptionsRequest, Unit>>()
-                    .Forward<IRequestHandler<CloseInGameOptionsRequest, Unit>>()
-                    .Forward<IRequestHandler<OpenConsoleRequest, Unit>>()
-                    .Forward<IRequestHandler<CloseConsoleRequest, Unit>>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, GameViewKeyboardHandler>())
                     .DependsOn(Dependency.OnComponent<IMouseHandler, GameViewMouseHandler>()),
 
                 Component.For<GameViewModel>(),
 
                 Component.For<ICameraMovement>()
-                    .ImplementedBy<StrategyCameraMovement>()
+                    .ImplementedBy<CameraMovement>()
             );
         }
 
@@ -178,16 +155,12 @@ namespace MarsUndiscovered.Installers
             container.Register(
                 Component.For<ConsoleView>()
                     .ImplementedBy<ConsoleView>()
-                    .Forward<IRequestHandler<UpdateViewRequest<ConsoleData>, Unit>>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, ConsoleKeyboardHandler>()),
 
                 Component.For<IKeyboardHandler>()
                     .ImplementedBy<ConsoleKeyboardHandler>(),
 
-                Component.For<ConsoleViewModel>()
-                    .Forward<IRequestHandler<RecallConsoleHistoryBackRequest, Unit>>()
-                    .Forward<IRequestHandler<RecallConsoleHistoryForwardRequest, Unit>>()
-                    .Forward<IRequestHandler<ExecuteConsoleCommandRequest, Unit>>(),
+                Component.For<ConsoleViewModel>(),
 
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IConsoleCommand>()

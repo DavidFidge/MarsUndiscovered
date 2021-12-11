@@ -53,6 +53,13 @@
 /processorParam:TextureFormat=Compressed
 /build:GeonBit.UI/themes/mars/fonts/Regular.spritefont
 
+#begin Fonts/MapFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/MapFont.spritefont
+
 #begin GeonBit.UI/themes/mars/styles/Button-Default.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
