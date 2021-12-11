@@ -1,12 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FrigidRogue.MonoGame.Core.Extensions;
+
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
+using FrigidRogue.MonoGame.Core.Graphics.Quads;
+using FrigidRogue.MonoGame.Core.View.Extensions;
+
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
-
-using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
 
@@ -31,6 +32,8 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly ConsoleView _consoleView;
         private readonly IGameCamera _gameCamera;
         private SpriteBatch _spriteBatch;
+        private TexturedQuadTemplate _texturedQuadTemplate;
+        private RenderTarget2D _renderTarget;
 
         public GameView(
             GameViewModel gameViewModel,
@@ -53,6 +56,17 @@ namespace MarsUndiscovered.UserInterface.Views
             _gameCamera.Initialise();
 
             _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
+            _texturedQuadTemplate = new TexturedQuadTemplate(GameProvider);
+
+            _renderTarget = new RenderTarget2D(Game.GraphicsDevice,
+                1024,
+                1024,
+                false,
+                Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
+                Game.GraphicsDevice.PresentationParameters.DepthStencilFormat, 0,
+                RenderTargetUsage.PreserveContents);
+
+            _texturedQuadTemplate.LoadContent(1024, 1024, _renderTarget);
         }
 
         private void SetupInGameOptions()
@@ -106,7 +120,9 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             var cellSize = new Point(20, 20);
 
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            Game.GraphicsDevice.SetRenderTarget(_renderTarget);
+
+            _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
 
             var wallString = "#";
             var floorString = "·";
@@ -122,6 +138,10 @@ namespace MarsUndiscovered.UserInterface.Views
             }
 
             _spriteBatch.End();
+
+            Game.GraphicsDevice.SetRenderTarget(null);
+
+            _texturedQuadTemplate.Draw(_gameCamera.View, _gameCamera.Projection, Matrix.CreateTranslation(0, 0, -500));
 
             base.Draw();
         }
