@@ -66,7 +66,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 Game.GraphicsDevice.PresentationParameters.DepthStencilFormat, 0,
                 RenderTargetUsage.PreserveContents);
 
-            _texturedQuadTemplate.LoadContent(1024, 1024, _renderTarget);
+            _texturedQuadTemplate.LoadContent(2, 2, _renderTarget);
         }
 
         private void SetupInGameOptions()
@@ -141,7 +141,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             Game.GraphicsDevice.SetRenderTarget(null);
 
-            _texturedQuadTemplate.Draw(_gameCamera.View, _gameCamera.Projection, Matrix.CreateTranslation(0, 0, -500));
+            _texturedQuadTemplate.Draw(_gameCamera.View, _gameCamera.Projection, Matrix.CreateTranslation(0, 0, -1));
 
             base.Draw();
         }
