@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+
 using FrigidRogue.MonoGame.Core.Extensions;
+
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using FrigidRogue.MonoGame.Core.Messages;
-using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
-using MarsUndiscovered.Interfaces;
+
 using MediatR;
 
 using Microsoft.Xna.Framework;

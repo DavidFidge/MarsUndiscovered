@@ -2,6 +2,5 @@
 {
     public class InGameOptionsData
     {
-        public string Heading => "Options";
     }
 }
