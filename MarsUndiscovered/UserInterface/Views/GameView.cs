@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-
+using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 using FrigidRogue.MonoGame.Core.View.Extensions;
@@ -31,24 +31,23 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
         private readonly IGameCamera _gameCamera;
-        private readonly IAssets _assets;
         private SpriteBatch _spriteBatch;
-        private TexturedQuadTemplate _texturedQuadTemplate;
         private RenderTarget2D _renderTarget;
+        private TexturedQuadTemplate _texturedQuadTemplate;
 
         public GameView(
             GameViewModel gameViewModel,
             InGameOptionsView inGameOptionsView,
             ConsoleView consoleView,
-            IGameCamera gameCamera,
-            IAssets assets
+            IGameCamera gameCamera
         )
             : base(gameViewModel)
         {
             _inGameOptionsView = inGameOptionsView;
             _consoleView = consoleView;
             _gameCamera = gameCamera;
-            _assets = assets;
+            _gameCamera.MoveSensitivity = 0.001f;
+            _gameCamera.ZoomSensitivity = 0.001f;
         }
 
         protected override void InitializeInternal()
@@ -69,7 +68,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 Game.GraphicsDevice.PresentationParameters.DepthStencilFormat, 0,
                 RenderTargetUsage.PreserveContents);
 
-            _texturedQuadTemplate.LoadContent(2, 2, Assets.Wall);
+            _texturedQuadTemplate.LoadContent(2, 2, _renderTarget);
         }
 
         private void SetupInGameOptions()
@@ -121,14 +120,9 @@ namespace MarsUndiscovered.UserInterface.Views
         }
         public override void Draw()
         {
-            var cellSize = new Point(20, 20);
+            var cellSize = 2f / Data.WallsFloors.Height;
 
-            Game.GraphicsDevice.SetRenderTarget(_renderTarget);
-
-            _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
-
-            var wallString = "#";
-            var floorString = "·";
+            //Game.GraphicsDevice.SetRenderTarget(_renderTarget);
 
             for (var x = 0; x < Data.WallsFloors.Width; x++)
             {
@@ -136,15 +130,21 @@ namespace MarsUndiscovered.UserInterface.Views
                 {
                     var xd = Data.WallsFloors[x, y];
 
-                    _spriteBatch.DrawString(Assets.MapFont, xd ? floorString : wallString, new Vector2(x * cellSize.X, y * cellSize.Y), Color.White);
+                    //Assets.WallQuad.Draw(Matrix.Identity, Matrix.Identity, Matrix.CreateTranslation(x * 0.1f, y * -0.1f, 0));
+
+                    var scale = Matrix.CreateScale(cellSize);
+                    var localTranslation = Matrix.CreateTranslation(x * cellSize, y * cellSize, 0);
+                    var worldTranslation = Matrix.CreateTranslation(-1, -1, -1);
+                    var transform = Matrix.Multiply(Matrix.Multiply(scale, localTranslation), worldTranslation);
+
+                    Assets.WallQuad.Draw(_gameCamera.View, _gameCamera.Projection, transform);
+
                 }
             }
 
-            _spriteBatch.End();
+            //Game.GraphicsDevice.SetRenderTarget(null);
 
-            Game.GraphicsDevice.SetRenderTarget(null);
-
-            _texturedQuadTemplate.Draw(_gameCamera.View, _gameCamera.Projection, Matrix.CreateTranslation(0, 0, -1));
+            //_texturedQuadTemplate.Draw(_gameCamera.View, _gameCamera.Projection, Matrix.CreateTranslation(0, 0, -1));
 
             base.Draw();
         }

@@ -1,4 +1,6 @@
-﻿using MarsUndiscovered.Interfaces;
+﻿using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Graphics.Quads;
+using MarsUndiscovered.Interfaces;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using Microsoft.Xna.Framework;
@@ -13,6 +15,7 @@ namespace MarsUndiscovered.Graphics
         public SpriteFont MapFont { get; set; }
         public Texture2D Wall { get; set; }
         public Texture2D Floor { get; set; }
+        public TexturedQuadTemplate WallQuad { get; set; }
 
         public Assets(IGameProvider gameProvider)
         {
@@ -25,8 +28,8 @@ namespace MarsUndiscovered.Graphics
             MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
 
             var wallRenderTarget = new RenderTarget2D(_gameProvider.Game.GraphicsDevice,
-                640,
-                640,
+                32,
+                32,
                 false,
                 _gameProvider.Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
                 _gameProvider.Game.GraphicsDevice.PresentationParameters.DepthStencilFormat, 0,
@@ -38,13 +41,16 @@ namespace MarsUndiscovered.Graphics
 
             spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
             
-            spriteBatch.DrawString(MapFont, "###############", Vector2.Zero, Color.White);
+            spriteBatch.DrawString(MapFont, "#", Vector2.Zero, Color.White);
 
             spriteBatch.End();
 
             _gameProvider.Game.GraphicsDevice.SetRenderTarget(null);
 
             Wall = wallRenderTarget;
+
+            WallQuad = new TexturedQuadTemplate(_gameProvider);
+            WallQuad.LoadContent(2, 2, Wall);
         }
     }
 }
