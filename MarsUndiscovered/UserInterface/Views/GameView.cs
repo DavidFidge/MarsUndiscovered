@@ -31,9 +31,6 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
         private readonly IGameCamera _gameCamera;
-        private SpriteBatch _spriteBatch;
-        private RenderTarget2D _renderTarget;
-        private TexturedQuadTemplate _texturedQuadTemplate;
 
         public GameView(
             GameViewModel gameViewModel,
@@ -56,19 +53,6 @@ namespace MarsUndiscovered.UserInterface.Views
             SetupConsole();
 
             _gameCamera.Initialise();
-
-            _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
-            _texturedQuadTemplate = new TexturedQuadTemplate(GameProvider);
-
-            _renderTarget = new RenderTarget2D(Game.GraphicsDevice,
-                4096,
-                4096,
-                false,
-                Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
-                Game.GraphicsDevice.PresentationParameters.DepthStencilFormat, 0,
-                RenderTargetUsage.PreserveContents);
-
-            _texturedQuadTemplate.LoadContent(2, 2, _renderTarget);
         }
 
         private void SetupInGameOptions()

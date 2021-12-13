@@ -13,8 +13,8 @@ namespace MarsUndiscovered.UserInterface.Input
     {
         public override void HandleKeyboardKeyDown(Keys[] keysDown, Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
-            if (ActionMap.ActionIs<ExitGameRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new ExitGameRequest());
+            if (ActionMap.ActionIs<QuitToDesktopRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new QuitToDesktopRequest());
 
             if (ActionMap.ActionIs<NewGameRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new NewGameRequest());

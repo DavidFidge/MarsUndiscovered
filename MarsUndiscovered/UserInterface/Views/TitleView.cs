@@ -55,7 +55,7 @@ namespace MarsUndiscovered.UserInterface.Views
             SetupOptionsItem();
 
             new Button("Exit")
-                .SendOnClick<ExitGameRequest>(Mediator)
+                .SendOnClick<QuitToDesktopRequest>(Mediator)
                 .AddTo(_titleMenuPanel);
 
             _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
