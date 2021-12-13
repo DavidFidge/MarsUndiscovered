@@ -10,7 +10,7 @@ using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using GeonBit.UI.Entities;
-
+using MarsUndiscovered.Interfaces;
 using MediatR;
 
 using Microsoft.Xna.Framework;
@@ -31,6 +31,7 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
         private readonly IGameCamera _gameCamera;
+        private readonly IAssets _assets;
         private SpriteBatch _spriteBatch;
         private TexturedQuadTemplate _texturedQuadTemplate;
         private RenderTarget2D _renderTarget;
@@ -39,13 +40,15 @@ namespace MarsUndiscovered.UserInterface.Views
             GameViewModel gameViewModel,
             InGameOptionsView inGameOptionsView,
             ConsoleView consoleView,
-            IGameCamera gameCamera
+            IGameCamera gameCamera,
+            IAssets assets
         )
             : base(gameViewModel)
         {
             _inGameOptionsView = inGameOptionsView;
             _consoleView = consoleView;
             _gameCamera = gameCamera;
+            _assets = assets;
         }
 
         protected override void InitializeInternal()
@@ -66,7 +69,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 Game.GraphicsDevice.PresentationParameters.DepthStencilFormat, 0,
                 RenderTargetUsage.PreserveContents);
 
-            _texturedQuadTemplate.LoadContent(2, 2, _renderTarget);
+            _texturedQuadTemplate.LoadContent(2, 2, Assets.Wall);
         }
 
         private void SetupInGameOptions()

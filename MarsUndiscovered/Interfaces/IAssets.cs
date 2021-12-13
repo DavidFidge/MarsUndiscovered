@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using FrigidRogue.MonoGame.Core.Graphics.Quads;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MarsUndiscovered.Interfaces
 {
@@ -6,6 +7,8 @@ namespace MarsUndiscovered.Interfaces
     {
         public Texture2D TitleTexture { get; set; }
         public SpriteFont MapFont { get; set; }
+        public Texture2D Wall { get; set; }
+        public Texture2D Floor { get; set; }
 
         void LoadContent();
     }
