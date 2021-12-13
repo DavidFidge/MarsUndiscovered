@@ -16,6 +16,7 @@ namespace MarsUndiscovered.Graphics
         public Texture2D Wall { get; set; }
         public Texture2D Floor { get; set; }
         public TexturedQuadTemplate WallQuad { get; set; }
+        public Effect TextureMaterialEffect { get; set; }
 
         public Assets(IGameProvider gameProvider)
         {
@@ -24,6 +25,8 @@ namespace MarsUndiscovered.Graphics
 
         public void LoadContent()
         {
+            TextureMaterialEffect = _gameProvider.Game.Content.Load<Effect>("Effects/TextureMaterial");
+
             TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/title");
             MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
 
@@ -50,7 +53,7 @@ namespace MarsUndiscovered.Graphics
             Wall = wallRenderTarget;
 
             WallQuad = new TexturedQuadTemplate(_gameProvider);
-            WallQuad.LoadContent(2, 2, Wall);
+            WallQuad.LoadContent(2, 2, Wall, TextureMaterialEffect);
         }
     }
 }

@@ -118,56 +118,30 @@ namespace MarsUndiscovered.UserInterface.Views
             _consoleView.Hide();
             return Unit.Task;
         }
+
         public override void Draw()
         {
-            ////var cellSize = 2f / Data.WallsFloors.Height;
-
-            //////Game.GraphicsDevice.SetRenderTarget(_renderTarget);
-
-            ////for (var x = 0; x < 1000; x++)
-            ////{
-            ////    for (var y = 0; y < 1000; y++)
-            ////    {
-            ////        //var xd = Data.WallsFloors[x, y];
-
-            ////        //Assets.WallQuad.Draw(Matrix.Identity, Matrix.Identity, Matrix.CreateTranslation(x * 0.1f, y * -0.1f, 0));
-
-            ////        var scale = Matrix.CreateScale(cellSize);
-            ////        var localTranslation = Matrix.CreateTranslation(x * cellSize, y * cellSize, 0);
-            ////        var worldTranslation = Matrix.CreateTranslation(-1, -1, -1);
-            ////        var transform = Matrix.Multiply(Matrix.Multiply(scale, localTranslation), worldTranslation);
-
-            ////        Assets.WallQuad.Draw(_gameCamera.View, _gameCamera.Projection, transform);
-
-            ////    }
-            ////}
-
-
             var cellSize = 2f / Data.WallsFloors.Height;
-
-            Game.GraphicsDevice.SetRenderTarget(_renderTarget);
+            var red = Color.Red;
+            var green = Color.Green;
 
             for (var x = 0; x < 100; x++)
             {
                 for (var y = 0; y < 100; y++)
                 {
-                    //var xd = Data.WallsFloors[x, y];
-
-                    //Assets.WallQuad.Draw(Matrix.Identity, Matrix.Identity, Matrix.CreateTranslation(x * 0.1f, y * -0.1f, 0));
-
                     var scale = Matrix.CreateScale(cellSize);
                     var localTranslation = Matrix.CreateTranslation(x * cellSize, y * cellSize, 0);
-                    var worldTranslation = Matrix.CreateTranslation(-1, -1, 0);
+                    var worldTranslation = Matrix.CreateTranslation(-1, -1, -1);
                     var transform = Matrix.Multiply(Matrix.Multiply(scale, localTranslation), worldTranslation);
 
-                    Assets.WallQuad.Draw(Matrix.Identity, Matrix.Identity, transform);
+                    if (x % 2 == 0)
+                        Assets.WallQuad.Effect.Parameters["Colour"].SetValue(red.ToVector4());
+                    else
+                        Assets.WallQuad.Effect.Parameters["Colour"].SetValue(green.ToVector4());
 
+                    Assets.WallQuad.Draw(_gameCamera.View, _gameCamera.Projection, transform);
                 }
             }
-
-            Game.GraphicsDevice.SetRenderTarget(null);
-
-            _texturedQuadTemplate.Draw(_gameCamera.View, _gameCamera.Projection, Matrix.CreateTranslation(0, 0, -1));
 
             base.Draw();
         }
