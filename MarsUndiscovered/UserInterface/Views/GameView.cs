@@ -125,9 +125,9 @@ namespace MarsUndiscovered.UserInterface.Views
             var red = Color.Red;
             var green = Color.Green;
 
-            for (var x = 0; x < 100; x++)
+            for (var x = 0; x < Data.WallsFloors.Width; x++)
             {
-                for (var y = 0; y < 100; y++)
+                for (var y = 0; y < Data.WallsFloors.Height; y++)
                 {
                     var scale = Matrix.CreateScale(cellSize);
                     var localTranslation = Matrix.CreateTranslation(x * cellSize, y * cellSize, 0);
@@ -135,11 +135,18 @@ namespace MarsUndiscovered.UserInterface.Views
                     var transform = Matrix.Multiply(Matrix.Multiply(scale, localTranslation), worldTranslation);
 
                     if (x % 2 == 0)
-                        Assets.WallQuad.Effect.Parameters["Colour"].SetValue(red.ToVector4());
+                        Assets.TextureMaterialEffect.Parameters["Colour"].SetValue(red.ToVector4());
                     else
-                        Assets.WallQuad.Effect.Parameters["Colour"].SetValue(green.ToVector4());
+                        Assets.TextureMaterialEffect.Parameters["Colour"].SetValue(green.ToVector4());
 
-                    Assets.WallQuad.Draw(_gameCamera.View, _gameCamera.Projection, transform);
+                    if (Data.WallsFloors[x, y])
+                    {
+                        Assets.FloorQuad.Draw(_gameCamera.View, _gameCamera.Projection, transform);
+                    }
+                    else
+                    {
+                        Assets.WallQuad.Draw(_gameCamera.View, _gameCamera.Projection, transform);
+                    }
                 }
             }
 

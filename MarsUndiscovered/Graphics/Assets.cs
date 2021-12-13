@@ -10,13 +10,13 @@ namespace MarsUndiscovered.Graphics
 {
     public class Assets : IAssets
     {
-        private readonly IGameProvider _gameProvider;
         public Texture2D TitleTexture { get; set; }
         public SpriteFont MapFont { get; set; }
-        public Texture2D Wall { get; set; }
-        public Texture2D Floor { get; set; }
         public TexturedQuadTemplate WallQuad { get; set; }
+        public TexturedQuadTemplate FloorQuad { get; set; }
         public Effect TextureMaterialEffect { get; set; }
+
+        private readonly IGameProvider _gameProvider;
 
         public Assets(IGameProvider gameProvider)
         {
@@ -30,30 +30,39 @@ namespace MarsUndiscovered.Graphics
             TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/title");
             MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
 
-            var wallRenderTarget = new RenderTarget2D(_gameProvider.Game.GraphicsDevice,
+            WallQuad = CreateAssetForCharacter('#');
+            FloorQuad = CreateAssetForCharacter('·');
+        }
+
+        private TexturedQuadTemplate CreateAssetForCharacter(char character)
+        {
+            var renderTarget = new RenderTarget2D(
+                _gameProvider.Game.GraphicsDevice,
                 32,
                 32,
                 false,
                 _gameProvider.Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
-                _gameProvider.Game.GraphicsDevice.PresentationParameters.DepthStencilFormat, 0,
-                RenderTargetUsage.PreserveContents);
+                _gameProvider.Game.GraphicsDevice.PresentationParameters.DepthStencilFormat,
+                0,
+                RenderTargetUsage.PreserveContents
+            );
 
             var spriteBatch = new SpriteBatch(_gameProvider.Game.GraphicsDevice);
 
-            _gameProvider.Game.GraphicsDevice.SetRenderTarget(wallRenderTarget);
+            _gameProvider.Game.GraphicsDevice.SetRenderTarget(renderTarget);
 
             spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
-            
-            spriteBatch.DrawString(MapFont, "#", Vector2.Zero, Color.White);
+
+            spriteBatch.DrawString(MapFont, character.ToString(), Vector2.Zero, Color.White);
 
             spriteBatch.End();
 
             _gameProvider.Game.GraphicsDevice.SetRenderTarget(null);
 
-            Wall = wallRenderTarget;
+            var texturedQuad = new TexturedQuadTemplate(_gameProvider);
+            texturedQuad.LoadContent(2, 2, renderTarget, TextureMaterialEffect);
 
-            WallQuad = new TexturedQuadTemplate(_gameProvider);
-            WallQuad.LoadContent(2, 2, Wall, TextureMaterialEffect);
+            return texturedQuad;
         }
     }
 }
