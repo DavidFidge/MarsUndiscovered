@@ -61,8 +61,8 @@ namespace MarsUndiscovered.UserInterface.Views
             _texturedQuadTemplate = new TexturedQuadTemplate(GameProvider);
 
             _renderTarget = new RenderTarget2D(Game.GraphicsDevice,
-                1024,
-                1024,
+                4096,
+                4096,
                 false,
                 Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
                 Game.GraphicsDevice.PresentationParameters.DepthStencilFormat, 0,
@@ -120,31 +120,54 @@ namespace MarsUndiscovered.UserInterface.Views
         }
         public override void Draw()
         {
+            ////var cellSize = 2f / Data.WallsFloors.Height;
+
+            //////Game.GraphicsDevice.SetRenderTarget(_renderTarget);
+
+            ////for (var x = 0; x < 1000; x++)
+            ////{
+            ////    for (var y = 0; y < 1000; y++)
+            ////    {
+            ////        //var xd = Data.WallsFloors[x, y];
+
+            ////        //Assets.WallQuad.Draw(Matrix.Identity, Matrix.Identity, Matrix.CreateTranslation(x * 0.1f, y * -0.1f, 0));
+
+            ////        var scale = Matrix.CreateScale(cellSize);
+            ////        var localTranslation = Matrix.CreateTranslation(x * cellSize, y * cellSize, 0);
+            ////        var worldTranslation = Matrix.CreateTranslation(-1, -1, -1);
+            ////        var transform = Matrix.Multiply(Matrix.Multiply(scale, localTranslation), worldTranslation);
+
+            ////        Assets.WallQuad.Draw(_gameCamera.View, _gameCamera.Projection, transform);
+
+            ////    }
+            ////}
+
+
             var cellSize = 2f / Data.WallsFloors.Height;
 
-            //Game.GraphicsDevice.SetRenderTarget(_renderTarget);
+            Game.GraphicsDevice.SetRenderTarget(_renderTarget);
 
-            for (var x = 0; x < Data.WallsFloors.Width; x++)
+            for (var x = 0; x < 100; x++)
             {
-                for (var y = 0; y < Data.WallsFloors.Height; y++)
+                for (var y = 0; y < 100; y++)
                 {
-                    var xd = Data.WallsFloors[x, y];
+                    //var xd = Data.WallsFloors[x, y];
 
                     //Assets.WallQuad.Draw(Matrix.Identity, Matrix.Identity, Matrix.CreateTranslation(x * 0.1f, y * -0.1f, 0));
 
                     var scale = Matrix.CreateScale(cellSize);
                     var localTranslation = Matrix.CreateTranslation(x * cellSize, y * cellSize, 0);
-                    var worldTranslation = Matrix.CreateTranslation(-1, -1, -1);
+                    var worldTranslation = Matrix.CreateTranslation(-1, -1, 0);
                     var transform = Matrix.Multiply(Matrix.Multiply(scale, localTranslation), worldTranslation);
 
-                    Assets.WallQuad.Draw(_gameCamera.View, _gameCamera.Projection, transform);
+                    Assets.WallQuad.Draw(Matrix.Identity, Matrix.Identity, transform);
 
                 }
             }
 
-            //Game.GraphicsDevice.SetRenderTarget(null);
+            Game.GraphicsDevice.SetRenderTarget(null);
 
-            //_texturedQuadTemplate.Draw(_gameCamera.View, _gameCamera.Projection, Matrix.CreateTranslation(0, 0, -1));
+            _texturedQuadTemplate.Draw(_gameCamera.View, _gameCamera.Projection, Matrix.CreateTranslation(0, 0, -1));
 
             base.Draw();
         }
