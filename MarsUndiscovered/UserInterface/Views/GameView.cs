@@ -121,34 +121,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public override void Draw()
         {
-            var cellSize = 2f / Data.WallsFloors.Height;
-            var red = Color.Red;
-            var green = Color.Green;
-
-            for (var x = 0; x < Data.WallsFloors.Width; x++)
-            {
-                for (var y = 0; y < Data.WallsFloors.Height; y++)
-                {
-                    var scale = Matrix.CreateScale(cellSize);
-                    var localTranslation = Matrix.CreateTranslation(x * cellSize, y * cellSize, 0);
-                    var worldTranslation = Matrix.CreateTranslation(-1, -1, -1);
-                    var transform = Matrix.Multiply(Matrix.Multiply(scale, localTranslation), worldTranslation);
-
-                    if (x % 2 == 0)
-                        Assets.TextureMaterialEffect.Parameters["Colour"].SetValue(red.ToVector4());
-                    else
-                        Assets.TextureMaterialEffect.Parameters["Colour"].SetValue(green.ToVector4());
-
-                    if (Data.WallsFloors[x, y])
-                    {
-                        Assets.FloorQuad.Draw(_gameCamera.View, _gameCamera.Projection, transform);
-                    }
-                    else
-                    {
-                        Assets.WallQuad.Draw(_gameCamera.View, _gameCamera.Projection, transform);
-                    }
-                }
-            }
+            _viewModel.SceneGraph.Draw(_gameCamera.View, _gameCamera.Projection);
 
             base.Draw();
         }

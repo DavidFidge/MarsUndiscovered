@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
+using FrigidRogue.MonoGame.Core.Components;
 using MarsUndiscovered.Interfaces;
 
 using GoRogue.Components;
@@ -10,7 +10,7 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Components
 {
-    public class GameWorld : IGameWorld
+    public class GameWorld : BaseComponent, IGameWorld
     {
         public GameWorld()
         {
@@ -23,11 +23,11 @@ namespace MarsUndiscovered.Components
 
         public void Generate()
         {
-            var generator = new Generator(40, 50);
+            Logger.Debug("Generating game world");
 
-            generator.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps());
+            var generator = new Generator(50, 50);
 
-            Generator = generator.Generate();
+            Generator = generator.ConfigAndGenerateSafe(g => g.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps()));
 
             AllComponents = Generator.Context.ToList();
 
