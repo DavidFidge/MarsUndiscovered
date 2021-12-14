@@ -105,7 +105,12 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public override void Draw()
         {
+            var oldDepthStencilState = Game.GraphicsDevice.DepthStencilState;
+            Game.GraphicsDevice.DepthStencilState = DepthStencilState.None;
+
             _viewModel.SceneGraph.Draw(_gameCamera.View, _gameCamera.Projection);
+
+            Game.GraphicsDevice.DepthStencilState = oldDepthStencilState;
 
             base.Draw();
         }

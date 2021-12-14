@@ -10,7 +10,7 @@ namespace MarsUndiscovered.Graphics
 {
     public class Assets : IAssets
     {
-        private const int TileQuadSize = 2;
+        private const int TileQuadSize = 1;
 
         public Texture2D TitleTexture { get; set; }
         public SpriteFont MapFont { get; set; }
@@ -34,9 +34,7 @@ namespace MarsUndiscovered.Graphics
             MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
 
             WallBackgroundQuad = new MaterialQuadTemplate(_gameProvider);
-
-
-            WallBackgroundQuad.LoadContent(TileQuadSize, TileQuadSize, new Color(new Vector4(175, 105, 75, 255)));
+            WallBackgroundQuad.LoadContent(TileQuadSize, TileQuadSize, new Color(0xFF244BB6));
 
             WallForegroundQuad = CreateAssetForCharacter('#');
             FloorQuad = CreateAssetForCharacter('·');
