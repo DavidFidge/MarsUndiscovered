@@ -42,8 +42,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             Y = y;
             Index = Point.ToIndex(x, y, dataWallsFloors.Width);
             MaxHeight = dataWallsFloors.Height;
-            Transform.ChangeTranslation(new Vector3(X * CellSize, Y * CellSize, 0));
-            Transform.ChangeScale(new Vector3(CellSize, CellSize, CellSize));
+            Transform.ChangeTranslation(new Vector3(X * Graphics.Assets.TileQuadWidth, Y * Graphics.Assets.TileQuadHeight, 0));
+            //Transform.ChangeScale(new Vector3(CellSize, CellSize, CellSize));
             IsFloor = dataWallsFloors[x, y];
             IsWall = !dataWallsFloors[x, y];
         }

@@ -8,6 +8,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public MapEntity()
         {
             Transform.ChangeTranslation(new Vector3(-1, -1, -1));
+            Transform.ChangeScale(new Vector3(0.1f));
         }
     }
 }
