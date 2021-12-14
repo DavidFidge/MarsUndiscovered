@@ -33,8 +33,10 @@ namespace MarsUndiscovered.Graphics
             TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/title");
             MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
 
-            //WallBackgroundQuad = new MaterialQuadTemplate(_gameProvider);
-            //WallBackgroundQuad.LoadContent(TileQuadSize, TileQuadSize, new Color(new Vector4(175, 105, 75, 255)));
+            WallBackgroundQuad = new MaterialQuadTemplate(_gameProvider);
+
+
+            WallBackgroundQuad.LoadContent(TileQuadSize, TileQuadSize, new Color(new Vector4(175, 105, 75, 255)));
 
             WallForegroundQuad = CreateAssetForCharacter('#');
             FloorQuad = CreateAssetForCharacter('·');

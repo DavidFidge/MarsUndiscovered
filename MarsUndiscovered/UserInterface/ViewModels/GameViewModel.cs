@@ -97,6 +97,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             {
                 //_assets.WallBackgroundQuad?.Effect.Parameters["Colour"].SetValue(Color.Red.ToVector4());
                 //_assets.WallForegroundQuad?.Effect.Parameters["Colour"].SetValue(Color.Red.ToVector4());
+                _assets.WallBackgroundQuad?.Draw(view, projection, transform);
                 _assets.WallForegroundQuad?.Draw(view, projection, transform);
             }
             else
