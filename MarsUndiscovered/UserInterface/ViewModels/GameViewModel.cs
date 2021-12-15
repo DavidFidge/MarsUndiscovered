@@ -16,6 +16,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public ISceneGraph SceneGraph { get; set; }
         public IAssets Assets { get; set; }
         public IFactory<MapTileEntity> MapTileEntityFactory { get; set; }
+        public IFactory<MapEntity> MapEntityFactory { get; set; }
 
         public override void Initialize()
         {
@@ -25,7 +26,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             Data.WallsFloors = (ArrayView<bool>)GameWorld.WallsFloors.Clone();
 
-            _mapEntity = new MapEntity();
+            _mapEntity = MapEntityFactory.Create();
+
+            _mapEntity.CreateTranslation(GameWorld.WallsFloors.Width, GameWorld.WallsFloors.Height, Graphics.Assets.TileQuadWidth, Graphics.Assets.TileQuadHeight);
 
             SceneGraph.Initialise(_mapEntity);
 

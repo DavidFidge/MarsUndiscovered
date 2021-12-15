@@ -25,7 +25,7 @@ namespace MarsUndiscovered.Components
         {
             Logger.Debug("Generating game world");
 
-            var generator = new Generator(50, 30);
+            var generator = new Generator(50, 31);
 
             Generator = generator.ConfigAndGenerateSafe(g => g.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps()));
 

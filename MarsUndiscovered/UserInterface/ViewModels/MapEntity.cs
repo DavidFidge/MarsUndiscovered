@@ -1,14 +1,24 @@
-﻿using FrigidRogue.MonoGame.Core.Components;
+﻿using System;
+
+using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class MapEntity : Entity
     {
-        public MapEntity()
+        public void CreateTranslation(int mapWidth, int mapHeight, float tileWidth, float tileHeight)
         {
-            Transform.ChangeTranslation(new Vector3(-1, -1, -1));
-            Transform.ChangeScale(new Vector3(0.1f));
+            var translationWidth = mapWidth * tileWidth;
+            var translationHeight = mapHeight * tileHeight;
+            var halfTileHeight = tileHeight / 2f;
+
+            var translationBack = (translationHeight / 2f) / (float)Math.Tan(BaseCamera.ProjectionAngle / 2f);
+
+            var translation = new Vector3(-translationWidth / 2f, (-translationHeight / 2f) + halfTileHeight, -translationBack);
+
+            Transform.ChangeTranslation(translation);
         }
     }
 }

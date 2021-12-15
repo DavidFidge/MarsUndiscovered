@@ -1,8 +1,9 @@
-﻿using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Graphics.Quads;
+﻿using FrigidRogue.MonoGame.Core.Graphics.Quads;
+
 using MarsUndiscovered.Interfaces;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -10,8 +11,8 @@ namespace MarsUndiscovered.Graphics
 {
     public class Assets : IAssets
     {
-        public static float TileQuadHeight = 1f;
-        public static float TileQuadWidth = 0.55f;
+        public const float TileQuadHeight = 1f;
+        public const float TileQuadWidth = 0.55f;
 
         public Texture2D TitleTexture { get; set; }
         public SpriteFont MapFont { get; set; }

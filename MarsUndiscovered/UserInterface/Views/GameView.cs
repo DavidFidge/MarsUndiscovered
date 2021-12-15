@@ -43,8 +43,8 @@ namespace MarsUndiscovered.UserInterface.Views
             _inGameOptionsView = inGameOptionsView;
             _consoleView = consoleView;
             _gameCamera = gameCamera;
-            _gameCamera.MoveSensitivity = 0.001f;
-            _gameCamera.ZoomSensitivity = 0.001f;
+            _gameCamera.MoveSensitivity = 1f;
+            _gameCamera.ZoomSensitivity = 0.01f;
         }
 
         protected override void InitializeInternal()

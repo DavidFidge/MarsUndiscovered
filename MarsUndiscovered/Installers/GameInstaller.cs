@@ -77,6 +77,12 @@ namespace MarsUndiscovered.Installers
                     .LifeStyle.Transient,
 
                 Component.For<IFactory<MapTileEntity>>()
+                    .AsFactory(),
+
+                Component.For<MapEntity>()
+                    .LifeStyle.Transient,
+
+                Component.For<IFactory<MapEntity>>()
                     .AsFactory()
             );
         }
