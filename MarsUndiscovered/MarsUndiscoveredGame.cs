@@ -178,7 +178,7 @@ namespace MarsUndiscovered
             base.Draw(gameTime);
         }
 
-        public Task<Unit> Handle(ExitGameRequest request, CancellationToken cancellationToken)
+        public Task<Unit> Handle(QuitToDesktopRequest request, CancellationToken cancellationToken)
         {
             _isExiting = true;
             return Unit.Task;

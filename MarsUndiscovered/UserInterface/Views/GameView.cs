@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-
+using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 using FrigidRogue.MonoGame.Core.View.Extensions;
@@ -10,7 +10,7 @@ using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using GeonBit.UI.Entities;
-
+using MarsUndiscovered.Interfaces;
 using MediatR;
 
 using Microsoft.Xna.Framework;
@@ -31,9 +31,6 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
         private readonly IGameCamera _gameCamera;
-        private SpriteBatch _spriteBatch;
-        private TexturedQuadTemplate _texturedQuadTemplate;
-        private RenderTarget2D _renderTarget;
 
         public GameView(
             GameViewModel gameViewModel,
@@ -46,6 +43,8 @@ namespace MarsUndiscovered.UserInterface.Views
             _inGameOptionsView = inGameOptionsView;
             _consoleView = consoleView;
             _gameCamera = gameCamera;
+            _gameCamera.MoveSensitivity = 1f;
+            _gameCamera.ZoomSensitivity = 0.01f;
         }
 
         protected override void InitializeInternal()
@@ -54,19 +53,6 @@ namespace MarsUndiscovered.UserInterface.Views
             SetupConsole();
 
             _gameCamera.Initialise();
-
-            _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
-            _texturedQuadTemplate = new TexturedQuadTemplate(GameProvider);
-
-            _renderTarget = new RenderTarget2D(Game.GraphicsDevice,
-                1024,
-                1024,
-                false,
-                Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
-                Game.GraphicsDevice.PresentationParameters.DepthStencilFormat, 0,
-                RenderTargetUsage.PreserveContents);
-
-            _texturedQuadTemplate.LoadContent(2, 2, _renderTarget);
         }
 
         private void SetupInGameOptions()
@@ -116,32 +102,15 @@ namespace MarsUndiscovered.UserInterface.Views
             _consoleView.Hide();
             return Unit.Task;
         }
+
         public override void Draw()
         {
-            var cellSize = new Point(20, 20);
+            var oldDepthStencilState = Game.GraphicsDevice.DepthStencilState;
+            Game.GraphicsDevice.DepthStencilState = DepthStencilState.None;
 
-            Game.GraphicsDevice.SetRenderTarget(_renderTarget);
+            _viewModel.SceneGraph.Draw(_gameCamera.View, _gameCamera.Projection);
 
-            _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
-
-            var wallString = "#";
-            var floorString = "·";
-
-            for (var x = 0; x < Data.WallsFloors.Width; x++)
-            {
-                for (var y = 0; y < Data.WallsFloors.Height; y++)
-                {
-                    var xd = Data.WallsFloors[x, y];
-
-                    _spriteBatch.DrawString(Assets.MapFont, xd ? floorString : wallString, new Vector2(x * cellSize.X, y * cellSize.Y), Color.White);
-                }
-            }
-
-            _spriteBatch.End();
-
-            Game.GraphicsDevice.SetRenderTarget(null);
-
-            _texturedQuadTemplate.Draw(_gameCamera.View, _gameCamera.Projection, Matrix.CreateTranslation(0, 0, -1));
+            Game.GraphicsDevice.DepthStencilState = oldDepthStencilState;
 
             base.Draw();
         }

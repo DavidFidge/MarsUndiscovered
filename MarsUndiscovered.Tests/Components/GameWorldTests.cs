@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+
 using FrigidRogue.TestInfrastructure;
 
 using MarsUndiscovered.Components;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NGenerics.Extensions;
+
 using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Tests.ViewModels

@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 
+using Castle.Facilities.TypedFactory;
+
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
@@ -22,6 +24,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
 using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.MonoGame.Core.View.Installers;
 using FrigidRogue.MonoGame.Core.View.Interfaces;
+
 using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
 
@@ -68,7 +71,19 @@ namespace MarsUndiscovered.Installers
                     .ImplementedBy<GameWorld>(),
 
                 Component.For<IActionMapStore>()
-                    .ImplementedBy<DefaultActionMapStore>()
+                    .ImplementedBy<DefaultActionMapStore>(),
+
+                Component.For<MapTileEntity>()
+                    .LifeStyle.Transient,
+
+                Component.For<IFactory<MapTileEntity>>()
+                    .AsFactory(),
+
+                Component.For<MapEntity>()
+                    .LifeStyle.Transient,
+
+                Component.For<IFactory<MapEntity>>()
+                    .AsFactory()
             );
         }
 

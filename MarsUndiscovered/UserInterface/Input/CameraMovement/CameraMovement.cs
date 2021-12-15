@@ -46,9 +46,9 @@ namespace MarsUndiscovered.UserInterface.Input.CameraMovementSpace
                 var zoomMagnitude = 0;
 
                 if (keysDown.Contains(Keys.OemOpenBrackets))
-                    zoomMagnitude += 100;
+                    zoomMagnitude += 1;
                 else if (keysDown.Contains(Keys.OemCloseBrackets))
-                    zoomMagnitude -= 100;
+                    zoomMagnitude -= 1;
 
                 Mediator.Send(new ZoomViewRequest(zoomMagnitude));
             }

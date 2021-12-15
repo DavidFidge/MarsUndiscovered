@@ -1,4 +1,5 @@
-﻿using MarsUndiscovered.Messages;
+﻿using FrigidRogue.MonoGame.Core.Messages;
+using MarsUndiscovered.Messages;
 
 using FrigidRogue.MonoGame.Core.UserInterface;
 
@@ -14,6 +15,9 @@ namespace MarsUndiscovered.UserInterface.Input
         {
             if (ActionMap.ActionIs<CloseInGameOptionsRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new CloseInGameOptionsRequest());
+
+            if (ActionMap.ActionIs<QuitToTitleRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new QuitToTitleRequest());
         }
     }
 }
