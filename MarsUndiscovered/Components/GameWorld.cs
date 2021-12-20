@@ -42,7 +42,22 @@ namespace MarsUndiscovered.Components
                 .GetFirst<ArrayView<bool>>()
                 .ToArrayView(s => s ? (Terrain)FloorFactory.Create() : WallFactory.Create());
 
-            Map = new Map(wallsFloors, 1, Distance.Chebyshev);
+            Map = new Map(wallsFloors.Width, wallsFloors.Height, 1, Distance.Chebyshev);
+
+            for (var index = 0; index < wallsFloors.Count; index++)
+            {
+                var gameObject = wallsFloors[index];
+
+                gameObject.Position = Point.FromIndex(index, wallsFloors.Width);
+
+                Map.SetTerrain(gameObject);
+            }
+
+            var floorPosition = Map.RandomPosition((p, gameObjects) => gameObjects.Any(g => g is Floor));
+
+            Player.Position = floorPosition;
+
+            Map.AddEntity(Player);
         }
     }
 }

@@ -10,6 +10,7 @@ namespace MarsUndiscovered.Interfaces
         public MaterialQuadTemplate WallBackgroundQuad { get; set; }
         public TexturedQuadTemplate WallForegroundQuad { get; set; }
         public TexturedQuadTemplate FloorQuad { get; set; }
+        public TexturedQuadTemplate PlayerForegroundQuad { get; set; }
         Effect TextureMaterialEffect { get; set; }
 
         void LoadContent();

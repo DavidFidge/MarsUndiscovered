@@ -20,11 +20,11 @@ namespace MarsUndiscovered.Components
         public IMediator Mediator { get; set; }
         public ILogger Logger { get; set; }
 
-        public MarsGameObject(Point position, int layer, bool isWalkable = true, bool isTransparent = true, Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null) : base(position, layer, isWalkable, isTransparent, idGenerator, customComponentCollection)
+        public MarsGameObject(Point position, int layer, bool isWalkable = true, bool isTransparent = true, Func<uint> idGenerator = null, IComponentCollection customComponentCollection = null) : base(position, layer, isWalkable, isTransparent, idGenerator, customComponentCollection)
         {
         }
 
-        public MarsGameObject(int layer, bool isWalkable = true, bool isTransparent = true, Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null) : base(layer, isWalkable, isTransparent, idGenerator, customComponentCollection)
+        public MarsGameObject(int layer, bool isWalkable = true, bool isTransparent = true, Func<uint> idGenerator = null, IComponentCollection customComponentCollection = null) : base(layer, isWalkable, isTransparent, idGenerator, customComponentCollection)
         {
         }
     }

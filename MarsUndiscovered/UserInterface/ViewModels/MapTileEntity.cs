@@ -1,4 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using GoRogue.GameFramework;
 
@@ -6,8 +7,6 @@ using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 
 using Microsoft.Xna.Framework;
-
-using SadRogue.Primitives.GridViews;
 
 using IDrawable = FrigidRogue.MonoGame.Core.Graphics.IDrawable;
 
@@ -18,35 +17,42 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     public class MapTileEntity : Entity, IDrawable
     {
         public IAssets Assets { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Index { get; set; }
+        public Point Point { get; set; }
         public int MaxHeight { get; set; }
-        public bool IsFloor { get; set; }
-        public bool IsWall { get; set; }
+        public BaseQuadTemplate BackgroundQuad { get; private set; }
+        public BaseQuadTemplate ForegroundQuad { get; private set; }
+        public bool IsVisible { get; set; } = true;
 
         public void Draw(Matrix view, Matrix projection, Matrix world)
         {
-            if (IsWall)
-            {
-                Assets.WallBackgroundQuad?.Draw(view, projection, world);
-                Assets.WallForegroundQuad?.Draw(view, projection, world);
-            }
-            else
-            {
-                Assets.FloorQuad?.Draw(view, projection, world);
-            }
+            if (BackgroundQuad != null)
+                BackgroundQuad.Draw(view, projection, world);
+
+            if (ForegroundQuad != null)
+                ForegroundQuad.Draw(view, projection, world);
         }
 
-        public void Initialize(int x, int y, IGridView<IGameObject> dataWallsFloors)
+        public void Initialize(IGameObject gameObject)
         {
-            X = x;
-            Y = y;
-            Index = Point.ToIndex(x, y, dataWallsFloors.Width);
-            MaxHeight = dataWallsFloors.Height;
-            Transform.ChangeTranslation(new Vector3(X * Graphics.Assets.TileQuadWidth, Y * Graphics.Assets.TileQuadHeight, 0));
-            IsFloor = dataWallsFloors[x, y] is Floor;
-            IsWall = dataWallsFloors[x, y] is Wall;
+            Point = gameObject.Position;
+            MaxHeight = gameObject.CurrentMap.Height;
+            Transform.ChangeTranslation(new Vector3(Point.X * Graphics.Assets.TileQuadWidth, Point.Y * Graphics.Assets.TileQuadHeight, 0));
+
+            switch (gameObject)
+            {
+                case Floor _:
+                    ForegroundQuad = Assets.FloorQuad;
+                    break;
+
+                case Wall _:
+                    ForegroundQuad = Assets.WallForegroundQuad;
+                    BackgroundQuad = Assets.WallBackgroundQuad;
+                    break;
+
+                case Player _:
+                    ForegroundQuad = Assets.PlayerForegroundQuad;
+                    break;
+            }
         }
     }
 }

@@ -12,12 +12,17 @@ namespace MarsUndiscovered.UserInterface.Screens
         IRequestHandler<NewGameRequest>,
         IRequestHandler<EndCurrentGameRequest>
     {
+        private readonly GameView _gameView;
+
         public GameScreen(GameView gameView) : base(gameView)
         {
+            _gameView = gameView;
         }
 
         public Task<Unit> Handle(NewGameRequest request, CancellationToken cancellationToken)
         {
+            _gameView.CreateGame();
+
             UserInterface.ShowScreen(this);
 
             return Unit.Task;

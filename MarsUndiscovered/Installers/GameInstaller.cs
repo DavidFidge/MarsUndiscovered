@@ -74,6 +74,12 @@ namespace MarsUndiscovered.Installers
                 Component.For<IActionMapStore>()
                     .ImplementedBy<DefaultActionMapStore>(),
 
+                Component.For<MapTileRootEntity>()
+                    .LifeStyle.Transient,
+
+                Component.For<IFactory<MapTileRootEntity>>()
+                    .AsFactory(),
+
                 Component.For<MapTileEntity>()
                     .LifeStyle.Transient,
 

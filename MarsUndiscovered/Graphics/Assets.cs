@@ -19,6 +19,7 @@ namespace MarsUndiscovered.Graphics
         public MaterialQuadTemplate WallBackgroundQuad { get; set; }
         public TexturedQuadTemplate WallForegroundQuad { get; set; }
         public TexturedQuadTemplate FloorQuad { get; set; }
+        public TexturedQuadTemplate PlayerForegroundQuad { get; set; }
         public Effect TextureMaterialEffect { get; set; }
 
         private readonly IGameProvider _gameProvider;
@@ -35,14 +36,15 @@ namespace MarsUndiscovered.Graphics
             TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/title");
             MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
 
+            WallForegroundQuad = CreateAssetForCharacter('#', Color.White);
             WallBackgroundQuad = new MaterialQuadTemplate(_gameProvider);
             WallBackgroundQuad.LoadContent(TileQuadWidth, TileQuadHeight, new Color(0xFF244BB6));
 
-            WallForegroundQuad = CreateAssetForCharacter('#');
-            FloorQuad = CreateAssetForCharacter('·');
+            FloorQuad = CreateAssetForCharacter('·', Color.Tan);
+            PlayerForegroundQuad = CreateAssetForCharacter('@', Color.Yellow);
         }
 
-        private TexturedQuadTemplate CreateAssetForCharacter(char character)
+        private TexturedQuadTemplate CreateAssetForCharacter(char character, Color color)
         {
             var renderTarget = new RenderTarget2D(
                 _gameProvider.Game.GraphicsDevice,
@@ -69,7 +71,7 @@ namespace MarsUndiscovered.Graphics
 
             var texturedQuad = new TexturedQuadTemplate(_gameProvider);
             texturedQuad.LoadContent(TileQuadWidth, TileQuadHeight, renderTarget, TextureMaterialEffect);
-            texturedQuad.Colour = Color.White;
+            texturedQuad.Colour = color;
 
             return texturedQuad;
         }

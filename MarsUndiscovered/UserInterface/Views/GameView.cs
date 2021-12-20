@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
@@ -119,6 +120,11 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _gameCamera.Update();
             base.Update();
+        }
+
+        public void CreateGame()
+        {
+            _viewModel.CreateMap();
         }
 
         public Task<Unit> Handle(LeftClickViewRequest request, CancellationToken cancellationToken)

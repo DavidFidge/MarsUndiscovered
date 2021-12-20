@@ -1,9 +1,16 @@
-﻿using FrigidRogue.MonoGame.Core.Components;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.UserInterface;
 
+using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
+
+using SadRogue.Primitives;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -14,12 +21,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public ISceneGraph SceneGraph { get; set; }
         public IAssets Assets { get; set; }
         public IFactory<MapTileEntity> MapTileEntityFactory { get; set; }
+        public IFactory<MapTileRootEntity> MapTileRootEntityFactory { get; set; }
         public IFactory<MapEntity> MapEntityFactory { get; set; }
 
-        public override void Initialize()
+        public void CreateMap()
         {
-            base.Initialize();
-
             GameWorld.Generate();
 
             _mapEntity = MapEntityFactory.Create();
@@ -32,13 +38,45 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             {
                 for (var y = 0; y < GameWorld.Map.Height; y++)
                 {
-                    var mapTileEntity = MapTileEntityFactory.Create();
+                    var mapTileRootEntity = MapTileRootEntityFactory.Create();
+                    mapTileRootEntity.Point = new Point(x, y);
 
-                    mapTileEntity.Initialize(x, y, GameWorld.Map.Terrain);
+                    SceneGraph.Add(mapTileRootEntity, _mapEntity);
 
-                    SceneGraph.Add(mapTileEntity, _mapEntity);
+                    CreateMapTiles(new Point(x, y), mapTileRootEntity);
                 }
             }
+        }
+
+        private void CreateMapTiles(Point point, MapTileRootEntity mapTileRootEntity)
+        {
+            var gameObjects = GameWorld.Map
+                .GetObjectsAt(point)
+                .Reverse()
+                .ToList();
+
+            var containsPlayer = gameObjects.Any(go => go is Player);
+
+            foreach (var gameObject in gameObjects)
+            {
+                var mapTileEntity = MapTileEntityFactory.Create();
+
+                mapTileEntity.Initialize(gameObject);
+
+                SceneGraph.Add(mapTileEntity, mapTileRootEntity);
+
+                if (containsPlayer && gameObject is Floor)
+                    mapTileEntity.IsVisible = false;
+            }
+        }
+
+        public void UpdateMapTiles(Point point)
+        {
+            var mapTileRootEntity = (MapTileRootEntity)SceneGraph.Find(e => e is MapTileRootEntity entity && entity.Point.Equals(point));
+
+            SceneGraph.ClearChildren(mapTileRootEntity);
+
+            CreateMapTiles(point, mapTileRootEntity);
         }
     }
 }

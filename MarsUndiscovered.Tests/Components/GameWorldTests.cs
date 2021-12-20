@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-using FrigidRogue.TestInfrastructure;
+﻿using FrigidRogue.TestInfrastructure;
 
 using MarsUndiscovered.Components;
 
@@ -27,6 +25,7 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Arrange
             _gameWorld.WallFactory = new TestFactory<Wall>();
             _gameWorld.FloorFactory = new TestFactory<Floor>();
+            _gameWorld.Player = new Player();
 
             // Act
             _gameWorld.Generate();
