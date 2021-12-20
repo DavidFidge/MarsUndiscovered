@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using FrigidRogue.MonoGame.Core.Components;
@@ -21,6 +22,7 @@ namespace MarsUndiscovered.Components
         public const int MapHeight = 29;
 
         public Map Map { get; private set; }
+
         public Player Player { get; set; }
         public IFactory<Wall> WallFactory { get; set; }
         public IFactory<Floor> FloorFactory { get; set; }
@@ -58,6 +60,19 @@ namespace MarsUndiscovered.Components
             Player.Position = floorPosition;
 
             Map.AddEntity(Player);
+        }
+
+        public Tuple<Point, Point> Move(Direction direction)
+        {
+            var playerPosition = Player.Position;
+            var newPlayerPosition = Player.Position + direction;
+
+            var terrain = Map.GetTerrainAt(newPlayerPosition);
+
+            if (terrain is Floor)
+                Player.Position = newPlayerPosition;
+
+            return new Tuple<Point, Point>(playerPosition, newPlayerPosition);
         }
     }
 }

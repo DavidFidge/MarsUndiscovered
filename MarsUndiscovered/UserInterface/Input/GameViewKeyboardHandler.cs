@@ -33,7 +33,24 @@ namespace MarsUndiscovered.UserInterface.Input
             if (keyInFocus == Keys.F12)
                 Environment.Exit(0);
 
+            CheckGameKeys(keyInFocus, keyboardModifier);
+
             _cameraMovement.MoveCamera(keysDown);
+        }
+
+        private void CheckGameKeys(Keys keyInFocus, KeyboardModifier keyboardModifier)
+        {
+            if (ActionMap.ActionIs<MoveUpRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new MoveUpRequest());
+
+            if (ActionMap.ActionIs<MoveDownRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new MoveDownRequest());
+
+            if (ActionMap.ActionIs<MoveLeftRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new MoveLeftRequest());
+
+            if (ActionMap.ActionIs<MoveRightRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new MoveRightRequest());
         }
 
         public override void HandleKeyboardKeyLost(Keys[] keysDown, KeyboardModifier keyboardModifier)
@@ -44,6 +61,11 @@ namespace MarsUndiscovered.UserInterface.Input
         public override void HandleKeyboardKeysReleased()
         {
             Mediator.Send(new MoveViewRequest(CameraMovementType.None));
+        }
+
+        public override void HandleKeyboardKeyRepeat(Keys repeatingKey, KeyboardModifier keyboardModifier)
+        {
+            CheckGameKeys(repeatingKey, keyboardModifier);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             Point = gameObject.Position;
             MaxHeight = gameObject.CurrentMap.Height;
-            Transform.ChangeTranslation(new Vector3(Point.X * Graphics.Assets.TileQuadWidth, Point.Y * Graphics.Assets.TileQuadHeight, 0));
+            Transform.ChangeTranslation(new Vector3(Point.X * Graphics.Assets.TileQuadWidth, -Point.Y * Graphics.Assets.TileQuadHeight, 0));
 
             switch (gameObject)
             {

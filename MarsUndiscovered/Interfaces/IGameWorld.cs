@@ -1,7 +1,10 @@
-﻿using GoRogue.GameFramework;
+﻿using System;
+
+using GoRogue.GameFramework;
+
 using MarsUndiscovered.Components;
 
-using SadRogue.Primitives.GridViews;
+using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Interfaces
 {
@@ -10,5 +13,6 @@ namespace MarsUndiscovered.Interfaces
         Player Player { get; set; }
         void Generate();
         Map Map { get; }
+        Tuple<Point, Point> Move(Direction direction);
     }
 }

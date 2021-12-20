@@ -78,5 +78,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             CreateMapTiles(point, mapTileRootEntity);
         }
+
+        public void Move(Direction direction)
+        {
+            var changedPositions = GameWorld.Move(direction);
+
+            UpdateMapTiles(changedPositions.Item1);
+            UpdateMapTiles(changedPositions.Item2);
+        }
     }
 }
