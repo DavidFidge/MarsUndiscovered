@@ -14,6 +14,7 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 
+using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Graphics.Terrain;
 using FrigidRogue.MonoGame.Core.Installers;
@@ -83,6 +84,24 @@ namespace MarsUndiscovered.Installers
                     .LifeStyle.Transient,
 
                 Component.For<IFactory<MapEntity>>()
+                    .AsFactory(),
+
+                Component.For<Player>()
+                    .LifestyleTransient(),
+
+                Component.For<Wall>()
+                    .LifestyleTransient(),
+
+                Component.For<Floor>()
+                    .LifestyleTransient(),
+
+                Component.For<IFactory<Wall>>()
+                    .AsFactory(),
+
+                Component.For<IFactory<Floor>>()
+                    .AsFactory(),
+
+                Component.For<IFactory<Player>>()
                     .AsFactory()
             );
         }

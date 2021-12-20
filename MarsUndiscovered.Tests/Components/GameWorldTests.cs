@@ -6,8 +6,6 @@ using MarsUndiscovered.Components;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using SadRogue.Primitives.GridViews;
-
 namespace MarsUndiscovered.Tests.ViewModels
 {
     [TestClass]
@@ -20,20 +18,22 @@ namespace MarsUndiscovered.Tests.ViewModels
         {
             base.Setup();
 
-            _gameWorld = new GameWorld();
+            _gameWorld = SetupBaseComponent(new GameWorld());
         }
 
         [TestMethod]
-        public void Should_Add_To_LastCommands_When_Command_Executes()
+        public void Should_Generate_Map()
         {
             // Arrange
-            _gameWorld.Generate();
+            _gameWorld.WallFactory = new TestFactory<Wall>();
+            _gameWorld.FloorFactory = new TestFactory<Floor>();
 
             // Act
-            var wallsFloors = (ArrayView<bool>)_gameWorld.AllComponents.Single(s => s.Tag == "WallFloor").Component;
-            var wallsFloors2 = _gameWorld.Generator.Context.GetFirst<ArrayView<bool>>();
+            _gameWorld.Generate();
 
             // Assert
+            Assert.AreEqual(GameWorld.MapWidth, _gameWorld.Map.Width);
+            Assert.AreEqual(GameWorld.MapHeight, _gameWorld.Map.Height);
         }
     }
 }

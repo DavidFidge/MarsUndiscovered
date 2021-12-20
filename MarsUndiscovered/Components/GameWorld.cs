@@ -1,25 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using FrigidRogue.MonoGame.Core.Components;
+
+using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Interfaces;
 
 using GoRogue.Components;
+using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
 
+using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Components
 {
     public class GameWorld : BaseComponent, IGameWorld
     {
-        public GameWorld()
-        {
-        }
+        public const int MapWidth = 76;
+        public const int MapHeight = 29;
+
+        public Map Map { get; private set; }
+        public Player Player { get; set; }
+        public IFactory<Wall> WallFactory { get; set; }
+        public IFactory<Floor> FloorFactory { get; set; }
 
         public List<ComponentTagPair> AllComponents { get; set; }
         public Generator Generator { get; set; }
-
-        public ArrayView<bool> WallsFloors { get; set; }
 
         public void Generate()
         {
@@ -31,7 +38,11 @@ namespace MarsUndiscovered.Components
 
             AllComponents = Generator.Context.ToList();
 
-            WallsFloors = Generator.Context.GetFirst<ArrayView<bool>>();
+            var wallsFloors = Generator.Context
+                .GetFirst<ArrayView<bool>>()
+                .ToArrayView(s => s ? (Terrain)FloorFactory.Create() : WallFactory.Create());
+
+            Map = new Map(wallsFloors, 1, Distance.Chebyshev);
         }
     }
 }

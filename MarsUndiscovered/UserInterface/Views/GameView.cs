@@ -1,8 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FrigidRogue.MonoGame.Core.Extensions;
+
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
-using FrigidRogue.MonoGame.Core.Graphics.Quads;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using MarsUndiscovered.Messages;
@@ -10,7 +9,7 @@ using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using GeonBit.UI.Entities;
-using MarsUndiscovered.Interfaces;
+
 using MediatR;
 
 using Microsoft.Xna.Framework;
@@ -44,6 +43,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _consoleView = consoleView;
             _gameCamera = gameCamera;
             _gameCamera.MoveSensitivity = 1f;
+            _gameCamera.RotateSensitivity = 0.01f;
             _gameCamera.ZoomSensitivity = 0.01f;
         }
 

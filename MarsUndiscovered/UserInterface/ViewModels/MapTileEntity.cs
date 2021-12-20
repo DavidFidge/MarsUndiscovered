@@ -1,5 +1,8 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 
+using GoRogue.GameFramework;
+
+using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 
 using Microsoft.Xna.Framework;
@@ -19,7 +22,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public int Y { get; set; }
         public int Index { get; set; }
         public int MaxHeight { get; set; }
-        public float CellSize => 2f / MaxHeight;
         public bool IsFloor { get; set; }
         public bool IsWall { get; set; }
 
@@ -36,15 +38,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             }
         }
 
-        public void Initialize(int x, int y, ArrayView<bool> dataWallsFloors)
+        public void Initialize(int x, int y, IGridView<IGameObject> dataWallsFloors)
         {
             X = x;
             Y = y;
             Index = Point.ToIndex(x, y, dataWallsFloors.Width);
             MaxHeight = dataWallsFloors.Height;
             Transform.ChangeTranslation(new Vector3(X * Graphics.Assets.TileQuadWidth, Y * Graphics.Assets.TileQuadHeight, 0));
-            IsFloor = dataWallsFloors[x, y];
-            IsWall = !dataWallsFloors[x, y];
+            IsFloor = dataWallsFloors[x, y] is Floor;
+            IsWall = dataWallsFloors[x, y] is Wall;
         }
     }
 }

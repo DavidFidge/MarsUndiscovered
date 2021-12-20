@@ -1,11 +1,9 @@
-﻿using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
+﻿using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.UserInterface;
 
-using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
-
-using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -24,21 +22,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             GameWorld.Generate();
 
-            Data.WallsFloors = (ArrayView<bool>)GameWorld.WallsFloors.Clone();
-
             _mapEntity = MapEntityFactory.Create();
 
-            _mapEntity.CreateTranslation(GameWorld.WallsFloors.Width, GameWorld.WallsFloors.Height, Graphics.Assets.TileQuadWidth, Graphics.Assets.TileQuadHeight);
+            _mapEntity.CreateTranslation(GameWorld.Map.Width, GameWorld.Map.Height, Graphics.Assets.TileQuadWidth, Graphics.Assets.TileQuadHeight);
 
             SceneGraph.Initialise(_mapEntity);
 
-            for (var x = 0; x < Data.WallsFloors.Width; x++)
+            for (var x = 0; x < GameWorld.Map.Width; x++)
             {
-                for (var y = 0; y < Data.WallsFloors.Height; y++)
+                for (var y = 0; y < GameWorld.Map.Height; y++)
                 {
                     var mapTileEntity = MapTileEntityFactory.Create();
 
-                    mapTileEntity.Initialize(x, y, Data.WallsFloors);
+                    mapTileEntity.Initialize(x, y, GameWorld.Map.Terrain);
 
                     SceneGraph.Add(mapTileEntity, _mapEntity);
                 }
