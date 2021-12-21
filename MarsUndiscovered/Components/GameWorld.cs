@@ -46,14 +46,7 @@ namespace MarsUndiscovered.Components
 
             Map = new Map(wallsFloors.Width, wallsFloors.Height, 1, Distance.Chebyshev);
 
-            for (var index = 0; index < wallsFloors.Count; index++)
-            {
-                var gameObject = wallsFloors[index];
-
-                gameObject.Position = Point.FromIndex(index, wallsFloors.Width);
-
-                Map.SetTerrain(gameObject);
-            }
+            Map.ApplyTerrainOverlay(wallsFloors);
 
             var floorPosition = Map.RandomPosition((p, gameObjects) => gameObjects.Any(g => g is Floor));
 
@@ -75,4 +68,6 @@ namespace MarsUndiscovered.Components
             return new Tuple<Point, Point>(playerPosition, newPlayerPosition);
         }
     }
+
+
 }
