@@ -10,9 +10,10 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.Services;
-using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Interfaces;
+
 using MarsUndiscovered.Components;
+
 using MediatR;
 
 using Microsoft.Xna.Framework;
