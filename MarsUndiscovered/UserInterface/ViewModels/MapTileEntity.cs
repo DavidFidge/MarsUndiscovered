@@ -19,17 +19,12 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public IAssets Assets { get; set; }
         public Point Point { get; set; }
         public int MaxHeight { get; set; }
-        public BaseQuadTemplate BackgroundQuad { get; private set; }
-        public BaseQuadTemplate ForegroundQuad { get; private set; }
+        public MapTileQuad MapTileQuad { get; set; }
         public bool IsVisible { get; set; } = true;
 
         public void Draw(Matrix view, Matrix projection, Matrix world)
         {
-            if (BackgroundQuad != null)
-                BackgroundQuad.Draw(view, projection, world);
-
-            if (ForegroundQuad != null)
-                ForegroundQuad.Draw(view, projection, world);
+            MapTileQuad.Draw(view, projection, world);
         }
 
         public void Initialize(IGameObject gameObject)
@@ -41,16 +36,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             switch (gameObject)
             {
                 case Floor _:
-                    ForegroundQuad = Assets.FloorQuad;
+                    MapTileQuad = Assets.Floor;
                     break;
 
                 case Wall _:
-                    ForegroundQuad = Assets.WallForegroundQuad;
-                    BackgroundQuad = Assets.WallBackgroundQuad;
+                    MapTileQuad = Assets.Wall;
                     break;
 
                 case Player _:
-                    ForegroundQuad = Assets.PlayerForegroundQuad;
+                    MapTileQuad = Assets.Player;
                     break;
             }
         }

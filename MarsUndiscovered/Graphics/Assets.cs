@@ -16,11 +16,10 @@ namespace MarsUndiscovered.Graphics
 
         public Texture2D TitleTexture { get; set; }
         public SpriteFont MapFont { get; set; }
-        public MaterialQuadTemplate WallBackgroundQuad { get; set; }
-        public TexturedQuadTemplate WallForegroundQuad { get; set; }
-        public TexturedQuadTemplate FloorQuad { get; set; }
-        public TexturedQuadTemplate PlayerForegroundQuad { get; set; }
         public Effect TextureMaterialEffect { get; set; }
+        public MapTileQuad Wall { get; set; }
+        public MapTileQuad Floor { get; set; }
+        public MapTileQuad Player { get; set; }
 
         private readonly IGameProvider _gameProvider;
 
@@ -36,44 +35,36 @@ namespace MarsUndiscovered.Graphics
             TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/title");
             MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
 
-            WallForegroundQuad = CreateAssetForCharacter('#', Color.White);
-            WallBackgroundQuad = new MaterialQuadTemplate(_gameProvider);
-            WallBackgroundQuad.LoadContent(TileQuadWidth, TileQuadHeight, new Color(0xFF244BB6));
-
-            FloorQuad = CreateAssetForCharacter('·', Color.Tan);
-            PlayerForegroundQuad = CreateAssetForCharacter('@', Color.Yellow);
-        }
-
-        private TexturedQuadTemplate CreateAssetForCharacter(char character, Color color)
-        {
-            var renderTarget = new RenderTarget2D(
-                _gameProvider.Game.GraphicsDevice,
-                64,
-                116,
-                false,
-                _gameProvider.Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
-                _gameProvider.Game.GraphicsDevice.PresentationParameters.DepthStencilFormat,
-                0,
-                RenderTargetUsage.PreserveContents
+            Wall = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '#',
+                Color.White,
+                new Color(0xFF244BB6)
             );
 
-            var spriteBatch = new SpriteBatch(_gameProvider.Game.GraphicsDevice);
+            Floor = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '.',
+                Color.Tan
+            );
 
-            _gameProvider.Game.GraphicsDevice.SetRenderTarget(renderTarget);
-
-            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
-
-            spriteBatch.DrawString(MapFont, character.ToString(), Vector2.Zero, Color.White);
-
-            spriteBatch.End();
-
-            _gameProvider.Game.GraphicsDevice.SetRenderTarget(null);
-
-            var texturedQuad = new TexturedQuadTemplate(_gameProvider);
-            texturedQuad.LoadContent(TileQuadWidth, TileQuadHeight, renderTarget, TextureMaterialEffect);
-            texturedQuad.Colour = color;
-
-            return texturedQuad;
+            Player = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '@',
+                Color.Yellow
+            );
         }
     }
 }
