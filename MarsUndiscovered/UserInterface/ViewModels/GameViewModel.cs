@@ -22,26 +22,32 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     public class GameViewModel : BaseViewModel<GameData>, IRequestHandler<MapTileChangedRequest>
     {
         private MapEntity _mapEntity;
-        public IGameWorld GameWorld { get; set; }
+        public IFactory<IGameWorld> GameWorldFactory { get; set; }
         public ISceneGraph SceneGraph { get; set; }
         public IAssets Assets { get; set; }
         public IFactory<MapTileEntity> MapTileEntityFactory { get; set; }
         public IFactory<MapTileRootEntity> MapTileRootEntityFactory { get; set; }
         public IFactory<MapEntity> MapEntityFactory { get; set; }
 
-        public void CreateMap()
+        private IGameWorld _gameWorld;
+
+        private int _messageLogCount;
+
+        public void StartGame()
         {
-            GameWorld.Generate();
+            _gameWorld = GameWorldFactory.Create();
+
+            _gameWorld.Generate();
 
             _mapEntity = MapEntityFactory.Create();
 
-            _mapEntity.CreateTranslation(GameWorld.Map.Width, GameWorld.Map.Height, Graphics.Assets.TileQuadWidth, Graphics.Assets.TileQuadHeight);
+            _mapEntity.CreateTranslation(_gameWorld.Map.Width, _gameWorld.Map.Height, Graphics.Assets.TileQuadWidth, Graphics.Assets.TileQuadHeight);
 
             SceneGraph.Initialise(_mapEntity);
 
-            for (var x = 0; x < GameWorld.Map.Width; x++)
+            for (var x = 0; x < _gameWorld.Map.Width; x++)
             {
-                for (var y = 0; y < GameWorld.Map.Height; y++)
+                for (var y = 0; y < _gameWorld.Map.Height; y++)
                 {
                     var mapTileRootEntity = MapTileRootEntityFactory.Create();
                     mapTileRootEntity.Point = new Point(x, y);
@@ -55,7 +61,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private void CreateMapTiles(Point point, MapTileRootEntity mapTileRootEntity)
         {
-            var gameObjects = GameWorld.Map
+            var gameObjects = _gameWorld.Map
                 .GetObjectsAt(point)
                 .Reverse()
                 .ToList();
@@ -86,7 +92,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void Move(Direction direction)
         {
-            GameWorld.MoveRequest(direction);
+            _gameWorld.MoveRequest(direction);
         }
 
         public Task<Unit> Handle(MapTileChangedRequest request, CancellationToken cancellationToken)
@@ -94,6 +100,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             UpdateMapTiles(request.Point);
 
             return Unit.Task;
+        }
+
+        public IList<string> GetNewMessages()
+        {
+            var newMessages = _gameWorld.GetMessagesSince(_messageLogCount);
+
+            _messageLogCount += newMessages.Count;
+
+            return newMessages;
         }
     }
 }

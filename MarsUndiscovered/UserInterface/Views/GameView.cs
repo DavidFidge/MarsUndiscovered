@@ -39,6 +39,7 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
         private readonly IGameCamera _gameCamera;
+        private SelectList _messageLog;
 
         public GameView(
             GameViewModel gameViewModel,
@@ -79,6 +80,20 @@ namespace MarsUndiscovered.UserInterface.Views
             _inGameOptionsView.Initialize();
 
             RootPanel.AddChild(_inGameOptionsView.RootPanel);
+
+            _messageLog = new SelectList(size: new Vector2(0.8f, 0.15f), Anchor.TopCenter, null, PanelSkin.None)
+                .WithPadding(new Vector2(5f));
+
+            _messageLog.ExtraSpaceBetweenLines = -10;
+            _messageLog.LockSelection = true;
+            RootPanel.AddChild(_messageLog);
+
+            _messageLog.OnListChange = entity =>
+            {
+                var list = (SelectList)entity;
+                if (list.Count > 100)
+                    list.RemoveItem(0);
+            };
         }
 
         private void SetupConsole()
@@ -126,13 +141,21 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public override void Update()
         {
+            var newMessages = _viewModel.GetNewMessages();
+
+            foreach (var message in newMessages)
+                _messageLog.AddItem(message);
+
+            _messageLog.scrollToEnd();
+
             _gameCamera.Update();
+
             base.Update();
         }
 
-        public void CreateGame()
+        public void StartGame()
         {
-            _viewModel.CreateMap();
+            _viewModel.StartGame();
         }
 
         public Task<Unit> Handle(LeftClickViewRequest request, CancellationToken cancellationToken)

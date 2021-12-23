@@ -14,7 +14,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             var translationHeight = mapHeight * tileHeight;
             var halfTileHeight = tileHeight / 2f;
 
-            var translation = new Vector3(-translationWidth / 2f, (translationHeight / 2f) - halfTileHeight, -translationHeight / 2f);
+            var translation = new Vector3(-translationWidth / 2f, (translationHeight / 2f) - halfTileHeight, (-translationHeight / 2f) - 5f);
 
             Transform.ChangeTranslation(translation);
         }

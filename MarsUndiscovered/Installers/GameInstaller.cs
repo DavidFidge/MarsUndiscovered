@@ -72,7 +72,8 @@ namespace MarsUndiscovered.Installers
                     .WithServiceDefaultInterfaces(),
 
                 Component.For<IGameWorld>()
-                    .ImplementedBy<GameWorld>(),
+                    .ImplementedBy<GameWorld>()
+                    .LifestyleTransient(),
 
                 Component.For<IActionMapStore>()
                     .ImplementedBy<DefaultActionMapStore>(),
@@ -119,6 +120,9 @@ namespace MarsUndiscovered.Installers
                     .AsFactory(),
 
                 Component.For<IFactory<MapTileRootEntity>>()
+                    .AsFactory(),
+
+                Component.For<IFactory<IGameWorld>>()
                     .AsFactory()
             );
         }

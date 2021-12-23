@@ -18,5 +18,6 @@ namespace MarsUndiscovered.Interfaces
         void MoveRequest(Direction direction);
         IGameTurnService GameTurnService { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
+        IList<string> GetMessagesSince(int currentCount);
     }
 }

@@ -67,22 +67,36 @@ namespace MarsUndiscovered.Components
         {
             var playerPosition = Player.Position;
             var newPlayerPosition = Player.Position + direction;
-            var terrain = Map.GetTerrainAt(newPlayerPosition);
 
             if (Map.GameObjectCanMove(Player, newPlayerPosition))
             {
-                var command = MoveCommandFactory.Create();
+                var terrainAtDestination = Map.GetTerrainAt(newPlayerPosition);
 
-                command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
-                command.Execute();
+                if (terrainAtDestination is Floor)
+                {
+                    var command = MoveCommandFactory.Create();
 
-                Mediator.Send(new MapTileChangedRequest(playerPosition));
-                Mediator.Send(new MapTileChangedRequest(newPlayerPosition));
+                    command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
+                    command.Execute();
 
-                return;
+                    Mediator.Send(new MapTileChangedRequest(playerPosition));
+                    Mediator.Send(new MapTileChangedRequest(newPlayerPosition));
+                }
+                else if (terrainAtDestination is Wall)
+                {
+                    MessageLog.AddMessage("The unrelenting red rock is cold and dry");
+                }
             }
+        }
+        public IList<string> GetMessagesSince(int currentCount)
+        {
+            if (currentCount == MessageLog.Count)
+                return Array.Empty<string>();
 
-            MessageLog.AddMessage("The unrelenting red rock looms all around you");
+            return MessageLog
+                .Skip(currentCount)
+                .Select(s => s.Message)
+                .ToList();
         }
     }
 }
