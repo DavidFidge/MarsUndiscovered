@@ -1,4 +1,12 @@
-﻿float4x4 World;
+﻿#if OPENGL
+    #define VS_SHADERMODEL vs_3_0
+    #define PS_SHADERMODEL ps_3_0
+#else
+    #define VS_SHADERMODEL vs_5_0
+    #define PS_SHADERMODEL ps_5_0
+#endif
+
+float4x4 World;
 float4x4 View;
 float4x4 Projection;
 Texture2D Texture;
@@ -56,10 +64,10 @@ technique Technique1
 {
     pass Pass1
     {
-        VertexShader = compile vs_4_1
+        VertexShader = compile VS_SHADERMODEL
         VertexShaderFunction();
 
-        PixelShader = compile ps_4_1
+        PixelShader = compile PS_SHADERMODEL
         PixelShaderFunction();
     }
 }

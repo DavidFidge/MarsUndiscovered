@@ -1,4 +1,12 @@
-﻿Texture2D SpriteTexture;
+﻿#if OPENGL
+    #define VS_SHADERMODEL vs_3_0
+    #define PS_SHADERMODEL ps_3_0
+#else
+    #define VS_SHADERMODEL vs_5_0
+    #define PS_SHADERMODEL ps_5_0
+#endif
+
+Texture2D SpriteTexture;
 
 sampler2D SpriteTextureSampler = sampler_state
 {
@@ -25,7 +33,7 @@ technique SpriteDrawing
 {
     pass P0
     {
-        PixelShader = compile ps_4_1
+        PixelShader = compile PS_SHADERMODEL
         PixelShaderFunction();
     }
 };
