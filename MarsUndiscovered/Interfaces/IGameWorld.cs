@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using FrigidRogue.MonoGame.Core.Interfaces.Services;
 
 using GoRogue.GameFramework;
 
@@ -13,6 +15,9 @@ namespace MarsUndiscovered.Interfaces
         Player Player { get; set; }
         void Generate();
         Map Map { get; }
-        Tuple<Point, Point> Move(Direction direction);
+        void MoveRequest(Direction direction);
+        void Move(IGameObject gameObject, Point newPosition);
+        IGameTurnService GameTurnService { get; }
+        IDictionary<uint, IGameObject> GameObjects { get; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
@@ -8,13 +10,16 @@ using FrigidRogue.MonoGame.Core.UserInterface;
 
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
+using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
+
+using MediatR;
 
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
-    public class GameViewModel : BaseViewModel<GameData>
+    public class GameViewModel : BaseViewModel<GameData>, IRequestHandler<MapTileChangedRequest>
     {
         private MapEntity _mapEntity;
         public IGameWorld GameWorld { get; set; }
@@ -81,10 +86,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void Move(Direction direction)
         {
-            var changedPositions = GameWorld.Move(direction);
+            GameWorld.MoveRequest(direction);
+        }
 
-            UpdateMapTiles(changedPositions.Item1);
-            UpdateMapTiles(changedPositions.Item2);
+        public Task<Unit> Handle(MapTileChangedRequest request, CancellationToken cancellationToken)
+        {
+            UpdateMapTiles(request.Point);
+
+            return Unit.Task;
         }
     }
 }
