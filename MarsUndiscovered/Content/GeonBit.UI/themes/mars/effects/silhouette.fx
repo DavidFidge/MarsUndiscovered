@@ -12,7 +12,7 @@ struct VertexShaderOutput
     float2 TextureCoordinates : TEXCOORD0;
 };
 
-float4 MainPS(VertexShaderOutput input) : COLOR
+float4 PixelShaderFunction(VertexShaderOutput input) : COLOR
 {
     float4 color = tex2D(SpriteTextureSampler,input.TextureCoordinates) * input.Color;
     color.r = 1 * color.a * input.Color.r;
