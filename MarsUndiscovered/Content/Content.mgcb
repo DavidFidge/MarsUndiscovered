@@ -14,12 +14,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin BuiltEffects/disabled.xnb
-/copy:BuiltEffects/disabled.xnb
-
-#begin BuiltEffects/silhouette.xnb
-/copy:BuiltEffects/silhouette.xnb
-
 #begin GeonBit.UI/themes/mars/effects/disabled.fx
 /importer:EffectImporter
 /processor:EffectProcessor
