@@ -16,8 +16,6 @@ using MediatR;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using SadRogue.Primitives;
-
 namespace MarsUndiscovered.UserInterface.Views
 {
     public class GameView : BaseMarsUndiscoveredView<GameViewModel, GameData>,
@@ -28,7 +26,11 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<LeftClickViewRequest>,
         IRequestHandler<RightClickViewRequest>,
         IRequestHandler<MoveUpRequest>,
+        IRequestHandler<MoveUpLeftRequest>,
+        IRequestHandler<MoveUpRightRequest>,
         IRequestHandler<MoveDownRequest>,
+        IRequestHandler<MoveDownLeftRequest>,
+        IRequestHandler<MoveDownRightRequest>,
         IRequestHandler<MoveLeftRequest>,
         IRequestHandler<MoveRightRequest>
     {
@@ -165,6 +167,34 @@ namespace MarsUndiscovered.UserInterface.Views
         }
 
         public Task<Unit> Handle(MoveRightRequest request, CancellationToken cancellationToken)
+        {
+            _viewModel.Move(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveUpLeftRequest request, CancellationToken cancellationToken)
+        {
+            _viewModel.Move(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveUpRightRequest request, CancellationToken cancellationToken)
+        {
+            _viewModel.Move(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveDownLeftRequest request, CancellationToken cancellationToken)
+        {
+            _viewModel.Move(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveDownRightRequest request, CancellationToken cancellationToken)
         {
             _viewModel.Move(request.Direction);
 

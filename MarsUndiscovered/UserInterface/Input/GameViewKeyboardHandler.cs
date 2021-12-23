@@ -43,8 +43,20 @@ namespace MarsUndiscovered.UserInterface.Input
             if (ActionMap.ActionIs<MoveUpRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new MoveUpRequest());
 
+            if (ActionMap.ActionIs<MoveUpLeftRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new MoveUpLeftRequest());
+
+            if (ActionMap.ActionIs<MoveUpRightRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new MoveUpRightRequest());
+
             if (ActionMap.ActionIs<MoveDownRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new MoveDownRequest());
+
+            if (ActionMap.ActionIs<MoveDownLeftRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new MoveDownLeftRequest());
+
+            if (ActionMap.ActionIs<MoveDownRightRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new MoveDownRightRequest());
 
             if (ActionMap.ActionIs<MoveLeftRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new MoveLeftRequest());
