@@ -16,7 +16,6 @@ namespace MarsUndiscovered.Interfaces
         void Generate();
         Map Map { get; }
         void MoveRequest(Direction direction);
-        void Move(IGameObject gameObject, Point newPosition);
         IGameTurnService GameTurnService { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
     }

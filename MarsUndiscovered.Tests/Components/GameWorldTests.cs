@@ -1,5 +1,5 @@
 ﻿using FrigidRogue.TestInfrastructure;
-
+using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,7 +25,8 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Arrange
             _gameWorld.WallFactory = new TestFactory<Wall>();
             _gameWorld.FloorFactory = new TestFactory<Floor>();
-            _gameWorld.Player = new Player();
+            _gameWorld.PlayerFactory = new TestFactory<Player>();
+            _gameWorld.MoveCommandFactory = new TestFactory<MoveCommand>();
 
             // Act
             _gameWorld.Generate();

@@ -26,8 +26,10 @@ namespace MarsUndiscovered.Components
 
         public Map Map { get; private set; }
         public Player Player { get; set; }
+        public IFactory<Player> PlayerFactory { get; set; }
         public IFactory<Wall> WallFactory { get; set; }
         public IFactory<Floor> FloorFactory { get; set; }
+        public IFactory<MoveCommand> MoveCommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
         public IDictionary<uint, IGameObject> GameObjects { get; private set; }
         public Generator Generator { get; set; }
@@ -51,6 +53,7 @@ namespace MarsUndiscovered.Components
 
             var floorPosition = Map.RandomPosition((p, gameObjects) => gameObjects.Any(g => g is Floor));
 
+            Player = PlayerFactory.Create();
             Player.Position = floorPosition;
 
             Map.AddEntity(Player);
@@ -66,9 +69,9 @@ namespace MarsUndiscovered.Components
             var newPlayerPosition = Player.Position + direction;
             var terrain = Map.GetTerrainAt(newPlayerPosition);
 
-            if (terrain is Floor)
+            if (Map.GameObjectCanMove(Player, newPlayerPosition))
             {
-                var command = new MoveCommand();
+                var command = MoveCommandFactory.Create();
 
                 command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
                 command.Execute();
@@ -80,11 +83,6 @@ namespace MarsUndiscovered.Components
             }
 
             MessageLog.AddMessage("The unrelenting red rock looms all around you");
-        }
-
-        public void Move(IGameObject gameObject, Point newPosition)
-        {
-            gameObject.Position = newPosition;
         }
     }
 }

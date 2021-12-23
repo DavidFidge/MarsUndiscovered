@@ -37,18 +37,21 @@ namespace MarsUndiscovered.Commands
 
         public override void SetState(IMemento<MoveCommandData> memento)
         {
+            base.SetState(memento);
+
             Initialise(GameWorld.GameObjects[memento.State.GameObjectId], memento.State.FromTo);
             GameWorld.GameTurnService.Populate(TurnDetails);
         }
 
         public override void Execute()
         {
-            GameWorld.Move(_gameObject, _fromTo.Item2);
+            base.Execute();
+            _gameObject.Position = _fromTo.Item2;
         }
 
         public override void Undo()
         {
-            GameWorld.Move(_gameObject, _fromTo.Item1);
+            _gameObject.Position = _fromTo.Item1;
         }
     }
 }

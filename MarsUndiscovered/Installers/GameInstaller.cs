@@ -28,6 +28,7 @@ using FrigidRogue.MonoGame.Core.View.Interfaces;
 
 using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
+using MarsUndiscovered.Commands;
 
 namespace MarsUndiscovered.Installers
 {
@@ -47,6 +48,8 @@ namespace MarsUndiscovered.Installers
 
             RegisterKeyboardHandlers(container);
             RegisterMouseHandlers(container);
+
+            RegisterFactories(container);
 
             container.Register(
 
@@ -77,29 +80,25 @@ namespace MarsUndiscovered.Installers
                 Component.For<MapTileRootEntity>()
                     .LifeStyle.Transient,
 
-                Component.For<IFactory<MapTileRootEntity>>()
-                    .AsFactory(),
-
                 Component.For<MapTileEntity>()
                     .LifeStyle.Transient,
-
-                Component.For<IFactory<MapTileEntity>>()
-                    .AsFactory(),
 
                 Component.For<MapEntity>()
                     .LifeStyle.Transient,
 
-                Component.For<IFactory<MapEntity>>()
-                    .AsFactory(),
-
-                Component.For<Player>()
+                Classes.FromAssembly(Assembly.GetExecutingAssembly())
+                    .BasedOn<MarsGameObject>()
                     .LifestyleTransient(),
 
-                Component.For<Wall>()
-                    .LifestyleTransient(),
+                Classes.FromAssembly(Assembly.GetExecutingAssembly())
+                    .BasedOn<BaseCommand>()
+                    .LifestyleTransient()
+            );
+        }
 
-                Component.For<Floor>()
-                    .LifestyleTransient(),
+        private void RegisterFactories(IWindsorContainer container)
+        {
+            container.Register(
 
                 Component.For<IFactory<Wall>>()
                     .AsFactory(),
@@ -108,6 +107,18 @@ namespace MarsUndiscovered.Installers
                     .AsFactory(),
 
                 Component.For<IFactory<Player>>()
+                    .AsFactory(),
+
+                Component.For<IFactory<MoveCommand>>()
+                    .AsFactory(),
+
+                Component.For<IFactory<MapTileEntity>>()
+                    .AsFactory(),
+
+                Component.For<IFactory<MapEntity>>()
+                    .AsFactory(),
+
+                Component.For<IFactory<MapTileRootEntity>>()
                     .AsFactory()
             );
         }
