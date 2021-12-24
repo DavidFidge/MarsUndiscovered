@@ -22,9 +22,12 @@ namespace MarsUndiscovered.UserInterface.Views
 {
     public class TitleView : BaseMarsUndiscoveredView<TitleViewModel, TitleData>,
         IRequestHandler<OptionsButtonClickedRequest>,
-        IRequestHandler<CloseOptionsViewRequest>
+        IRequestHandler<CloseOptionsViewRequest>,
+        IRequestHandler<CustomGameSeedRequest>,
+        IRequestHandler<CancelCustomGameSeedRequest>
     {
         private readonly OptionsView _optionsView;
+        private readonly CustomGameSeedView _customGameSeedView;
 
         private Panel _titleMenuPanel;
 
@@ -32,17 +35,19 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public TitleView(
             TitleViewModel titleViewModel,
-            OptionsView optionsView)
+            OptionsView optionsView,
+            CustomGameSeedView customGameSeedView)
             : base(titleViewModel)
         {
             _optionsView = optionsView;
+            _customGameSeedView = customGameSeedView;
         }
 
         protected override void InitializeInternal()
         {
             _titleMenuPanel = new Panel()
                 .AutoHeight()
-                .WidthOfButton()
+                .WidthOfButtonWithPadding()
                 .Opacity90Percent();
 
             _titleMenuPanel.Anchor = Anchor.BottomRight;
@@ -54,6 +59,8 @@ namespace MarsUndiscovered.UserInterface.Views
                 .SendOnClick<NewGameRequest>(Mediator)
                 .AddTo(_titleMenuPanel);
 
+
+            SetupCustomGameItem();
             SetupOptionsItem();
 
             new Button("Exit")
@@ -78,6 +85,33 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _optionsView.Show();
             _titleMenuPanel.Visible = false;
+
+            return Unit.Task;
+        }
+
+        private void SetupCustomGameItem()
+        {
+            new Button("New Game (custom seed)")
+                .SendOnClick<CustomGameSeedRequest>(Mediator)
+                .AddTo(_titleMenuPanel);
+
+            _customGameSeedView.Initialize();
+
+            RootPanel.AddChild(_customGameSeedView.RootPanel);
+        }
+
+        public Task<Unit> Handle(CustomGameSeedRequest request, CancellationToken cancellationToken)
+        {
+            _customGameSeedView.Show();
+            _titleMenuPanel.Visible = false;
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(CancelCustomGameSeedRequest request, CancellationToken cancellationToken)
+        {
+            _customGameSeedView.Hide();
+            _titleMenuPanel.Visible = true;
 
             return Unit.Task;
         }

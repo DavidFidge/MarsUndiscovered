@@ -14,7 +14,7 @@
     <SpaceBefore Null="true" />
     <SpaceAfter Null="true" />
     <ShadowScale Null="true" />
-	<DefaultSize>0 80</DefaultSize>
+    <DefaultSize>600 100</DefaultSize>
   </Asset>
         
 </XnaContent>

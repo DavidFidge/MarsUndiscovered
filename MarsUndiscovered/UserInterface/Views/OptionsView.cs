@@ -34,7 +34,7 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _optionsMenuPanel = new Panel()
                 .AutoHeight()
-                .WidthOfButton()
+                .WidthOfButtonWithPadding()
                 .Opacity90Percent();
 
             RootPanel.AddChild(_optionsMenuPanel);

@@ -153,9 +153,9 @@ namespace MarsUndiscovered.UserInterface.Views
             base.Update();
         }
 
-        public void StartGame()
+        public void StartGame(uint? seed = null)
         {
-            _viewModel.StartGame();
+            _viewModel.StartGame(seed);
         }
 
         public Task<Unit> Handle(LeftClickViewRequest request, CancellationToken cancellationToken)

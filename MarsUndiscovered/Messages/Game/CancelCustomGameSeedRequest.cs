@@ -6,9 +6,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.Messages
 {
-    [ActionMap(Name = "New Game", DefaultKey = Keys.N)]
-    public class NewGameRequest : IRequest
+    [ActionMap(Name = "Cancel Custom Game Seed Request", DefaultKey = Keys.Escape)]
+    public class CancelCustomGameSeedRequest : IRequest
     {
-        public uint? Seed { get; set; } = null;
     }
 }

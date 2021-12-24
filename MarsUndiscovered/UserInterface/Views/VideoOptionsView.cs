@@ -25,7 +25,7 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             var videoOptionsPanel = new Panel()
                 .AutoHeight()
-                .WidthOfButton()
+                .WidthOfButtonWithPadding()
                 .Opacity100Percent();
 
             RootPanel.AddChild(videoOptionsPanel);

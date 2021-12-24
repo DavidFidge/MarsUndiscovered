@@ -33,11 +33,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private int _messageLogCount;
 
-        public void StartGame()
+        public void StartGame(uint? seed = null)
         {
             _gameWorld = GameWorldFactory.Create();
 
-            _gameWorld.Generate();
+            _gameWorld.Generate(seed);
 
             _mapEntity = MapEntityFactory.Create();
 
