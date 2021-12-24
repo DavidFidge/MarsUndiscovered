@@ -13,7 +13,7 @@ namespace MarsUndiscovered.Interfaces
     public interface IGameWorld
     {
         Player Player { get; set; }
-        void Generate();
+        void Generate(uint? seed = null);
         Map Map { get; }
         void MoveRequest(Direction direction);
         IGameTurnService GameTurnService { get; }

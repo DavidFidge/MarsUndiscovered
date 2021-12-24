@@ -10,12 +10,15 @@ using MarsUndiscovered.Interfaces;
 
 using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
-
+using GoRogue.Random;
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Messages;
 
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+
+using Troschuetz.Random;
+using Troschuetz.Random.Generators;
 
 namespace MarsUndiscovered.Components
 {
@@ -35,8 +38,13 @@ namespace MarsUndiscovered.Components
         public Generator Generator { get; set; }
         public MessageLog MessageLog { get; private set; }
 
-        public void Generate()
+        public void Generate(uint? seed = null)
         {
+            if (seed == null)
+                seed = TMath.Seed();
+
+            GlobalRandom.DefaultRNG = new XorShift128Generator(seed.Value);
+
             Logger.Debug("Generating game world");
 
             var generator = new Generator(76, 29);
