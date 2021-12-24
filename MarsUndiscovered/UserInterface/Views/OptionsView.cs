@@ -31,9 +31,10 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            _optionsMenuPanel = new Panel();
-            _optionsMenuPanel.AdjustHeightAutomatically = true;
-            _optionsMenuPanel.Opacity = 200;
+            _optionsMenuPanel = new Panel()
+                .AutoHeight()
+                .WidthOfButton()
+                .Opacity75Percent();
 
             RootPanel.AddChild(_optionsMenuPanel);
 

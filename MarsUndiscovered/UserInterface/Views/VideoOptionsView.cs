@@ -6,7 +6,7 @@ using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Services;
 using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.MonoGame.Core.View;
-
+using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI.Entities;
 
 using Microsoft.Xna.Framework;
@@ -23,9 +23,10 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            var videoOptionsPanel = new Panel();
-            videoOptionsPanel.AdjustHeightAutomatically = true;
-            videoOptionsPanel.Opacity = 200;
+            var videoOptionsPanel = new Panel()
+                .AutoHeight()
+                .WidthOfButton()
+                .Opacity75Percent();
 
             RootPanel.AddChild(videoOptionsPanel);
 

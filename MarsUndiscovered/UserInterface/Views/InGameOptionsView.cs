@@ -6,8 +6,6 @@ using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
 
-using Microsoft.Xna.Framework;
-
 namespace MarsUndiscovered.UserInterface.Views
 {
     public class InGameOptionsView : BaseMarsUndiscoveredView<InGameOptionsViewModel, InGameOptionsData>
@@ -22,9 +20,9 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            _inGameOptionsMenuPanel = new Panel();
-
-            _inGameOptionsMenuPanel.AdjustHeightAutomatically = true;
+            _inGameOptionsMenuPanel = new Panel()
+                .AutoHeight()
+                .WidthOfButton();
 
             RootPanel.AddChild(_inGameOptionsMenuPanel);
 

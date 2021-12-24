@@ -40,11 +40,13 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            _titleMenuPanel = new Panel();
-            _titleMenuPanel.AdjustHeightAutomatically = true;
+            _titleMenuPanel = new Panel()
+                .AutoHeight()
+                .WidthOfButton()
+                .Opacity75Percent();
+
             _titleMenuPanel.Anchor = Anchor.BottomRight;
-            _titleMenuPanel.Offset = new Vector2(100f, 100f);
-            _titleMenuPanel.Opacity = 200;
+            _titleMenuPanel.Offset = new Vector2(200f, 200f);
 
             RootPanel.AddChild(_titleMenuPanel);
 
