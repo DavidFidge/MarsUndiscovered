@@ -11,6 +11,7 @@ using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI.Entities;
 
 using MediatR;
+using SharpDX.MediaFoundation;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -34,7 +35,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _optionsMenuPanel = new Panel()
                 .AutoHeight()
                 .WidthOfButton()
-                .Opacity75Percent();
+                .Opacity90Percent();
 
             RootPanel.AddChild(_optionsMenuPanel);
 
@@ -56,12 +57,12 @@ namespace MarsUndiscovered.UserInterface.Views
                 .AddTo(_optionsMenuPanel);
 
             _videoOptionsView.Initialize();
-            
-            RootPanel.AddChild(_videoOptionsView.RootPanel);
         }
 
         public Task<Unit> Handle(OpenVideoOptionsRequest request, CancellationToken cancellationToken)
         {
+            _videoOptionsView.RootPanel.ClearParent();
+            RootPanel.AddChild(_videoOptionsView.RootPanel);
             _videoOptionsView.Show();
             _optionsMenuPanel.Visible = false;
 
@@ -70,8 +71,11 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(CloseVideoOptionsRequest request, CancellationToken cancellationToken)
         {
-            _videoOptionsView.Hide();
-            _optionsMenuPanel.Visible = true;
+            if (RootPanel.HasChild(_videoOptionsView.RootPanel))
+            {
+                _videoOptionsView.Hide();
+                _optionsMenuPanel.Visible = true;
+            }
 
             return Unit.Task;
         }

@@ -26,7 +26,7 @@ namespace MarsUndiscovered.UserInterface.Views
             var videoOptionsPanel = new Panel()
                 .AutoHeight()
                 .WidthOfButton()
-                .Opacity75Percent();
+                .Opacity100Percent();
 
             RootPanel.AddChild(videoOptionsPanel);
 
@@ -42,6 +42,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 {
                     Mediator.Send(new SaveVideoOptionsRequest());
                     Mediator.Send(new CloseVideoOptionsRequest());
+                    Mediator.Send(new CloseInGameVideoOptionsRequest());
                 }
             };
 
