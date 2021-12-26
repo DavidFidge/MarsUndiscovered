@@ -55,6 +55,15 @@ namespace MarsUndiscovered.UserInterface.Views
             _videoOptionsView.Initialize();
         }
 
+        private void SetupSaveGameItem()
+        {
+            new Button("Save Game")
+                .SendOnClick<OpenInGameVideoOptionsRequest>(Mediator)
+                .AddTo(_inGameOptionsMenuPanel);
+
+            _videoOptionsView.Initialize();
+        }
+
         public Task<Unit> Handle(OpenInGameVideoOptionsRequest request, CancellationToken cancellationToken)
         {
             _videoOptionsView.RootPanel.ClearParent();
