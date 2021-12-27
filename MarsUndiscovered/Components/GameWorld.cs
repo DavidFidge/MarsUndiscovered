@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using AutoMapper;
 using FrigidRogue.MonoGame.Core.Components;
@@ -14,14 +15,17 @@ using GoRogue.MapGeneration;
 using GoRogue.Random;
 
 using MarsUndiscovered.Commands;
+using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.SaveData;
 using MarsUndiscovered.Messages;
-
+using MediatR;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
 using Troschuetz.Random;
 using Troschuetz.Random.Generators;
+
+using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.Components
 {
@@ -32,22 +36,26 @@ namespace MarsUndiscovered.Components
 
         public Map Map { get; private set; }
         public Player Player { get; set; }
-        public IFactory<Player> PlayerFactory { get; set; }
-        public IFactory<Wall> WallFactory { get; set; }
-        public IFactory<Floor> FloorFactory { get; set; }
+        public IGameObjectFactory GameObjectFactory { get; set; }
         public IFactory<MoveCommand> MoveCommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
-        public ISaveGameService SaveGameService { get; set; }
         public ISaveGameStore SaveGameStore { get; set; }
-        public IDictionary<uint, IGameObject> GameObjects { get; private set; }
+        public GameObjectCollection GameObjects { get; private set; } = new GameObjectCollection();
         public Generator Generator { get; set; }
         public MessageLog MessageLog { get; private set; }
         public IMapper Mapper { get; set; }
 
         public uint Seed { get; set; }
 
-        public void Generate(uint? seed = null)
+        public GameWorld()
         {
+            GlobalRandom.DefaultRNG = new XorShift128Generator();
+        }
+
+        public void NewGame(uint? seed = null)
+        {
+            GameObjectFactory.Reset();
+
             if (seed == null)
                 seed = TMath.Seed();
 
@@ -57,36 +65,47 @@ namespace MarsUndiscovered.Components
 
             Logger.Debug("Generating game world");
 
+            Player = GameObjectFactory.CreatePlayer();
+            GameObjects.Add(Player.ID, Player);
+
             var generator = new Generator(MapWidth, MapHeight);
 
             Generator = generator.ConfigAndGenerateSafe(g => g.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps()));
 
             var wallsFloors = Generator.Context
                 .GetFirst<ArrayView<bool>>()
-                .ToArrayView(s => s ? (Terrain)FloorFactory.Create() : WallFactory.Create());
-
-            Map = CreateMap();
-
-            Map.ApplyTerrainOverlay(wallsFloors);
-
-            var floorPosition = Map.RandomPosition((p, gameObjects) => gameObjects.Any(g => g is Floor));
-
-            Player = PlayerFactory.Create();
-            Player.Position = floorPosition;
-
-            Map.AddEntity(Player);
-            GameObjects = new Dictionary<uint, IGameObject>();
-            GameObjects.Add(Player.ID, Player);
+                .ToArrayView(s => s ? (Terrain)GameObjectFactory.CreateFloor() : GameObjectFactory.CreateWall());
 
             foreach (var item in wallsFloors.ToArray())
                 GameObjects.Add(item.ID, item);
 
+            CreateMap();
+
+            var floorPosition = Map.RandomPosition((p, gameObjects) => gameObjects.Any(g => g is Floor));
+            Player.Position = floorPosition;
+
+            Map.AddEntity(Player);
+
             MessageLog = new MessageLog();
         }
 
-        private Map CreateMap()
+        private void CreateMap()
         {
-            return new Map(MapWidth, MapHeight, 1, Distance.Chebyshev);
+            Debug.Assert(GameObjects.Any(), "GameObjects must be populated");
+
+            Map = new Map(MapWidth, MapHeight, 1, Distance.Chebyshev);
+
+            PopulateMapTerrain();
+        }
+
+        private void PopulateMapTerrain()
+        {
+            var wallsFloors = GameObjects
+                .Values
+                .OfType<Terrain>()
+                .ToArrayView(MapWidth);
+
+            Map.ApplyTerrainOverlay(wallsFloors);
         }
 
         public void MoveRequest(Direction direction)
@@ -135,9 +154,7 @@ namespace MarsUndiscovered.Components
                     return canSaveGameResult;
             }
 
-            var gameObjectSaveData = Mapper.Map<IList<IGameObject>, IList<GameObjectSaveData>>(GameObjects.Values.ToList());
-
-            SaveGameStore.SaveToStore(gameObjectSaveData.CreateMemento());
+            SaveGame(SaveGameStore);
 
             return SaveGameStore.SaveStoreToFile(saveGameName, overwrite);
         }
@@ -146,31 +163,30 @@ namespace MarsUndiscovered.Components
         {
             SaveGameStore.LoadStoreFromFile(saveGameName);
 
-            var gameObjectSaveData = SaveGameStore.GetFromStore<IList<GameObjectSaveData>>();
-
-            var gameObjects = Mapper.Map<IList<GameObjectSaveData>, IList<IGameObject>>(gameObjectSaveData.State);
-
-            GameObjects = gameObjects.ToDictionary(k => k.ID, v => v);
-
-            Map = CreateMap();
-
-            var wallsFloors = GameObjects
-                .Values
-                .OfType<Terrain>()
-                .ToArrayView(MapWidth);
-
-            Map.ApplyTerrainOverlay(wallsFloors);
+            LoadGame(SaveGameStore);
         }
 
         public void SaveGame(ISaveGameStore saveGameStore)
         {
-            saveGameStore.SaveToStore<GameWorldSaveData>(new Memento<GameWorldSaveData>(Mapper.Map()));
-
+            GameObjectFactory.SaveGame(saveGameStore);
+            GameObjects.SaveGame(saveGameStore);
+            saveGameStore.SaveToStore<GameWorld, GameWorldSaveData>(this);
         }
 
         public void LoadGame(ISaveGameStore saveGameStore)
         {
-            throw new NotImplementedException();
+            saveGameStore.GetFromStore<GameWorld, GameWorldSaveData>(this);
+
+            GameObjectFactory.LoadGame(saveGameStore);
+            GameObjects.LoadGame(saveGameStore);
+
+            Player = (Player)GameObjects.Values.First(go => go is Player);
+
+            CreateMap();
+
+            PopulateMapTerrain();
+
+            Map.AddEntity(Player);
         }
     }
 }

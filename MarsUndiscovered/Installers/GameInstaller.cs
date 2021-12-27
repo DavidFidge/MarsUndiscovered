@@ -29,6 +29,7 @@ using FrigidRogue.MonoGame.Core.View.Interfaces;
 using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
 using MarsUndiscovered.Commands;
+using MarsUndiscovered.Components.Factories;
 
 namespace MarsUndiscovered.Installers
 {
@@ -36,6 +37,7 @@ namespace MarsUndiscovered.Installers
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
+            container.Install(new AutoMapperProfileInstaller());
             container.Install(new CoreInstaller());
             container.Install(new ViewInstaller());
 
@@ -105,14 +107,9 @@ namespace MarsUndiscovered.Installers
         {
             container.Register(
 
-                Component.For<IFactory<Wall>>()
-                    .AsFactory(),
-
-                Component.For<IFactory<Floor>>()
-                    .AsFactory(),
-
-                Component.For<IFactory<Player>>()
-                    .AsFactory(),
+                Component.For<IGameObjectFactory>()
+                    .ImplementedBy<GameObjectFactory>()
+                    .DependsOn(Dependency.OnValue<IWindsorContainer>(container)),
 
                 Component.For<IFactory<MoveCommand>>()
                     .AsFactory(),

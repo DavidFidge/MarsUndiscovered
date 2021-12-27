@@ -1,8 +1,7 @@
 ﻿namespace MarsUndiscovered.Components.SaveData
 {
-    public class GameWorldSaveData
+    public class GameObjectFactoryData : BaseSaveData
     {
         public uint NextId { get; set; }
-        public uint Seed { get; set; }
     }
 }

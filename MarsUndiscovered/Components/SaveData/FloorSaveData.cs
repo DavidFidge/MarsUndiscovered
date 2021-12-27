@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MarsUndiscovered.Components.SaveData
+﻿namespace MarsUndiscovered.Components.SaveData
 {
     public class FloorSaveData : TerrainSaveData
     {

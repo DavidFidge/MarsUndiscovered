@@ -15,11 +15,11 @@ namespace MarsUndiscovered.Interfaces
     public interface IGameWorld
     {
         Player Player { get; set; }
-        void Generate(uint? seed = null);
+        void NewGame(uint? seed = null);
         Map Map { get; }
         void MoveRequest(Direction direction);
         IGameTurnService GameTurnService { get; }
-        IDictionary<uint, IGameObject> GameObjects { get; }
+        GameObjectCollection GameObjects { get; }
         IList<string> GetMessagesSince(int currentCount);
         SaveGameResult SaveGame(string saveGameName, bool overwrite);
         uint Seed { get; }
