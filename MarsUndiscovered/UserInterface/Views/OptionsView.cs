@@ -55,6 +55,8 @@ namespace MarsUndiscovered.UserInterface.Views
                 .SendOnClick<OpenVideoOptionsRequest>(Mediator)
                 .AddTo(_optionsMenuPanel);
 
+            // Only initialize, do not add as child - this is done when handling the message
+            // as it is a shared component between this and in game options screen.
             _videoOptionsView.Initialize();
         }
 

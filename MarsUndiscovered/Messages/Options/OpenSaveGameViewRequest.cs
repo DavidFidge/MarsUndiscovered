@@ -4,10 +4,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.Messages
 {
-    [ActionMap(Name = "Save Game", DefaultKey = Keys.S)]
+    [ActionMap(Name = "Open Save Game View", DefaultKey = Keys.S)]
 
-    public class SaveGameRequest : IRequest
+    public class OpenSaveGameViewRequest : IRequest
     {
-        public bool Overwrite { get; set; }
     }
 }

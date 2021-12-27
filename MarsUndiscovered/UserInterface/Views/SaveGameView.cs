@@ -1,4 +1,6 @@
-﻿using FrigidRogue.MonoGame.Core.Services;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
@@ -9,10 +11,13 @@ using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI.Entities;
 
 using MarsUndiscovered.Interfaces;
+using MediatR;
+using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class SaveGameView : BaseMarsUndiscoveredView<SaveGameViewModel, SaveGameData>
+    public class SaveGameView : BaseMarsUndiscoveredView<SaveGameViewModel, SaveGameData>,
+        IRequestHandler<SaveGameRequest>
     {
         private readonly IGameWorldProvider _gameWorldProvider;
         private Panel _saveGamePanel;
@@ -45,20 +50,18 @@ namespace MarsUndiscovered.UserInterface.Views
                 .WidthOfButton(TextInput.DefaultStyle.GetStyleProperty("DefaultSize").asVector.Y)
                 .AddTo(_saveGamePanel);
 
-            var saveGameButton = new Button("Save")
+            new Button("Save")
+                .SendOnClick<SaveGameRequest>(Mediator)
                 .AddTo(_saveGamePanel);
-
-            saveGameButton.OnClick += OnSaveGameClicked;
 
             _overwriteLabel = new Label("Save game already exists. Overwrite?")
                 .Hidden()
                 .AddTo(_saveGamePanel);
 
             _overwriteButton = new Button("Overwrite")
+                .SendOnClick<SaveGameRequest>(s => s.Overwrite = true, Mediator)
                 .Hidden()
                 .AddTo(_saveGamePanel);
-
-            _overwriteButton.OnClick += OnOverwriteClicked;
 
             new Button("Cancel")
                 .SendOnClick<CloseSaveGameViewRequest>(Mediator)
@@ -69,30 +72,29 @@ namespace MarsUndiscovered.UserInterface.Views
                 .AddTo(_saveGamePanel);
         }
 
-        private void OnOverwriteClicked(Entity entity)
+        private void Reset()
         {
-            if (_saveGameName.Value != null)
-            {
-                var result = _gameWorldProvider.GameWorld.SaveGame(_saveGameName.Value, true);
+            _overwriteButton.Visible = false;
+            _overwriteLabel.Visible = false;
+            _errorLabel.Visible = false;
 
-                Reset();
-
-                if (!result.Equals(SaveGameResult.Success))
-                {
-                    _errorLabel.Visible = true;
-                }
-                else
-                {
-                    Mediator.Send(new CloseSaveGameViewRequest());
-                }
-            }
+            _saveGamePanel.ForceDirty();
         }
 
-        private void OnSaveGameClicked(Entity entity)
+        public override void Show()
+        {
+            Reset();
+
+            base.Show();
+
+            _saveGameName.Value = _gameWorldProvider.GameWorld.Seed.ToString();
+        }
+
+        public Task<Unit> Handle(SaveGameRequest request, CancellationToken cancellationToken)
         {
             if (_saveGameName.Value != null)
             {
-                var result = _gameWorldProvider.GameWorld.SaveGame(_saveGameName.Value, false);
+                var result = _gameWorldProvider.GameWorld.SaveGame(_saveGameName.Value, request.Overwrite);
 
                 Reset();
 
@@ -110,20 +112,8 @@ namespace MarsUndiscovered.UserInterface.Views
                     Mediator.Send(new CloseSaveGameViewRequest());
                 }
             }
-        }
 
-        private void Reset()
-        {
-            _overwriteButton.Visible = false;
-            _overwriteLabel.Visible = false;
-            _errorLabel.Visible = false;
-        }
-
-        public override void Show()
-        {
-            base.Show();
-
-            _saveGameName.Value = _gameWorldProvider.GameWorld.Seed.ToString();
+            return Unit.Task;
         }
     }
 }

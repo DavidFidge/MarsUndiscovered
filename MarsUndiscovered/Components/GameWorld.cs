@@ -154,6 +154,7 @@ namespace MarsUndiscovered.Components
                     return canSaveGameResult;
             }
 
+            SaveGameStore.Clear();
             SaveGame(SaveGameStore);
 
             return SaveGameStore.SaveStoreToFile(saveGameName, overwrite);

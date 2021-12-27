@@ -59,7 +59,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 .SendOnClick<NewGameRequest>(Mediator)
                 .AddTo(_titleMenuPanel);
 
-
             SetupCustomGameItem();
             SetupOptionsItem();
 
@@ -79,14 +78,6 @@ namespace MarsUndiscovered.UserInterface.Views
             _optionsView.Initialize();
 
             RootPanel.AddChild(_optionsView.RootPanel);
-        }
-
-        public Task<Unit> Handle(OptionsButtonClickedRequest request, CancellationToken cancellationToken)
-        {
-            _optionsView.Show();
-            _titleMenuPanel.Visible = false;
-
-            return Unit.Task;
         }
 
         private void SetupCustomGameItem()
@@ -112,6 +103,14 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _customGameSeedView.Hide();
             _titleMenuPanel.Visible = true;
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(OptionsButtonClickedRequest request, CancellationToken cancellationToken)
+        {
+            _optionsView.Show();
+            _titleMenuPanel.Visible = false;
 
             return Unit.Task;
         }

@@ -13,17 +13,22 @@ namespace MarsUndiscovered.UserInterface.Views
 {
     public class InGameOptionsView : BaseMarsUndiscoveredView<InGameOptionsViewModel, InGameOptionsData>,
         IRequestHandler<OpenInGameVideoOptionsRequest>,
-        IRequestHandler<CloseInGameVideoOptionsRequest>
+        IRequestHandler<CloseInGameVideoOptionsRequest>,
+        IRequestHandler<OpenSaveGameViewRequest>,
+        IRequestHandler<CloseSaveGameViewRequest>
     {
         private readonly VideoOptionsView _videoOptionsView;
+        private readonly SaveGameView _saveGameView;
         private Panel _inGameOptionsMenuPanel;
 
         public InGameOptionsView(
             InGameOptionsViewModel inGameOptionsViewModel,
-            VideoOptionsView videoOptionsView
+            VideoOptionsView videoOptionsView,
+            SaveGameView saveGameView
         ) : base(inGameOptionsViewModel)
         {
             _videoOptionsView = videoOptionsView;
+            _saveGameView = saveGameView;
         }
 
         protected override void InitializeInternal()
@@ -34,6 +39,8 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Opacity90Percent();
 
             RootPanel.AddChild(_inGameOptionsMenuPanel);
+
+            SetupSaveGameItem();
 
             SetupVideoOptionsItem();
 
@@ -52,16 +59,36 @@ namespace MarsUndiscovered.UserInterface.Views
                 .SendOnClick<OpenInGameVideoOptionsRequest>(Mediator)
                 .AddTo(_inGameOptionsMenuPanel);
 
+            // Only initialize, do not add as child - this is done when handling the message
+            // as it is a shared component between this and title options screen.
             _videoOptionsView.Initialize();
         }
 
         private void SetupSaveGameItem()
         {
             new Button("Save Game")
-                .SendOnClick<OpenInGameVideoOptionsRequest>(Mediator)
+                .SendOnClick<OpenSaveGameViewRequest>(Mediator)
                 .AddTo(_inGameOptionsMenuPanel);
 
-            _videoOptionsView.Initialize();
+            _saveGameView.Initialize();
+
+            RootPanel.AddChild(_saveGameView.RootPanel);
+        }
+
+        public Task<Unit> Handle(OpenSaveGameViewRequest request, CancellationToken cancellationToken)
+        {
+            _saveGameView.Show();
+            _inGameOptionsMenuPanel.Visible = false;
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(CloseSaveGameViewRequest request, CancellationToken cancellationToken)
+        {
+            _saveGameView.Hide();
+            _inGameOptionsMenuPanel.Visible = true;
+
+            return Unit.Task;
         }
 
         public Task<Unit> Handle(OpenInGameVideoOptionsRequest request, CancellationToken cancellationToken)

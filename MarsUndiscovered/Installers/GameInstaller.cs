@@ -48,6 +48,7 @@ namespace MarsUndiscovered.Installers
             RegisterInGameOptionsView(container, store);
             RegisterConsoleView(container, store);
             RegisterGameView(container, store);
+            RegisterSaveGameView(container, store);
 
             RegisterKeyboardHandlers(container);
             RegisterMouseHandlers(container);
