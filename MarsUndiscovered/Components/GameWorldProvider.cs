@@ -1,0 +1,42 @@
+﻿using System;
+
+using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Services;
+using MarsUndiscovered.Interfaces;
+
+namespace MarsUndiscovered.Components
+{
+    public class GameWorldProvider : IGameWorldProvider
+    {
+        private readonly IFactory<IGameWorld> _gameWorldFactory;
+
+        public IGameWorld GameWorld { get; set; }
+
+        public GameWorldProvider(IFactory<IGameWorld> gameWorldFactory)
+        {
+            _gameWorldFactory = gameWorldFactory;
+        }
+
+        public SaveGameResult SaveGame(string saveGameName, bool overwrite)
+        {
+            return GameWorld.SaveGame(saveGameName, overwrite);
+        }
+
+        public void CanSaveGame(string saveGameName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadGame(string gameName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void NewGame(uint? seed = null)
+        {
+            GameWorld = _gameWorldFactory.Create();
+
+            GameWorld.Generate(seed);
+        }
+    }
+}

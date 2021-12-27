@@ -72,6 +72,9 @@ namespace MarsUndiscovered.Installers
                     .BasedOn<IGameCamera>()
                     .WithServiceDefaultInterfaces(),
 
+                Component.For<IGameWorldProvider>()
+                    .ImplementedBy<GameWorldProvider>(),
+
                 Component.For<IGameWorld>()
                     .ImplementedBy<GameWorld>()
                     .LifestyleTransient(),
@@ -166,6 +169,16 @@ namespace MarsUndiscovered.Installers
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, CustomGameSeedViewKeyboardHandler>()),
 
                 Component.For<CustomGameSeedViewModel>()
+            );
+        }
+
+        private void RegisterSaveGameView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<SaveGameView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, SaveGameViewKeyboardHandler>()),
+
+                Component.For<SaveGameViewModel>()
             );
         }
 

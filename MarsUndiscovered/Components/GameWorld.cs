@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using AutoMapper;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
-
+using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Interfaces;
 
@@ -13,6 +13,7 @@ using GoRogue.MapGeneration;
 using GoRogue.Random;
 
 using MarsUndiscovered.Commands;
+using MarsUndiscovered.Components.SaveData;
 using MarsUndiscovered.Messages;
 
 using SadRogue.Primitives;
@@ -35,9 +36,12 @@ namespace MarsUndiscovered.Components
         public IFactory<Floor> FloorFactory { get; set; }
         public IFactory<MoveCommand> MoveCommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
+        public ISaveGameService SaveGameService { get; set; }
+        public ISaveGameStore SaveGameStore { get; set; }
         public IDictionary<uint, IGameObject> GameObjects { get; private set; }
         public Generator Generator { get; set; }
         public MessageLog MessageLog { get; private set; }
+        public IMapper Mapper { get; set; }
 
         public void Generate(uint? seed = null)
         {
@@ -97,6 +101,7 @@ namespace MarsUndiscovered.Components
                 }
             }
         }
+
         public IList<string> GetMessagesSince(int currentCount)
         {
             if (currentCount == MessageLog.Count)
@@ -106,6 +111,24 @@ namespace MarsUndiscovered.Components
                 .Skip(currentCount)
                 .Select(s => s.Message)
                 .ToList();
+        }
+
+        public SaveGameResult SaveGame(string saveGameName, bool overwrite)
+        {
+            var terrain = new List<Terrain>();
+
+            foreach (var position in Map.Terrain.Positions())
+            {
+                terrain.Add((Terrain)Map.Terrain[position]);
+            }
+
+            var terrainSaveData = Mapper.Map<IList<Terrain>, IList<TerrainSaveData>>(terrain);
+            SaveGameStore.SaveToStore(terrainSaveData.CreateMemento());
+
+            var playerSaveData = Mapper.Map<Player, PlayerSaveData>(Player);
+            SaveGameStore.SaveToStore(playerSaveData.CreateMemento());
+
+            return SaveGameStore.SaveStoreToFile(saveGameName, overwrite);
         }
     }
 }
