@@ -118,5 +118,12 @@ namespace MarsUndiscovered.UserInterface.Views
             _overwriteLabel.Visible = false;
             _errorLabel.Visible = false;
         }
+
+        public override void Show()
+        {
+            base.Show();
+
+            _saveGameName.Value = _gameWorldProvider.GameWorld.Seed.ToString();
+        }
     }
 }

@@ -10,6 +10,13 @@ namespace MarsUndiscovered.Extensions
 {
     public static class ArrayViewExtensions
     {
+        public static ArrayView<IGameObject> ToArrayView<T>(this IEnumerable<T> list, int width) where T : IGameObject
+        {
+            var gameObjects = list.OfType<IGameObject>().ToArray();
+
+            return new ArrayView<IGameObject>(gameObjects, width);
+        }
+
         public static ArrayView<IGameObject> ToArrayView<T>(this IEnumerable<T> list, int width, Func<T, IGameObject> adapter)
         {
             var gameObjects = list.Select(adapter).ToArray();

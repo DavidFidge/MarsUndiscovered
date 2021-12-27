@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 
 using AutoMapper;
-
+using GoRogue.GameFramework;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.SaveData;
 
@@ -11,11 +11,10 @@ namespace MarsUndiscovered.Installers
     {
         public SaveDataProfile()
         {
-            CreateMap<Terrain, TerrainSaveData>()
+            CreateMap<IGameObject, GameObjectSaveData>()
                 .Include<Wall, WallSaveData>()
-                .Include<Floor, FloorSaveData>();
-
-            CreateMap<Player, PlayerSaveData>();
+                .Include<Floor, FloorSaveData>()
+                .Include<Player, PlayerSaveData>();
         }
 	}
 }

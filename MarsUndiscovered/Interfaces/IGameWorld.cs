@@ -22,5 +22,6 @@ namespace MarsUndiscovered.Interfaces
         IDictionary<uint, IGameObject> GameObjects { get; }
         IList<string> GetMessagesSince(int currentCount);
         SaveGameResult SaveGame(string saveGameName, bool overwrite);
+        uint Seed { get; }
     }
 }

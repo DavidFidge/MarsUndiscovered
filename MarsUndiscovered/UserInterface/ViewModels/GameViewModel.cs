@@ -36,7 +36,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             GameWorldProvider.NewGame(seed);
 
-
             _mapEntity = MapEntityFactory.Create();
 
             _mapEntity.CreateTranslation(GameWorld.Map.Width, GameWorld.Map.Height, Graphics.Assets.TileQuadWidth, Graphics.Assets.TileQuadHeight);

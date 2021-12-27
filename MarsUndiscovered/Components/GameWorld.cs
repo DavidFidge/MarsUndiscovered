@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Extensions;
@@ -24,7 +25,7 @@ using Troschuetz.Random.Generators;
 
 namespace MarsUndiscovered.Components
 {
-    public class GameWorld : BaseComponent, IGameWorld
+    public class GameWorld : BaseComponent, IGameWorld, ISaveable
     {
         public const int MapWidth = 76;
         public const int MapHeight = 29;
@@ -43,16 +44,20 @@ namespace MarsUndiscovered.Components
         public MessageLog MessageLog { get; private set; }
         public IMapper Mapper { get; set; }
 
+        public uint Seed { get; set; }
+
         public void Generate(uint? seed = null)
         {
             if (seed == null)
                 seed = TMath.Seed();
 
+            Seed = seed.Value;
+
             GlobalRandom.DefaultRNG = new XorShift128Generator(seed.Value);
 
             Logger.Debug("Generating game world");
 
-            var generator = new Generator(76, 29);
+            var generator = new Generator(MapWidth, MapHeight);
 
             Generator = generator.ConfigAndGenerateSafe(g => g.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps()));
 
@@ -60,7 +65,7 @@ namespace MarsUndiscovered.Components
                 .GetFirst<ArrayView<bool>>()
                 .ToArrayView(s => s ? (Terrain)FloorFactory.Create() : WallFactory.Create());
 
-            Map = new Map(wallsFloors.Width, wallsFloors.Height, 1, Distance.Chebyshev);
+            Map = CreateMap();
 
             Map.ApplyTerrainOverlay(wallsFloors);
 
@@ -73,7 +78,15 @@ namespace MarsUndiscovered.Components
             GameObjects = new Dictionary<uint, IGameObject>();
             GameObjects.Add(Player.ID, Player);
 
+            foreach (var item in wallsFloors.ToArray())
+                GameObjects.Add(item.ID, item);
+
             MessageLog = new MessageLog();
+        }
+
+        private Map CreateMap()
+        {
+            return new Map(MapWidth, MapHeight, 1, Distance.Chebyshev);
         }
 
         public void MoveRequest(Direction direction)
@@ -115,20 +128,49 @@ namespace MarsUndiscovered.Components
 
         public SaveGameResult SaveGame(string saveGameName, bool overwrite)
         {
-            var terrain = new List<Terrain>();
-
-            foreach (var position in Map.Terrain.Positions())
+            if (!overwrite)
             {
-                terrain.Add((Terrain)Map.Terrain[position]);
+                var canSaveGameResult = SaveGameStore.CanSaveStoreToFile(saveGameName);
+                if (canSaveGameResult.Equals(SaveGameResult.Overwrite))
+                    return canSaveGameResult;
             }
 
-            var terrainSaveData = Mapper.Map<IList<Terrain>, IList<TerrainSaveData>>(terrain);
-            SaveGameStore.SaveToStore(terrainSaveData.CreateMemento());
+            var gameObjectSaveData = Mapper.Map<IList<IGameObject>, IList<GameObjectSaveData>>(GameObjects.Values.ToList());
 
-            var playerSaveData = Mapper.Map<Player, PlayerSaveData>(Player);
-            SaveGameStore.SaveToStore(playerSaveData.CreateMemento());
+            SaveGameStore.SaveToStore(gameObjectSaveData.CreateMemento());
 
             return SaveGameStore.SaveStoreToFile(saveGameName, overwrite);
+        }
+
+        public void LoadGame(string saveGameName)
+        {
+            SaveGameStore.LoadStoreFromFile(saveGameName);
+
+            var gameObjectSaveData = SaveGameStore.GetFromStore<IList<GameObjectSaveData>>();
+
+            var gameObjects = Mapper.Map<IList<GameObjectSaveData>, IList<IGameObject>>(gameObjectSaveData.State);
+
+            GameObjects = gameObjects.ToDictionary(k => k.ID, v => v);
+
+            Map = CreateMap();
+
+            var wallsFloors = GameObjects
+                .Values
+                .OfType<Terrain>()
+                .ToArrayView(MapWidth);
+
+            Map.ApplyTerrainOverlay(wallsFloors);
+        }
+
+        public void SaveGame(ISaveGameStore saveGameStore)
+        {
+            saveGameStore.SaveToStore<GameWorldSaveData>(new Memento<GameWorldSaveData>(Mapper.Map()));
+
+        }
+
+        public void LoadGame(ISaveGameStore saveGameStore)
+        {
+            throw new NotImplementedException();
         }
     }
 }
