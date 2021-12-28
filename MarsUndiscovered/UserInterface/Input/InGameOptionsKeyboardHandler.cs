@@ -18,6 +18,9 @@ namespace MarsUndiscovered.UserInterface.Input
 
             if (ActionMap.ActionIs<QuitToTitleRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new QuitToTitleRequest());
+
+            if (ActionMap.ActionIs<OpenSaveGameViewRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new OpenSaveGameViewRequest());
         }
     }
 }

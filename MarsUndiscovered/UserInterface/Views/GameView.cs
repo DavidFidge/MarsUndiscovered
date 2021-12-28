@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -75,13 +76,12 @@ namespace MarsUndiscovered.UserInterface.Views
                 .SendOnClick<OpenInGameOptionsRequest>(Mediator)
                 .NoPadding();
 
+
             RootPanel.AddChild(menuButton);
 
-            _inGameOptionsView.Initialize();
+            SetupChildPanel(_inGameOptionsView);
 
-            RootPanel.AddChild(_inGameOptionsView.RootPanel);
-
-            _messageLog = new SelectList(size: new Vector2(0.8f, 0.15f), Anchor.TopCenter, null, PanelSkin.None)
+            _messageLog = new SelectList(new Vector2(0.8f, 0.15f), Anchor.TopCenter, null, PanelSkin.None)
                 .WithPadding(new Vector2(5f));
 
             _messageLog.ExtraSpaceBetweenLines = -10;
@@ -143,19 +143,34 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             var newMessages = _viewModel.GetNewMessages();
 
-            foreach (var message in newMessages)
-                _messageLog.AddItem(message);
+            if (newMessages.Any())
+            {
+                foreach (var message in newMessages)
+                    _messageLog.AddItem(message);
 
-            _messageLog.scrollToEnd();
+                _messageLog.scrollToEnd();
+            }
 
             _gameCamera.Update();
 
             base.Update();
         }
 
-        public void StartGame(uint? seed = null)
+        public void NewGame(uint? seed = null)
         {
-            _viewModel.StartGame(seed);
+            _viewModel.NewGame(seed);
+            ResetViews();
+        }
+
+        public void LoadGame(string filename)
+        {
+            _viewModel.LoadGame(filename);
+            ResetViews();
+        }
+
+        private void ResetViews()
+        {
+            _messageLog.ClearItems();
         }
 
         public Task<Unit> Handle(LeftClickViewRequest request, CancellationToken cancellationToken)

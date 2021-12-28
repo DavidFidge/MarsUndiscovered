@@ -9,6 +9,8 @@ using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using FrigidRogue.MonoGame.Core.Messages;
+using FrigidRogue.MonoGame.Core.UserInterface;
+using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
@@ -24,10 +26,13 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<OptionsButtonClickedRequest>,
         IRequestHandler<CloseOptionsViewRequest>,
         IRequestHandler<CustomGameSeedRequest>,
-        IRequestHandler<CancelCustomGameSeedRequest>
+        IRequestHandler<CancelCustomGameSeedRequest>,
+        IRequestHandler<OpenLoadGameViewRequest>,
+        IRequestHandler<CloseLoadGameViewRequest>
     {
         private readonly OptionsView _optionsView;
         private readonly CustomGameSeedView _customGameSeedView;
+        private readonly LoadGameView _loadGameView;
 
         private Panel _titleMenuPanel;
 
@@ -36,11 +41,14 @@ namespace MarsUndiscovered.UserInterface.Views
         public TitleView(
             TitleViewModel titleViewModel,
             OptionsView optionsView,
-            CustomGameSeedView customGameSeedView)
+            CustomGameSeedView customGameSeedView,
+            LoadGameView loadGameView
+            )
             : base(titleViewModel)
         {
             _optionsView = optionsView;
             _customGameSeedView = customGameSeedView;
+            _loadGameView = loadGameView;
         }
 
         protected override void InitializeInternal()
@@ -59,9 +67,20 @@ namespace MarsUndiscovered.UserInterface.Views
                 .SendOnClick<NewGameRequest>(Mediator)
                 .AddTo(_titleMenuPanel);
 
+            SetupChildPanelWithButton<CustomGameSeedRequest, CustomGameSeedViewModel, CustomGameSeedData>(
+                _titleMenuPanel,
+                "New Game (custom seed)",
+                _customGameSeedView);
 
-            SetupCustomGameItem();
-            SetupOptionsItem();
+            SetupChildPanelWithButton<OpenLoadGameViewRequest, LoadGameViewModel, LoadGameData>(
+                _titleMenuPanel,
+                "Load Game",
+                _loadGameView);
+
+            SetupChildPanelWithButton<OptionsButtonClickedRequest, OptionsViewModel, OptionsData>(
+                _titleMenuPanel,
+                "Options",
+                _optionsView);
 
             new Button("Exit")
                 .SendOnClick<QuitToDesktopRequest>(Mediator)
@@ -70,58 +89,35 @@ namespace MarsUndiscovered.UserInterface.Views
             _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
         }
 
-        private void SetupOptionsItem()
-        {
-            new Button("Options")
-                .SendOnClick<OptionsButtonClickedRequest>(Mediator)
-                .AddTo(_titleMenuPanel);
-
-            _optionsView.Initialize();
-
-            RootPanel.AddChild(_optionsView.RootPanel);
-        }
-
-        public Task<Unit> Handle(OptionsButtonClickedRequest request, CancellationToken cancellationToken)
-        {
-            _optionsView.Show();
-            _titleMenuPanel.Visible = false;
-
-            return Unit.Task;
-        }
-
-        private void SetupCustomGameItem()
-        {
-            new Button("New Game (custom seed)")
-                .SendOnClick<CustomGameSeedRequest>(Mediator)
-                .AddTo(_titleMenuPanel);
-
-            _customGameSeedView.Initialize();
-
-            RootPanel.AddChild(_customGameSeedView.RootPanel);
-        }
 
         public Task<Unit> Handle(CustomGameSeedRequest request, CancellationToken cancellationToken)
         {
-            _customGameSeedView.Show();
-            _titleMenuPanel.Visible = false;
-
-            return Unit.Task;
+            return ShowChildView(_customGameSeedView, _titleMenuPanel);
         }
 
         public Task<Unit> Handle(CancelCustomGameSeedRequest request, CancellationToken cancellationToken)
         {
-            _customGameSeedView.Hide();
-            _titleMenuPanel.Visible = true;
+            return HideChildView(_customGameSeedView, _titleMenuPanel);
+        }
 
-            return Unit.Task;
+        public Task<Unit> Handle(OptionsButtonClickedRequest request, CancellationToken cancellationToken)
+        {
+            return ShowChildView(_optionsView, _titleMenuPanel);
         }
 
         public Task<Unit> Handle(CloseOptionsViewRequest request, CancellationToken cancellationToken)
         {
-            _optionsView.Hide();
-            _titleMenuPanel.Visible = true;
+            return HideChildView(_optionsView, _titleMenuPanel);
+        }
 
-            return Unit.Task;
+        public Task<Unit> Handle(OpenLoadGameViewRequest request, CancellationToken cancellationToken)
+        {
+            return ShowChildView(_loadGameView, _titleMenuPanel);
+        }
+
+        public Task<Unit> Handle(CloseLoadGameViewRequest request, CancellationToken cancellationToken)
+        {
+            return HideChildView(_loadGameView, _titleMenuPanel);
         }
 
         public override void Draw()

@@ -29,6 +29,7 @@ using FrigidRogue.MonoGame.Core.View.Interfaces;
 using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
 using MarsUndiscovered.Commands;
+using MarsUndiscovered.Components.Factories;
 
 namespace MarsUndiscovered.Installers
 {
@@ -36,16 +37,19 @@ namespace MarsUndiscovered.Installers
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
+            container.Install(new AutoMapperProfileInstaller());
             container.Install(new CoreInstaller());
             container.Install(new ViewInstaller());
 
             RegisterTitleView(container, store);
             RegisterCustomGameSeedView(container, store);
+            RegisterLoadGameView(container, store);
             RegisterOptionsView(container, store);
             RegisterVideoOptionsView(container, store);
             RegisterInGameOptionsView(container, store);
             RegisterConsoleView(container, store);
             RegisterGameView(container, store);
+            RegisterSaveGameView(container, store);
 
             RegisterKeyboardHandlers(container);
             RegisterMouseHandlers(container);
@@ -71,6 +75,9 @@ namespace MarsUndiscovered.Installers
                 Classes.FromAssemblyContaining<IGameCamera>()
                     .BasedOn<IGameCamera>()
                     .WithServiceDefaultInterfaces(),
+
+                Component.For<IGameWorldProvider>()
+                    .ImplementedBy<GameWorldProvider>(),
 
                 Component.For<IGameWorld>()
                     .ImplementedBy<GameWorld>()
@@ -102,14 +109,9 @@ namespace MarsUndiscovered.Installers
         {
             container.Register(
 
-                Component.For<IFactory<Wall>>()
-                    .AsFactory(),
-
-                Component.For<IFactory<Floor>>()
-                    .AsFactory(),
-
-                Component.For<IFactory<Player>>()
-                    .AsFactory(),
+                Component.For<IGameObjectFactory>()
+                    .ImplementedBy<GameObjectFactory>()
+                    .DependsOn(Dependency.OnValue<IWindsorContainer>(container)),
 
                 Component.For<IFactory<MoveCommand>>()
                     .AsFactory(),
@@ -159,6 +161,16 @@ namespace MarsUndiscovered.Installers
             );
         }
 
+        private void RegisterLoadGameView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<LoadGameView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, LoadGameViewKeyboardHandler>()),
+
+                Component.For<LoadGameViewModel>()
+            );
+        }
+
         private void RegisterCustomGameSeedView(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
@@ -166,6 +178,16 @@ namespace MarsUndiscovered.Installers
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, CustomGameSeedViewKeyboardHandler>()),
 
                 Component.For<CustomGameSeedViewModel>()
+            );
+        }
+
+        private void RegisterSaveGameView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<SaveGameView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, SaveGameViewKeyboardHandler>()),
+
+                Component.For<SaveGameViewModel>()
             );
         }
 

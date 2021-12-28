@@ -13,17 +13,22 @@ namespace MarsUndiscovered.UserInterface.Views
 {
     public class InGameOptionsView : BaseMarsUndiscoveredView<InGameOptionsViewModel, InGameOptionsData>,
         IRequestHandler<OpenInGameVideoOptionsRequest>,
-        IRequestHandler<CloseInGameVideoOptionsRequest>
+        IRequestHandler<CloseInGameVideoOptionsRequest>,
+        IRequestHandler<OpenSaveGameViewRequest>,
+        IRequestHandler<CloseSaveGameViewRequest>
     {
         private readonly VideoOptionsView _videoOptionsView;
+        private readonly SaveGameView _saveGameView;
         private Panel _inGameOptionsMenuPanel;
 
         public InGameOptionsView(
             InGameOptionsViewModel inGameOptionsViewModel,
-            VideoOptionsView videoOptionsView
+            VideoOptionsView videoOptionsView,
+            SaveGameView saveGameView
         ) : base(inGameOptionsViewModel)
         {
             _videoOptionsView = videoOptionsView;
+            _saveGameView = saveGameView;
         }
 
         protected override void InitializeInternal()
@@ -35,7 +40,9 @@ namespace MarsUndiscovered.UserInterface.Views
 
             RootPanel.AddChild(_inGameOptionsMenuPanel);
 
-            SetupVideoOptionsItem();
+            SetupChildPanelWithButton<OpenSaveGameViewRequest, SaveGameViewModel, SaveGameData>(_inGameOptionsMenuPanel, "Save Game", _saveGameView);
+
+            SetupSharedChildPanelWithButton<OpenInGameVideoOptionsRequest, VideoOptionsViewModel, VideoOptionsData>(_inGameOptionsMenuPanel, "Video Options", _videoOptionsView);
 
             new Button("Exit Game")
                 .SendOnClick<CloseInGameOptionsRequest, QuitToTitleRequest>(Mediator)
@@ -46,34 +53,24 @@ namespace MarsUndiscovered.UserInterface.Views
                 .AddTo(_inGameOptionsMenuPanel);
         }
 
-        private void SetupVideoOptionsItem()
+        public Task<Unit> Handle(OpenSaveGameViewRequest request, CancellationToken cancellationToken)
         {
-            new Button("Video Options")
-                .SendOnClick<OpenInGameVideoOptionsRequest>(Mediator)
-                .AddTo(_inGameOptionsMenuPanel);
+            return ShowChildView(_saveGameView, _inGameOptionsMenuPanel);
+        }
 
-            _videoOptionsView.Initialize();
+        public Task<Unit> Handle(CloseSaveGameViewRequest request, CancellationToken cancellationToken)
+        {
+            return HideChildView(_saveGameView, _inGameOptionsMenuPanel);
         }
 
         public Task<Unit> Handle(OpenInGameVideoOptionsRequest request, CancellationToken cancellationToken)
         {
-            _videoOptionsView.RootPanel.ClearParent();
-            RootPanel.AddChild(_videoOptionsView.RootPanel);
-            _videoOptionsView.Show();
-            _inGameOptionsMenuPanel.Visible = false;
-
-            return Unit.Task;
+            return ShowChildViewWithRootSwap(_videoOptionsView, _inGameOptionsMenuPanel);
         }
 
         public Task<Unit> Handle(CloseInGameVideoOptionsRequest request, CancellationToken cancellationToken)
         {
-            if (RootPanel.HasChild(_videoOptionsView.RootPanel))
-            {
-                _videoOptionsView.Hide();
-                _inGameOptionsMenuPanel.Visible = true;
-            }
-
-            return Unit.Task;
+            return HideChildView(_videoOptionsView, _inGameOptionsMenuPanel);
         }
     }
 }
