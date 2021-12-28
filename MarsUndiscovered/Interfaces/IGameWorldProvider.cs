@@ -7,7 +7,7 @@ namespace MarsUndiscovered.Interfaces
         IGameWorld GameWorld { get; set; }
         SaveGameResult SaveGame(string saveGameName, bool overwrite);
         void CanSaveGame(string saveGameName);
-        public void LoadGame(string gameName);
+        public void LoadGame(string filename);
         void NewGame(uint? seed = null);
     }
 }

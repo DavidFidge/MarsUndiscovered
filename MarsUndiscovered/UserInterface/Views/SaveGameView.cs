@@ -12,7 +12,6 @@ using GeonBit.UI.Entities;
 
 using MarsUndiscovered.Interfaces;
 using MediatR;
-using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -92,6 +91,10 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(SaveGameRequest request, CancellationToken cancellationToken)
         {
+            // We don't want the 's' key to save the game when use is entering a save game name
+            if (request.FromHotkey && _saveGameName.IsFocused)
+                return Unit.Task;
+
             if (_saveGameName.Value != null)
             {
                 var result = _gameWorldProvider.GameWorld.SaveGame(_saveGameName.Value, request.Overwrite);

@@ -8,6 +8,7 @@ namespace MarsUndiscovered.Messages
 
     public class SaveGameRequest : IRequest
     {
+        public bool FromHotkey { get; set; }
         public bool Overwrite { get; set; }
     }
 }

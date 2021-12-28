@@ -11,7 +11,6 @@ using GeonBit.UI.Entities;
 using GeonBit.UI.Entities.TextValidators;
 
 using MediatR;
-using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views
 {

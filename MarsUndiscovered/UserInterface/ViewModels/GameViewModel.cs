@@ -32,13 +32,29 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private int _messageLogCount;
 
-        public void StartGame(uint? seed = null)
+        public void NewGame(uint? seed = null)
         {
             GameWorldProvider.NewGame(seed);
 
+            SetupNewGame();
+        }
+
+        public void LoadGame(string filename)
+        {
+            GameWorldProvider.LoadGame(filename);
+            SetupNewGame();
+        }
+
+        private void SetupNewGame()
+        {
             _mapEntity = MapEntityFactory.Create();
 
-            _mapEntity.CreateTranslation(GameWorld.Map.Width, GameWorld.Map.Height, Graphics.Assets.TileQuadWidth, Graphics.Assets.TileQuadHeight);
+            _mapEntity.CreateTranslation(
+                GameWorld.Map.Width,
+                GameWorld.Map.Height,
+                Graphics.Assets.TileQuadWidth,
+                Graphics.Assets.TileQuadHeight
+            );
 
             SceneGraph.Initialise(_mapEntity);
 
@@ -54,6 +70,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     CreateMapTiles(new Point(x, y), mapTileRootEntity);
                 }
             }
+
+            _messageLogCount = 0;
         }
 
         private void CreateMapTiles(Point point, MapTileRootEntity mapTileRootEntity)

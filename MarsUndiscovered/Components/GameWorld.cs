@@ -40,12 +40,18 @@ namespace MarsUndiscovered.Components
         public IFactory<MoveCommand> MoveCommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
         public ISaveGameStore SaveGameStore { get; set; }
-        public GameObjectCollection GameObjects { get; private set; } = new GameObjectCollection();
+        public GameObjectCollection GameObjects { get;} = new GameObjectCollection();
         public Generator Generator { get; set; }
-        public MessageLog MessageLog { get; private set; }
+        public MessageLog MessageLog { get; } = new MessageLog();
         public IMapper Mapper { get; set; }
-
         public uint Seed { get; set; }
+        public string LoadGameDetail
+        {
+            get => $"Seed: {Seed}";
+            set
+            {
+            }
+        }
 
         public GameWorld()
         {
@@ -85,8 +91,6 @@ namespace MarsUndiscovered.Components
             Player.Position = floorPosition;
 
             Map.AddEntity(Player);
-
-            MessageLog = new MessageLog();
         }
 
         private void CreateMap()
@@ -160,17 +164,22 @@ namespace MarsUndiscovered.Components
             return SaveGameStore.SaveStoreToFile(saveGameName, overwrite);
         }
 
-        public void LoadGame(string saveGameName)
+        public LoadGameResult LoadGame(string saveGameName)
         {
-            SaveGameStore.LoadStoreFromFile(saveGameName);
+            var loadGameResult = SaveGameStore.LoadStoreFromFile(saveGameName);
 
-            LoadGame(SaveGameStore);
+            if (loadGameResult.Equals(LoadGameResult.Success))
+                LoadGame(SaveGameStore);
+
+            return loadGameResult;
         }
 
         public void SaveGame(ISaveGameStore saveGameStore)
         {
             GameObjectFactory.SaveGame(saveGameStore);
             GameObjects.SaveGame(saveGameStore);
+            MessageLog.SaveGame(saveGameStore);
+
             saveGameStore.SaveToStore<GameWorld, GameWorldSaveData>(this);
         }
 
@@ -180,6 +189,7 @@ namespace MarsUndiscovered.Components
 
             GameObjectFactory.LoadGame(saveGameStore);
             GameObjects.LoadGame(saveGameStore);
+            MessageLog.LoadGame(saveGameStore);
 
             Player = (Player)GameObjects.Values.First(go => go is Player);
 

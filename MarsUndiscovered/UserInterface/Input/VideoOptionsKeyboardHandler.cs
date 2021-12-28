@@ -12,7 +12,8 @@ namespace MarsUndiscovered.UserInterface.Input
     {
         public override void HandleKeyboardKeyDown(Keys[] keysDown, Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
-            if (ActionMap.ActionIs<CloseVideoOptionsRequest>(keyInFocus, keyboardModifier))
+            if (ActionMap.ActionIs<CloseVideoOptionsRequest>(keyInFocus, keyboardModifier)
+                || ActionMap.ActionIs<CloseInGameVideoOptionsRequest>(keyInFocus, keyboardModifier))
             {
                 Mediator.Send(new SaveVideoOptionsRequest());
                 Mediator.Send(new CloseVideoOptionsRequest());

@@ -38,7 +38,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             RootPanel.AddChild(_optionsMenuPanel);
 
-            SetupVideoOptionsItem();
+            SetupSharedChildPanelWithButton<OpenVideoOptionsRequest, VideoOptionsViewModel, VideoOptionsData>(_optionsMenuPanel, "Video Options", _videoOptionsView);
 
             new Button("Game Options (not implemented yet")
                 .SendOnClick<OpenGameOptionsRequest>(Mediator)
@@ -49,36 +49,14 @@ namespace MarsUndiscovered.UserInterface.Views
                 .AddTo(_optionsMenuPanel);
         }
 
-        private void SetupVideoOptionsItem()
-        {
-            new Button("Video Options")
-                .SendOnClick<OpenVideoOptionsRequest>(Mediator)
-                .AddTo(_optionsMenuPanel);
-
-            // Only initialize, do not add as child - this is done when handling the message
-            // as it is a shared component between this and in game options screen.
-            _videoOptionsView.Initialize();
-        }
-
         public Task<Unit> Handle(OpenVideoOptionsRequest request, CancellationToken cancellationToken)
         {
-            _videoOptionsView.RootPanel.ClearParent();
-            RootPanel.AddChild(_videoOptionsView.RootPanel);
-            _videoOptionsView.Show();
-            _optionsMenuPanel.Visible = false;
-
-            return Unit.Task;
+            return ShowChildViewWithRootSwap(_videoOptionsView, _optionsMenuPanel);
         }
 
         public Task<Unit> Handle(CloseVideoOptionsRequest request, CancellationToken cancellationToken)
         {
-            if (RootPanel.HasChild(_videoOptionsView.RootPanel))
-            {
-                _videoOptionsView.Hide();
-                _optionsMenuPanel.Visible = true;
-            }
-
-            return Unit.Task;
+            return HideChildView(_videoOptionsView, _optionsMenuPanel);
         }
     }
 }

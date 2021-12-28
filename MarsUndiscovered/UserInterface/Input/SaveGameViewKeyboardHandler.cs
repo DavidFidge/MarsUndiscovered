@@ -14,7 +14,7 @@ namespace MarsUndiscovered.UserInterface.Input
                 Mediator.Send(new CloseSaveGameViewRequest());
 
             if (ActionMap.ActionIs<SaveGameRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new SaveGameRequest());
+                Mediator.Send(new SaveGameRequest { FromHotkey = true });
 
             if (ActionMap.ActionIs<OverwriteSaveGameRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new SaveGameRequest { Overwrite = true });

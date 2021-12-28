@@ -29,7 +29,8 @@ namespace MarsUndiscovered.Components
 
         public void LoadGame(string gameName)
         {
-            throw new NotImplementedException();
+            GameWorld = _gameWorldFactory.Create();
+            GameWorld.LoadGame(gameName);
         }
 
         public void NewGame(uint? seed = null)

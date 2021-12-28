@@ -43,6 +43,7 @@ namespace MarsUndiscovered.Installers
 
             RegisterTitleView(container, store);
             RegisterCustomGameSeedView(container, store);
+            RegisterLoadGameView(container, store);
             RegisterOptionsView(container, store);
             RegisterVideoOptionsView(container, store);
             RegisterInGameOptionsView(container, store);
@@ -157,6 +158,16 @@ namespace MarsUndiscovered.Installers
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, TitleViewKeyboardHandler>()),
 
                 Component.For<TitleViewModel>()
+            );
+        }
+
+        private void RegisterLoadGameView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<LoadGameView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, LoadGameViewKeyboardHandler>()),
+
+                Component.For<LoadGameViewModel>()
             );
         }
 
