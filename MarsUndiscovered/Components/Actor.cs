@@ -7,9 +7,12 @@ using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Components
 {
-    public abstract class Actor<T> : MarsGameObject<T> where T : GameObjectSaveData
+    public abstract class Actor : MarsGameObject
     {
-        public const int BaseHealth = 100;
+        public static int BaseHealth = 100;
+
+        public int Health { get; set; }
+
 
         public Actor(Point position, int layer, bool isWalkable = true, bool isTransparent = true, Func<uint> idGenerator = null, IComponentCollection customComponentCollection = null) : base(position, layer, isWalkable, isTransparent, idGenerator, customComponentCollection)
         {

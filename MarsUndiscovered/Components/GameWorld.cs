@@ -42,7 +42,9 @@ namespace MarsUndiscovered.Components
         public IFactory<MoveCommand> MoveCommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
         public ISaveGameStore SaveGameStore { get; set; }
-        public GameObjectCollection GameObjects { get;} = new GameObjectCollection();
+        public WallCollection Walls { get; private set; }
+        public FloorCollection Floors { get; private set; }
+        public MonsterCollection Monsters { get; private set; }
         public Generator Generator { get; set; }
         public MessageLog MessageLog { get; } = new MessageLog();
         public IMapper Mapper { get; set; }
@@ -62,6 +64,10 @@ namespace MarsUndiscovered.Components
 
         public void NewGame(uint? seed = null)
         {
+            Walls = new WallCollection(GameObjectFactory);
+            Floors = new FloorCollection(GameObjectFactory);
+            Monsters = new MonsterCollection(GameObjectFactory);
+
             GameObjectFactory.Reset();
 
             if (seed == null)
@@ -74,7 +80,6 @@ namespace MarsUndiscovered.Components
             Logger.Debug("Generating game world");
 
             Player = GameObjectFactory.CreatePlayer();
-            GameObjects.Add(Player.ID, Player);
 
             var generator = new Generator(MapWidth, MapHeight);
 
@@ -84,8 +89,11 @@ namespace MarsUndiscovered.Components
                 .GetFirst<ArrayView<bool>>()
                 .ToArrayView(s => s ? (IGameObject)GameObjectFactory.CreateFloor() : GameObjectFactory.CreateWall());
 
-            foreach (var item in wallsFloors.ToArray())
-                GameObjects.Add(item.ID, item);
+            foreach (var item in wallsFloors.ToArray().OfType<Wall>().ToList())
+                Walls.Add(item.ID, item);
+
+            foreach (var item in wallsFloors.ToArray().OfType<Floor>().ToList())
+                Floors.Add(item.ID, item);
 
             CreateMap();
 
@@ -97,7 +105,7 @@ namespace MarsUndiscovered.Components
 
         private void CreateMap()
         {
-            Debug.Assert(GameObjects.Any(), "GameObjects must be populated");
+            Debug.Assert(Floors.Any() || Walls.Any(), "Walls and/or Floors must be populated");
 
             Map = new Map(MapWidth, MapHeight, 1, Distance.Chebyshev);
 
@@ -106,9 +114,8 @@ namespace MarsUndiscovered.Components
 
         private void PopulateMapTerrain()
         {
-            var wallsFloors = GameObjects
-                .Values
-                .Where(t => t is Wall || t is Floor)
+            var wallsFloors = Walls.Values.Cast<IGameObject>()
+                .Union(Floors.Values)
                 .ToArrayView(MapWidth);
 
             Map.ApplyTerrainOverlay(wallsFloors);
@@ -179,8 +186,13 @@ namespace MarsUndiscovered.Components
         public void SaveGame(ISaveGameStore saveGameStore)
         {
             GameObjectFactory.SaveGame(saveGameStore);
-            GameObjects.SaveGame(saveGameStore);
+            Walls.SaveGame(saveGameStore);
+            Floors.SaveGame(saveGameStore);
+            Monsters.SaveGame(saveGameStore);
             MessageLog.SaveGame(saveGameStore);
+            Player.SaveGame(saveGameStore);
+
+
 
             saveGameStore.SaveToStore<GameWorld, GameWorldSaveData>(this);
         }

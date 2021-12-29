@@ -6,7 +6,7 @@ using Castle.MicroKernel;
 using Castle.Windsor;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
-
+using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Components.SaveData;
 
 namespace MarsUndiscovered.Components.Factories
@@ -84,12 +84,14 @@ namespace MarsUndiscovered.Components.Factories
 
         public void SaveGame(ISaveGameStore saveGameStore)
         {
-            saveGameStore.SaveToStore<GameObjectFactory, GameObjectFactoryData>(this);
+            var gameObjectFactoryData = Memento<GameObjectFactoryData>.CreateWithAutoMapper(this, saveGameStore.Mapper);
+            saveGameStore.SaveToStore(gameObjectFactoryData);
         }
 
         public void LoadGame(ISaveGameStore saveGameStore)
         {
-            saveGameStore.GetFromStore<GameObjectFactory, GameObjectFactoryData>(this);
+            var gameObjectFactoryData = saveGameStore.GetFromStore<GameObjectFactoryData>();
+            Memento<GameObjectFactoryData>.SetWithAutoMapper(this, gameObjectFactoryData, saveGameStore.Mapper);
         }
     }
 }

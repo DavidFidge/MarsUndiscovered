@@ -20,10 +20,12 @@ namespace MarsUndiscovered.Interfaces
         Map Map { get; }
         void MoveRequest(Direction direction);
         IGameTurnService GameTurnService { get; }
-        GameObjectCollection GameObjects { get; }
         IList<string> GetMessagesSince(int currentCount);
         SaveGameResult SaveGame(string saveGameName, bool overwrite);
         LoadGameResult LoadGame(string saveGameName);
         uint Seed { get; }
+        WallCollection Walls { get; }
+        FloorCollection Floors { get; }
+        MonsterCollection Monsters { get; }
     }
 }

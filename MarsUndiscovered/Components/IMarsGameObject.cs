@@ -8,7 +8,7 @@ using MarsUndiscovered.Components.SaveData;
 
 namespace MarsUndiscovered.Components
 {
-    public interface IMarsGameObject<T> : IGameObject, IBaseComponent, IMementoState<T> where T : GameObjectSaveData
+    public interface IMarsGameObject : IGameObject, IBaseComponent
     {
     }
 }

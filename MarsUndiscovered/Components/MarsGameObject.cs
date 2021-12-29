@@ -13,7 +13,7 @@ using Serilog;
 
 namespace MarsUndiscovered.Components
 {
-    public abstract class MarsGameObject<T> : GameObject, IMarsGameObject<T> where T : GameObjectSaveData
+    public abstract class MarsGameObject : GameObject, IMarsGameObject
     {
         public IMediator Mediator { get; set; }
         public ILogger Logger { get; set; }
@@ -26,14 +26,18 @@ namespace MarsUndiscovered.Components
         {
         }
 
-        public virtual IMemento<T> GetState(IMapper mapper)
+        protected IMemento<T> CreateWithAutoMapper<T>(IMapper mapper) where T : GameObjectSaveData
         {
-            return Memento<T>.CreateWithAutoMapper(this, mapper);
+            var mementoForDerivedType = Memento<T>.CreateWithAutoMapper(this, mapper);
+
+            return new Memento<T>(mementoForDerivedType.State);
         }
 
-        public virtual void SetState(IMemento<T> state, IMapper mapper)
+        protected void SetWithAutoMapper<T>(IMemento<T> state, IMapper mapper) where T : GameObjectSaveData
         {
-            Memento<T>.SetWithAutoMapper(this, state, mapper);
+            var memento = new Memento<T>(state.State);
+
+            Memento<T>.SetWithAutoMapper(this, memento, mapper);
         }
     }
 }

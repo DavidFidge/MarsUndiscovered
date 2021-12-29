@@ -2,7 +2,7 @@
 
 namespace MarsUndiscovered.Components
 {
-    public abstract class Terrain<T> : MarsGameObject<T> where T : GameObjectSaveData
+    public abstract class Terrain : MarsGameObject
     {
         public Terrain(bool isWalkable = true, bool isTransparent = true) : base(0, isWalkable, isTransparent)
         {

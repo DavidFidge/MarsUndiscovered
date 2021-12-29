@@ -4,9 +4,9 @@ using MarsUndiscovered.Components.SaveData;
 
 namespace MarsUndiscovered.Components
 {
-    public class Monster : Actor<MonsterSaveData>
+    public class Monster : Actor, IMementoState<MonsterSaveData>
     {
-        private Breed Breed { get; set; }
+        public Breed Breed { get; set; }
 
         public int Health { get; set; }
 
@@ -18,9 +18,22 @@ namespace MarsUndiscovered.Components
         {
         }
 
-        public override IMemento<MonsterSaveData> GetState(IMapper mapper)
+        public Monster WithBreed(Breed breed)
         {
-            return base.GetState(mapper);
+            Breed = breed;
+            Health = (int)(BaseHealth * breed.HealthModifier);
+
+            return this;
+        }
+
+        public void SetState(IMemento<MonsterSaveData> state, IMapper mapper)
+        {
+            SetWithAutoMapper<MonsterSaveData>(state, mapper);
+        }
+
+        public IMemento<MonsterSaveData> GetState(IMapper mapper)
+        {
+            return CreateWithAutoMapper<MonsterSaveData>(mapper);
         }
     }
 }
