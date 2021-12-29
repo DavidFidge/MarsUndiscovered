@@ -16,6 +16,7 @@ using GoRogue.Random;
 
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components.Factories;
+using MarsUndiscovered.Components.GenerationSteps;
 using MarsUndiscovered.Components.SaveData;
 using MarsUndiscovered.Messages;
 using MediatR;
@@ -76,7 +77,7 @@ namespace MarsUndiscovered.Components
 
             var generator = new Generator(MapWidth, MapHeight);
 
-            Generator = generator.ConfigAndGenerateSafe(g => g.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps()));
+            Generator = generator.ConfigAndGenerateSafe(g => g.AddSteps(GeneratorAlgorithms.OutdoorGeneneration()));
 
             var wallsFloors = Generator.Context
                 .GetFirst<ArrayView<bool>>()
