@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
-
+using System.Linq;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 
@@ -66,12 +66,16 @@ namespace MarsUndiscovered.UserInterface.Views
 
             _loadGameDetails = new List<LoadGameDetails>();
 
-            var loadGameList = _saveGameStore.GetLoadGameList();
+            var loadGameList = _saveGameStore
+                .GetLoadGameList()
+                .OrderByDescending(l => l.DateTime)
+                .ToList();
+
             _fileNameList.ClearItems();
 
             foreach (var loadGame in loadGameList)
             {
-                _fileNameList.AddItem($"{loadGame.Filename}, {loadGame.LoadGameDetail}, Last Modified: {loadGame.DateTime.ToString("f", CultureInfo.CurrentCulture)}");
+                _fileNameList.AddItem($"{loadGame.Filename}, {loadGame.LoadGameDetail}, {loadGame.DateTime.ToString("f", CultureInfo.CurrentCulture)}");
                 _loadGameDetails.Add(loadGame);
             }
         }
