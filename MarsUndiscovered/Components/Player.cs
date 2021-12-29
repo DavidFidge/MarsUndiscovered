@@ -1,6 +1,6 @@
 ﻿namespace MarsUndiscovered.Components
 {
-    public class Player : MarsGameObject
+    public class Player : Actor
     {
         public Player() : base(1, true)
         {

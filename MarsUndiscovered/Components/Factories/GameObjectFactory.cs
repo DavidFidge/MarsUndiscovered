@@ -62,6 +62,16 @@ namespace MarsUndiscovered.Components.Factories
             return ResolveWithGivenId<Floor>(id);
         }
 
+        public Monster CreateMonster()
+        {
+            return ResolveWithNextId<Monster>();
+        }
+
+        public Monster CreateMonster(uint id)
+        {
+            return ResolveWithGivenId<Monster>(id);
+        }
+
         private T ResolveWithNextId<T>()
         {
             return _container.Resolve<T>(new Arguments { { "id", GetNextId() } });

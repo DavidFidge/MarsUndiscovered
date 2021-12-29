@@ -37,6 +37,9 @@ namespace MarsUndiscovered.Installers
             CreateMap<PlayerSaveData, Player>()
                 .ConstructUsing(sd => _gameObjectFactory.CreatePlayer(sd.Id));
 
+            CreateMap<MonsterSaveData, Monster>()
+                .ConstructUsing(sd => _gameObjectFactory.CreateMonster(sd.Id));
+
             CreateMap<GameWorldSaveData, GameWorld>();
             CreateMap<GameObjectFactoryData, GameObjectFactory>();
         }
@@ -51,6 +54,7 @@ namespace MarsUndiscovered.Installers
             CreateMap<Wall, WallSaveData>();
             CreateMap<Floor, FloorSaveData>();
             CreateMap<Player, PlayerSaveData>();
+            CreateMap<Monster, MonsterSaveData>();
             CreateMap<GameWorld, GameWorldSaveData>();
             CreateMap<GameObjectFactory, GameObjectFactoryData>();
         }
