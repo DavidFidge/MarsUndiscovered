@@ -1,6 +1,8 @@
-﻿namespace MarsUndiscovered.Components
+﻿using MarsUndiscovered.Components.SaveData;
+
+namespace MarsUndiscovered.Components
 {
-    public class Floor : Terrain
+    public class Floor : Terrain<FloorSaveData>
     {
         public Floor()
         {

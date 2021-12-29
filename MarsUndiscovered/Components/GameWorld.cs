@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using AutoMapper;
+
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
+
 using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Interfaces;
 
@@ -19,18 +22,16 @@ using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.GenerationSteps;
 using MarsUndiscovered.Components.SaveData;
 using MarsUndiscovered.Messages;
-using MediatR;
+
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
 using Troschuetz.Random;
 using Troschuetz.Random.Generators;
 
-using Point = SadRogue.Primitives.Point;
-
 namespace MarsUndiscovered.Components
 {
-    public class GameWorld : BaseComponent, IGameWorld, ISaveable
+    public class GameWorld : BaseComponent, IGameWorld, ISaveable, IMementoState<GameWorldSaveData>
     {
         public const int MapWidth = 76;
         public const int MapHeight = 29;
@@ -81,7 +82,7 @@ namespace MarsUndiscovered.Components
 
             var wallsFloors = Generator.Context
                 .GetFirst<ArrayView<bool>>()
-                .ToArrayView(s => s ? (Terrain)GameObjectFactory.CreateFloor() : GameObjectFactory.CreateWall());
+                .ToArrayView(s => s ? (IGameObject)GameObjectFactory.CreateFloor() : GameObjectFactory.CreateWall());
 
             foreach (var item in wallsFloors.ToArray())
                 GameObjects.Add(item.ID, item);
@@ -107,7 +108,7 @@ namespace MarsUndiscovered.Components
         {
             var wallsFloors = GameObjects
                 .Values
-                .OfType<Terrain>()
+                .Where(t => t is Wall || t is Floor)
                 .ToArrayView(MapWidth);
 
             Map.ApplyTerrainOverlay(wallsFloors);
@@ -199,6 +200,16 @@ namespace MarsUndiscovered.Components
             PopulateMapTerrain();
 
             Map.AddEntity(Player);
+        }
+
+        public IMemento<GameWorldSaveData> GetState(IMapper mapper)
+        {
+            return Memento<GameWorldSaveData>.CreateWithAutoMapper(this, mapper);
+        }
+
+        public void SetState(IMemento<GameWorldSaveData> state, IMapper mapper)
+        {
+            Memento<GameWorldSaveData>.SetWithAutoMapper(this, state, mapper);
         }
     }
 }

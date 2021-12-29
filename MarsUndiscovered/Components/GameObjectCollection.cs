@@ -14,6 +14,14 @@ namespace MarsUndiscovered.Components
         {
             var gameObjects = Values.ToList();
 
+            var gameObjectSaveData = new List<GameObjectSaveData>();
+
+            foreach (var gameObject in gameObjects)
+            {
+                gameObject.
+
+            }
+
             saveGameStore.SaveToStore<IList<IGameObject>, IList<GameObjectSaveData>>(gameObjects);
         }
 
