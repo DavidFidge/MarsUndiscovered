@@ -39,7 +39,7 @@ namespace MarsUndiscovered.Installers
 
             CreateMap<MonsterSaveData, Monster>()
                 .ConstructUsing(sd => _gameObjectFactory.CreateMonster(sd.Id))
-                .ForMember(d => d.Breed, o => o.MapFrom(s => Breed.Breeds[s.BreedName]));
+                .ForMember(d => d.Breed, o => o.MapFrom(s => Breed.GetBreed(s.BreedName)));
 
             CreateMap<GameWorldSaveData, GameWorld>();
         }

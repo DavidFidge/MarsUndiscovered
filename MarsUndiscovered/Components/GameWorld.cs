@@ -282,6 +282,11 @@ namespace MarsUndiscovered.Components
             PopulateMapTerrain();
 
             Map.AddEntity(Player);
+
+            foreach (var monster in Monsters.Values)
+            {
+                Map.AddEntity(monster);
+            }
         }
 
         public IMemento<GameWorldSaveData> GetSaveState(IMapper mapper)
