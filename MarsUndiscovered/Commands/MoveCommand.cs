@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using AutoMapper;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
@@ -30,14 +30,14 @@ namespace MarsUndiscovered.Commands
             _fromTo = fromTo;
         }
 
-        public override IMemento<MoveCommandData> GetState()
+        public override IMemento<MoveCommandData> GetSaveState(IMapper mapper)
         {
             return new Memento<MoveCommandData>(new MoveCommandData { FromTo = _fromTo, GameObjectId = _gameObject.ID });
         }
 
-        public override void SetState(IMemento<MoveCommandData> memento)
+        public override void SetLoadState(IMemento<MoveCommandData> memento, IMapper mapper)
         {
-            base.SetState(memento);
+            base.SetLoadState(memento, mapper);
 
             Initialise(GameWorld.GameObjects[memento.State.GameObjectId], memento.State.FromTo);
             GameWorld.GameTurnService.Populate(TurnDetails);

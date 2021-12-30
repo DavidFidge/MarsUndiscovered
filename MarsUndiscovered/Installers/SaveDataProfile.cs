@@ -23,7 +23,7 @@ namespace MarsUndiscovered.Installers
 
         private void MapForLoad()
         {
-            CreateMap<GameObjectSaveData, IGameObject>()
+            CreateMap<GameObjectSaveData, IMarsGameObject>()
                 .Include<WallSaveData, Wall>()
                 .Include<FloorSaveData, Floor>()
                 .Include<PlayerSaveData, Player>();
@@ -37,13 +37,16 @@ namespace MarsUndiscovered.Installers
             CreateMap<PlayerSaveData, Player>()
                 .ConstructUsing(sd => _gameObjectFactory.CreatePlayer(sd.Id));
 
+            CreateMap<MonsterSaveData, Monster>()
+                .ConstructUsing(sd => _gameObjectFactory.CreateMonster(sd.Id))
+                .ForMember(d => d.Breed, o => o.MapFrom(s => Breed.Breeds[s.BreedName]));
+
             CreateMap<GameWorldSaveData, GameWorld>();
-            CreateMap<GameObjectFactoryData, GameObjectFactory>();
         }
 
         private void MapForSave()
         {
-            CreateMap<IGameObject, GameObjectSaveData>()
+            CreateMap<IMarsGameObject, GameObjectSaveData>()
                 .Include<Wall, WallSaveData>()
                 .Include<Floor, FloorSaveData>()
                 .Include<Player, PlayerSaveData>();
@@ -51,6 +54,7 @@ namespace MarsUndiscovered.Installers
             CreateMap<Wall, WallSaveData>();
             CreateMap<Floor, FloorSaveData>();
             CreateMap<Player, PlayerSaveData>();
+            CreateMap<Monster, MonsterSaveData>();
             CreateMap<GameWorld, GameWorldSaveData>();
             CreateMap<GameObjectFactory, GameObjectFactoryData>();
         }

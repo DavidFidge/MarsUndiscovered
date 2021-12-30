@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Text;
-
+using GeonBit.UI;
+using GeonBit.UI.DataTypes;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using GeonBit.UI.Entities;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -52,6 +54,9 @@ namespace MarsUndiscovered.UserInterface.Views
                 Opacity = 128
             };
 
+            _consoleEntry.AddDisabledSpecialChar(SpecialChars.ArrowUp);
+            _consoleEntry.AddDisabledSpecialChar(SpecialChars.ArrowDown);
+
             _consoleEntry.OnValueChange = OnValueChange;
 
             consolePanel.AddChild(_consoleEntry);
@@ -85,6 +90,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected override void ViewModelChanged()
         {
             _consoleEntry.Value = Data.Command;
+            _consoleEntry.Caret = -1;
 
             var stringBuilder = new StringBuilder();
 

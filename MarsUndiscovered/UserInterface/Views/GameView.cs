@@ -81,8 +81,8 @@ namespace MarsUndiscovered.UserInterface.Views
 
             SetupChildPanel(_inGameOptionsView);
 
-            _messageLog = new SelectList(new Vector2(0.8f, 0.15f), Anchor.TopCenter, null, PanelSkin.None)
-                .WithPadding(new Vector2(5f));
+            _messageLog = new SelectList(new Vector2(0.68f, 0.14f), Anchor.TopCenter, null, PanelSkin.None)
+                .NoPadding();
 
             _messageLog.ExtraSpaceBetweenLines = -10;
             _messageLog.LockSelection = true;
