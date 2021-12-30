@@ -2,5 +2,6 @@
 {
     public class TerrainSaveData : GameObjectSaveData
     {
+        public int CreatedIndex { get; set; }
     }
 }

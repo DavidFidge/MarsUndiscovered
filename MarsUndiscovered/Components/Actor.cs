@@ -1,8 +1,7 @@
 ﻿using System;
-using AutoMapper;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
+
 using GoRogue.Components;
-using MarsUndiscovered.Components.SaveData;
+
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Components

@@ -7,14 +7,14 @@ namespace MarsUndiscovered.Components
     public class Monster : Actor, IMementoState<MonsterSaveData>
     {
         public Breed Breed { get; set; }
+        public override string Name => Breed.Name;
+        public override string Description => Breed.Description;
 
-        public int Health { get; set; }
-
-        public Monster() : base(1, true)
+        public Monster() : base(1)
         {
         }
 
-        public Monster(uint id) : base(1, true, idGenerator: () => id)
+        public Monster(uint id) : base(1, idGenerator: () => id)
         {
         }
 
@@ -26,12 +26,12 @@ namespace MarsUndiscovered.Components
             return this;
         }
 
-        public void SetState(IMemento<MonsterSaveData> state, IMapper mapper)
+        public void SetLoadState(IMemento<MonsterSaveData> memento, IMapper mapper)
         {
-            SetWithAutoMapper<MonsterSaveData>(state, mapper);
+            SetWithAutoMapper<MonsterSaveData>(memento, mapper);
         }
 
-        public IMemento<MonsterSaveData> GetState(IMapper mapper)
+        public IMemento<MonsterSaveData> GetSaveState(IMapper mapper)
         {
             return CreateWithAutoMapper<MonsterSaveData>(mapper);
         }

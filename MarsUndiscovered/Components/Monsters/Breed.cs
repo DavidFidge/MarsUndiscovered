@@ -9,14 +9,18 @@ namespace MarsUndiscovered.Components
         public decimal HealthModifier { get; set; }
 
         public static Dictionary<string, Breed> Breeds;
+        public static Roach Roach = new Roach();
 
         static Breed()
         {
             Breeds = new Dictionary<string, Breed>();
 
-            var roach = new Roach();
+            Breeds.Add(Roach.Name.ToLower(), Roach);
+        }
 
-            Breeds.Add(roach.Name, roach);
+        public static Breed GetBreed(string breed)
+        {
+            return Breeds[breed.ToLower()];
         }
     }
 }

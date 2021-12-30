@@ -81,7 +81,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 .Reverse()
                 .ToList();
 
-            var containsPlayer = gameObjects.Any(go => go is Player);
+            var containsActor = gameObjects.Any(go => go is Actor);
 
             foreach (var gameObject in gameObjects)
             {
@@ -91,7 +91,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
                 SceneGraph.Add(mapTileEntity, mapTileRootEntity);
 
-                if (containsPlayer && gameObject is Floor)
+                if (containsActor && gameObject is Floor)
                     mapTileEntity.IsVisible = false;
             }
         }
@@ -99,6 +99,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void UpdateMapTiles(Point point)
         {
             var mapTileRootEntity = (MapTileRootEntity)SceneGraph.Find(e => e is MapTileRootEntity entity && entity.Point.Equals(point));
+
+            if (mapTileRootEntity == null)
+                return;
 
             SceneGraph.ClearChildren(mapTileRootEntity);
 

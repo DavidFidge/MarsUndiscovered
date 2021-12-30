@@ -20,6 +20,7 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad Wall { get; set; }
         public MapTileQuad Floor { get; set; }
         public MapTileQuad Player { get; set; }
+        public MapTileQuad Roach { get; set; }
 
         private readonly IGameProvider _gameProvider;
 
@@ -64,6 +65,16 @@ namespace MarsUndiscovered.Graphics
                 TextureMaterialEffect,
                 '@',
                 Color.Yellow
+            );
+
+            Roach = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                'r',
+                Color.SaddleBrown
             );
         }
     }

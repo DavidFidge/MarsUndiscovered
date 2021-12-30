@@ -13,16 +13,16 @@ namespace MarsUndiscovered.Components
         where T : IMarsGameObject, IMementoState<TState>
         where TState : GameObjectSaveData
     {
-        public virtual void SaveGame(ISaveGameStore saveGameStore)
+        public virtual void SaveState(ISaveGameStore saveGameStore)
         {
             var gameObjectSaveData = Values
-                .Select(go => go.GetState(saveGameStore.Mapper))
+                .Select(go => go.GetSaveState(saveGameStore.Mapper))
                 .ToList();
 
             saveGameStore.SaveListToStore(gameObjectSaveData);
         }
 
-        public void LoadGame(ISaveGameStore saveGameStore)
+        public void LoadState(ISaveGameStore saveGameStore)
         {
             var gameObjectSaveData = saveGameStore.GetListFromStore<TState>();
 
@@ -30,7 +30,7 @@ namespace MarsUndiscovered.Components
             {
                 var gameObject = Create(gameObjectSaveDataItem.State.Id);
 
-                gameObject.SetState(gameObjectSaveDataItem, saveGameStore.Mapper);
+                gameObject.SetLoadState(gameObjectSaveDataItem, saveGameStore.Mapper);
 
                 Add(gameObject.ID, gameObject);
             }

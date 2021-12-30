@@ -42,10 +42,25 @@ namespace MarsUndiscovered.Tests.Components
         }
 
         [TestMethod]
+        public void Should_Spawn_Monster()
+        {
+            // Arrange
+            _gameWorld.NewGame();
+            var currentMonsterCount = _gameWorld.Monsters.Count;
+
+            // Act
+            _gameWorld.SpawnMonster(Breed.Roach.Name);
+
+            // Assert
+            Assert.AreEqual(currentMonsterCount + 1, _gameWorld.Monsters.Count);
+        }
+
+        [TestMethod]
         public void Should_Save_Then_Load_Game()
         {
             // Arrange
             _gameWorld.NewGame();
+            _gameWorld.SpawnMonster(Breed.Roach);
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 
             // Act
@@ -56,10 +71,12 @@ namespace MarsUndiscovered.Tests.Components
             Assert.AreNotSame(_gameWorld, newGameWorld);
 
             Assert.AreEqual(_gameWorld.Seed, newGameWorld.Seed);
+            Assert.AreEqual(_gameWorld.GameObjectFactory.LastId, newGameWorld.GameObjectFactory.LastId);
 
             Assert.AreEqual(_gameWorld.GameObjects.Count, newGameWorld.GameObjects.Count);
             Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<Wall>().Count(), newGameWorld.GameObjects.Values.OfType<Wall>().Count());
             Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<Floor>().Count(), newGameWorld.GameObjects.Values.OfType<Floor>().Count());
+            Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<Monster>().Count(), newGameWorld.GameObjects.Values.OfType<Monster>().Count());
             Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<Player>().Count(), newGameWorld.GameObjects.Values.OfType<Player>().Count());
 
             Assert.AreEqual(_gameWorld.Player.ID, newGameWorld.Player.ID);

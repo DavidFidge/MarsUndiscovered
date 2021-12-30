@@ -46,6 +46,16 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 case Player _:
                     MapTileQuad = Assets.Player;
                     break;
+
+                case Monster monster:
+                    switch (monster.Breed)
+                    {
+                        case Roach _:
+                            MapTileQuad = Assets.Roach;
+                            break;
+                    }
+
+                    break;
             }
         }
     }

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 using Castle.MicroKernel;
 using Castle.Windsor;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
+
+using GoRogue.GameFramework;
+
 using MarsUndiscovered.Components.SaveData;
 
 namespace MarsUndiscovered.Components.Factories
@@ -15,11 +17,12 @@ namespace MarsUndiscovered.Components.Factories
     {
         private readonly IWindsorContainer _container;
 
-        public uint NextId { get; set; } = 0;
+        public uint LastId { get; private set; } = 0;
+        public IDictionary<uint, IGameObject> GameObjects { get; } = new Dictionary<uint, IGameObject>();
 
         private uint GetNextId()
         {
-            return ++NextId;
+            return ++LastId;
         }
 
         public GameObjectFactory(IWindsorContainer container)
@@ -29,7 +32,8 @@ namespace MarsUndiscovered.Components.Factories
 
         public void Reset()
         {
-            NextId = 0;
+            LastId = 0;
+            GameObjects.Clear();
         }
 
         public Player CreatePlayer()
@@ -72,26 +76,32 @@ namespace MarsUndiscovered.Components.Factories
             return ResolveWithGivenId<Monster>(id);
         }
 
-        private T ResolveWithNextId<T>()
+        private T ResolveWithNextId<T>() where T : IGameObject
         {
-            return _container.Resolve<T>(new Arguments { { "id", GetNextId() } });
+            var gameObject = _container.Resolve<T>(new Arguments { { "id", GetNextId() } });
+            GameObjects.Add(gameObject.ID, gameObject);
+
+            return gameObject;
         }
 
-        private T ResolveWithGivenId<T>(uint id)
+        private T ResolveWithGivenId<T>(uint id) where T : IGameObject
         {
-            return _container.Resolve<T>(new Arguments { { "id", id } });
+            var gameObject = _container.Resolve<T>(new Arguments { { "id", id } });
+            GameObjects.Add(gameObject.ID, gameObject);
+
+            return gameObject;
         }
 
-        public void SaveGame(ISaveGameStore saveGameStore)
+        public void SaveState(ISaveGameStore saveGameStore)
         {
             var gameObjectFactoryData = Memento<GameObjectFactoryData>.CreateWithAutoMapper(this, saveGameStore.Mapper);
             saveGameStore.SaveToStore(gameObjectFactoryData);
         }
 
-        public void LoadGame(ISaveGameStore saveGameStore)
+        public void LoadState(ISaveGameStore saveGameStore)
         {
             var gameObjectFactoryData = saveGameStore.GetFromStore<GameObjectFactoryData>();
-            Memento<GameObjectFactoryData>.SetWithAutoMapper(this, gameObjectFactoryData, saveGameStore.Mapper);
+            LastId = gameObjectFactoryData.State.LastId;
         }
     }
 }

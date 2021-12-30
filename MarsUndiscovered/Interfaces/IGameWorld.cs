@@ -27,5 +27,7 @@ namespace MarsUndiscovered.Interfaces
         WallCollection Walls { get; }
         FloorCollection Floors { get; }
         MonsterCollection Monsters { get; }
+        IDictionary<uint, IGameObject> GameObjects { get; }
+        void SpawnMonster(string breed);
     }
 }

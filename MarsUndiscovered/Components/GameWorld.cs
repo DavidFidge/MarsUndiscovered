@@ -6,6 +6,7 @@ using System.Linq;
 using AutoMapper;
 
 using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
@@ -45,6 +46,7 @@ namespace MarsUndiscovered.Components
         public WallCollection Walls { get; private set; }
         public FloorCollection Floors { get; private set; }
         public MonsterCollection Monsters { get; private set; }
+        public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
         public Generator Generator { get; set; }
         public MessageLog MessageLog { get; } = new MessageLog();
         public IMapper Mapper { get; set; }
@@ -64,11 +66,7 @@ namespace MarsUndiscovered.Components
 
         public void NewGame(uint? seed = null)
         {
-            Walls = new WallCollection(GameObjectFactory);
-            Floors = new FloorCollection(GameObjectFactory);
-            Monsters = new MonsterCollection(GameObjectFactory);
-
-            GameObjectFactory.Reset();
+            Reset();
 
             if (seed == null)
                 seed = TMath.Seed();
@@ -79,15 +77,32 @@ namespace MarsUndiscovered.Components
 
             Logger.Debug("Generating game world");
 
-            Player = GameObjectFactory.CreatePlayer();
-
             var generator = new Generator(MapWidth, MapHeight);
 
             Generator = generator.ConfigAndGenerateSafe(g => g.AddSteps(GeneratorAlgorithms.OutdoorGeneneration()));
 
             var wallsFloors = Generator.Context
                 .GetFirst<ArrayView<bool>>()
-                .ToArrayView(s => s ? (IGameObject)GameObjectFactory.CreateFloor() : GameObjectFactory.CreateWall());
+                .ToArrayView((s, index) =>
+                    {
+                        IGameObject gameObject;
+
+                        if (s)
+                        {
+                            var floor = GameObjectFactory.CreateFloor();
+                            floor.CreatedIndex = index;
+                            gameObject = floor;
+                        }
+                        else
+                        {
+                            var wall = GameObjectFactory.CreateWall();
+                            wall.CreatedIndex = index;
+                            gameObject = wall;
+                        }
+
+                        return gameObject;
+                    }
+                );
 
             foreach (var item in wallsFloors.ToArray().OfType<Wall>().ToList())
                 Walls.Add(item.ID, item);
@@ -97,10 +112,29 @@ namespace MarsUndiscovered.Components
 
             CreateMap();
 
-            var floorPosition = Map.RandomPosition((p, gameObjects) => gameObjects.Any(g => g is Floor));
-            Player.Position = floorPosition;
+            Player = GameObjectFactory.CreatePlayer()
+                .PositionedAt(Map.RandomPosition(MapHelpers.EmptyPointOnFloor))
+                .AddToMap(Map);
 
-            Map.AddEntity(Player);
+            SpawnMonster(Breed.Roach);
+            SpawnMonster(Breed.Roach);
+            SpawnMonster(Breed.Roach);
+            SpawnMonster(Breed.Roach);
+            SpawnMonster(Breed.Roach);
+            SpawnMonster(Breed.Roach);
+            SpawnMonster(Breed.Roach);
+            SpawnMonster(Breed.Roach);
+            SpawnMonster(Breed.Roach);
+            SpawnMonster(Breed.Roach);
+        }
+
+        private void Reset()
+        {
+            Walls = new WallCollection(GameObjectFactory);
+            Floors = new FloorCollection(GameObjectFactory);
+            Monsters = new MonsterCollection(GameObjectFactory);
+
+            GameObjectFactory.Reset();
         }
 
         private void CreateMap()
@@ -114,8 +148,9 @@ namespace MarsUndiscovered.Components
 
         private void PopulateMapTerrain()
         {
-            var wallsFloors = Walls.Values.Cast<IGameObject>()
+            var wallsFloors = Walls.Values.Cast<Terrain>()
                 .Union(Floors.Values)
+                .OrderBy(t => t.CreatedIndex)
                 .ToArrayView(MapWidth);
 
             Map.ApplyTerrainOverlay(wallsFloors);
@@ -132,13 +167,24 @@ namespace MarsUndiscovered.Components
 
                 if (terrainAtDestination is Floor)
                 {
-                    var command = MoveCommandFactory.Create();
+                    var gameObjectsAt = Map.GetObjectsAt(newPlayerPosition);
 
-                    command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
-                    command.Execute();
+                    var actorAt = gameObjectsAt.FirstOrDefault(go => go is Actor) as Actor;
 
-                    Mediator.Send(new MapTileChangedRequest(playerPosition));
-                    Mediator.Send(new MapTileChangedRequest(newPlayerPosition));
+                    if (actorAt == null)
+                    {
+                        var command = MoveCommandFactory.Create();
+
+                        command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
+                        command.Execute();
+
+                        Mediator.Send(new MapTileChangedRequest(playerPosition));
+                        Mediator.Send(new MapTileChangedRequest(newPlayerPosition));
+                    }
+                    else
+                    {
+                        MessageLog.AddMessage($"You bump into a {actorAt.Name}");
+                    }
                 }
                 else if (terrainAtDestination is Wall)
                 {
@@ -158,6 +204,24 @@ namespace MarsUndiscovered.Components
                 .ToList();
         }
 
+        public void SpawnMonster(Breed breed)
+        {
+            var monster = GameObjectFactory
+                .CreateMonster()
+                .WithBreed(breed)
+                .PositionedAt(Map.RandomPositionAwayFrom(Player.Position, 5, MapHelpers.EmptyPointOnFloor))
+                .AddToMap(Map);
+
+            Monsters.Add(monster.ID, monster);
+
+            Mediator.Send(new MapTileChangedRequest(monster.Position));
+        }
+
+        public void SpawnMonster(string breed)
+        {
+            SpawnMonster(Breed.GetBreed(breed));
+        }
+
         public SaveGameResult SaveGame(string saveGameName, bool overwrite)
         {
             if (!overwrite)
@@ -168,7 +232,7 @@ namespace MarsUndiscovered.Components
             }
 
             SaveGameStore.Clear();
-            SaveGame(SaveGameStore);
+            SaveState(SaveGameStore);
 
             return SaveGameStore.SaveStoreToFile(saveGameName, overwrite);
         }
@@ -178,34 +242,40 @@ namespace MarsUndiscovered.Components
             var loadGameResult = SaveGameStore.LoadStoreFromFile(saveGameName);
 
             if (loadGameResult.Equals(LoadGameResult.Success))
-                LoadGame(SaveGameStore);
+                LoadState(SaveGameStore);
 
             return loadGameResult;
         }
 
-        public void SaveGame(ISaveGameStore saveGameStore)
+        public void SaveState(ISaveGameStore saveGameStore)
         {
-            GameObjectFactory.SaveGame(saveGameStore);
-            Walls.SaveGame(saveGameStore);
-            Floors.SaveGame(saveGameStore);
-            Monsters.SaveGame(saveGameStore);
-            MessageLog.SaveGame(saveGameStore);
-            Player.SaveGame(saveGameStore);
+            GameObjectFactory.SaveState(saveGameStore);
+            Walls.SaveState(saveGameStore);
+            Floors.SaveState(saveGameStore);
+            Monsters.SaveState(saveGameStore);
+            MessageLog.SaveState(saveGameStore);
+            Player.SaveState(saveGameStore);
 
-
-
-            saveGameStore.SaveToStore<GameWorld, GameWorldSaveData>(this);
+            var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameStore.Mapper);
+            saveGameStore.SaveToStore(gameWorldSaveData);
         }
 
-        public void LoadGame(ISaveGameStore saveGameStore)
+        public void LoadState(ISaveGameStore saveGameStore)
         {
-            saveGameStore.GetFromStore<GameWorld, GameWorldSaveData>(this);
+            Reset();
 
-            GameObjectFactory.LoadGame(saveGameStore);
-            GameObjects.LoadGame(saveGameStore);
-            MessageLog.LoadGame(saveGameStore);
+            var gameWorldSaveData = saveGameStore.GetFromStore<GameWorldSaveData>();
+            Memento<GameWorldSaveData>.SetWithAutoMapper(this, gameWorldSaveData, saveGameStore.Mapper);
+            
+            GameObjectFactory.LoadState(saveGameStore);
+            Walls.LoadState(saveGameStore);
+            Floors.LoadState(saveGameStore);
+            Monsters.LoadState(saveGameStore);
+            MessageLog.LoadState(saveGameStore);
 
-            Player = (Player)GameObjects.Values.First(go => go is Player);
+            var playerSaveData = saveGameStore.GetFromStore<PlayerSaveData>();
+            Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
+            Player.LoadState(saveGameStore);
 
             CreateMap();
 
@@ -214,14 +284,14 @@ namespace MarsUndiscovered.Components
             Map.AddEntity(Player);
         }
 
-        public IMemento<GameWorldSaveData> GetState(IMapper mapper)
+        public IMemento<GameWorldSaveData> GetSaveState(IMapper mapper)
         {
             return Memento<GameWorldSaveData>.CreateWithAutoMapper(this, mapper);
         }
 
-        public void SetState(IMemento<GameWorldSaveData> state, IMapper mapper)
+        public void SetLoadState(IMemento<GameWorldSaveData> memento, IMapper mapper)
         {
-            Memento<GameWorldSaveData>.SetWithAutoMapper(this, state, mapper);
+            Memento<GameWorldSaveData>.SetWithAutoMapper(this, memento, mapper);
         }
     }
 }

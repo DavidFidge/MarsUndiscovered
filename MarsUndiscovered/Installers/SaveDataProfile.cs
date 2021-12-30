@@ -42,7 +42,6 @@ namespace MarsUndiscovered.Installers
                 .ForMember(d => d.Breed, o => o.MapFrom(s => Breed.Breeds[s.BreedName]));
 
             CreateMap<GameWorldSaveData, GameWorld>();
-            CreateMap<GameObjectFactoryData, GameObjectFactory>();
         }
 
         private void MapForSave()

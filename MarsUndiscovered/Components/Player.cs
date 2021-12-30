@@ -7,33 +7,35 @@ namespace MarsUndiscovered.Components
 {
     public class Player : Actor, IMementoState<PlayerSaveData>, ISaveable
     {
-        public Player() : base(1, true)
+        public override string Name => "You";
+
+        public Player() : base(1)
         {
         }
 
-        public Player(uint id) : base(1, true, idGenerator: () => id)
+        public Player(uint id) : base(1, idGenerator: () => id)
         {
         }
 
-        public IMemento<PlayerSaveData> GetState(IMapper mapper)
+        public IMemento<PlayerSaveData> GetSaveState(IMapper mapper)
         {
             return CreateWithAutoMapper<PlayerSaveData>(mapper);
         }
 
-        public void SetState(IMemento<PlayerSaveData> state, IMapper mapper)
+        public void SetLoadState(IMemento<PlayerSaveData> memento, IMapper mapper)
         {
-            SetWithAutoMapper(state, mapper);
+            SetWithAutoMapper(memento, mapper);
         }
 
-        public void SaveGame(ISaveGameStore saveGameStore)
+        public void SaveState(ISaveGameStore saveGameStore)
         {
-            saveGameStore.SaveToStore(CreateWithAutoMapper<PlayerSaveData>(saveGameStore.Mapper));
+            saveGameStore.SaveToStore(GetSaveState(saveGameStore.Mapper));
         }
 
-        public void LoadGame(ISaveGameStore saveGameStore)
+        public void LoadState(ISaveGameStore saveGameStore)
         {
             var playerSaveData = saveGameStore.GetFromStore<PlayerSaveData>();
-            SetState(playerSaveData, saveGameStore.Mapper);
+            SetLoadState(playerSaveData, saveGameStore.Mapper);
         }
     }
 }

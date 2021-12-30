@@ -17,6 +17,8 @@ namespace MarsUndiscovered.Components
     {
         public IMediator Mediator { get; set; }
         public ILogger Logger { get; set; }
+        public virtual string Name { get; set; }
+        public virtual string Description { get; set; }
 
         public MarsGameObject(Point position, int layer, bool isWalkable = true, bool isTransparent = true, Func<uint> idGenerator = null, IComponentCollection customComponentCollection = null) : base(position, layer, isWalkable, isTransparent, idGenerator, customComponentCollection)
         {

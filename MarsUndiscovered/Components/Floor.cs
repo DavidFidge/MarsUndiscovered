@@ -14,14 +14,14 @@ namespace MarsUndiscovered.Components
         {
         }
 
-        public IMemento<FloorSaveData> GetState(IMapper mapper)
+        public IMemento<FloorSaveData> GetSaveState(IMapper mapper)
         {
             return CreateWithAutoMapper<FloorSaveData>(mapper);
         }
 
-        public void SetState(IMemento<FloorSaveData> state, IMapper mapper)
+        public void SetLoadState(IMemento<FloorSaveData> memento, IMapper mapper)
         {
-            SetWithAutoMapper<FloorSaveData>(state, mapper);
+            SetWithAutoMapper<FloorSaveData>(memento, mapper);
         }
     }
 }
