@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 
@@ -23,13 +23,16 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     {
         private readonly IGameOptionsStore _gameOptionsStore;
         private readonly IUserInterface _userInterface;
+        private readonly IGameCamera _gameCamera;
 
         public VideoOptionsViewModel(
             IGameOptionsStore gameOptionsStore,
-            IUserInterface userInterface)
+            IUserInterface userInterface,
+            IGameCamera gameCamera)
         {
             _gameOptionsStore = gameOptionsStore;
             _userInterface = userInterface;
+            _gameCamera = gameCamera;
         }
 
         public override void Initialize()
@@ -87,6 +90,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             Data.SelectedRenderResolution = request.RenderResolution;
 
             _userInterface.RenderResolution = Data.SelectedRenderResolution;
+            _gameCamera.RenderResolution = Data.SelectedRenderResolution;
 
             return Unit.Task;
         }

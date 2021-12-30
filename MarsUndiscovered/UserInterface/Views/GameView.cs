@@ -62,8 +62,6 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             SetupInGameOptions();
             SetupConsole();
-
-            _gameCamera.Initialise();
         }
 
         private void SetupInGameOptions()
@@ -81,7 +79,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             SetupChildPanel(_inGameOptionsView);
 
-            _messageLog = new SelectList(new Vector2(0.68f, 0.14f), Anchor.TopCenter, null, PanelSkin.None)
+            _messageLog = new SelectList(new Vector2(0.61f, 0.14f), Anchor.TopCenter, null, PanelSkin.None)
                 .NoPadding();
 
             _messageLog.ExtraSpaceBetweenLines = -10;

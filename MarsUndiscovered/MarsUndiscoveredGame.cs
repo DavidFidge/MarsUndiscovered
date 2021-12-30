@@ -6,6 +6,7 @@ using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
 
 using FrigidRogue.MonoGame.Core.Graphics;
+using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
@@ -33,6 +34,7 @@ namespace MarsUndiscovered
         private readonly IGameOptionsStore _gameOptionsStore;
         private readonly IAssets _assets;
         private readonly ScreenCollection _screenCollection;
+        private readonly IGameCamera _gameCamera;
 
         private bool _isExiting;
 
@@ -40,6 +42,7 @@ namespace MarsUndiscovered
         public EffectCollection EffectCollection
         { get; }
         private SpriteBatch _spriteBatch;
+        private RenderTarget2D _renderTarget;
 
         public MarsUndiscoveredGame(
             ILogger logger,
@@ -49,8 +52,9 @@ namespace MarsUndiscovered
             IUserInterface userInterface,
             IGameOptionsStore gameOptionsStore,
             IAssets assets,
-            ScreenCollection screenCollection
-            )
+            ScreenCollection screenCollection,
+            IGameCamera gameCamera
+        )
         {
             _logger = logger;
             _gameProvider = gameProvider;
@@ -66,6 +70,7 @@ namespace MarsUndiscovered
 
             _assets = assets;
             _screenCollection = screenCollection;
+            _gameCamera = gameCamera;
 
             EffectCollection = new EffectCollection(_gameProvider);
         }
@@ -78,6 +83,7 @@ namespace MarsUndiscovered
         /// </summary>
         protected override void Initialize()
         {
+            _gameCamera.Initialise();
             EffectCollection.Initialize();
 
             _userInterface.Initialize(Content, "mars");
@@ -85,6 +91,7 @@ namespace MarsUndiscovered
             var gameOptions = _gameOptionsStore.GetFromStore<VideoOptionsData>()?.State;
 
             _userInterface.RenderResolution = gameOptions?.SelectedRenderResolution;
+            _gameCamera.RenderResolution = gameOptions?.SelectedRenderResolution;
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -93,6 +100,17 @@ namespace MarsUndiscovered
             _screenCollection.Initialize();
 
             _userInterface.ShowScreen(_screenCollection.StartupScreen);
+
+            _renderTarget = new RenderTarget2D(
+                _gameProvider.Game.GraphicsDevice,
+                gameOptions?.SelectedRenderResolution.Width ?? 3840,
+                gameOptions?.SelectedRenderResolution.Height ?? 2160,
+                false,
+                _gameProvider.Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
+                _gameProvider.Game.GraphicsDevice.PresentationParameters.DepthStencilFormat,
+                0,
+                RenderTargetUsage.PreserveContents
+            );
 
             base.Initialize();
         }
@@ -174,9 +192,51 @@ namespace MarsUndiscovered
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            _userInterface.Draw(_spriteBatch);
+            ResetGraphicsDeviceStates();
+
+            GeonBit.UI.UserInterface.Active.Draw(_spriteBatch);
+
+            _gameProvider.Game.GraphicsDevice.SetRenderTarget(_renderTarget);
+
+            ResetGraphicsDeviceStates();
+
+            _gameProvider.Game.GraphicsDevice.Clear(Color.Transparent);
+
+            _userInterface.DrawActiveScreen(_spriteBatch);
+
+            _gameProvider.Game.GraphicsDevice.SetRenderTarget(null);
+
+            ResetGraphicsDeviceStates();
+
+            DrawRenderTarget(_spriteBatch);
+
+            GeonBit.UI.UserInterface.Active.DrawMainRenderTarget(_spriteBatch);
 
             base.Draw(gameTime);
+        }
+
+        private void ResetGraphicsDeviceStates()
+        {
+            // Reset graphics device properties after SpriteBatch drawing
+            // https://blogs.msdn.microsoft.com/shawnhar/2010/06/18/spritebatch-and-renderstates-in-xna-game-studio-4-0/
+            _gameProvider.Game.GraphicsDevice.BlendState = BlendState.Opaque;
+            _gameProvider.Game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            _gameProvider.Game.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+        }
+
+        public void DrawRenderTarget(SpriteBatch spriteBatch)
+        {
+            var viewportWidth = spriteBatch.GraphicsDevice.Viewport.Width;
+            var viewportHeight = spriteBatch.GraphicsDevice.Viewport.Height;
+
+            // draw the main render target
+            if (_renderTarget != null && !_renderTarget.IsDisposed)
+            {
+                // draw render target
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                spriteBatch.Draw(_renderTarget, new Rectangle(0, 0, viewportWidth, viewportHeight), Color.White);
+                spriteBatch.End();
+            }
         }
 
         public Task<Unit> Handle(QuitToDesktopRequest request, CancellationToken cancellationToken)
