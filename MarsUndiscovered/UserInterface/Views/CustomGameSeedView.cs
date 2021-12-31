@@ -68,5 +68,11 @@ namespace MarsUndiscovered.UserInterface.Views
 
             return Unit.Task;
         }
+
+        public override void Show()
+        {
+            base.Show();
+            _customSeed.IsFocused = true;
+        }
     }
 }

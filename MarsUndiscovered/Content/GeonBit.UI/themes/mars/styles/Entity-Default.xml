@@ -14,6 +14,6 @@
     <SpaceBefore>0 0</SpaceBefore>
     <SpaceAfter>0 20</SpaceAfter>
     <ShadowScale>1</ShadowScale>
-	<DefaultSize>0 0</DefaultSize>
+    <DefaultSize>0 0</DefaultSize>
   </Asset>
 </XnaContent>

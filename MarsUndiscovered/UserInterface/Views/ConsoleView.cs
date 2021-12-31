@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI;
 using GeonBit.UI.DataTypes;
 using MarsUndiscovered.UserInterface.Data;
@@ -15,7 +16,7 @@ namespace MarsUndiscovered.UserInterface.Views
     public class ConsoleView : BaseMarsUndiscoveredView<ConsoleViewModel, ConsoleData>
     {
         private TextInput _consoleEntry;
-        private Paragraph _consoleHistory;
+        private SelectList _consoleHistory;
 
         public ConsoleView(
             ConsoleViewModel consoleViewModel
@@ -25,34 +26,30 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            var containerPanel = new Panel(new Vector2(-1, 0.3f), PanelSkin.None, Anchor.BottomCenter, new Vector2(0f, -15f))
-            {
-                Padding = new Vector2(0f, 0f),
-            };
+            var consolePanel = new Panel()
+                .WithPadding(Vector2.Zero)
+                .WithAnchor(Anchor.BottomCenter)
+                .WidthOfScreen()
+                .Height(0.5f)
+                .Opacity70Percent();
 
-            RootPanel.AddChild(containerPanel);
+            RootPanel.AddChild(consolePanel);
 
-            var consolePanel = new Panel(new Vector2(0, 0))
-            {
-                Padding = new Vector2(30f, 30f)
-            };
-
-            containerPanel.AddChild(consolePanel);
-
-            var consolePrompt = new Label(">", Anchor.AutoInlineNoBreak, new Vector2(0.03f, 0.2f))
-            {
-                TextStyle = FontStyle.Bold,
-                Scale = 1.2f
-            };
+            var consolePrompt = new Label(">")
+                .Bold()
+                .WithScale(1.2f)
+                .WithSize(new Vector2(0.014f, 0.2f))
+                .WithAnchor(Anchor.AutoInlineNoBreak)
+                .NoPadding();
 
             consolePanel.AddChild(consolePrompt);
 
-            _consoleEntry = new TextInput(false, new Vector2(0.96f, 0.2f), Anchor.AutoInlineNoBreak, null, PanelSkin.Simple)
-            {
-                Padding = new Vector2(0.1f, 0f),
-                FillColor = Color.Black,
-                Opacity = 128
-            };
+            _consoleEntry = new TextInput()
+                .WithSize(new Vector2(0f, Constants.TextInputMinimalHeight * consolePanel.Size.Y))
+                .WithAnchor(Anchor.AutoInlineNoBreak)
+                .NoPadding()
+                .WithSkin(PanelSkin.Simple)
+                .Opacity70Percent();
 
             _consoleEntry.AddDisabledSpecialChar(SpecialChars.ArrowUp);
             _consoleEntry.AddDisabledSpecialChar(SpecialChars.ArrowDown);
@@ -61,11 +58,18 @@ namespace MarsUndiscovered.UserInterface.Views
 
             consolePanel.AddChild(_consoleEntry);
 
-            var hr = new HorizontalLine(Anchor.AutoInline);
+            var hr = new HorizontalLine(Anchor.AutoInline)
+                .NoPadding();
 
             consolePanel.AddChild(hr);
 
-            _consoleHistory = new Paragraph(String.Empty, Anchor.AutoInline, new Vector2(-1, 1f));
+            _consoleHistory = new SelectList()
+                .NoSkin()
+                .WithAnchor(Anchor.Auto)
+                .NoPadding()
+                .WithSize(new Vector2(0.99f, 0.88f));
+
+            _consoleHistory.ExtraSpaceBetweenLines = -30;
 
             consolePanel.AddChild(_consoleHistory);
         }
@@ -76,15 +80,10 @@ namespace MarsUndiscovered.UserInterface.Views
             Data.Command = _consoleEntry.Value;
         }
 
-        public void FocusConsoleEntry()
-        {
-            _consoleEntry.IsFocused = true;
-        }
-
         public override void Show()
         {
             base.Show();
-            FocusConsoleEntry();
+            _consoleEntry.IsFocused = true;
         }
 
         protected override void ViewModelChanged()
@@ -92,17 +91,15 @@ namespace MarsUndiscovered.UserInterface.Views
             _consoleEntry.Value = Data.Command;
             _consoleEntry.Caret = -1;
 
-            var stringBuilder = new StringBuilder();
+            _consoleHistory.ClearItems();
 
             foreach (var lastCommand in Data.LastCommands)
             {
                 if (!string.IsNullOrEmpty(lastCommand.Result))
-                    stringBuilder.AppendLine(lastCommand.Result);
+                    _consoleHistory.AddItem(lastCommand.Result);
 
-                stringBuilder.AppendLine(lastCommand.ToString());
+                _consoleHistory.AddItem(lastCommand.ToString());
             }
-
-            _consoleHistory.Text = stringBuilder.ToString();
 
             base.ViewModelChanged();
         }

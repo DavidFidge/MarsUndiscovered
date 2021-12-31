@@ -46,7 +46,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
                 Data.LastCommands.AddFirst(consoleCommand);
 
-                if (Data.LastCommands.Count > 10)
+                if (Data.LastCommands.Count > 50)
                     Data.LastCommands.RemoveLast();
 
                 _historyRecall.AddFirst(consoleCommand);

@@ -79,7 +79,10 @@ namespace MarsUndiscovered.Components
 
             var generator = new Generator(MapWidth, MapHeight);
 
-            Generator = generator.ConfigAndGenerateSafe(g => g.AddSteps(GeneratorAlgorithms.OutdoorGeneneration()));
+            var fillProbability = GlobalRandom.DefaultRNG.NextUInt(40, 60);
+            var cutoffBigAreaFill = GlobalRandom.DefaultRNG.NextUInt(2, 6);
+
+            Generator = generator.ConfigAndGenerateSafe(g => g.AddSteps(GeneratorAlgorithms.OutdoorGeneneration(fillProbability: (ushort)fillProbability, cutoffBigAreaFill: (int)cutoffBigAreaFill)));
 
             var wallsFloors = Generator.Context
                 .GetFirst<ArrayView<bool>>()

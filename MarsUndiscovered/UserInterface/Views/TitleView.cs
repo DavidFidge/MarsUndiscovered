@@ -89,7 +89,6 @@ namespace MarsUndiscovered.UserInterface.Views
             _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
         }
 
-
         public Task<Unit> Handle(CustomGameSeedRequest request, CancellationToken cancellationToken)
         {
             return ShowChildView(_customGameSeedView, _titleMenuPanel);
