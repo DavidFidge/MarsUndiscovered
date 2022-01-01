@@ -2,12 +2,15 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using MarsUndiscovered.Components.SaveData;
+using MonoGame.Extended;
 
 namespace MarsUndiscovered.Components
 {
     public class Player : Actor, IMementoState<PlayerSaveData>, ISaveable
     {
         public override string Name => "You";
+
+        public override Attack BasicAttack { get; } = new Attack(new Range<int>(5, 10));
 
         public Player() : base(1)
         {

@@ -2,7 +2,7 @@
 
 namespace MarsUndiscovered.Components
 {
-    public class Breed
+    public abstract class Breed
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -10,6 +10,7 @@ namespace MarsUndiscovered.Components
 
         public static Dictionary<string, Breed> Breeds;
         public static Roach Roach = new Roach();
+        public abstract Attack BasicAttack { get; }
 
         static Breed()
         {

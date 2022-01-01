@@ -10,6 +10,8 @@ namespace MarsUndiscovered.Components
         public override string Name => Breed.Name;
         public override string Description => Breed.Description;
 
+        public override Attack BasicAttack => Breed.BasicAttack;
+
         public Monster() : base(1)
         {
         }

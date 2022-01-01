@@ -26,7 +26,7 @@ using MarsUndiscovered.Messages;
 
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-
+using Serilog.Data;
 using Troschuetz.Random;
 using Troschuetz.Random.Generators;
 
@@ -40,12 +40,13 @@ namespace MarsUndiscovered.Components
         public Map Map { get; private set; }
         public Player Player { get; set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
-        public IFactory<MoveCommand> MoveCommandFactory { get; set; }
+        public ICommandFactory CommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
         public ISaveGameStore SaveGameStore { get; set; }
         public WallCollection Walls { get; private set; }
         public FloorCollection Floors { get; private set; }
         public MonsterCollection Monsters { get; private set; }
+        public CommandCollection HistoricalCommands { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
         public Generator Generator { get; set; }
         public MessageLog MessageLog { get; } = new MessageLog();
@@ -136,6 +137,7 @@ namespace MarsUndiscovered.Components
             Walls = new WallCollection(GameObjectFactory);
             Floors = new FloorCollection(GameObjectFactory);
             Monsters = new MonsterCollection(GameObjectFactory);
+            HistoricalCommands = new CommandCollection(CommandFactory);
 
             GameObjectFactory.Reset();
         }
@@ -161,38 +163,32 @@ namespace MarsUndiscovered.Components
 
         public void MoveRequest(Direction direction)
         {
-            var playerPosition = Player.Position;
-            var newPlayerPosition = Player.Position + direction;
+            var walkCommand = CommandFactory.CreateWalkCommand();
+            walkCommand.Initialise(Player, direction);
 
-            if (Map.GameObjectCanMove(Player, newPlayerPosition))
+            var results = ExecuteCommand(walkCommand);
+
+            WriteMessages(results);
+        }
+
+        private void WriteMessages(IEnumerable<CommandResult> results)
+        {
+            foreach (var result in results.SelectMany(s => s.Messages).ToList())
             {
-                var terrainAtDestination = Map.GetTerrainAt(newPlayerPosition);
+                MessageLog.AddMessage(result);
+            }
+        }
 
-                if (terrainAtDestination is Floor)
-                {
-                    var gameObjectsAt = Map.GetObjectsAt(newPlayerPosition);
+        private IEnumerable<CommandResult> ExecuteCommand(BaseCommand command)
+        {
+            var result = command.Execute();
 
-                    var actorAt = gameObjectsAt.FirstOrDefault(go => go is Actor) as Actor;
+            yield return result;
 
-                    if (actorAt == null)
-                    {
-                        var command = MoveCommandFactory.Create();
-
-                        command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
-                        command.Execute();
-
-                        Mediator.Send(new MapTileChangedRequest(playerPosition));
-                        Mediator.Send(new MapTileChangedRequest(newPlayerPosition));
-                    }
-                    else
-                    {
-                        MessageLog.AddMessage($"You bump into a {actorAt.Name}");
-                    }
-                }
-                else if (terrainAtDestination is Wall)
-                {
-                    MessageLog.AddMessage("The unrelenting red rock is cold and dry");
-                }
+            foreach (var subsequentCommand in result.SubsequentCommands)
+            {
+                foreach (var subsequentResult in ExecuteCommand(subsequentCommand))
+                    yield return subsequentResult;
             }
         }
 
@@ -258,6 +254,7 @@ namespace MarsUndiscovered.Components
             Monsters.SaveState(saveGameStore);
             MessageLog.SaveState(saveGameStore);
             Player.SaveState(saveGameStore);
+            HistoricalCommands.SaveState(saveGameStore);
 
             var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameStore.Mapper);
             saveGameStore.SaveToStore(gameWorldSaveData);
@@ -279,6 +276,7 @@ namespace MarsUndiscovered.Components
             var playerSaveData = saveGameStore.GetFromStore<PlayerSaveData>();
             Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
             Player.LoadState(saveGameStore);
+            HistoricalCommands.LoadState(saveGameStore);
 
             CreateMap();
 

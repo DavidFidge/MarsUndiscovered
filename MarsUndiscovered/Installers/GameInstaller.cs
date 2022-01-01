@@ -113,9 +113,6 @@ namespace MarsUndiscovered.Installers
                     .ImplementedBy<GameObjectFactory>()
                     .DependsOn(Dependency.OnValue<IWindsorContainer>(container)),
 
-                Component.For<IFactory<MoveCommand>>()
-                    .AsFactory(),
-
                 Component.For<IFactory<MapTileEntity>>()
                     .AsFactory(),
 
@@ -126,6 +123,18 @@ namespace MarsUndiscovered.Installers
                     .AsFactory(),
 
                 Component.For<IFactory<IGameWorld>>()
+                    .AsFactory(),
+
+                Component.For<ICommandFactory>()
+                    .ImplementedBy<CommandFactory>(),
+
+                Component.For<IFactory<MoveCommand>>()
+                   .AsFactory(),
+
+                Component.For<IFactory<WalkCommand>>()
+                    .AsFactory(),
+
+                Component.For<IFactory<AttackCommand>>()
                     .AsFactory()
             );
         }
