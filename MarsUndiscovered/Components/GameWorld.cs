@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 using AutoMapper;
 
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
@@ -15,18 +13,15 @@ using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Interfaces;
 
 using GoRogue.GameFramework;
-using GoRogue.MapGeneration;
 using GoRogue.Random;
 
-using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components.Factories;
-using MarsUndiscovered.Components.GenerationSteps;
+using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Components.SaveData;
-using MarsUndiscovered.Messages;
 
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-using Serilog.Data;
+
 using Troschuetz.Random;
 using Troschuetz.Random.Generators;
 
@@ -34,21 +29,19 @@ namespace MarsUndiscovered.Components
 {
     public class GameWorld : BaseComponent, IGameWorld, ISaveable, IMementoState<GameWorldSaveData>
     {
-        public const int MapWidth = 76;
-        public const int MapHeight = 29;
-
         public Map Map { get; private set; }
         public Player Player { get; set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public ICommandFactory CommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
         public ISaveGameStore SaveGameStore { get; set; }
+        public IMapGenerator MapGenerator { get; set; }
+        public IMonsterGenerator MonsterGenerator { get; set; }
         public WallCollection Walls { get; private set; }
         public FloorCollection Floors { get; private set; }
         public MonsterCollection Monsters { get; private set; }
         public CommandCollection HistoricalCommands { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
-        public Generator Generator { get; set; }
         public MessageLog MessageLog { get; } = new MessageLog();
         public IMapper Mapper { get; set; }
         public uint Seed { get; set; }
@@ -78,35 +71,7 @@ namespace MarsUndiscovered.Components
 
             Logger.Debug("Generating game world");
 
-            var generator = new Generator(MapWidth, MapHeight);
-
-            var fillProbability = GlobalRandom.DefaultRNG.NextUInt(40, 60);
-            var cutoffBigAreaFill = GlobalRandom.DefaultRNG.NextUInt(2, 6);
-
-            Generator = generator.ConfigAndGenerateSafe(g => g.AddSteps(GeneratorAlgorithms.OutdoorGeneneration(fillProbability: (ushort)fillProbability, cutoffBigAreaFill: (int)cutoffBigAreaFill)));
-
-            var wallsFloors = Generator.Context
-                .GetFirst<ArrayView<bool>>()
-                .ToArrayView((s, index) =>
-                    {
-                        IGameObject gameObject;
-
-                        if (s)
-                        {
-                            var floor = GameObjectFactory.CreateFloor();
-                            floor.CreatedIndex = index;
-                            gameObject = floor;
-                        }
-                        else
-                        {
-                            var wall = GameObjectFactory.CreateWall();
-                            wall.CreatedIndex = index;
-                            gameObject = wall;
-                        }
-
-                        return gameObject;
-                    }
-                );
+            var wallsFloors = MapGenerator.CreateOutdoorWallsFloors();
 
             foreach (var item in wallsFloors.ToArray().OfType<Wall>().ToList())
                 Walls.Add(item.ID, item);
@@ -114,22 +79,22 @@ namespace MarsUndiscovered.Components
             foreach (var item in wallsFloors.ToArray().OfType<Floor>().ToList())
                 Floors.Add(item.ID, item);
 
-            CreateMap();
+            Map = MapGenerator.CreateMap(Walls, Floors);
 
             Player = GameObjectFactory.CreatePlayer()
                 .PositionedAt(Map.RandomPosition(MapHelpers.EmptyPointOnFloor))
                 .AddToMap(Map);
 
-            SpawnMonster(Breed.Roach);
-            SpawnMonster(Breed.Roach);
-            SpawnMonster(Breed.Roach);
-            SpawnMonster(Breed.Roach);
-            SpawnMonster(Breed.Roach);
-            SpawnMonster(Breed.Roach);
-            SpawnMonster(Breed.Roach);
-            SpawnMonster(Breed.Roach);
-            SpawnMonster(Breed.Roach);
-            SpawnMonster(Breed.Roach);
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
         }
 
         private void Reset()
@@ -137,36 +102,17 @@ namespace MarsUndiscovered.Components
             Walls = new WallCollection(GameObjectFactory);
             Floors = new FloorCollection(GameObjectFactory);
             Monsters = new MonsterCollection(GameObjectFactory);
-            HistoricalCommands = new CommandCollection(CommandFactory);
+            HistoricalCommands = new CommandCollection(CommandFactory, this);
 
             GameObjectFactory.Reset();
         }
 
-        private void CreateMap()
-        {
-            Debug.Assert(Floors.Any() || Walls.Any(), "Walls and/or Floors must be populated");
-
-            Map = new Map(MapWidth, MapHeight, 1, Distance.Chebyshev);
-
-            PopulateMapTerrain();
-        }
-
-        private void PopulateMapTerrain()
-        {
-            var wallsFloors = Walls.Values.Cast<Terrain>()
-                .Union(Floors.Values)
-                .OrderBy(t => t.CreatedIndex)
-                .ToArrayView(MapWidth);
-
-            Map.ApplyTerrainOverlay(wallsFloors);
-        }
-
         public void MoveRequest(Direction direction)
         {
-            var walkCommand = CommandFactory.CreateWalkCommand();
+            var walkCommand = CommandFactory.CreateWalkCommand(this);
             walkCommand.Initialise(Player, direction);
 
-            var results = ExecuteCommand(walkCommand);
+            var results = ExecuteCommand(walkCommand).ToList();
 
             WriteMessages(results);
         }
@@ -179,15 +125,18 @@ namespace MarsUndiscovered.Components
             }
         }
 
-        private IEnumerable<CommandResult> ExecuteCommand(BaseCommand command)
+        private IEnumerable<CommandResult> ExecuteCommand(BaseCommand command, bool addHistorical = true)
         {
             var result = command.Execute();
+
+            if (addHistorical)
+                HistoricalCommands.AddCommand(command);
 
             yield return result;
 
             foreach (var subsequentCommand in result.SubsequentCommands)
             {
-                foreach (var subsequentResult in ExecuteCommand(subsequentCommand))
+                foreach (var subsequentResult in ExecuteCommand(subsequentCommand, false))
                     yield return subsequentResult;
             }
         }
@@ -203,22 +152,9 @@ namespace MarsUndiscovered.Components
                 .ToList();
         }
 
-        public void SpawnMonster(Breed breed)
+        public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
         {
-            var monster = GameObjectFactory
-                .CreateMonster()
-                .WithBreed(breed)
-                .PositionedAt(Map.RandomPositionAwayFrom(Player.Position, 5, MapHelpers.EmptyPointOnFloor))
-                .AddToMap(Map);
-
-            Monsters.Add(monster.ID, monster);
-
-            Mediator.Send(new MapTileChangedRequest(monster.Position));
-        }
-
-        public void SpawnMonster(string breed)
-        {
-            SpawnMonster(Breed.GetBreed(breed));
+            MonsterGenerator.SpawnMonster(spawnMonsterParams, Map, Monsters);
         }
 
         public SaveGameResult SaveGame(string saveGameName, bool overwrite)
@@ -278,9 +214,7 @@ namespace MarsUndiscovered.Components
             Player.LoadState(saveGameStore);
             HistoricalCommands.LoadState(saveGameStore);
 
-            CreateMap();
-
-            PopulateMapTerrain();
+            Map = MapGenerator.CreateMap(Walls, Floors);
 
             Map.AddEntity(Player);
 

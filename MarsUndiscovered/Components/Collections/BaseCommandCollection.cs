@@ -4,12 +4,20 @@ using System.Linq;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
     public abstract class BaseCommandCollection<T, TState> : List<BaseGameActionCommand<TState>>, ISaveable
         where T : BaseGameActionCommand<TState>, IMementoState<TState>
     {
+        protected readonly IGameWorld GameWorld;
+
+        public BaseCommandCollection(IGameWorld gameWorld)
+        {
+            GameWorld = gameWorld;
+        }
+
         public virtual void SaveState(ISaveGameStore saveGameStore)
         {
             var gameObjectSaveData = this

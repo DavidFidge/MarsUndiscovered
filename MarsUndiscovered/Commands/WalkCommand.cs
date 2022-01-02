@@ -11,26 +11,26 @@ using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.GameFramework;
 
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Interfaces;
-
+using Newtonsoft.Json;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Commands
 {
-    public class WalkCommand : BaseGameActionCommand<WalkCommandSaveData>
+    public class WalkCommand : BaseMarsGameActionCommand<WalkCommandSaveData>
     {
         public Direction Direction { get; set; }
-        private Player _player;
+        public Player Player { get; private set; }
 
-        public IFactory<MoveCommand> MoveCommandFactory { get; set; }
-        public IFactory<AttackCommand> AttackCommandFactory { get; set; }
-        public IGameWorldProvider GameWorldProvider { get; set; }
-        public IGameWorld GameWorld => GameWorldProvider.GameWorld;
-        public Map Map => GameWorldProvider.GameWorld.Map;
+        [JsonIgnore]
+        public ICommandFactory CommandFactory { get; set; }
+
+        protected Map Map => GameWorld.Map;
 
         public void Initialise(Player player, Direction direction)
         {
-            _player = player;
+            Player = player;
             Direction = direction;
         }
 
@@ -44,15 +44,15 @@ namespace MarsUndiscovered.Commands
             base.SetLoadState(memento, mapper);
 
             Memento<WalkCommandSaveData>.SetWithAutoMapper(this, memento, mapper);
-            _player = (Player)GameWorld.GameObjects[memento.State.GameObjectId];
+            Player = (Player)GameWorld.GameObjects[memento.State.PlayerId];
         }
 
         protected override CommandResult ExecuteInternal()
         {
-            var playerPosition = _player.Position;
-            var newPlayerPosition = _player.Position + Direction;
+            var playerPosition = Player.Position;
+            var newPlayerPosition = Player.Position + Direction;
 
-            if (Map.GameObjectCanMove(_player, newPlayerPosition))
+            if (Map.GameObjectCanMove(Player, newPlayerPosition))
             {
                 var terrainAtDestination = Map.GetTerrainAt(newPlayerPosition);
 
@@ -64,16 +64,16 @@ namespace MarsUndiscovered.Commands
 
                     if (actorAt == null)
                     {
-                        var command = MoveCommandFactory.Create();
+                        var command = CommandFactory.CreateMoveCommand(GameWorld);
 
-                        command.Initialise(_player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
+                        command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
 
                         return Result(CommandResult.Success(command));
                     }
                     if (actorAt is Monster)
                     {
-                        var command = AttackCommandFactory.Create();
-                        command.Initialise(_player, actorAt);
+                        var command = CommandFactory.CreateAttackCommand(GameWorld);
+                        command.Initialise(Player, actorAt);
 
                         return Result(CommandResult.Success(command));
                     }
@@ -82,7 +82,7 @@ namespace MarsUndiscovered.Commands
                 }
                 if (terrainAtDestination is Wall)
                 {
-                    return Result(CommandResult.Failure("The unrelenting red rock is cold and dry"));
+                    return Result(CommandResult.Success("The unrelenting red rock is cold and dry"));
                 }
             }
 

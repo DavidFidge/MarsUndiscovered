@@ -18,8 +18,8 @@ namespace MarsUndiscovered.Components.GenerationSteps
             int cutoffBigAreaFill = 2,
             int border = 2,
             Distance? distanceCalculation = null,
-            IConnectionPointSelector? connectionPointSelector = null,
-            ITunnelCreator? tunnelCreationMethod = null)
+            IConnectionPointSelector connectionPointSelector = null,
+            ITunnelCreator tunnelCreationMethod = null)
         {
             rng ??= GlobalRandom.DefaultRNG;
             Distance dist = distanceCalculation ?? Distance.Manhattan;

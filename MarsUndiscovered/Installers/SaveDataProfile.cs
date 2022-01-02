@@ -12,7 +12,6 @@ namespace MarsUndiscovered.Installers
     public class SaveDataProfile : Profile
     {
         private readonly IGameObjectFactory _gameObjectFactory;
-        private readonly ICommandFactory _commandFactory;
 
         public SaveDataProfile(IGameObjectFactory gameObjectFactory)
         {

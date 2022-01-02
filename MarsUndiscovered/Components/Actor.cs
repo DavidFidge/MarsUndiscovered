@@ -8,6 +8,8 @@ namespace MarsUndiscovered.Components
     public abstract class Actor : MarsGameObject
     {
         public static int BaseHealth = 100;
+        public virtual string TargetedName => $"the {Name.ToLower()}";
+        public virtual string PossessiveName => TargetedName.EndsWith("s") ? $"{TargetedName}'" : $"{TargetedName}'s";
 
         public int Health { get; set; }
 

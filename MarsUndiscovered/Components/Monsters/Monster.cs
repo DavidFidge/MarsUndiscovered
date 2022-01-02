@@ -30,7 +30,8 @@ namespace MarsUndiscovered.Components
 
         public void SetLoadState(IMemento<MonsterSaveData> memento, IMapper mapper)
         {
-            SetWithAutoMapper<MonsterSaveData>(memento, mapper);
+            SetWithAutoMapper(memento, mapper);
+            Breed = Breed.GetBreed(memento.State.BreedName);
         }
 
         public IMemento<MonsterSaveData> GetSaveState(IMapper mapper)

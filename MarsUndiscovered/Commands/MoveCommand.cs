@@ -10,27 +10,20 @@ using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
 
-using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
-
-using Newtonsoft.Json;
 
 using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.Commands
 {
-    public class MoveCommand : BaseGameActionCommand<MoveCommandSaveData>
+    public class MoveCommand : BaseMarsGameActionCommand<MoveCommandSaveData>
     {
-        private IGameObject _gameObject;
+        public IGameObject GameObject { get; private set; }
         public Tuple<Point, Point> FromTo { get; set; }
-
-        public IGameWorldProvider GameWorldProvider { get; set; }
-
-        public IGameWorld GameWorld => GameWorldProvider.GameWorld;
 
         public void Initialise(IGameObject gameObject, Tuple<Point, Point> fromTo)
         {
-            _gameObject = gameObject;
+            GameObject = gameObject;
             FromTo = fromTo;
         }
 
@@ -44,25 +37,22 @@ namespace MarsUndiscovered.Commands
             base.SetLoadState(memento, mapper);
 
             Memento<MoveCommandSaveData>.SetWithAutoMapper(this, memento, mapper);
-            _gameObject = GameWorld.GameObjects[memento.State.GameObjectId];
+            GameObject = GameWorld.GameObjects[memento.State.GameObjectId];
         }
-
 
         protected override CommandResult ExecuteInternal()
         {
-            base.Execute();
-
-            _gameObject.Position = FromTo.Item2;
+            GameObject.Position = FromTo.Item2;
 
             Mediator.Send(new MapTileChangedRequest(FromTo.Item1));
             Mediator.Send(new MapTileChangedRequest(FromTo.Item2));
 
-            return CommandResult.Success();
+            return Result(CommandResult.Success());
         }
 
         protected override void UndoInternal()
         {
-            _gameObject.Position = FromTo.Item1;
+            GameObject.Position = FromTo.Item1;
         }
     }
 }

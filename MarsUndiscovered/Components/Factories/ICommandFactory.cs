@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using MarsUndiscovered.Commands;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components.Factories
 {
     public interface ICommandFactory
     {
-        MoveCommand CreateMoveCommand();
-        WalkCommand CreateWalkCommand();
-        AttackCommand CreateAttackCommand();
+        MoveCommand CreateMoveCommand(IGameWorld gameWorld);
+        WalkCommand CreateWalkCommand(IGameWorld gameWorld);
+        AttackCommand CreateAttackCommand(IGameWorld gameWorld);
     }
 }

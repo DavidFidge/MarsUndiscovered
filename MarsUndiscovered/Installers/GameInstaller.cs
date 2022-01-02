@@ -30,6 +30,7 @@ using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components.Factories;
+using MarsUndiscovered.Components.Maps;
 
 namespace MarsUndiscovered.Installers
 {
@@ -63,6 +64,12 @@ namespace MarsUndiscovered.Installers
 
                 Component.For<IGame>()
                     .ImplementedBy<MarsUndiscoveredGame>(),
+
+                Component.For<IMapGenerator>()
+                    .ImplementedBy<MapGenerator>(),
+
+                Component.For<IMonsterGenerator>()
+                    .ImplementedBy<MonsterGenerator>(),
 
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IScreen>(),

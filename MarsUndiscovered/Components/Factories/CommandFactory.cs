@@ -1,26 +1,36 @@
-﻿using FrigidRogue.MonoGame.Core.Components;
+﻿using System;
+using Castle.MicroKernel.ModelBuilder.Descriptors;
+using FrigidRogue.MonoGame.Core.Components;
 using MarsUndiscovered.Commands;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components.Factories
 {
     public class CommandFactory : ICommandFactory
     {
-        private IFactory<MoveCommand> MoveCommandFactory { get; set; }
-        private IFactory<WalkCommand> WalkCommandFactory { get; set; }
-        private IFactory<AttackCommand> AttackCommandFactory { get; set; }
+        public IFactory<MoveCommand> MoveCommandFactory { get; set; }
+        public IFactory<WalkCommand> WalkCommandFactory { get; set; }
+        public IFactory<AttackCommand> AttackCommandFactory { get; set; }
 
-        public MoveCommand CreateMoveCommand()
+        private T CreateCommand<T, TData>(Func<T> createMethod, IGameWorld gameWorld) where T : BaseMarsGameActionCommand<TData>
         {
-            return MoveCommandFactory.Create();
+            var command = createMethod();
+            command.SetGameWorld(gameWorld);
+            return command;
         }
 
-        public WalkCommand CreateWalkCommand()
+        public MoveCommand CreateMoveCommand(IGameWorld gameWorld)
         {
-            return WalkCommandFactory.Create();
+            return CreateCommand<MoveCommand, MoveCommandSaveData>(() => MoveCommandFactory.Create(), gameWorld);
         }
-        public AttackCommand CreateAttackCommand()
+
+        public WalkCommand CreateWalkCommand(IGameWorld gameWorld)
         {
-            return AttackCommandFactory.Create();
+            return CreateCommand<WalkCommand, WalkCommandSaveData>(() => WalkCommandFactory.Create(), gameWorld);
+        }
+        public AttackCommand CreateAttackCommand(IGameWorld gameWorld)
+        {
+            return CreateCommand<AttackCommand, AttackCommandSaveData>(() => AttackCommandFactory.Create(), gameWorld);
         }
     }
 }

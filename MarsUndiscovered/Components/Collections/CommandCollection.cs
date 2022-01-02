@@ -6,18 +6,22 @@ using System.Linq;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
-
+using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components.Factories;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
     public class CommandCollection : IEnumerable<BaseCommand>, ISaveable
     {
-        public CommandCollection(ICommandFactory commandFactory)
+        private readonly IGameWorld _gameWorld;
+
+        public CommandCollection(ICommandFactory commandFactory, IGameWorld gameWorld)
         {
-            AttackCommands = new AttackCommandCollection(commandFactory);
-            WalkCommands = new WalkCommandCollection(commandFactory);
-            MoveCommands = new MoveCommandCollection(commandFactory);
+            _gameWorld = gameWorld;
+            AttackCommands = new AttackCommandCollection(commandFactory, gameWorld);
+            WalkCommands = new WalkCommandCollection(commandFactory, gameWorld);
+            MoveCommands = new MoveCommandCollection(commandFactory, gameWorld);
         }
 
         public AttackCommandCollection AttackCommands { get; set; }
@@ -53,6 +57,22 @@ namespace MarsUndiscovered.Components
             AttackCommands.LoadState(saveGameStore);
             WalkCommands.LoadState(saveGameStore);
             MoveCommands.LoadState(saveGameStore);
+        }
+
+        public void AddCommand(BaseCommand command)
+        {
+            switch (command)
+            {
+                case AttackCommand attackCommand:
+                    AttackCommands.Add(attackCommand);
+                    break;
+                case MoveCommand moveCommand:
+                    MoveCommands.Add(moveCommand);
+                    break;
+                case WalkCommand walkCommand:
+                    WalkCommands.Add(walkCommand);
+                    break;
+            }
         }
     }
 }

@@ -23,10 +23,8 @@ namespace MarsUndiscovered.Tests.Commands
             base.Setup();
 
             _moveCommand = SetupBaseComponent(new MoveCommand());
-            var gameWorldProvider = Substitute.For<IGameWorldProvider>();
-            gameWorldProvider.GameWorld = Substitute.For<IGameWorld>();
 
-            _moveCommand.GameWorldProvider = gameWorldProvider;
+            var gameWorld = Substitute.For<IGameWorld>();
             _moveCommand.GameTurnService = Substitute.For<IGameTurnService>();
         }
 

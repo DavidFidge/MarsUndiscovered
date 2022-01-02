@@ -1,31 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+
 using AutoMapper;
+
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
-using GoRogue.GameFramework;
-
-using MarsUndiscovered.Interfaces;
-
-using Newtonsoft.Json;
+using MarsUndiscovered.Components;
 
 namespace MarsUndiscovered.Commands
 {
-    public class AttackCommand : BaseGameActionCommand<AttackCommandSaveData>
+    public class AttackCommand : BaseMarsGameActionCommand<AttackCommandSaveData>
     {
-        private IGameObject _source;
-        private IGameObject _target;
+        public Actor Source { get; private set; }
+        public Actor Target { get; private set; }
 
-        [JsonIgnore]
-        public IGameWorld GameWorld { get; set; }
+        private int _damage;
 
-        public void Initialise(IGameObject source, IGameObject target)
+        public void Initialise(Actor source, Actor target)
         {
-            _source = source;
-            _target = target;
+            Source = source;
+            Target = target;
         }
 
         public override IMemento<AttackCommandSaveData> GetSaveState(IMapper mapper)
@@ -39,18 +36,24 @@ namespace MarsUndiscovered.Commands
 
             Memento<AttackCommandSaveData>.SetWithAutoMapper(this, memento, mapper);
 
-            _source = GameWorld.GameObjects[memento.State.SourceId];
-            _target = GameWorld.GameObjects[memento.State.TargetId];
+            Source = (Actor)GameWorld.GameObjects[memento.State.SourceId];
+            Target = (Actor)GameWorld.GameObjects[memento.State.TargetId];
         }
 
         protected override CommandResult ExecuteInternal()
         {
-            throw new NotImplementedException();
+            _damage = Source.BasicAttack.Roll();
+
+            Target.Health -= _damage;
+
+            var message = $"{Source.Name} hit {Target.TargetedName}";
+
+            return Result(CommandResult.Success(message));
         }
 
         protected override void UndoInternal()
         {
-            throw new NotImplementedException();
+            Target.Health += _damage;
         }
     }
 }

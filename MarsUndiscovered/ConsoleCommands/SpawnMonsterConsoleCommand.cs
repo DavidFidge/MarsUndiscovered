@@ -4,7 +4,7 @@ using System.Linq;
 
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.ConsoleCommands;
-
+using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.ConsoleCommands
@@ -24,7 +24,7 @@ namespace MarsUndiscovered.ConsoleCommands
             {
                 var breed = consoleCommand.Params[0];
 
-                GameWorldProvider.GameWorld.SpawnMonster(breed);
+                GameWorldProvider.GameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(breed));
 
                 consoleCommand.Result = $"Spawned monster {breed}";
 
