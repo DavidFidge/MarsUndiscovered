@@ -2,8 +2,7 @@
 
 using AutoMapper;
 
-using GoRogue.GameFramework;
-
+using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.SaveData;
@@ -42,6 +41,10 @@ namespace MarsUndiscovered.Installers
                 .ForMember(d => d.Breed, o => o.MapFrom(s => Breed.GetBreed(s.BreedName)));
 
             CreateMap<GameWorldSaveData, GameWorld>();
+
+            CreateMap<MoveCommandSaveData, MoveCommand>();
+            CreateMap<WalkCommandSaveData, WalkCommand>();
+            CreateMap<AttackCommandSaveData, AttackCommand>();
         }
 
         private void MapForSave()
@@ -57,6 +60,10 @@ namespace MarsUndiscovered.Installers
             CreateMap<Monster, MonsterSaveData>();
             CreateMap<GameWorld, GameWorldSaveData>();
             CreateMap<GameObjectFactory, GameObjectFactoryData>();
+
+            CreateMap<MoveCommand, MoveCommandSaveData>();
+            CreateMap<WalkCommand, WalkCommandSaveData>();
+            CreateMap<AttackCommand, AttackCommandSaveData>();
         }
     }
 }

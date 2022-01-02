@@ -30,6 +30,7 @@ using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components.Factories;
+using MarsUndiscovered.Components.Maps;
 
 namespace MarsUndiscovered.Installers
 {
@@ -63,6 +64,12 @@ namespace MarsUndiscovered.Installers
 
                 Component.For<IGame>()
                     .ImplementedBy<MarsUndiscoveredGame>(),
+
+                Component.For<IMapGenerator>()
+                    .ImplementedBy<MapGenerator>(),
+
+                Component.For<IMonsterGenerator>()
+                    .ImplementedBy<MonsterGenerator>(),
 
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IScreen>(),
@@ -113,9 +120,6 @@ namespace MarsUndiscovered.Installers
                     .ImplementedBy<GameObjectFactory>()
                     .DependsOn(Dependency.OnValue<IWindsorContainer>(container)),
 
-                Component.For<IFactory<MoveCommand>>()
-                    .AsFactory(),
-
                 Component.For<IFactory<MapTileEntity>>()
                     .AsFactory(),
 
@@ -126,6 +130,18 @@ namespace MarsUndiscovered.Installers
                     .AsFactory(),
 
                 Component.For<IFactory<IGameWorld>>()
+                    .AsFactory(),
+
+                Component.For<ICommandFactory>()
+                    .ImplementedBy<CommandFactory>(),
+
+                Component.For<IFactory<MoveCommand>>()
+                   .AsFactory(),
+
+                Component.For<IFactory<WalkCommand>>()
+                    .AsFactory(),
+
+                Component.For<IFactory<AttackCommand>>()
                     .AsFactory()
             );
         }

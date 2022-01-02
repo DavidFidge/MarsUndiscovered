@@ -10,7 +10,7 @@ namespace MarsUndiscovered.Components
     {
         private readonly IFactory<IGameWorld> _gameWorldFactory;
 
-        public IGameWorld GameWorld { get; set; }
+        public IGameWorld GameWorld { get; private set; }
 
         public GameWorldProvider(IFactory<IGameWorld> gameWorldFactory)
         {

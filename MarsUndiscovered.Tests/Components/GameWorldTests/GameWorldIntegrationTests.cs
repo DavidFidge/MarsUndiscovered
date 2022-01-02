@@ -1,9 +1,12 @@
 ﻿using System.Linq;
+
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Interfaces;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MarsUndiscovered.Tests.Components
+namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
     [TestClass]
     public class GameWorldIntegrationTests : BaseIntegrationTest
@@ -37,8 +40,8 @@ namespace MarsUndiscovered.Tests.Components
             Assert.IsNotNull(_gameWorld.GameObjects);
             Assert.IsTrue(_gameWorld.GameObjects.Count > 0);
             Assert.IsTrue(_gameWorld.Seed > 0);
-            Assert.AreEqual(GameWorld.MapWidth, _gameWorld.Map.Width);
-            Assert.AreEqual(GameWorld.MapHeight, _gameWorld.Map.Height);
+            Assert.AreEqual(MapGenerator.MapWidth, _gameWorld.Map.Width);
+            Assert.AreEqual(MapGenerator.MapHeight, _gameWorld.Map.Height);
         }
 
         [TestMethod]
@@ -49,7 +52,7 @@ namespace MarsUndiscovered.Tests.Components
             var currentMonsterCount = _gameWorld.Monsters.Count;
 
             // Act
-            _gameWorld.SpawnMonster(Breed.Roach.Name);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
 
             // Assert
             Assert.AreEqual(currentMonsterCount + 1, _gameWorld.Monsters.Count);
@@ -60,7 +63,7 @@ namespace MarsUndiscovered.Tests.Components
         {
             // Arrange
             _gameWorld.NewGame();
-            _gameWorld.SpawnMonster(Breed.Roach);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 
             // Act
@@ -84,5 +87,6 @@ namespace MarsUndiscovered.Tests.Components
             Assert.AreEqual(_gameWorld.Player.IsWalkable, newGameWorld.Player.IsWalkable);
             Assert.AreEqual(_gameWorld.Player.IsTransparent, newGameWorld.Player.IsTransparent);
         }
+
     }
 }

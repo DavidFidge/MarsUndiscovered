@@ -1,7 +1,11 @@
-﻿namespace MarsUndiscovered.Components
+﻿using MonoGame.Extended;
+
+namespace MarsUndiscovered.Components
 {
     public class Roach : Breed
     {
+        public override Attack BasicAttack { get; } = new Attack(new Range<int>(1, 4));
+
         public Roach()
         {
             Name = "Roach";
