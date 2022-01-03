@@ -34,7 +34,7 @@ namespace MarsUndiscovered.Components
         public IGameObjectFactory GameObjectFactory { get; set; }
         public ICommandFactory CommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
-        public ISaveGameStore SaveGameStore { get; set; }
+        public ISaveGameService SaveGameService { get; set; }
         public IMapGenerator MapGenerator { get; set; }
         public IMonsterGenerator MonsterGenerator { get; set; }
         public WallCollection Walls { get; private set; }
@@ -95,6 +95,8 @@ namespace MarsUndiscovered.Components
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+
+
         }
 
         private void Reset()
@@ -161,58 +163,58 @@ namespace MarsUndiscovered.Components
         {
             if (!overwrite)
             {
-                var canSaveGameResult = SaveGameStore.CanSaveStoreToFile(saveGameName);
+                var canSaveGameResult = SaveGameService.CanSaveStoreToFile(saveGameName);
                 if (canSaveGameResult.Equals(SaveGameResult.Overwrite))
                     return canSaveGameResult;
             }
 
-            SaveGameStore.Clear();
-            SaveState(SaveGameStore);
+            SaveGameService.Clear();
+            SaveState(SaveGameService);
 
-            return SaveGameStore.SaveStoreToFile(saveGameName, overwrite);
+            return SaveGameService.SaveStoreToFile(saveGameName, overwrite);
         }
 
         public LoadGameResult LoadGame(string saveGameName)
         {
-            var loadGameResult = SaveGameStore.LoadStoreFromFile(saveGameName);
+            var loadGameResult = SaveGameService.LoadStoreFromFile(saveGameName);
 
-            if (loadGameResult.Equals(LoadGameResult.Success))
-                LoadState(SaveGameStore);
+            if (loadGameResult.Success)
+                LoadState(SaveGameService);
 
             return loadGameResult;
         }
 
-        public void SaveState(ISaveGameStore saveGameStore)
+        public void SaveState(ISaveGameService saveGameService)
         {
-            GameObjectFactory.SaveState(saveGameStore);
-            Walls.SaveState(saveGameStore);
-            Floors.SaveState(saveGameStore);
-            Monsters.SaveState(saveGameStore);
-            MessageLog.SaveState(saveGameStore);
-            Player.SaveState(saveGameStore);
-            HistoricalCommands.SaveState(saveGameStore);
+            GameObjectFactory.SaveState(saveGameService);
+            Walls.SaveState(saveGameService);
+            Floors.SaveState(saveGameService);
+            Monsters.SaveState(saveGameService);
+            MessageLog.SaveState(saveGameService);
+            Player.SaveState(saveGameService);
+            HistoricalCommands.SaveState(saveGameService);
 
-            var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameStore.Mapper);
-            saveGameStore.SaveToStore(gameWorldSaveData);
+            var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameService.Mapper);
+            saveGameService.SaveToStore(gameWorldSaveData);
         }
 
-        public void LoadState(ISaveGameStore saveGameStore)
+        public void LoadState(ISaveGameService saveGameService)
         {
             Reset();
 
-            var gameWorldSaveData = saveGameStore.GetFromStore<GameWorldSaveData>();
-            Memento<GameWorldSaveData>.SetWithAutoMapper(this, gameWorldSaveData, saveGameStore.Mapper);
+            var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
+            Memento<GameWorldSaveData>.SetWithAutoMapper(this, gameWorldSaveData, saveGameService.Mapper);
             
-            GameObjectFactory.LoadState(saveGameStore);
-            Walls.LoadState(saveGameStore);
-            Floors.LoadState(saveGameStore);
-            Monsters.LoadState(saveGameStore);
-            MessageLog.LoadState(saveGameStore);
+            GameObjectFactory.LoadState(saveGameService);
+            Walls.LoadState(saveGameService);
+            Floors.LoadState(saveGameService);
+            Monsters.LoadState(saveGameService);
+            MessageLog.LoadState(saveGameService);
 
-            var playerSaveData = saveGameStore.GetFromStore<PlayerSaveData>();
+            var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
             Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
-            Player.LoadState(saveGameStore);
-            HistoricalCommands.LoadState(saveGameStore);
+            Player.LoadState(saveGameService);
+            HistoricalCommands.LoadState(saveGameService);
 
             Map = MapGenerator.CreateMap(Walls, Floors);
 

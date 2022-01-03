@@ -35,15 +35,15 @@ namespace MarsUndiscovered.Components
             SetWithAutoMapper(memento, mapper);
         }
 
-        public void SaveState(ISaveGameStore saveGameStore)
+        public void SaveState(ISaveGameService saveGameService)
         {
-            saveGameStore.SaveToStore(GetSaveState(saveGameStore.Mapper));
+            saveGameService.SaveToStore(GetSaveState(saveGameService.Mapper));
         }
 
-        public void LoadState(ISaveGameStore saveGameStore)
+        public void LoadState(ISaveGameService saveGameService)
         {
-            var playerSaveData = saveGameStore.GetFromStore<PlayerSaveData>();
-            SetLoadState(playerSaveData, saveGameStore.Mapper);
+            var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
+            SetLoadState(playerSaveData, saveGameService.Mapper);
         }
     }
 }

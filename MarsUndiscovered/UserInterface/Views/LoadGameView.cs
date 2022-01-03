@@ -17,15 +17,15 @@ namespace MarsUndiscovered.UserInterface.Views
 {
     public class LoadGameView : BaseMarsUndiscoveredView<LoadGameViewModel, LoadGameData>
     {
-        private readonly ISaveGameStore _saveGameStore;
+        private readonly ISaveGameService _saveGameService;
         private Panel _loadGamePanel;
         private SelectList _fileNameList;
         private IList<LoadGameDetails> _loadGameDetails;
 
-        public LoadGameView(LoadGameViewModel loadGameViewModel, ISaveGameStore saveGameStore)
+        public LoadGameView(LoadGameViewModel loadGameViewModel, ISaveGameService saveGameService)
         : base(loadGameViewModel)
         {
-            _saveGameStore = saveGameStore;
+            _saveGameService = saveGameService;
         }
 
         protected override void InitializeInternal()
@@ -66,7 +66,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             _loadGameDetails = new List<LoadGameDetails>();
 
-            var loadGameList = _saveGameStore
+            var loadGameList = _saveGameService
                 .GetLoadGameList()
                 .OrderByDescending(l => l.DateTime)
                 .ToList();

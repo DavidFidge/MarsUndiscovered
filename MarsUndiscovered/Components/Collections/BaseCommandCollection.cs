@@ -18,24 +18,24 @@ namespace MarsUndiscovered.Components
             GameWorld = gameWorld;
         }
 
-        public virtual void SaveState(ISaveGameStore saveGameStore)
+        public virtual void SaveState(ISaveGameService saveGameService)
         {
             var gameObjectSaveData = this
-                .Select(go => go.GetSaveState(saveGameStore.Mapper))
+                .Select(go => go.GetSaveState(saveGameService.Mapper))
                 .ToList();
 
-            saveGameStore.SaveListToStore(gameObjectSaveData);
+            saveGameService.SaveListToStore(gameObjectSaveData);
         }
 
-        public void LoadState(ISaveGameStore saveGameStore)
+        public void LoadState(ISaveGameService saveGameService)
         {
-            var gameObjectSaveData = saveGameStore.GetListFromStore<TState>();
+            var gameObjectSaveData = saveGameService.GetListFromStore<TState>();
 
             foreach (var gameObjectSaveDataItem in gameObjectSaveData)
             {
                 var command = Create();
 
-                command.SetLoadState(gameObjectSaveDataItem, saveGameStore.Mapper);
+                command.SetLoadState(gameObjectSaveDataItem, saveGameService.Mapper);
 
                 Add(command);
             }

@@ -14,16 +14,16 @@ namespace MarsUndiscovered.Components
             Add(new MessageLogEntry(message));
         }
 
-        public void SaveState(ISaveGameStore saveGameStore)
+        public void SaveState(ISaveGameService saveGameService)
         {
             var messageLogSaveData = this.Select(s => s.Message).ToList();
 
-            saveGameStore.SaveToStore(new Memento<MessageLogSaveData>(new MessageLogSaveData { Messages = messageLogSaveData }));
+            saveGameService.SaveToStore(new Memento<MessageLogSaveData>(new MessageLogSaveData { Messages = messageLogSaveData }));
         }
 
-        public void LoadState(ISaveGameStore saveGameStore)
+        public void LoadState(ISaveGameService saveGameService)
         {
-            foreach (var messageLog in saveGameStore.GetFromStore<MessageLogSaveData>().State.Messages)
+            foreach (var messageLog in saveGameService.GetFromStore<MessageLogSaveData>().State.Messages)
             {
                 AddMessage(messageLog);
             }

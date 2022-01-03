@@ -92,15 +92,15 @@ namespace MarsUndiscovered.Components.Factories
             return gameObject;
         }
 
-        public void SaveState(ISaveGameStore saveGameStore)
+        public void SaveState(ISaveGameService saveGameService)
         {
-            var gameObjectFactoryData = Memento<GameObjectFactoryData>.CreateWithAutoMapper(this, saveGameStore.Mapper);
-            saveGameStore.SaveToStore(gameObjectFactoryData);
+            var gameObjectFactoryData = Memento<GameObjectFactoryData>.CreateWithAutoMapper(this, saveGameService.Mapper);
+            saveGameService.SaveToStore(gameObjectFactoryData);
         }
 
-        public void LoadState(ISaveGameStore saveGameStore)
+        public void LoadState(ISaveGameService saveGameService)
         {
-            var gameObjectFactoryData = saveGameStore.GetFromStore<GameObjectFactoryData>();
+            var gameObjectFactoryData = saveGameService.GetFromStore<GameObjectFactoryData>();
             LastId = gameObjectFactoryData.State.LastId;
         }
     }

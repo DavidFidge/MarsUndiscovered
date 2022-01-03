@@ -45,18 +45,18 @@ namespace MarsUndiscovered.Components
             return GetEnumerator();
         }
 
-        public void SaveState(ISaveGameStore saveGameStore)
+        public void SaveState(ISaveGameService saveGameService)
         {
-            AttackCommands.SaveState(saveGameStore);
-            WalkCommands.SaveState(saveGameStore);
-            MoveCommands.SaveState(saveGameStore);
+            AttackCommands.SaveState(saveGameService);
+            WalkCommands.SaveState(saveGameService);
+            MoveCommands.SaveState(saveGameService);
         }
 
-        public void LoadState(ISaveGameStore saveGameStore)
+        public void LoadState(ISaveGameService saveGameService)
         {
-            AttackCommands.LoadState(saveGameStore);
-            WalkCommands.LoadState(saveGameStore);
-            MoveCommands.LoadState(saveGameStore);
+            AttackCommands.LoadState(saveGameService);
+            WalkCommands.LoadState(saveGameService);
+            MoveCommands.LoadState(saveGameService);
         }
 
         public void AddCommand(BaseCommand command)
