@@ -92,6 +92,9 @@ namespace MarsUndiscovered
 
             _userInterface.RenderResolution = gameOptions?.SelectedRenderResolution;
             _gameCamera.RenderResolution = gameOptions?.SelectedRenderResolution;
+            _gameCamera.MoveSensitivity = 1f;
+            _gameCamera.RotateSensitivity = 0.01f;
+            _gameCamera.ZoomSensitivity = 0.01f;
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 

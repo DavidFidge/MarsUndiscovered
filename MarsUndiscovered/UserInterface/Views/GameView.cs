@@ -53,9 +53,6 @@ namespace MarsUndiscovered.UserInterface.Views
             _inGameOptionsView = inGameOptionsView;
             _consoleView = consoleView;
             _gameCamera = gameCamera;
-            _gameCamera.MoveSensitivity = 1f;
-            _gameCamera.RotateSensitivity = 0.01f;
-            _gameCamera.ZoomSensitivity = 0.01f;
         }
 
         protected override void InitializeInternal()
@@ -73,7 +70,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 new Vector2(50, 50))
                 .SendOnClick<OpenInGameOptionsRequest>(Mediator)
                 .NoPadding();
-
 
             RootPanel.AddChild(menuButton);
 

@@ -23,7 +23,7 @@ namespace MarsUndiscovered.Components.Maps
 
             monsterCollection.Add(monster.ID, monster);
 
-            Mediator.Send(new MapTileChangedRequest(monster.Position));
+            Mediator.Publish(new MapTileChangedNotification(monster.Position));
 
             return monster;
         }

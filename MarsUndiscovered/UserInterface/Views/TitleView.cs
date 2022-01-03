@@ -9,8 +9,6 @@ using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using FrigidRogue.MonoGame.Core.Messages;
-using FrigidRogue.MonoGame.Core.UserInterface;
-using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
@@ -28,11 +26,14 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<CustomGameSeedRequest>,
         IRequestHandler<CancelCustomGameSeedRequest>,
         IRequestHandler<OpenLoadGameViewRequest>,
-        IRequestHandler<CloseLoadGameViewRequest>
+        IRequestHandler<CloseLoadGameViewRequest>,
+        IRequestHandler<OpenLoadReplayViewRequest>,
+        IRequestHandler<CloseLoadReplayViewRequest>
     {
         private readonly OptionsView _optionsView;
         private readonly CustomGameSeedView _customGameSeedView;
         private readonly LoadGameView _loadGameView;
+        private readonly LoadReplayView _loadReplayView;
 
         private Panel _titleMenuPanel;
 
@@ -42,13 +43,15 @@ namespace MarsUndiscovered.UserInterface.Views
             TitleViewModel titleViewModel,
             OptionsView optionsView,
             CustomGameSeedView customGameSeedView,
-            LoadGameView loadGameView
+            LoadGameView loadGameView,
+            LoadReplayView loadReplayView
             )
             : base(titleViewModel)
         {
             _optionsView = optionsView;
             _customGameSeedView = customGameSeedView;
             _loadGameView = loadGameView;
+            _loadReplayView = loadReplayView;
         }
 
         protected override void InitializeInternal()
@@ -76,6 +79,11 @@ namespace MarsUndiscovered.UserInterface.Views
                 _titleMenuPanel,
                 "Load Game",
                 _loadGameView);
+
+            SetupChildPanelWithButton<OpenLoadReplayViewRequest, LoadReplayViewModel, LoadReplayData>(
+                _titleMenuPanel,
+                "Open Recording",
+                _loadReplayView);
 
             SetupChildPanelWithButton<OptionsButtonClickedRequest, OptionsViewModel, OptionsData>(
                 _titleMenuPanel,
@@ -117,6 +125,16 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(CloseLoadGameViewRequest request, CancellationToken cancellationToken)
         {
             return HideChildView(_loadGameView, _titleMenuPanel);
+        }
+
+        public Task<Unit> Handle(OpenLoadReplayViewRequest request, CancellationToken cancellationToken)
+        {
+            return ShowChildView(_loadReplayView, _titleMenuPanel);
+        }
+
+        public Task<Unit> Handle(CloseLoadReplayViewRequest request, CancellationToken cancellationToken)
+        {
+            return HideChildView(_loadReplayView, _titleMenuPanel);
         }
 
         public override void Draw()

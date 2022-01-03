@@ -8,8 +8,8 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
-    public abstract class BaseCommandCollection<T, TState> : List<BaseGameActionCommand<TState>>, ISaveable
-        where T : BaseGameActionCommand<TState>, IMementoState<TState>
+    public abstract class BaseCommandCollection<T, TState> : List<BaseStatefulGameActionCommand<TState>>, ISaveable
+        where T : BaseStatefulGameActionCommand<TState>, IMementoState<TState>
     {
         protected readonly IGameWorld GameWorld;
 

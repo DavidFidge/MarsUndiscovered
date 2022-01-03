@@ -53,6 +53,9 @@ namespace MarsUndiscovered.Components
             }
         }
 
+        private BaseGameActionCommand[] _replayHistoricalCommands;
+        private int _replayHistoricalCommandIndex;
+
         public GameWorld()
         {
             GlobalRandom.DefaultRNG = new XorShift128Generator();
@@ -114,22 +117,13 @@ namespace MarsUndiscovered.Components
             var walkCommand = CommandFactory.CreateWalkCommand(this);
             walkCommand.Initialise(Player, direction);
 
-            var results = ExecuteCommand(walkCommand).ToList();
-
-            WriteMessages(results);
+            ExecuteCommand(walkCommand).ToList();
         }
 
-        private void WriteMessages(IEnumerable<CommandResult> results)
-        {
-            foreach (var result in results.SelectMany(s => s.Messages).ToList())
-            {
-                MessageLog.AddMessage(result);
-            }
-        }
-
-        private IEnumerable<CommandResult> ExecuteCommand(BaseCommand command, bool addHistorical = true)
+        private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command, bool addHistorical = true)
         {
             var result = command.Execute();
+            MessageLog.AddMessages(result.Messages);
 
             if (addHistorical)
                 HistoricalCommands.AddCommand(command);
@@ -184,6 +178,39 @@ namespace MarsUndiscovered.Components
             return loadGameResult;
         }
 
+        public LoadGameResult LoadReplay(string saveGameName)
+        {
+            var loadGameResult = SaveGameService.LoadStoreFromFile(saveGameName);
+
+            if (loadGameResult.Success)
+            {
+                var gameWorldSaveData = SaveGameService.GetFromStore<GameWorldSaveData>();
+
+                NewGame(gameWorldSaveData.State.Seed);
+
+                var commands = new CommandCollection(CommandFactory, this);
+
+                commands.LoadState(SaveGameService);
+
+                _replayHistoricalCommands = commands
+                    .OrderBy(c => c.TurnDetails.SequenceNumber)
+                    .ToArray();
+
+                _replayHistoricalCommandIndex = 0;
+            }
+
+            return loadGameResult;
+        }
+
+        public void ExecuteNextReplayCommand()
+        {
+            if (_replayHistoricalCommandIndex < _replayHistoricalCommands.Length)
+            {
+                var command = _replayHistoricalCommands[_replayHistoricalCommandIndex++];
+                ExecuteCommand(command).ToList();
+            }
+        }
+
         public void SaveState(ISaveGameService saveGameService)
         {
             GameObjectFactory.SaveState(saveGameService);
@@ -204,7 +231,7 @@ namespace MarsUndiscovered.Components
 
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
             Memento<GameWorldSaveData>.SetWithAutoMapper(this, gameWorldSaveData, saveGameService.Mapper);
-            
+
             GameObjectFactory.LoadState(saveGameService);
             Walls.LoadState(saveGameService);
             Floors.LoadState(saveGameService);

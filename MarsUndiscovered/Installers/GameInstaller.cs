@@ -22,6 +22,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
+using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.MonoGame.Core.View.Installers;
 using FrigidRogue.MonoGame.Core.View.Interfaces;
@@ -31,6 +32,7 @@ using InputHandlers.Mouse;
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
+using MediatR;
 
 namespace MarsUndiscovered.Installers
 {
@@ -45,11 +47,14 @@ namespace MarsUndiscovered.Installers
             RegisterTitleView(container, store);
             RegisterCustomGameSeedView(container, store);
             RegisterLoadGameView(container, store);
+            RegisterLoadReplayView(container, store);
             RegisterOptionsView(container, store);
             RegisterVideoOptionsView(container, store);
             RegisterInGameOptionsView(container, store);
+            RegisterInReplayOptionsView(container, store);
             RegisterConsoleView(container, store);
             RegisterGameView(container, store);
+            RegisterReplayView(container, store);
             RegisterSaveGameView(container, store);
 
             RegisterKeyboardHandlers(container);
@@ -102,13 +107,19 @@ namespace MarsUndiscovered.Installers
                 Component.For<MapEntity>()
                     .LifeStyle.Transient,
 
+                Component.For<MapViewModel>()
+                    .LifeStyle.Transient,
+
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<MarsGameObject>()
                     .LifestyleTransient(),
 
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
-                    .BasedOn<BaseCommand>()
-                    .LifestyleTransient()
+                    .BasedOn<BaseGameActionCommand>()
+                    .LifestyleTransient(),
+
+                Component.For<ICameraMovement>()
+                    .ImplementedBy<CameraMovement>()
             );
         }
 
@@ -187,6 +198,16 @@ namespace MarsUndiscovered.Installers
             );
         }
 
+        private void RegisterLoadReplayView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<LoadReplayView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, LoadReplayViewKeyboardHandler>()),
+
+                Component.For<LoadReplayViewModel>()
+            );
+        }
+
         private void RegisterCustomGameSeedView(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
@@ -236,10 +257,18 @@ namespace MarsUndiscovered.Installers
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, GameViewKeyboardHandler>())
                     .DependsOn(Dependency.OnComponent<IMouseHandler, GameViewMouseHandler>()),
 
-                Component.For<GameViewModel>(),
+                Component.For<GameViewModel>()
+            );
+        }
 
-                Component.For<ICameraMovement>()
-                    .ImplementedBy<CameraMovement>()
+        private void RegisterReplayView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<ReplayView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, ReplayViewKeyboardHandler>())
+                    .DependsOn(Dependency.OnComponent<IMouseHandler, ReplayViewMouseHandler>()),
+
+                Component.For<ReplayViewModel>()
             );
         }
 
@@ -247,10 +276,19 @@ namespace MarsUndiscovered.Installers
         {
             container.Register(
                 Component.For<InGameOptionsView>()
-                    .ImplementedBy<InGameOptionsView>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, InGameOptionsKeyboardHandler>()),
 
                 Component.For<InGameOptionsViewModel>()
+            );
+        }
+
+        private void RegisterInReplayOptionsView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<InReplayOptionsView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, InReplayOptionsKeyboardHandler>()),
+
+                Component.For<InReplayOptionsViewModel>()
             );
         }
 
@@ -258,7 +296,6 @@ namespace MarsUndiscovered.Installers
         {
             container.Register(
                 Component.For<ConsoleView>()
-                    .ImplementedBy<ConsoleView>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, ConsoleKeyboardHandler>()),
 
                 Component.For<IKeyboardHandler>()

@@ -14,6 +14,14 @@ namespace MarsUndiscovered.Components
             Add(new MessageLogEntry(message));
         }
 
+        public void AddMessages(IList<string> messages)
+        {
+            foreach (var message in messages)
+            {
+                Add(new MessageLogEntry(message));
+            }
+        }
+
         public void SaveState(ISaveGameService saveGameService)
         {
             var messageLogSaveData = this.Select(s => s.Message).ToList();

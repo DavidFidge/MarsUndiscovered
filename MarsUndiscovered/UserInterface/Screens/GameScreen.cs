@@ -10,8 +10,7 @@ namespace MarsUndiscovered.UserInterface.Screens
 {
     public class GameScreen : Screen,
         IRequestHandler<NewGameRequest>,
-        IRequestHandler<LoadGameRequest>,
-        IRequestHandler<EndCurrentGameRequest>
+        IRequestHandler<LoadGameRequest>
     {
         private readonly GameView _gameView;
 
@@ -34,13 +33,6 @@ namespace MarsUndiscovered.UserInterface.Screens
             _gameView.LoadGame(request.Filename);
 
             UserInterface.ShowScreen(this);
-
-            return Unit.Task;
-        }
-
-        public Task<Unit> Handle(EndCurrentGameRequest request, CancellationToken cancellationToken)
-        {
-            Mediator.Send(new QuitToTitleRequest());
 
             return Unit.Task;
         }

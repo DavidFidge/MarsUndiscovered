@@ -14,7 +14,7 @@ using SadRogue.Primitives;
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
     [TestClass]
-    public class WalkIntegrationTests : BaseIntegrationTest
+    public class WalkCommandIntegrationTests : BaseIntegrationTest
     {
         private GameWorld _gameWorld;
 

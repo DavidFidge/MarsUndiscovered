@@ -44,8 +44,8 @@ namespace MarsUndiscovered.Commands
         {
             GameObject.Position = FromTo.Item2;
 
-            Mediator.Send(new MapTileChangedRequest(FromTo.Item1));
-            Mediator.Send(new MapTileChangedRequest(FromTo.Item2));
+            Mediator.Publish(new MapTileChangedNotification(FromTo.Item1));
+            Mediator.Publish(new MapTileChangedNotification(FromTo.Item2));
 
             return Result(CommandResult.Success());
         }

@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-using System.Linq;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
@@ -12,13 +10,10 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
-    public class CommandCollection : IEnumerable<BaseCommand>, ISaveable
+    public class CommandCollection : IEnumerable<BaseGameActionCommand>, ISaveable
     {
-        private readonly IGameWorld _gameWorld;
-
         public CommandCollection(ICommandFactory commandFactory, IGameWorld gameWorld)
         {
-            _gameWorld = gameWorld;
             AttackCommands = new AttackCommandCollection(commandFactory, gameWorld);
             WalkCommands = new WalkCommandCollection(commandFactory, gameWorld);
             MoveCommands = new MoveCommandCollection(commandFactory, gameWorld);
@@ -28,7 +23,7 @@ namespace MarsUndiscovered.Components
         public WalkCommandCollection WalkCommands { get; set; }
         public MoveCommandCollection MoveCommands { get; set; }
 
-        public IEnumerator<BaseCommand> GetEnumerator()
+        public IEnumerator<BaseGameActionCommand> GetEnumerator()
         {
             foreach (var item in AttackCommands)
                 yield return item;
@@ -59,7 +54,7 @@ namespace MarsUndiscovered.Components
             MoveCommands.LoadState(saveGameService);
         }
 
-        public void AddCommand(BaseCommand command)
+        public void AddCommand(BaseGameActionCommand command)
         {
             switch (command)
             {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,11 +13,9 @@ using MarsUndiscovered.UserInterface.Data;
 
 using MediatR;
 
-using SadRogue.Primitives;
-
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
-    public class GameViewModel : BaseViewModel<GameData>,
+    public class ReplayViewModel : BaseViewModel<ReplayData>,
         INotificationHandler<MapTileChangedNotification>,
         INotificationHandler<EntityTransformChangedNotification>
     {
@@ -29,29 +26,22 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private int _messageLogCount;
 
-        public void NewGame(uint? seed = null)
+        public void LoadReplay(string filename)
         {
-            GameWorldProvider.NewGame(seed);
-
-            SetupNewGame();
+            GameWorldProvider.LoadReplay(filename);
+            SetupNewReplay();
         }
 
-        public void LoadGame(string filename)
-        {
-            GameWorldProvider.LoadGame(filename);
-            SetupNewGame();
-        }
-
-        private void SetupNewGame()
+        private void SetupNewReplay()
         {
             MapViewModel.SetupNewMap(GameWorld);
 
             _messageLogCount = 0;
         }
 
-        public void Move(Direction direction)
+        public void ExecuteNextReplayCommand()
         {
-            GameWorld.MoveRequest(direction);
+            GameWorld.ExecuteNextReplayCommand();
         }
 
         public Task Handle(MapTileChangedNotification notification, CancellationToken cancellationToken)
@@ -73,6 +63,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public Task Handle(EntityTransformChangedNotification notification, CancellationToken cancellationToken)
         {
             SceneGraph.HandleEntityTransformChanged(notification);
+
             return Unit.Task;
         }
     }
