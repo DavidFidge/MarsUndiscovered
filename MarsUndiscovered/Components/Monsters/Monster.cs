@@ -10,11 +10,8 @@ namespace MarsUndiscovered.Components
         public override string Name => Breed.Name;
         public override string Description => Breed.Description;
 
+        public override int MaxHealth { get; protected set; }
         public override Attack BasicAttack => Breed.BasicAttack;
-
-        public Monster() : base(1)
-        {
-        }
 
         public Monster(uint id) : base(1, idGenerator: () => id)
         {
@@ -23,7 +20,8 @@ namespace MarsUndiscovered.Components
         public Monster WithBreed(Breed breed)
         {
             Breed = breed;
-            Health = (int)(BaseHealth * breed.HealthModifier);
+            MaxHealth = (int)(BaseHealth * Breed.HealthModifier);
+            Health = MaxHealth;
 
             return this;
         }

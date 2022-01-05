@@ -31,7 +31,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _customGameSeedPanel = new Panel()
                 .AutoHeight()
                 .WidthOfButtonWithPadding()
-                .Opacity90Percent();
+                .OpacityPercent(90);
 
             RootPanel.AddChild(_customGameSeedPanel);
 

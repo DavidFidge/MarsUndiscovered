@@ -14,7 +14,7 @@ using FrigidRogue.MonoGame.Core.Services;
 using FrigidRogue.MonoGame.Core.View.Interfaces;
 
 using MarsUndiscovered.Components;
-
+using MarsUndiscovered.Messages;
 using MediatR;
 
 using Microsoft.Xna.Framework;
@@ -35,8 +35,11 @@ namespace MarsUndiscovered
         private readonly IAssets _assets;
         private readonly ScreenCollection _screenCollection;
         private readonly IGameCamera _gameCamera;
+        private readonly IMediator _mediator;
+        private readonly Options _options;
 
         private bool _isExiting;
+        private bool _startNewGameFromCommandLine = false;
 
         public CustomGraphicsDeviceManager CustomGraphicsDeviceManager { get; }
         public EffectCollection EffectCollection
@@ -53,7 +56,9 @@ namespace MarsUndiscovered
             IGameOptionsStore gameOptionsStore,
             IAssets assets,
             ScreenCollection screenCollection,
-            IGameCamera gameCamera
+            IGameCamera gameCamera,
+            Options options,
+            IMediator mediator
         )
         {
             _logger = logger;
@@ -71,6 +76,11 @@ namespace MarsUndiscovered
             _assets = assets;
             _screenCollection = screenCollection;
             _gameCamera = gameCamera;
+            _mediator = mediator;
+            _options = options;
+
+            if (_options.NewGame)
+                _startNewGameFromCommandLine = true;
 
             EffectCollection = new EffectCollection(_gameProvider);
         }
@@ -181,6 +191,12 @@ namespace MarsUndiscovered
         {
             if (_isExiting)
                 Exit();
+
+            if (_startNewGameFromCommandLine && _options.NewGame)
+            {
+                _mediator.Send(new NewGameRequest());
+                _startNewGameFromCommandLine = false;
+            }
 
             _gameTimeService.Update(gameTime);
             _gameInputService.Poll();

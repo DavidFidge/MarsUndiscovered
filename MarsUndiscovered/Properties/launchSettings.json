@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MarsUndiscovered": {
+      "commandName": "Project",
+      "commandLineArgs": "--NewGame"
+    }
+  }
+}

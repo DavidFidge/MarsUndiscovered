@@ -14,15 +14,12 @@ namespace MarsUndiscovered.Components
         public override string Name => "You";
         public override string TargetedName => Name.ToLower();
         public override string PossessiveName => $"{Name.ToLower()}r";
-
+        public override int MaxHealth { get; protected set; } = BaseHealth;
         public override Attack BasicAttack { get; } = new Attack(new Range<int>(5, 10));
-
-        public Player() : base(1)
-        {
-        }
 
         public Player(uint id) : base(1, idGenerator: () => id)
         {
+            Health = MaxHealth;
         }
 
         public IMemento<PlayerSaveData> GetSaveState(IMapper mapper)

@@ -15,7 +15,7 @@ namespace MarsUndiscovered.Interfaces
 {
     public interface IGameWorld : ILoadGameDetail, IBaseComponent
     {
-        Player Player { get; set; }
+        Player Player { get; }
         void NewGame(uint? seed = null);
         Map Map { get; }
         void MoveRequest(Direction direction);

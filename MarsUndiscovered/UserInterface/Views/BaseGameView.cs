@@ -20,10 +20,50 @@ namespace MarsUndiscovered.UserInterface.Views
         public IAssets Assets { get; set; }
         public bool IsMouseInGameView => RootPanel?.IsMouseInRootPanelEmptySpace ?? true;
         private SelectList _messageLog;
+        protected Panel _leftPanel;
+        protected ProgressBar _playerHealthBar;
 
         protected BaseGameView(IGameCamera gameCamera, TViewModel viewModel) : base(viewModel)
         {
             _gameCamera = gameCamera;
+        }
+
+        protected void CreateLeftPanel()
+        {
+            _leftPanel = new Panel()
+                .Anchor(Anchor.TopLeft)
+                .Width(0.19f)
+                .NoSkin()
+                .NoPadding()
+                .Height(0.999f);
+
+            RootPanel.AddChild(_leftPanel);
+        }
+
+        protected void CreatePlayerPanel()
+        {
+            var playerPanel = new Panel()
+                .NoSkin()
+                .NoPadding()
+                .WidthOfScreen()
+                .Anchor(Anchor.AutoInline);
+
+            _leftPanel.AddChild(playerPanel);
+
+            _playerHealthBar = new ProgressBar()
+                .NoPadding()
+                .Anchor(Anchor.TopLeft)
+                .TransparentFillColor()
+                .ProgressBarFillColor(Color.Red)
+                .Locked();
+
+            var healthLabel = new Label("Health")
+                .NoPadding()
+                .Anchor(Anchor.Center);
+
+            _playerHealthBar.AddChild(healthLabel);
+
+            playerPanel.AddChild(_playerHealthBar);
         }
 
         public override void Draw()
@@ -75,6 +115,14 @@ namespace MarsUndiscovered.UserInterface.Views
         protected virtual void ResetViews()
         {
             _messageLog.ClearItems();
+        }
+
+        protected override void ViewModelChanged()
+        {
+            base.ViewModelChanged();
+
+            _playerHealthBar.Max = (uint)_viewModel.PlayerMaxHealth;
+            _playerHealthBar.Value = _viewModel.PlayerHealth;
         }
     }
 }

@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Text;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI;
-using GeonBit.UI.DataTypes;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using GeonBit.UI.Entities;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -27,29 +24,29 @@ namespace MarsUndiscovered.UserInterface.Views
         protected override void InitializeInternal()
         {
             var consolePanel = new Panel()
-                .WithPadding(Vector2.Zero)
-                .WithAnchor(Anchor.BottomCenter)
+                .Padding(Vector2.Zero)
+                .Anchor(Anchor.BottomCenter)
                 .WidthOfScreen()
                 .Height(0.5f)
-                .Opacity70Percent();
+                .OpacityPercent(70);
 
             RootPanel.AddChild(consolePanel);
 
             var consolePrompt = new Label(">")
                 .Bold()
-                .WithScale(1.2f)
-                .WithSize(new Vector2(0.014f, 0.2f))
-                .WithAnchor(Anchor.AutoInlineNoBreak)
+                .Scale(1.2f)
+                .Size(new Vector2(0.014f, 0.2f))
+                .Anchor(Anchor.AutoInlineNoBreak)
                 .NoPadding();
 
             consolePanel.AddChild(consolePrompt);
 
             _consoleEntry = new TextInput()
-                .WithSize(new Vector2(0f, Constants.TextInputMinimalHeight * consolePanel.Size.Y))
-                .WithAnchor(Anchor.AutoInlineNoBreak)
+                .Size(new Vector2(0f, Constants.TextInputMinimalHeight * consolePanel.Size.Y))
+                .Anchor(Anchor.AutoInlineNoBreak)
                 .NoPadding()
-                .WithSkin(PanelSkin.Simple)
-                .Opacity70Percent();
+                .Skin(PanelSkin.Simple)
+                .OpacityPercent(70);
 
             _consoleEntry.AddDisabledSpecialChar(SpecialChars.ArrowUp);
             _consoleEntry.AddDisabledSpecialChar(SpecialChars.ArrowDown);
@@ -65,9 +62,9 @@ namespace MarsUndiscovered.UserInterface.Views
 
             _consoleHistory = new SelectList()
                 .NoSkin()
-                .WithAnchor(Anchor.Auto)
+                .Anchor(Anchor.Auto)
                 .NoPadding()
-                .WithSize(new Vector2(0.99f, 0.88f));
+                .Size(new Vector2(0.99f, 0.88f));
 
             _consoleHistory.ExtraSpaceBetweenLines = -30;
 

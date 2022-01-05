@@ -59,7 +59,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _titleMenuPanel = new Panel()
                 .AutoHeight()
                 .WidthOfButtonWithPadding()
-                .Opacity90Percent();
+                .OpacityPercent(90);
 
             _titleMenuPanel.Anchor = Anchor.BottomRight;
             _titleMenuPanel.Offset = new Vector2(200f, 200f);

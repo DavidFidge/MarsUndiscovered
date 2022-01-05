@@ -30,7 +30,7 @@ namespace MarsUndiscovered.Components
     public class GameWorld : BaseComponent, IGameWorld, ISaveable, IMementoState<GameWorldSaveData>
     {
         public Map Map { get; private set; }
-        public Player Player { get; set; }
+        public Player Player { get; private set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public ICommandFactory CommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
@@ -98,8 +98,6 @@ namespace MarsUndiscovered.Components
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-
-
         }
 
         private void Reset()

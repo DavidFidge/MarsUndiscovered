@@ -37,6 +37,7 @@ namespace MarsUndiscovered.UserInterface.Views
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
+        private ProgressBar _playerHealthBar;
 
         public GameView(
             GameViewModel gameViewModel,
@@ -52,15 +53,11 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            var leftPanel = new Panel()
-                .WithAnchor(Anchor.TopLeft)
-                .NoSkin()
-                .NoPadding()
-                .AutoHeight();
+            CreateLeftPanel();
 
-            RootPanel.AddChild(leftPanel);
+            SetupInGameOptionsButton(_leftPanel);
 
-            SetupInGameOptionsButton();
+            CreatePlayerPanel();
 
             SetupChildPanel(_inGameOptionsView);
 
@@ -69,7 +66,19 @@ namespace MarsUndiscovered.UserInterface.Views
             AddMessageLog();
         }
 
-        private void SetupInGameOptionsButton()
+        public void NewGame(uint? seed = null)
+        {
+            ResetViews();
+            _viewModel.NewGame(seed);
+        }
+
+        public void LoadGame(string filename)
+        {
+            ResetViews();
+            _viewModel.LoadGame(filename);
+        }
+
+        private void SetupInGameOptionsButton(Panel leftPanel)
         {
             var menuButton = new Button(
                     "-",
@@ -80,7 +89,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .SendOnClick<OpenInGameOptionsRequest>(Mediator)
                 .NoPadding();
 
-            menuButton.AddChild(menuButton);
+            leftPanel.AddChild(menuButton);
         }
 
         private void SetupConsole()
@@ -112,18 +121,6 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _consoleView.Hide();
             return Unit.Task;
-        }
-
-        public void NewGame(uint? seed = null)
-        {
-            _viewModel.NewGame(seed);
-            ResetViews();
-        }
-
-        public void LoadGame(string filename)
-        {
-            _viewModel.LoadGame(filename);
-            ResetViews();
         }
 
         public Task<Unit> Handle(LeftClickViewRequest request, CancellationToken cancellationToken)

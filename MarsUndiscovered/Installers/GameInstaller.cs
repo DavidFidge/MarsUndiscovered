@@ -22,7 +22,6 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
-using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.MonoGame.Core.View.Installers;
 using FrigidRogue.MonoGame.Core.View.Interfaces;
@@ -32,7 +31,6 @@ using InputHandlers.Mouse;
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
-using MediatR;
 
 namespace MarsUndiscovered.Installers
 {

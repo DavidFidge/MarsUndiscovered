@@ -22,7 +22,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _inReplayOptionsMenuPanel = new Panel()
                 .AutoHeight()
                 .WidthOfButtonWithPadding()
-                .Opacity90Percent();
+                .OpacityPercent(90);
 
             RootPanel.AddChild(_inReplayOptionsMenuPanel);
 

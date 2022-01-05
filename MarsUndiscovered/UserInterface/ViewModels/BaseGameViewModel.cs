@@ -14,8 +14,6 @@ using MarsUndiscovered.UserInterface.Data;
 
 using MediatR;
 
-using SadRogue.Primitives;
-
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public abstract class BaseGameViewModel<T> : BaseViewModel<T>,
@@ -27,13 +25,16 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public ISceneGraph SceneGraph => MapViewModel.SceneGraph;
         public MapViewModel MapViewModel { get; set; }
 
+        public int PlayerMaxHealth => GameWorld.Player.MaxHealth;
+        public int PlayerHealth => GameWorld.Player.Health;
+
         protected int _messageLogCount;
 
         protected void SetupNewGame()
         {
             MapViewModel.SetupNewMap(GameWorld);
-
             _messageLogCount = 0;
+            Notify();
         }
 
         public Task Handle(MapTileChangedNotification notification, CancellationToken cancellationToken)

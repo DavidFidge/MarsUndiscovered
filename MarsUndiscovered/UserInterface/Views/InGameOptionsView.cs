@@ -36,7 +36,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _inGameOptionsMenuPanel = new Panel()
                 .AutoHeight()
                 .WidthOfButtonWithPadding()
-                .Opacity90Percent();
+                .OpacityPercent(90);
 
             RootPanel.AddChild(_inGameOptionsMenuPanel);
 

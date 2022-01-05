@@ -6,10 +6,6 @@ namespace MarsUndiscovered.Components
 {
     public class Floor : Terrain, IMementoState<FloorSaveData>
     {
-        public Floor()
-        {
-        }
-
         public Floor(uint id) : base(id)
         {
         }

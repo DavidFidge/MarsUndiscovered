@@ -32,7 +32,7 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _loadGamePanel = new Panel()
                 .WidthOfScreen()
-                .Opacity100Percent();
+                .SolidOpacity();
 
             _loadGamePanel.Size = new Vector2(_loadGamePanel.Size.X, 0.8f);
 

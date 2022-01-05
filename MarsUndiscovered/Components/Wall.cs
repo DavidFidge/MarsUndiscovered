@@ -6,11 +6,7 @@ namespace MarsUndiscovered.Components
 {
     public class Wall : Terrain, IMementoState<WallSaveData>
     {
-        public Wall() : base(false, false)
-        {
-        }
-
-        public Wall(uint id) : base(false, false)
+        public Wall(uint id) : base(id, false, false)
         {
         }
 

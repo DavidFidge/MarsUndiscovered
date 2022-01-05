@@ -25,7 +25,6 @@ namespace MarsUndiscovered.UserInterface.Views
     {
         private readonly InReplayOptionsView _inReplayOptionsView;
         private Label _turnLabel;
-        private int _turnNumber = 1;
 
         public ReplayView(
             ReplayViewModel gameViewModel,
@@ -39,31 +38,32 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            var leftPanel = new Panel()
-                .WithAnchor(Anchor.TopLeft)
-                .NoSkin()
-                .NoPadding()
-                .AutoHeight();
+            CreateLeftPanel();
 
-            RootPanel.AddChild(leftPanel);
+            SetupInReplayOptionsButton(_leftPanel);
 
-            SetupInReplayOptionsButton(leftPanel);
+            CreateReplayView();
 
-            var replayLabel = new Label("REPLAY")
-                .WithAnchor(Anchor.AutoInline)
-                .NoPadding();
-
-            leftPanel.AddChild(replayLabel);
-
-            _turnLabel = new Label("Turn 1")
-                .WithAnchor(Anchor.AutoInline)
-                .NoPadding();
-
-            leftPanel.AddChild(_turnLabel);
+            CreatePlayerPanel();
 
             AddMessageLog();
 
             SetupChildPanel(_inReplayOptionsView);
+        }
+
+        private void CreateReplayView()
+        {
+            var replayLabel = new Label("REPLAY")
+                .Anchor(Anchor.AutoInline)
+                .NoPadding();
+
+            _leftPanel.AddChild(replayLabel);
+
+            _turnLabel = new Label("Turn 1")
+                .Anchor(Anchor.AutoInline)
+                .NoPadding();
+
+            _leftPanel.AddChild(_turnLabel);
         }
 
         private void SetupInReplayOptionsButton(Panel leftPanel)
@@ -84,8 +84,6 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _viewModel.ExecuteNextReplayCommand();
 
-            _turnLabel.Text = $"Turn {++_turnNumber}";
-
             return Unit.Task;
         }
 
@@ -103,15 +101,15 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public void LoadReplay(string filename)
         {
-            _viewModel.LoadReplay(filename);
             ResetViews();
+            _viewModel.LoadReplay(filename);
         }
 
-        protected override void ResetViews()
+        protected override void ViewModelChanged()
         {
-            base.ResetViews();
-            _turnLabel.Text = "Turn 1";
-            _turnNumber = 1;
+            base.ViewModelChanged();
+
+            _turnLabel.Text = $"Turn {_viewModel.TurnNumber}";
         }
     }
 }
