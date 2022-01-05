@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class GameView : BaseMarsUndiscoveredView<GameViewModel, GameData>,
+    public class GameView : BaseGameView<GameViewModel, GameData>,
         IRequestHandler<OpenInGameOptionsRequest>,
         IRequestHandler<CloseInGameOptionsRequest>,
         IRequestHandler<OpenConsoleRequest>,
@@ -35,12 +35,8 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<MoveLeftRequest>,
         IRequestHandler<MoveRightRequest>
     {
-        public bool IsMouseInGameView => RootPanel?.IsMouseInRootPanelEmptySpace ?? true;
-
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
-        private readonly IGameCamera _gameCamera;
-        private SelectList _messageLog;
 
         public GameView(
             GameViewModel gameViewModel,
@@ -48,46 +44,43 @@ namespace MarsUndiscovered.UserInterface.Views
             ConsoleView consoleView,
             IGameCamera gameCamera
         )
-            : base(gameViewModel)
+            : base(gameCamera, gameViewModel)
         {
             _inGameOptionsView = inGameOptionsView;
             _consoleView = consoleView;
-            _gameCamera = gameCamera;
         }
 
         protected override void InitializeInternal()
         {
-            SetupInGameOptions();
-            SetupConsole();
-        }
+            var leftPanel = new Panel()
+                .WithAnchor(Anchor.TopLeft)
+                .NoSkin()
+                .NoPadding()
+                .AutoHeight();
 
-        private void SetupInGameOptions()
-        {
-            var menuButton = new Button(
-                "-",
-                ButtonSkin.Default,
-                Anchor.TopLeft,
-                new Vector2(50, 50))
-                .SendOnClick<OpenInGameOptionsRequest>(Mediator)
-                .NoPadding();
+            RootPanel.AddChild(leftPanel);
 
-            RootPanel.AddChild(menuButton);
+            SetupInGameOptionsButton();
 
             SetupChildPanel(_inGameOptionsView);
 
-            _messageLog = new SelectList(new Vector2(0.61f, 0.14f), Anchor.TopCenter, null, PanelSkin.None)
+            SetupConsole();
+
+            AddMessageLog();
+        }
+
+        private void SetupInGameOptionsButton()
+        {
+            var menuButton = new Button(
+                    "-",
+                    ButtonSkin.Default,
+                    Anchor.TopLeft,
+                    new Vector2(50, 50)
+                )
+                .SendOnClick<OpenInGameOptionsRequest>(Mediator)
                 .NoPadding();
 
-            _messageLog.ExtraSpaceBetweenLines = -10;
-            _messageLog.LockSelection = true;
-            RootPanel.AddChild(_messageLog);
-
-            _messageLog.OnListChange = entity =>
-            {
-                var list = (SelectList)entity;
-                if (list.Count > 100)
-                    list.RemoveItem(0);
-            };
+            menuButton.AddChild(menuButton);
         }
 
         private void SetupConsole()
@@ -121,35 +114,6 @@ namespace MarsUndiscovered.UserInterface.Views
             return Unit.Task;
         }
 
-        public override void Draw()
-        {
-            var oldDepthStencilState = Game.GraphicsDevice.DepthStencilState;
-            Game.GraphicsDevice.DepthStencilState = DepthStencilState.None;
-
-            _viewModel.SceneGraph.Draw(_gameCamera.View, _gameCamera.Projection);
-
-            Game.GraphicsDevice.DepthStencilState = oldDepthStencilState;
-
-            base.Draw();
-        }
-
-        public override void Update()
-        {
-            var newMessages = _viewModel.GetNewMessages();
-
-            if (newMessages.Any())
-            {
-                foreach (var message in newMessages)
-                    _messageLog.AddItem(message);
-
-                _messageLog.scrollToEnd();
-            }
-
-            _gameCamera.Update();
-
-            base.Update();
-        }
-
         public void NewGame(uint? seed = null)
         {
             _viewModel.NewGame(seed);
@@ -160,11 +124,6 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _viewModel.LoadGame(filename);
             ResetViews();
-        }
-
-        private void ResetViews()
-        {
-            _messageLog.ClearItems();
         }
 
         public Task<Unit> Handle(LeftClickViewRequest request, CancellationToken cancellationToken)

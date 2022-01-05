@@ -1,34 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
-using FrigidRogue.MonoGame.Core.Messages;
-using FrigidRogue.MonoGame.Core.UserInterface;
-
-using MarsUndiscovered.Interfaces;
-using MarsUndiscovered.Messages;
-using MarsUndiscovered.UserInterface.Data;
-
-using MediatR;
-
+﻿using MarsUndiscovered.UserInterface.Data;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
-    public class GameViewModel : BaseViewModel<GameData>,
-        INotificationHandler<MapTileChangedNotification>,
-        INotificationHandler<EntityTransformChangedNotification>
+    public class GameViewModel : BaseGameViewModel<GameData>
     {
-        public IGameWorldProvider GameWorldProvider { get; set; }
-        public IGameWorld GameWorld => GameWorldProvider.GameWorld;
-        public ISceneGraph SceneGraph => MapViewModel.SceneGraph;
-        public MapViewModel MapViewModel { get; set; }
-
-        private int _messageLogCount;
-
         public void NewGame(uint? seed = null)
         {
             GameWorldProvider.NewGame(seed);
@@ -42,38 +18,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             SetupNewGame();
         }
 
-        private void SetupNewGame()
-        {
-            MapViewModel.SetupNewMap(GameWorld);
-
-            _messageLogCount = 0;
-        }
-
         public void Move(Direction direction)
         {
             GameWorld.MoveRequest(direction);
-        }
-
-        public Task Handle(MapTileChangedNotification notification, CancellationToken cancellationToken)
-        {
-            MapViewModel.UpdateMapTiles(notification.Point);
-
-            return Unit.Task;
-        }
-
-        public IList<string> GetNewMessages()
-        {
-            var newMessages = GameWorld.GetMessagesSince(_messageLogCount);
-
-            _messageLogCount += newMessages.Count;
-
-            return newMessages;
-        }
-
-        public Task Handle(EntityTransformChangedNotification notification, CancellationToken cancellationToken)
-        {
-            SceneGraph.HandleEntityTransformChanged(notification);
-            return Unit.Task;
         }
     }
 }

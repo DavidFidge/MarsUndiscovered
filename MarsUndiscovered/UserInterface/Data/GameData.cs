@@ -1,6 +1,6 @@
 ﻿namespace MarsUndiscovered.UserInterface.Data
 {
-    public class GameData
+    public class GameData : BaseGameData
     {
     }
 }

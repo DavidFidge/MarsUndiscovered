@@ -15,20 +15,15 @@ using GeonBit.UI.Entities;
 using MediatR;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class ReplayView : BaseMarsUndiscoveredView<ReplayViewModel, ReplayData>,
+    public class ReplayView : BaseGameView<ReplayViewModel, ReplayData>,
         IRequestHandler<NextReplayCommandRequest>,
         IRequestHandler<OpenInReplayOptionsRequest>,
         IRequestHandler<CloseInReplayOptionsRequest>
     {
-        public bool IsMouseInGameView => RootPanel?.IsMouseInRootPanelEmptySpace ?? true;
-
         private readonly InReplayOptionsView _inReplayOptionsView;
-        private readonly IGameCamera _gameCamera;
-        private SelectList _messageLog;
         private Label _turnLabel;
         private int _turnNumber = 1;
 
@@ -37,18 +32,12 @@ namespace MarsUndiscovered.UserInterface.Views
             InReplayOptionsView inReplayOptionsView,
             IGameCamera gameCamera
         )
-            : base(gameViewModel)
+            : base(gameCamera, gameViewModel)
         {
             _inReplayOptionsView = inReplayOptionsView;
-            _gameCamera = gameCamera;
         }
 
         protected override void InitializeInternal()
-        {
-            SetupInReplayOptions();
-        }
-
-        private void SetupInReplayOptions()
         {
             var leftPanel = new Panel()
                 .WithAnchor(Anchor.TopLeft)
@@ -58,15 +47,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             RootPanel.AddChild(leftPanel);
 
-            var menuButton = new Button(
-                "-",
-                ButtonSkin.Default,
-                Anchor.AutoInline,
-                new Vector2(50, 50))
-                .SendOnClick<OpenInReplayOptionsRequest>(Mediator)
-                .NoPadding();
-
-            leftPanel.AddChild(menuButton);
+            SetupInReplayOptionsButton(leftPanel);
 
             var replayLabel = new Label("REPLAY")
                 .WithAnchor(Anchor.AutoInline)
@@ -80,21 +61,23 @@ namespace MarsUndiscovered.UserInterface.Views
 
             leftPanel.AddChild(_turnLabel);
 
-            SetupChildPanel(_inReplayOptionsView);
+            AddMessageLog();
 
-            _messageLog = new SelectList(new Vector2(0.61f, 0.14f), Anchor.TopCenter, null, PanelSkin.None)
+            SetupChildPanel(_inReplayOptionsView);
+        }
+
+        private void SetupInReplayOptionsButton(Panel leftPanel)
+        {
+            var menuButton = new Button(
+                    "-",
+                    ButtonSkin.Default,
+                    Anchor.AutoInline,
+                    new Vector2(50, 50)
+                )
+                .SendOnClick<OpenInReplayOptionsRequest>(Mediator)
                 .NoPadding();
 
-            _messageLog.ExtraSpaceBetweenLines = -10;
-            _messageLog.LockSelection = true;
-            RootPanel.AddChild(_messageLog);
-
-            _messageLog.OnListChange = entity =>
-            {
-                var list = (SelectList)entity;
-                if (list.Count > 100)
-                    list.RemoveItem(0);
-            };
+            leftPanel.AddChild(menuButton);
         }
 
         public Task<Unit> Handle(NextReplayCommandRequest request, CancellationToken cancellationToken)
@@ -118,44 +101,15 @@ namespace MarsUndiscovered.UserInterface.Views
             return Unit.Task;
         }
 
-        public override void Draw()
-        {
-            var oldDepthStencilState = Game.GraphicsDevice.DepthStencilState;
-            Game.GraphicsDevice.DepthStencilState = DepthStencilState.None;
-
-            _viewModel.SceneGraph.Draw(_gameCamera.View, _gameCamera.Projection);
-
-            Game.GraphicsDevice.DepthStencilState = oldDepthStencilState;
-
-            base.Draw();
-        }
-
-        public override void Update()
-        {
-            var newMessages = _viewModel.GetNewMessages();
-
-            if (newMessages.Any())
-            {
-                foreach (var message in newMessages)
-                    _messageLog.AddItem(message);
-
-                _messageLog.scrollToEnd();
-            }
-
-            _gameCamera.Update();
-
-            base.Update();
-        }
-
         public void LoadReplay(string filename)
         {
             _viewModel.LoadReplay(filename);
             ResetViews();
         }
 
-        private void ResetViews()
+        protected override void ResetViews()
         {
-            _messageLog.ClearItems();
+            base.ResetViews();
             _turnLabel.Text = "Turn 1";
             _turnNumber = 1;
         }
