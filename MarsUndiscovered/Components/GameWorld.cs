@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Runtime.CompilerServices;
 using AutoMapper;
 
 using FrigidRogue.MonoGame.Core.Components;
@@ -13,8 +13,9 @@ using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Interfaces;
 
 using GoRogue.GameFramework;
+using GoRogue.Pathing;
 using GoRogue.Random;
-
+using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Components.SaveData;
@@ -55,6 +56,7 @@ namespace MarsUndiscovered.Components
 
         private BaseGameActionCommand[] _replayHistoricalCommands;
         private int _replayHistoricalCommandIndex;
+        private GoalMapBuilder _goalMapBuilder;
 
         public GameWorld()
         {
@@ -89,15 +91,8 @@ namespace MarsUndiscovered.Components
                 .AddToMap(Map);
 
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+
+            _goalMapBuilder = GoalMapBuilder.Build(this);
         }
 
         private void Reset()
@@ -112,10 +107,54 @@ namespace MarsUndiscovered.Components
 
         public void MoveRequest(Direction direction)
         {
+            if (direction == Direction.None)
+            {
+                NextTurn();
+                return;
+            }
+
             var walkCommand = CommandFactory.CreateWalkCommand(this);
             walkCommand.Initialise(Player, direction);
 
-            ExecuteCommand(walkCommand).ToList();
+            var commandResult = ExecuteCommand(walkCommand).ToList();
+
+            if (commandResult.First().Result == CommandResultEnum.Success)
+            {
+                _goalMapBuilder.Rebuild(this);
+                NextTurn();
+            }
+        }
+
+        public void NextTurn()
+        {
+            foreach (var monster in Monsters.Values)
+            {
+                var direction = _goalMapBuilder.GoalMap.GetDirectionOfMinValue(monster.Position, AdjacencyRule.EightWay);
+
+                if (direction != Direction.None)
+                {
+                    var positionBefore = monster.Position;
+
+                    var positionAfter = monster.Position.Add(direction);
+
+                    var player = Map.GetObjectAt<Player>(positionAfter);
+
+                    if (player != null)
+                    {
+                        var attackCommand = CommandFactory.CreateAttackCommand(this);
+                        attackCommand.Initialise(monster, player);
+                        ExecuteCommand(attackCommand, false).ToList();
+                    }
+                    else
+                    {
+                        var moveCommand = CommandFactory.CreateMoveCommand(this);
+                        moveCommand.Initialise(monster, new Tuple<Point, Point>(positionBefore, positionAfter));
+                        ExecuteCommand(moveCommand, false).ToList();
+
+                        _goalMapBuilder.Rebuild(this);
+                    }
+                }
+            }
         }
 
         private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command, bool addHistorical = true)

@@ -82,7 +82,7 @@ namespace MarsUndiscovered.Commands
                 }
                 if (terrainAtDestination is Wall)
                 {
-                    return Result(CommandResult.Success("The unrelenting red rock is cold and dry"));
+                    return Result(CommandResult.NoMove("The unrelenting red rock is cold and dry"));
                 }
             }
 

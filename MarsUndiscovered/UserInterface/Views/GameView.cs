@@ -33,11 +33,11 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<MoveDownLeftRequest>,
         IRequestHandler<MoveDownRightRequest>,
         IRequestHandler<MoveLeftRequest>,
-        IRequestHandler<MoveRightRequest>
+        IRequestHandler<MoveRightRequest>,
+        IRequestHandler<MoveWaitRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
-        private ProgressBar _playerHealthBar;
 
         public GameView(
             GameViewModel gameViewModel,
@@ -183,6 +183,13 @@ namespace MarsUndiscovered.UserInterface.Views
         }
 
         public Task<Unit> Handle(MoveDownRightRequest request, CancellationToken cancellationToken)
+        {
+            _viewModel.Move(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveWaitRequest request, CancellationToken cancellationToken)
         {
             _viewModel.Move(request.Direction);
 

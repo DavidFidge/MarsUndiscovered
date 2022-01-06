@@ -63,6 +63,9 @@ namespace MarsUndiscovered.UserInterface.Input
 
             if (ActionMap.ActionIs<MoveRightRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new MoveRightRequest());
+
+            if (ActionMap.ActionIs<MoveWaitRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new MoveWaitRequest());
         }
 
         public override void HandleKeyboardKeyLost(Keys[] keysDown, KeyboardModifier keyboardModifier)

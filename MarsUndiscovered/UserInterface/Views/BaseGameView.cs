@@ -122,6 +122,7 @@ namespace MarsUndiscovered.UserInterface.Views
             base.ViewModelChanged();
 
             _playerHealthBar.Max = (uint)_viewModel.PlayerMaxHealth;
+            _playerHealthBar.StepsCount = _playerHealthBar.Max;
             _playerHealthBar.Value = _viewModel.PlayerHealth;
         }
     }
