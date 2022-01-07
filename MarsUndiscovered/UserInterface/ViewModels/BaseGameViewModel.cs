@@ -18,7 +18,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public abstract class BaseGameViewModel<T> : BaseViewModel<T>,
         INotificationHandler<MapTileChangedNotification>,
-        INotificationHandler<EntityTransformChangedNotification> where T : BaseGameData, new()
+        INotificationHandler<EntityTransformChangedNotification>,
+        INotificationHandler<ToggleShowGoalMapNotification>,
+        INotificationHandler<GoalMapChangedNotification>
+        where T : BaseGameData, new()
+        
     {
         public IGameWorldProvider GameWorldProvider { get; set; }
         public IGameWorld GameWorld => GameWorldProvider.GameWorld;
@@ -37,13 +41,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             Notify();
         }
 
-        public Task Handle(MapTileChangedNotification notification, CancellationToken cancellationToken)
-        {
-            MapViewModel.UpdateMapTiles(notification.Point);
-
-            return Unit.Task;
-        }
-
         public IList<string> GetNewMessages()
         {
             var newMessages = GameWorld.GetMessagesSince(_messageLogCount);
@@ -56,6 +53,24 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public Task Handle(EntityTransformChangedNotification notification, CancellationToken cancellationToken)
         {
             SceneGraph.HandleEntityTransformChanged(notification);
+            return Unit.Task;
+        }
+
+        public Task Handle(ToggleShowGoalMapNotification notification, CancellationToken cancellationToken)
+        {
+            MapViewModel.ToggleShowGoalMap();
+            return Unit.Task;
+        }
+
+        public Task Handle(GoalMapChangedNotification notification, CancellationToken cancellationToken)
+        {
+            MapViewModel.UpdateGoalMapText();
+            return Unit.Task;
+        }
+        public Task Handle(MapTileChangedNotification notification, CancellationToken cancellationToken)
+        {
+            MapViewModel.UpdateMapTiles(notification.Point);
+
             return Unit.Task;
         }
     }

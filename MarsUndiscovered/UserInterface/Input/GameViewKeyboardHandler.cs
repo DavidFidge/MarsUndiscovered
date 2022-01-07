@@ -3,42 +3,42 @@
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
 
-using FrigidRogue.MonoGame.Core.Graphics.Camera;
-using FrigidRogue.MonoGame.Core.Messages;
-using FrigidRogue.MonoGame.Core.UserInterface;
-
 using InputHandlers.Keyboard;
 
 using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input
 {
-    public class GameViewKeyboardHandler : BaseKeyboardHandler
+    public class GameViewKeyboardHandler : BaseGameViewKeyboardHandler
     {
         private readonly ICameraMovement _cameraMovement;
 
-        public GameViewKeyboardHandler(ICameraMovement cameraMovement)
+        public GameViewKeyboardHandler(ICameraMovement cameraMovement) : base(cameraMovement)
         {
             _cameraMovement = cameraMovement;
         }
 
         public override void HandleKeyboardKeyDown(Keys[] keysDown, Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
+            base.HandleKeyboardKeyDown(keysDown, keyInFocus, keyboardModifier);
+
             if (ActionMap.ActionIs<OpenInGameOptionsRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new OpenInGameOptionsRequest());
 
             if (ActionMap.ActionIs<OpenConsoleRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new OpenConsoleRequest());
 
-            if (keyInFocus == Keys.F12)
-                Environment.Exit(0);
-
-            CheckGameKeys(keyInFocus, keyboardModifier);
-
-            _cameraMovement.MoveCamera(keysDown);
+            ProcessMovement(keyInFocus, keyboardModifier);
         }
 
-        private void CheckGameKeys(Keys keyInFocus, KeyboardModifier keyboardModifier)
+        public override void HandleKeyboardKeyRepeat(Keys repeatingKey, KeyboardModifier keyboardModifier)
+        {
+            base.HandleKeyboardKeyRepeat(repeatingKey, keyboardModifier);
+
+            ProcessMovement(repeatingKey, keyboardModifier);
+        }
+
+        private void ProcessMovement(Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
             if (ActionMap.ActionIs<MoveUpRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new MoveUpRequest());
@@ -66,21 +66,6 @@ namespace MarsUndiscovered.UserInterface.Input
 
             if (ActionMap.ActionIs<MoveWaitRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new MoveWaitRequest());
-        }
-
-        public override void HandleKeyboardKeyLost(Keys[] keysDown, KeyboardModifier keyboardModifier)
-        {
-            _cameraMovement.MoveCamera(keysDown);
-        }
-
-        public override void HandleKeyboardKeysReleased()
-        {
-            Mediator.Send(new MoveViewRequest(CameraMovementType.None));
-        }
-
-        public override void HandleKeyboardKeyRepeat(Keys repeatingKey, KeyboardModifier keyboardModifier)
-        {
-            CheckGameKeys(repeatingKey, keyboardModifier);
         }
     }
 }

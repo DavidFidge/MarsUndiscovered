@@ -79,6 +79,8 @@ namespace MarsUndiscovered.Installers
 
                 Component.For<ScreenCollection>(),
 
+                Component.For<GoalMaps>(),
+
                 Component.For<IHeightMapGenerator>()
                     .ImplementedBy<HeightMapGenerator>(),
                 
@@ -96,14 +98,6 @@ namespace MarsUndiscovered.Installers
                 Component.For<IActionMapStore>()
                     .ImplementedBy<DefaultActionMapStore>(),
 
-                Component.For<MapTileRootEntity>()
-                    .LifeStyle.Transient,
-
-                Component.For<MapTileEntity>()
-                    .LifeStyle.Transient,
-
-                Component.For<MapEntity>()
-                    .LifeStyle.Transient,
 
                 Component.For<MapViewModel>()
                     .LifeStyle.Transient,
@@ -129,13 +123,28 @@ namespace MarsUndiscovered.Installers
                     .ImplementedBy<GameObjectFactory>()
                     .DependsOn(Dependency.OnValue<IWindsorContainer>(container)),
 
+                Component.For<MapTileEntity>()
+                    .LifeStyle.Transient,
+
                 Component.For<IFactory<MapTileEntity>>()
                     .AsFactory(),
+
+                Component.For<MapEntity>()
+                    .LifeStyle.Transient,
 
                 Component.For<IFactory<MapEntity>>()
                     .AsFactory(),
 
+                Component.For<MapTileRootEntity>()
+                    .LifeStyle.Transient,
+
                 Component.For<IFactory<MapTileRootEntity>>()
+                    .AsFactory(),
+
+                Component.For<GoalMapEntity>()
+                    .LifeStyle.Transient,
+
+                Component.For<IFactory<GoalMapEntity>>()
                     .AsFactory(),
 
                 Component.For<IFactory<IGameWorld>>()

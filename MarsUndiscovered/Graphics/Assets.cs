@@ -21,6 +21,7 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad Floor { get; set; }
         public MapTileQuad Player { get; set; }
         public MapTileQuad Roach { get; set; }
+        public GoalMapQuad GoalMapQuad { get; set; }
 
         private readonly IGameProvider _gameProvider;
 
@@ -35,6 +36,7 @@ namespace MarsUndiscovered.Graphics
 
             TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/title");
             MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
+            GoalMapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/GoalMapFont");
 
             Wall = new MapTileQuad(
                 _gameProvider,
@@ -75,6 +77,15 @@ namespace MarsUndiscovered.Graphics
                 TextureMaterialEffect,
                 'r',
                 Color.SaddleBrown
+            );
+
+            GoalMapQuad = new GoalMapQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                GoalMapFont,
+                TextureMaterialEffect,
+                Color.White
             );
         }
     }

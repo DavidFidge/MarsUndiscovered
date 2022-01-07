@@ -15,7 +15,6 @@ using MarsUndiscovered.Interfaces;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
-using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Components.SaveData;
@@ -31,6 +30,7 @@ namespace MarsUndiscovered.Components
     public class GameWorld : BaseComponent, IGameWorld, ISaveable, IMementoState<GameWorldSaveData>
     {
         public Map Map { get; private set; }
+        public GoalMaps GoalMaps { get; set; }
         public Player Player { get; private set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public ICommandFactory CommandFactory { get; set; }
@@ -56,7 +56,6 @@ namespace MarsUndiscovered.Components
 
         private BaseGameActionCommand[] _replayHistoricalCommands;
         private int _replayHistoricalCommandIndex;
-        private GoalMapBuilder _goalMapBuilder;
 
         public GameWorld()
         {
@@ -92,7 +91,7 @@ namespace MarsUndiscovered.Components
 
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
 
-            _goalMapBuilder = GoalMapBuilder.Build(this);
+            GoalMaps.Rebuild(this);
         }
 
         private void Reset()
@@ -120,7 +119,7 @@ namespace MarsUndiscovered.Components
 
             if (commandResult.First().Result == CommandResultEnum.Success)
             {
-                _goalMapBuilder.Rebuild(this);
+                GoalMaps.Rebuild(this);
                 NextTurn();
             }
         }
@@ -129,7 +128,7 @@ namespace MarsUndiscovered.Components
         {
             foreach (var monster in Monsters.Values)
             {
-                var direction = _goalMapBuilder.GoalMap.GetDirectionOfMinValue(monster.Position, AdjacencyRule.EightWay);
+                var direction = GoalMaps.GoalMap.GetDirectionOfMinValue(monster.Position, AdjacencyRule.EightWay);
 
                 if (direction != Direction.None)
                 {
@@ -151,7 +150,7 @@ namespace MarsUndiscovered.Components
                         moveCommand.Initialise(monster, new Tuple<Point, Point>(positionBefore, positionAfter));
                         ExecuteCommand(moveCommand, false).ToList();
 
-                        _goalMapBuilder.Rebuild(this);
+                        GoalMaps.Rebuild(this);
                     }
                 }
             }
@@ -212,6 +211,8 @@ namespace MarsUndiscovered.Components
             if (loadGameResult.Success)
                 LoadState(SaveGameService);
 
+            GoalMaps.Rebuild(this);
+
             return loadGameResult;
         }
 
@@ -235,6 +236,8 @@ namespace MarsUndiscovered.Components
 
                 _replayHistoricalCommandIndex = 0;
             }
+
+            GoalMaps.Rebuild(this);
 
             return loadGameResult;
         }

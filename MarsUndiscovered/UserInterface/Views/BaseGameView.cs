@@ -1,12 +1,13 @@
 ﻿using System.Linq;
+
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
-using FrigidRogue.MonoGame.Core.UserInterface;
-using FrigidRogue.MonoGame.Core.View;
 using FrigidRogue.MonoGame.Core.View.Extensions;
+
 using GeonBit.UI.Entities;
-using MarsUndiscovered.Interfaces;
+
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -17,7 +18,6 @@ namespace MarsUndiscovered.UserInterface.Views
         where TData : BaseGameData, new()
     {
         protected readonly IGameCamera _gameCamera;
-        public IAssets Assets { get; set; }
         public bool IsMouseInGameView => RootPanel?.IsMouseInRootPanelEmptySpace ?? true;
         private SelectList _messageLog;
         protected Panel _leftPanel;

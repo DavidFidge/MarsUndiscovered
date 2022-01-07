@@ -11,7 +11,7 @@ namespace MarsUndiscovered.Interfaces
         MapTileQuad Floor { get; set; }
         MapTileQuad Player { get; set; }
         MapTileQuad Roach { get; set; }
-
+        GoalMapQuad GoalMapQuad { get; set; }
         void LoadContent();
     }
 }
