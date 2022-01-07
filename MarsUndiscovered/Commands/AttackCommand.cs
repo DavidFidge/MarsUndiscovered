@@ -46,7 +46,7 @@ namespace MarsUndiscovered.Commands
 
             Target.Health -= _damage;
 
-            var message = $"{Source.Name} hit {Target.TargetedName}";
+            var message = $"{Source.NameAsAttacker} hit {Target.NameAsDefender}";
 
             return Result(CommandResult.Success(message));
         }

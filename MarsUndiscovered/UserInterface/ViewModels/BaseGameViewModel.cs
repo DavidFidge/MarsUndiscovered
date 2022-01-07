@@ -67,9 +67,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             MapViewModel.UpdateGoalMapText();
             return Unit.Task;
         }
+
         public Task Handle(MapTileChangedNotification notification, CancellationToken cancellationToken)
         {
-            MapViewModel.UpdateMapTiles(notification.Point);
+            MapViewModel.UpdateTile(notification.Point);
 
             return Unit.Task;
         }

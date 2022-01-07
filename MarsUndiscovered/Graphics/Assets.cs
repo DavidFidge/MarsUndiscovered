@@ -16,6 +16,7 @@ namespace MarsUndiscovered.Graphics
 
         public Texture2D TitleTexture { get; set; }
         public SpriteFont MapFont { get; set; }
+        public SpriteFont GoalMapFont { get; set; }
         public Effect TextureMaterialEffect { get; set; }
         public MapTileQuad Wall { get; set; }
         public MapTileQuad Floor { get; set; }

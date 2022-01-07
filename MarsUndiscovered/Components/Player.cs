@@ -12,7 +12,8 @@ namespace MarsUndiscovered.Components
     public class Player : Actor, IMementoState<PlayerSaveData>, ISaveable
     {
         public override string Name => "You";
-        public override string TargetedName => Name.ToLower();
+        public override string NameAsDefender => Name.ToLower();
+        public override string NameAsAttacker => Name;
         public override string PossessiveName => $"{Name.ToLower()}r";
         public override int MaxHealth { get; protected set; } = BaseHealth;
         public override Attack BasicAttack { get; } = new Attack(new Range<int>(5, 10));
