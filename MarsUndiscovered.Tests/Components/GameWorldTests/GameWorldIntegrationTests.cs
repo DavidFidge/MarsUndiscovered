@@ -6,21 +6,13 @@ using MarsUndiscovered.Interfaces;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using SadRogue.Primitives;
+
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
     [TestClass]
-    public class GameWorldIntegrationTests : BaseIntegrationTest
+    public class GameWorldIntegrationTests : BaseGameWorldIntegrationTests
     {
-        private GameWorld _gameWorld;
-
-        [TestInitialize]
-        public override void Setup()
-        {
-            base.Setup();
-
-            _gameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-        }
-
         [TestMethod]
         public void Should_Resolve()
         {
@@ -88,5 +80,31 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(_gameWorld.Player.IsTransparent, newGameWorld.Player.IsTransparent);
         }
 
+        [TestMethod]
+        public void GetStatusOfMonstersInView_Should_Return_Monster_Statuses()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonsters();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 2)));
+
+            // Act
+            var result = _gameWorld.GetStatusOfMonstersInView();
+
+            // Assert
+            Assert.AreEqual(2, result.Count);
+
+            foreach (var monster in result)
+            {
+                Assert.AreEqual(_gameWorld.Monsters.Values.First().Health, monster.Health);
+                Assert.AreEqual(_gameWorld.Monsters.Values.First().MaxHealth, monster.MaxHealth);
+                Assert.AreEqual(_gameWorld.Monsters.Values.First().Name, monster.Name);
+            }
+
+            Assert.AreEqual(1, result[0].DistanceFromPlayer);
+            Assert.AreEqual(2, result[1].DistanceFromPlayer);
+        }
     }
 }

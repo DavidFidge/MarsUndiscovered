@@ -4,7 +4,7 @@ namespace MarsUndiscovered.Components
 {
     public class Roach : Breed
     {
-        public override Attack BasicAttack { get; } = new Attack(new Range<int>(1, 4));
+        public override Attack BasicAttack { get; } = new Attack(new Range<int>(3, 6));
 
         public Roach()
         {

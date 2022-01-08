@@ -243,13 +243,17 @@ namespace MarsUndiscovered.Components
             return loadGameResult;
         }
 
-        public void ExecuteNextReplayCommand()
+        public bool ExecuteNextReplayCommand()
         {
             if (_replayHistoricalCommandIndex < _replayHistoricalCommands.Length)
             {
                 var command = _replayHistoricalCommands[_replayHistoricalCommandIndex++];
                 ExecuteCommand(command).ToList();
+
+                return true;
             }
+
+            return false;
         }
 
         public void SaveState(ISaveGameService saveGameService)
@@ -302,6 +306,28 @@ namespace MarsUndiscovered.Components
         public void SetLoadState(IMemento<GameWorldSaveData> memento, IMapper mapper)
         {
             Memento<GameWorldSaveData>.SetWithAutoMapper(this, memento, mapper);
+        }
+
+        public IList<MonsterStatus> GetStatusOfMonstersInView()
+        {
+            var status = Monsters.Values
+                .Select(
+                    m =>
+                    {
+                        var monster = Mapper.Map<MonsterStatus>(m);
+                        monster.DistanceFromPlayer = Map.DistanceMeasurement.Calculate(m.Position, Player.Position);
+
+                        return monster;
+                    }
+                )
+                .ToList();
+
+            return status;
+        }
+
+        public PlayerStatus GetPlayerStatus()
+        {
+            return Mapper.Map<PlayerStatus>(Player);
         }
     }
 }

@@ -81,9 +81,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             newGameWorld.Player.Position = new Point(0, 0);
 
             // Act
-            newGameWorld.ExecuteNextReplayCommand();
+            var result = newGameWorld.ExecuteNextReplayCommand();
 
             // Assert
+            Assert.IsTrue(result);
             Assert.AreNotSame(_gameWorld, newGameWorld);
             Assert.AreEqual(1, newGameWorld.HistoricalCommands.Count());
             Assert.AreEqual(1, newGameWorld.HistoricalCommands.WalkCommands.Count);
@@ -126,7 +127,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
 
         [TestMethod]
-        public void Should_Do_Nothing_If_No_Commands_To_Execute()
+        public void Should_Return_False_And_Do_Nothing_If_No_Commands_To_Execute()
         {
             // Arrange
             var blankMapGeneration = new BlankMapGenerator(
@@ -148,9 +149,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             newGameWorld.Player.Position = new Point(0, 0);
 
             // Act
-            newGameWorld.ExecuteNextReplayCommand();
+            var result = newGameWorld.ExecuteNextReplayCommand();
 
             // Assert
+            Assert.IsFalse(result);
             Assert.AreNotSame(_gameWorld, newGameWorld);
             Assert.AreEqual(0, newGameWorld.HistoricalCommands.Count());
             Assert.AreEqual(0, newGameWorld.HistoricalCommands.WalkCommands.Count);

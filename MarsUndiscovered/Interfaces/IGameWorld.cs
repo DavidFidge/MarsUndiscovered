@@ -32,6 +32,8 @@ namespace MarsUndiscovered.Interfaces
         IDictionary<uint, IGameObject> GameObjects { get; }
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
         LoadGameResult LoadReplay(string saveGameName);
-        void ExecuteNextReplayCommand();
+        bool ExecuteNextReplayCommand();
+        IList<MonsterStatus> GetStatusOfMonstersInView();
+        PlayerStatus GetPlayerStatus();
     }
 }

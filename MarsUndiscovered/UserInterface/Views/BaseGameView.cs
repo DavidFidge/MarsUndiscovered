@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.View.Extensions;
@@ -21,7 +22,8 @@ namespace MarsUndiscovered.UserInterface.Views
         public bool IsMouseInGameView => RootPanel?.IsMouseInRootPanelEmptySpace ?? true;
         private SelectList _messageLog;
         protected Panel _leftPanel;
-        protected ProgressBar _playerHealthBar;
+        private PlayerPanel _playerPanel;
+        private IList<MonsterPanel> _monsterPanels = new List<MonsterPanel>();
 
         protected BaseGameView(IGameCamera gameCamera, TViewModel viewModel) : base(viewModel)
         {
@@ -42,28 +44,8 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected void CreatePlayerPanel()
         {
-            var playerPanel = new Panel()
-                .NoSkin()
-                .NoPadding()
-                .WidthOfScreen()
-                .Anchor(Anchor.AutoInline);
-
-            _leftPanel.AddChild(playerPanel);
-
-            _playerHealthBar = new ProgressBar()
-                .NoPadding()
-                .Anchor(Anchor.TopLeft)
-                .TransparentFillColor()
-                .ProgressBarFillColor(Color.Red)
-                .Locked();
-
-            var healthLabel = new Label("Health")
-                .NoPadding()
-                .Anchor(Anchor.Center);
-
-            _playerHealthBar.AddChild(healthLabel);
-
-            playerPanel.AddChild(_playerHealthBar);
+            _playerPanel = new PlayerPanel();
+            _playerPanel.AddAsChildTo(_leftPanel);
         }
 
         public override void Draw()
@@ -80,16 +62,6 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public override void Update()
         {
-            var newMessages = _viewModel.GetNewMessages();
-
-            if (newMessages.Any())
-            {
-                foreach (var message in newMessages)
-                    _messageLog.AddItem(message);
-
-                _messageLog.scrollToEnd();
-            }
-
             _gameCamera.Update();
 
             base.Update();
@@ -120,10 +92,48 @@ namespace MarsUndiscovered.UserInterface.Views
         protected override void ViewModelChanged()
         {
             base.ViewModelChanged();
+            UpdatePlayerStatus();
+            UpdateMonsterStatus();
+            UpdateMessageLog();
+        }
 
-            _playerHealthBar.Max = (uint)_viewModel.PlayerMaxHealth;
-            _playerHealthBar.StepsCount = _playerHealthBar.Max;
-            _playerHealthBar.Value = _viewModel.PlayerHealth;
+        private void UpdateMessageLog()
+        {
+            var newMessages = _viewModel.Messages;
+
+            if (newMessages.Any())
+            {
+                foreach (var message in newMessages)
+                    _messageLog.AddItem(message);
+
+                _messageLog.scrollToEnd();
+            }
+        }
+
+        private void UpdatePlayerStatus()
+        {
+            _playerPanel.Update(_viewModel.PlayerStatus);
+        }
+
+        protected void UpdateMonsterStatus()
+        {
+            foreach (var panel in _monsterPanels)
+            {
+                panel.RemoveFromParent();
+            }
+
+            _monsterPanels.Clear();
+
+            var monsters = _viewModel.MonsterStatusInView
+                .OrderBy(m => m.DistanceFromPlayer)
+                .ToList();
+
+            foreach (var monster in monsters)
+            {
+                var monsterPanel = new MonsterPanel(monster);
+                _monsterPanels.Add(monsterPanel);
+                monsterPanel.AddAsChildTo(_leftPanel);
+            }
         }
     }
 }

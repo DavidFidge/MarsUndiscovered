@@ -83,7 +83,7 @@ namespace MarsUndiscovered.UserInterface.Views
             var menuButton = new Button(
                     "-",
                     ButtonSkin.Default,
-                    Anchor.TopLeft,
+                    Anchor.Auto,
                     new Vector2(50, 50)
                 )
                 .SendOnClick<OpenInGameOptionsRequest>(Mediator)

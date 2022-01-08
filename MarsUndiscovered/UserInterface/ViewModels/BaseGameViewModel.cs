@@ -8,6 +8,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
 
+using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
@@ -29,25 +30,18 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public ISceneGraph SceneGraph => MapViewModel.SceneGraph;
         public MapViewModel MapViewModel { get; set; }
 
-        public int PlayerMaxHealth => GameWorld.Player.MaxHealth;
-        public int PlayerHealth => GameWorld.Player.Health;
+        public PlayerStatus PlayerStatus { get; set; }
+        public IList<MonsterStatus> MonsterStatusInView { get; set; }
 
-        protected int _messageLogCount;
+        public IList<string> Messages { get; set; }
+
+        protected int MessageLogCount;
 
         protected void SetupNewGame()
         {
             MapViewModel.SetupNewMap(GameWorld);
-            _messageLogCount = 0;
-            Notify();
-        }
-
-        public IList<string> GetNewMessages()
-        {
-            var newMessages = GameWorld.GetMessagesSince(_messageLogCount);
-
-            _messageLogCount += newMessages.Count;
-
-            return newMessages;
+            MessageLogCount = 0;
+            GetNewTurnData();
         }
 
         public Task Handle(EntityTransformChangedNotification notification, CancellationToken cancellationToken)
@@ -71,8 +65,18 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public Task Handle(MapTileChangedNotification notification, CancellationToken cancellationToken)
         {
             MapViewModel.UpdateTile(notification.Point);
-
             return Unit.Task;
+        }
+
+        protected void GetNewTurnData()
+        {
+            MonsterStatusInView = GameWorld.GetStatusOfMonstersInView();
+            PlayerStatus = GameWorld.GetPlayerStatus();
+
+            Messages = GameWorld.GetMessagesSince(MessageLogCount);
+            MessageLogCount += Messages.Count;
+
+            Notify();
         }
     }
 }

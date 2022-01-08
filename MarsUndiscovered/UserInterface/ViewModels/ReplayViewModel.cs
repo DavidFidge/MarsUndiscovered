@@ -16,15 +16,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private void SetupNewReplay()
         {
             MapViewModel.SetupNewMap(GameWorld);
-            _messageLogCount = 0;
+            MessageLogCount = 0;
             TurnNumber = 1;
         }
 
         public void ExecuteNextReplayCommand()
         {
-            GameWorld.ExecuteNextReplayCommand();
+            var wasCommandExecuted = GameWorld.ExecuteNextReplayCommand();
+
+            if (!wasCommandExecuted)
+                return;
+
             TurnNumber++;
-            Notify();
+            GetNewTurnData();
         }
     }
 }

@@ -9,20 +9,20 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             GameWorldProvider.NewGame(seed);
             SetupNewGame();
-            Notify();
+            GetNewTurnData();
         }
 
         public void LoadGame(string filename)
         {
             GameWorldProvider.LoadGame(filename);
             SetupNewGame();
-            Notify();
+            GetNewTurnData();
         }
 
         public void Move(Direction direction)
         {
             GameWorld.MoveRequest(direction);
-            Notify();
+            GetNewTurnData();
         }
     }
 }
