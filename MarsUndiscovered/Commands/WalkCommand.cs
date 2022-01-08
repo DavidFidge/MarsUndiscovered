@@ -49,6 +49,9 @@ namespace MarsUndiscovered.Commands
 
         protected override CommandResult ExecuteInternal()
         {
+            if (Direction == Direction.None)
+                return Result(CommandResult.Success(this));
+
             var playerPosition = Player.Position;
             var newPlayerPosition = Player.Position + Direction;
 
@@ -68,25 +71,25 @@ namespace MarsUndiscovered.Commands
 
                         command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
 
-                        return Result(CommandResult.Success(command));
+                        return Result(CommandResult.Success(this, command));
                     }
                     if (actorAt is Monster)
                     {
                         var command = CommandFactory.CreateAttackCommand(GameWorld);
                         command.Initialise(Player, actorAt);
 
-                        return Result(CommandResult.Success(command));
+                        return Result(CommandResult.Success(this, command));
                     }
 
-                    return Result(CommandResult.Failure($"You bump into a {actorAt.Name}"));
+                    return Result(CommandResult.Failure(this, $"You bump into a {actorAt.Name}"));
                 }
                 if (terrainAtDestination is Wall)
                 {
-                    return Result(CommandResult.NoMove("The unrelenting red rock is cold and dry"));
+                    return Result(CommandResult.NoMove(this, "The unrelenting red rock is cold and dry"));
                 }
             }
 
-            return Result(CommandResult.Failure($"Cannot move {Direction}"));
+            return Result(CommandResult.Failure(this, $"Cannot move {Direction}"));
         }
 
         protected override void UndoInternal()

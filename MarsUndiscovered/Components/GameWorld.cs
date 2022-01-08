@@ -91,7 +91,7 @@ namespace MarsUndiscovered.Components
 
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
 
-            GoalMaps.Rebuild(this);
+            RebuildGoalMaps();
         }
 
         private void Reset()
@@ -104,27 +104,20 @@ namespace MarsUndiscovered.Components
             GameObjectFactory.Reset();
         }
 
-        public void MoveRequest(Direction direction)
+        public void RebuildGoalMaps()
         {
-            if (direction == Direction.None)
-            {
-                NextTurn();
-                return;
-            }
+            GoalMaps.Rebuild(this);
+        }
 
+        public IList<CommandResult> MoveRequest(Direction direction)
+        {
             var walkCommand = CommandFactory.CreateWalkCommand(this);
             walkCommand.Initialise(Player, direction);
 
-            var commandResult = ExecuteCommand(walkCommand).ToList();
-
-            if (commandResult.First().Result == CommandResultEnum.Success)
-            {
-                GoalMaps.Rebuild(this);
-                NextTurn();
-            }
+            return ExecuteCommand(walkCommand).ToList();
         }
 
-        public void NextTurn()
+        public IEnumerable<CommandResult> NextTurn()
         {
             foreach (var monster in Monsters.Values)
             {
@@ -142,26 +135,28 @@ namespace MarsUndiscovered.Components
                     {
                         var attackCommand = CommandFactory.CreateAttackCommand(this);
                         attackCommand.Initialise(monster, player);
-                        ExecuteCommand(attackCommand, false).ToList();
+
+                        foreach (var result in ExecuteCommand(attackCommand, false))
+                            yield return result;
                     }
                     else
                     {
                         var moveCommand = CommandFactory.CreateMoveCommand(this);
                         moveCommand.Initialise(monster, new Tuple<Point, Point>(positionBefore, positionAfter));
-                        ExecuteCommand(moveCommand, false).ToList();
 
-                        GoalMaps.Rebuild(this);
+                        foreach (var result in ExecuteCommand(moveCommand, false))
+                            yield return result;
                     }
                 }
             }
         }
 
-        private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command, bool addHistorical = true)
+        private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command, bool isPlayerAction = true)
         {
             var result = command.Execute();
             MessageLog.AddMessages(result.Messages);
 
-            if (addHistorical)
+            if (isPlayerAction)
                 HistoricalCommands.AddCommand(command);
 
             yield return result;
@@ -170,6 +165,12 @@ namespace MarsUndiscovered.Components
             {
                 foreach (var subsequentResult in ExecuteCommand(subsequentCommand, false))
                     yield return subsequentResult;
+            }
+
+            if (isPlayerAction && result.Result == CommandResultEnum.Success)
+            {
+                foreach (var nextTurnResult in NextTurn())
+                    yield return nextTurnResult;
             }
         }
 
@@ -211,7 +212,7 @@ namespace MarsUndiscovered.Components
             if (loadGameResult.Success)
                 LoadState(SaveGameService);
 
-            GoalMaps.Rebuild(this);
+            RebuildGoalMaps();
 
             return loadGameResult;
         }
@@ -237,7 +238,7 @@ namespace MarsUndiscovered.Components
                 _replayHistoricalCommandIndex = 0;
             }
 
-            GoalMaps.Rebuild(this);
+            RebuildGoalMaps();
 
             return loadGameResult;
         }

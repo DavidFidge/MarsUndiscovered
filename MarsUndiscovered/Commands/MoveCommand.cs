@@ -43,11 +43,12 @@ namespace MarsUndiscovered.Commands
         protected override CommandResult ExecuteInternal()
         {
             GameObject.Position = FromTo.Item2;
+            GameWorld.RebuildGoalMaps();
 
             Mediator.Publish(new MapTileChangedNotification(FromTo.Item1));
             Mediator.Publish(new MapTileChangedNotification(FromTo.Item2));
 
-            return Result(CommandResult.Success());
+            return Result(CommandResult.Success(this));
         }
 
         protected override void UndoInternal()

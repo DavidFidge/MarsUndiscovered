@@ -19,7 +19,8 @@ namespace MarsUndiscovered.Interfaces
         void NewGame(uint? seed = null);
         Map Map { get; }
         GoalMaps GoalMaps { get; }
-        void MoveRequest(Direction direction);
+        void RebuildGoalMaps();
+        IList<CommandResult> MoveRequest(Direction direction);
         IGameTurnService GameTurnService { get; }
         IList<string> GetMessagesSince(int currentCount);
         SaveGameResult SaveGame(string saveGameName, bool overwrite);

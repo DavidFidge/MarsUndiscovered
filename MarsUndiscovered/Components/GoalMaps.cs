@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using FrigidRogue.MonoGame.Core.Components;
 using GoRogue.Pathing;
+
+using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
@@ -14,7 +16,7 @@ namespace MarsUndiscovered.Components
         private ArrayView<GoalState> _goalStates;
         public WeightedGoalMap GoalMap { get; set; }
 
-        public void Rebuild(GameWorld gameWorld)
+        public void Rebuild(IGameWorld gameWorld)
         {
             _goalStates = new ArrayView<GoalState>(gameWorld.Map.Width, gameWorld.Map.Height);
 

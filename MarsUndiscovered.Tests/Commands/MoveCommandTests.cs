@@ -24,7 +24,8 @@ namespace MarsUndiscovered.Tests.Commands
 
             _moveCommand = SetupBaseComponent(new MoveCommand());
 
-            var gameWorld = Substitute.For<IGameWorld>();
+            _moveCommand.SetGameWorld(Substitute.For<IGameWorld>());
+
             _moveCommand.GameTurnService = Substitute.For<IGameTurnService>();
         }
 
@@ -37,7 +38,7 @@ namespace MarsUndiscovered.Tests.Commands
             _moveCommand.Initialise(testGameObject, new Tuple<Point, Point>(new Point(1, 1), newPosition));
 
             // Act
-            _moveCommand.Execute();
+             _moveCommand.Execute();
 
             // Assert
             Assert.AreEqual(testGameObject.Position, newPosition);

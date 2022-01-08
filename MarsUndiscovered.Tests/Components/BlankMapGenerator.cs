@@ -1,4 +1,6 @@
-﻿using GoRogue.GameFramework;
+﻿using System;
+
+using GoRogue.GameFramework;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
@@ -10,24 +12,21 @@ namespace MarsUndiscovered.Tests.Components
     {
         private readonly IGameObjectFactory _gameObjectFactory;
         private readonly IMapGenerator _originalMapGenerator;
+        private readonly Func<IGameObject> _fillWith;
 
-        public BlankMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator)
+        public BlankMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator, Func<IGameObject> fillWith = null)
         {
             _gameObjectFactory = gameObjectFactory;
             _originalMapGenerator = originalMapGenerator;
+
+            _fillWith = fillWith ?? (() => _gameObjectFactory.CreateFloor());
         }
 
         public ArrayView<IGameObject> CreateOutdoorWallsFloors()
         {
             var arrayView = new ArrayView<IGameObject>(MapGenerator.MapWidth, MapGenerator.MapHeight);
 
-            for (var x = 0; x < MapGenerator.MapWidth; x++)
-            {
-                for (var y = 0; y < MapGenerator.MapHeight; y++)
-                {
-                    arrayView[x, y] = _gameObjectFactory.CreateFloor();
-                }
-            }
+            arrayView.ApplyOverlay(_ => _fillWith());
 
             return arrayView;
         }

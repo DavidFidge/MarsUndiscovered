@@ -48,7 +48,7 @@ namespace MarsUndiscovered.Commands
 
             var message = $"{Source.NameAsAttacker} hit {Target.NameAsDefender}";
 
-            return Result(CommandResult.Success(message));
+            return Result(CommandResult.Success(this, message));
         }
 
         protected override void UndoInternal()
