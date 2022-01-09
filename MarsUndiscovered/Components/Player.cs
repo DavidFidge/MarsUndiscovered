@@ -7,19 +7,25 @@ using MarsUndiscovered.Components.SaveData;
 
 using MonoGame.Extended;
 
+using Nvidia.TextureTools;
+
 namespace MarsUndiscovered.Components
 {
     public class Player : Actor, IMementoState<PlayerSaveData>, ISaveable
     {
         public override string Name => "You";
-        public override string NameAsDefender => Name.ToLower();
-        public override string NameAsAttacker => Name;
+        public override string NameAsDefenderSpecificArticle => Name.ToLower();
+        public override string NameAsDefenderGenericArticle => Name.ToLower();
+        public override string NameAsAttackerSpecificArticle => Name;
+        public override string NameAsAttackerGenericArticle => Name;
         public override string PossessiveName => $"{Name.ToLower()}r";
-        public override int MaxHealth { get; protected set; } = BaseHealth;
+        public override string ToHaveConjugation => "have";
+
         public override Attack BasicAttack { get; } = new Attack(new Range<int>(5, 10));
 
         public Player(uint id) : base(1, idGenerator: () => id)
         {
+            MaxHealth = BaseHealth;
             Health = MaxHealth;
         }
 

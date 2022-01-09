@@ -1,5 +1,4 @@
 ﻿using System;
-using Castle.MicroKernel.ModelBuilder.Descriptors;
 using FrigidRogue.MonoGame.Core.Components;
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Interfaces;
@@ -11,6 +10,7 @@ namespace MarsUndiscovered.Components.Factories
         public IFactory<MoveCommand> MoveCommandFactory { get; set; }
         public IFactory<WalkCommand> WalkCommandFactory { get; set; }
         public IFactory<AttackCommand> AttackCommandFactory { get; set; }
+        public IFactory<DeathCommand> DeathCommandFactory { get; set; }
 
         private T CreateCommand<T, TData>(Func<T> createMethod, IGameWorld gameWorld) where T : BaseMarsGameActionCommand<TData>
         {
@@ -31,6 +31,11 @@ namespace MarsUndiscovered.Components.Factories
         public AttackCommand CreateAttackCommand(IGameWorld gameWorld)
         {
             return CreateCommand<AttackCommand, AttackCommandSaveData>(() => AttackCommandFactory.Create(), gameWorld);
+        }
+
+        public DeathCommand CreateDeathCommand(IGameWorld gameWorld)
+        {
+            return CreateCommand<DeathCommand, DeathCommandSaveData>(() => DeathCommandFactory.Create(), gameWorld);
         }
     }
 }

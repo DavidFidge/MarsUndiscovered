@@ -8,14 +8,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void NewGame(uint? seed = null)
         {
             GameWorldProvider.NewGame(seed);
-            SetupNewGame();
+            SetUpViewModels();
             GetNewTurnData();
         }
 
         public void LoadGame(string filename)
         {
             GameWorldProvider.LoadGame(filename);
-            SetupNewGame();
+            SetUpViewModels();
             GetNewTurnData();
         }
 

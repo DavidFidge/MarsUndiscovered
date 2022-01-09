@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using AutoMapper;
 
 using FrigidRogue.MonoGame.Core.Components;
@@ -90,6 +89,9 @@ namespace MarsUndiscovered.Components
                 .AddToMap(Map);
 
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
 
             RebuildGoalMaps();
         }
@@ -119,8 +121,11 @@ namespace MarsUndiscovered.Components
 
         public IEnumerable<CommandResult> NextTurn()
         {
-            foreach (var monster in Monsters.Values)
+            foreach (var monster in Monsters.LiveMonsters)
             {
+                if (Player.IsDead)
+                    yield break;
+
                 var direction = GoalMaps.GoalMap.GetDirectionOfMinValue(monster.Position, AdjacencyRule.EightWay);
 
                 if (direction != Direction.None)
@@ -310,7 +315,7 @@ namespace MarsUndiscovered.Components
 
         public IList<MonsterStatus> GetStatusOfMonstersInView()
         {
-            var status = Monsters.Values
+            var status = Monsters.LiveMonsters
                 .Select(
                     m =>
                     {

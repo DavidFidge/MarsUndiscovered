@@ -21,18 +21,18 @@ namespace MarsUndiscovered.UserInterface.Screens
 
         public Task<Unit> Handle(NewGameRequest request, CancellationToken cancellationToken)
         {
-            _gameView.NewGame(request.Seed);
-
             UserInterface.ShowScreen(this);
+
+            _gameView.NewGame(request.Seed);
 
             return Unit.Task;
         }
 
         public Task<Unit> Handle(LoadGameRequest request, CancellationToken cancellationToken)
         {
-            _gameView.LoadGame(request.Filename);
-
             UserInterface.ShowScreen(this);
+
+            _gameView.LoadGame(request.Filename);
 
             return Unit.Task;
         }

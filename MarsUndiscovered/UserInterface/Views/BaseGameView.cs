@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
@@ -21,31 +22,81 @@ namespace MarsUndiscovered.UserInterface.Views
         protected readonly IGameCamera _gameCamera;
         public bool IsMouseInGameView => RootPanel?.IsMouseInRootPanelEmptySpace ?? true;
         private SelectList _messageLog;
-        protected Panel _leftPanel;
-        private PlayerPanel _playerPanel;
-        private IList<MonsterPanel> _monsterPanels = new List<MonsterPanel>();
+        protected Panel LeftPanel;
+        protected Panel BottomPanel;
+        protected Panel TopPanel;
+        protected PlayerPanel PlayerPanel;
+        protected IList<MonsterPanel> MonsterPanels = new List<MonsterPanel>();
+        protected RichParagraph StatusParagraph;
 
         protected BaseGameView(IGameCamera gameCamera, TViewModel viewModel) : base(viewModel)
         {
             _gameCamera = gameCamera;
         }
 
-        protected void CreateLeftPanel()
+        protected void CreateLayoutPanels()
         {
-            _leftPanel = new Panel()
+            LeftPanel = new Panel()
                 .Anchor(Anchor.TopLeft)
                 .Width(0.19f)
                 .NoSkin()
                 .NoPadding()
                 .Height(0.999f);
 
-            RootPanel.AddChild(_leftPanel);
+            RootPanel.AddChild(LeftPanel);
+
+            TopPanel = new Panel()
+                .Anchor(Anchor.TopCenter)
+                .Width(Constants.MiddlePanelWidth)
+                .NoSkin()
+                .NoPadding()
+                .Height(0.14f);
+
+            RootPanel.AddChild(TopPanel);
+
+            BottomPanel = new Panel()
+                .Anchor(Anchor.BottomCenter)
+                .Width(Constants.MiddlePanelWidth)
+                .NoSkin()
+                .NoPadding()
+                .Height(0.1f);
+
+            RootPanel.AddChild(BottomPanel);
+        }
+
+        protected void CreateStatusPanel()
+        {
+            StatusParagraph = new RichParagraph()
+                .Anchor(Anchor.BottomCenter)
+                .NoPadding()
+                .Height(0.1f);
+
+            BottomPanel.AddChild(StatusParagraph);
+        }
+
+        protected void CreateMessageLog()
+        {
+            _messageLog = new SelectList()
+                .NoSkin()
+                .Anchor(Anchor.Auto)
+                .NoPadding();
+
+            _messageLog.ExtraSpaceBetweenLines = -10;
+            _messageLog.LockSelection = true;
+            TopPanel.AddChild(_messageLog);
+
+            _messageLog.OnListChange = entity =>
+            {
+                var list = (SelectList)entity;
+                if (list.Count > 100)
+                    list.RemoveItem(0);
+            };
         }
 
         protected void CreatePlayerPanel()
         {
-            _playerPanel = new PlayerPanel();
-            _playerPanel.AddAsChildTo(_leftPanel);
+            PlayerPanel = new PlayerPanel();
+            PlayerPanel.AddAsChildTo(LeftPanel);
         }
 
         public override void Draw()
@@ -67,22 +118,6 @@ namespace MarsUndiscovered.UserInterface.Views
             base.Update();
         }
 
-        protected void AddMessageLog()
-        {
-            _messageLog = new SelectList(new Vector2(0.61f, 0.14f), Anchor.TopCenter, null, PanelSkin.None)
-                .NoPadding();
-
-            _messageLog.ExtraSpaceBetweenLines = -10;
-            _messageLog.LockSelection = true;
-            RootPanel.AddChild(_messageLog);
-
-            _messageLog.OnListChange = entity =>
-            {
-                var list = (SelectList)entity;
-                if (list.Count > 100)
-                    list.RemoveItem(0);
-            };
-        }
 
         protected virtual void ResetViews()
         {
@@ -92,9 +127,10 @@ namespace MarsUndiscovered.UserInterface.Views
         protected override void ViewModelChanged()
         {
             base.ViewModelChanged();
-            UpdatePlayerStatus();
             UpdateMonsterStatus();
             UpdateMessageLog();
+            UpdatePlayerStatus();
+            StatusParagraph.Text = String.Empty;
         }
 
         private void UpdateMessageLog()
@@ -112,17 +148,17 @@ namespace MarsUndiscovered.UserInterface.Views
 
         private void UpdatePlayerStatus()
         {
-            _playerPanel.Update(_viewModel.PlayerStatus);
+            PlayerPanel.Update(_viewModel.PlayerStatus);
         }
 
         protected void UpdateMonsterStatus()
         {
-            foreach (var panel in _monsterPanels)
+            foreach (var panel in MonsterPanels)
             {
                 panel.RemoveFromParent();
             }
 
-            _monsterPanels.Clear();
+            MonsterPanels.Clear();
 
             var monsters = _viewModel.MonsterStatusInView
                 .OrderBy(m => m.DistanceFromPlayer)
@@ -131,9 +167,14 @@ namespace MarsUndiscovered.UserInterface.Views
             foreach (var monster in monsters)
             {
                 var monsterPanel = new MonsterPanel(monster);
-                _monsterPanels.Add(monsterPanel);
-                monsterPanel.AddAsChildTo(_leftPanel);
+                MonsterPanels.Add(monsterPanel);
+                monsterPanel.AddAsChildTo(LeftPanel);
             }
+        }
+
+        protected string DelimitWithDashes(string text)
+        {
+            return $"--- {text} ---";
         }
     }
 }

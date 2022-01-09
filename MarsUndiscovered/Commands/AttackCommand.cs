@@ -9,6 +9,9 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Components.Factories;
+
+using Newtonsoft.Json;
 
 namespace MarsUndiscovered.Commands
 {
@@ -18,6 +21,9 @@ namespace MarsUndiscovered.Commands
         public Actor Target { get; private set; }
 
         private int _damage;
+
+        [JsonIgnore]
+        public ICommandFactory CommandFactory { get; set; }
 
         public void Initialise(Actor source, Actor target)
         {
@@ -46,9 +52,18 @@ namespace MarsUndiscovered.Commands
 
             Target.Health -= _damage;
 
-            var message = $"{Source.NameAsAttacker} hit {Target.NameAsDefender}";
+            var message = $"{Source.NameAsAttackerSpecificArticle} hit {Target.NameAsDefenderSpecificArticle}";
 
-            return Result(CommandResult.Success(this, message));
+            var commandResult = CommandResult.Success(this, message);
+
+            if (Target.Health <= 0)
+            {
+                var deathCommand = CommandFactory.CreateDeathCommand(GameWorld);
+                deathCommand.Initialise(Target, Source.NameAsDefenderGenericArticle);
+                commandResult.SubsequentCommands.Add(deathCommand);
+            }
+
+            return Result(commandResult);
         }
 
         protected override void UndoInternal()

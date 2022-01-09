@@ -37,11 +37,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         protected int MessageLogCount;
 
-        protected void SetupNewGame()
+        protected void SetUpViewModels()
         {
             MapViewModel.SetupNewMap(GameWorld);
             MessageLogCount = 0;
-            GetNewTurnData();
         }
 
         public Task Handle(EntityTransformChangedNotification notification, CancellationToken cancellationToken)

@@ -36,7 +36,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             );
 
             _gameWorld.MapGenerator = blankMapGeneration;
-
             _gameWorld.NewGame();
         }
 

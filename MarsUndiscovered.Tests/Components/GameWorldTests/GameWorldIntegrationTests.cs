@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 
+using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Interfaces;
@@ -105,6 +106,33 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             Assert.AreEqual(1, result[0].DistanceFromPlayer);
             Assert.AreEqual(2, result[1].DistanceFromPlayer);
+        }
+
+        [TestMethod]
+        public void Monsters_Should_Stop_Acting_When_Player_Dies()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonsters();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(1, 0)));
+            _gameWorld.Player.Health = 1;
+            _gameWorld.RebuildGoalMaps();
+
+            // Act
+            var result = _gameWorld.MoveRequest(Direction.Down);
+
+            // Assert
+            Assert.AreEqual(4, result.Count);
+            Assert.IsTrue(result[0].Command is WalkCommand); // Player walks into monster
+            Assert.IsTrue(result[1].Command is AttackCommand); // Player attacks first roach
+            Assert.IsTrue(result[2].Command is AttackCommand); // A roach attacks player
+            Assert.IsTrue(result[3].Command is DeathCommand); // Player dies. Second roach does not act.
+
+            var deathCommand = (DeathCommand)result.Last().Command;
+
+            Assert.AreEqual("killed by a roach", deathCommand.KilledByMessage);
         }
     }
 }

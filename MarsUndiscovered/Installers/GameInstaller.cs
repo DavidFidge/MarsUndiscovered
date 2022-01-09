@@ -160,6 +160,9 @@ namespace MarsUndiscovered.Installers
                     .AsFactory(),
 
                 Component.For<IFactory<AttackCommand>>()
+                    .AsFactory(),
+
+                Component.For<IFactory<DeathCommand>>()
                     .AsFactory()
             );
         }
@@ -179,9 +182,12 @@ namespace MarsUndiscovered.Installers
             container.Register(
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IKeyboardHandler>()
+                    .Unless(s => typeof(GameViewGameOverKeyboardHandler).IsAssignableFrom(s))
                     .ConfigureFor<NullKeyboardHandler>(c => c.IsDefault())
                     .ConfigureFor<GameViewKeyboardHandler>(c => c.DependsOn(Dependency.OnComponent<ICameraMovement, CameraMovement>()))
-                    .WithServiceDefaultInterfaces()
+                    .WithServiceDefaultInterfaces(),
+
+                Component.For<GameViewGameOverKeyboardHandler>()
             );
         }
 
@@ -304,9 +310,6 @@ namespace MarsUndiscovered.Installers
             container.Register(
                 Component.For<ConsoleView>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, ConsoleKeyboardHandler>()),
-
-                Component.For<IKeyboardHandler>()
-                    .ImplementedBy<ConsoleKeyboardHandler>(),
 
                 Component.For<ConsoleViewModel>(),
 

@@ -58,22 +58,24 @@ namespace MarsUndiscovered.UserInterface.Views
 
             _gainLossLabel.Text = String.Empty;
 
-            if (currentHealth != oldHealth && oldHealth != 0)
+            // Percentage display currently does not work for monsters - monsters always have their panels newly created so old health is always zero.
+            if (oldHealth != 0)
             {
-                var percentage = 0;
-                string sign = String.Empty;
+                var healthDifference = currentHealth - oldHealth;
 
-                if (oldHealth > 0)
+                if (healthDifference != 0 && maxHealth != 0)
                 {
-                    percentage = 100 - ((currentHealth * 100) / oldHealth);
+                    var percentage = (healthDifference * 100) / maxHealth;
 
-                    if (currentHealth < oldHealth)
-                        percentage = -percentage;
+                    if (percentage != 0)
+                        _gainLossLabel.Text = $"({percentage}%)";
                 }
-
-                if (percentage != 0)
-                    _gainLossLabel.Text = $"({percentage}%)";
             }
+
+            if (currentHealth <= 0)
+                _healthLabel.Text = "DEAD";
+            else
+                _healthLabel.Text = "Health";
         }
     }
 }

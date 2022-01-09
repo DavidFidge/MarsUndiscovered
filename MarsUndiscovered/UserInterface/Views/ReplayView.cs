@@ -38,32 +38,28 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            CreateLeftPanel();
-
-            SetupInReplayOptionsButton(_leftPanel);
-
-            CreateReplayView();
-
-            CreatePlayerPanel();
-
-            AddMessageLog();
-
             SetupChildPanel(_inReplayOptionsView);
+            CreateLayoutPanels();
+            SetupInReplayOptionsButton(LeftPanel);
+            CreateReplayView();
+            CreatePlayerPanel();
+            CreateMessageLog();
+            CreateStatusPanel();
         }
 
         private void CreateReplayView()
         {
-            var replayLabel = new Label("REPLAY")
+            var replayLabel = new Label("RECORDING")
                 .Anchor(Anchor.AutoInline)
                 .NoPadding();
 
-            _leftPanel.AddChild(replayLabel);
+            LeftPanel.AddChild(replayLabel);
 
             _turnLabel = new Label("Turn 1")
                 .Anchor(Anchor.AutoInline)
                 .NoPadding();
 
-            _leftPanel.AddChild(_turnLabel);
+            LeftPanel.AddChild(_turnLabel);
         }
 
         private void SetupInReplayOptionsButton(Panel leftPanel)
@@ -82,7 +78,10 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(NextReplayCommandRequest request, CancellationToken cancellationToken)
         {
-            _viewModel.ExecuteNextReplayCommand();
+            var nextReplayResult = _viewModel.ExecuteNextReplayCommand();
+
+            if (nextReplayResult == false)
+                StatusParagraph.Text = DelimitWithDashes("END OF RECORDING");
 
             return Unit.Task;
         }

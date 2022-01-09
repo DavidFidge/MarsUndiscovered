@@ -9,8 +9,8 @@ namespace MarsUndiscovered.Components
         public Breed Breed { get; set; }
         public override string Name => Breed.Name;
         public override string Description => Breed.Description;
+        public override string GenericArticle => Breed.GenericArticle;
 
-        public override int MaxHealth { get; protected set; }
         public override Attack BasicAttack => Breed.BasicAttack;
 
         public Monster(uint id) : base(1, idGenerator: () => id)

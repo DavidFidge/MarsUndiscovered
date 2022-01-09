@@ -1,4 +1,7 @@
-﻿using MarsUndiscovered.Components.Factories;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.SaveData;
 
 namespace MarsUndiscovered.Components
@@ -16,5 +19,7 @@ namespace MarsUndiscovered.Components
         {
             return _gameObjectFactory.CreateMonster(id);
         }
+
+        public IEnumerable<Monster> LiveMonsters => Values.Where(m => !m.IsDead).AsEnumerable();
     }
 }

@@ -12,10 +12,11 @@ using MarsUndiscovered.UserInterface.ViewModels;
 
 using GeonBit.UI.Entities;
 
+using MarsUndiscovered.UserInterface.Input;
+
 using MediatR;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -38,32 +39,31 @@ namespace MarsUndiscovered.UserInterface.Views
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
+        private readonly GameViewGameOverKeyboardHandler _gameOverKeyboardHandler;
 
         public GameView(
             GameViewModel gameViewModel,
             InGameOptionsView inGameOptionsView,
             ConsoleView consoleView,
+            GameViewGameOverKeyboardHandler gameOverKeyboardHandler,
             IGameCamera gameCamera
         )
             : base(gameCamera, gameViewModel)
         {
             _inGameOptionsView = inGameOptionsView;
             _consoleView = consoleView;
+            _gameOverKeyboardHandler = gameOverKeyboardHandler;
         }
 
         protected override void InitializeInternal()
         {
-            CreateLeftPanel();
-
-            SetupInGameOptionsButton(_leftPanel);
-
-            CreatePlayerPanel();
-
             SetupChildPanel(_inGameOptionsView);
-
             SetupConsole();
-
-            AddMessageLog();
+            CreateLayoutPanels();
+            SetupInGameOptionsButton(LeftPanel);
+            CreatePlayerPanel();
+            CreateMessageLog();
+            CreateStatusPanel();
         }
 
         public void NewGame(uint? seed = null)
@@ -194,6 +194,17 @@ namespace MarsUndiscovered.UserInterface.Views
             _viewModel.Move(request.Direction);
 
             return Unit.Task;
+        }
+
+        protected override void ViewModelChanged()
+        {
+            base.ViewModelChanged();
+
+            if (_viewModel.PlayerStatus.IsDead)
+            {
+                GameInputService?.ChangeInput(MouseHandler, _gameOverKeyboardHandler);
+                StatusParagraph.Text = DelimitWithDashes("YOU ARE DEAD. PRESS SPACE TO EXIT GAME.");
+            }
         }
     }
 }

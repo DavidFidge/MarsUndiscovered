@@ -20,14 +20,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void WalkCommand_Should_Move_Player_For_Valid_Square()
         {
             // Arrange
-            var blankMapGeneration = new BlankMapGenerator(
-                Container.Resolve<IGameObjectFactory>(),
-                Container.Resolve<IMapGenerator>()
-            );
+            NewGameWithNoWallsNoMonsters();
 
-            _gameWorld.MapGenerator = blankMapGeneration;
-
-            _gameWorld.NewGame();
             _gameWorld.Player.Position = new Point(0, 0);
 
             // Act
@@ -58,14 +52,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Arrange
             var gameObjectFactory = Container.Resolve<IGameObjectFactory>();
 
-            var blankMapGeneration = new BlankMapGenerator(
-                gameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
-
-            _gameWorld.MapGenerator = blankMapGeneration;
-
-            _gameWorld.NewGame();
+            NewGameWithNoWallsNoMonsters();
+            
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition = new Point(1, 0);
             var wall = gameObjectFactory.CreateWall();
@@ -94,21 +82,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void WalkCommand_Player_Into_Monster_Should_Attack()
         {
             // Arrange
-            var blankMapGeneration = new BlankMapGenerator(
-                Container.Resolve<IGameObjectFactory>(),
-                Container.Resolve<IMapGenerator>()
-            );
-
-            var blankMonsterGenerator = new BlankMonsterGenerator(
-                Container.Resolve<IMonsterGenerator>()
-            );
-
-            _gameWorld.MapGenerator = blankMapGeneration;
-            _gameWorld.MonsterGenerator = blankMonsterGenerator;
-
-            _gameWorld.NewGame();
-
-            _gameWorld.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
+            NewGameWithNoWallsNoMonsters();
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
@@ -144,21 +118,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void WalkCommand_With_NoDirection_With_Monster_Adjacent_Should_Result_In_Monster_Attacking_Player()
         {
             // Arrange
-            var blankMapGeneration = new BlankMapGenerator(
-                Container.Resolve<IGameObjectFactory>(),
-                Container.Resolve<IMapGenerator>()
-            );
-
-            var blankMonsterGenerator = new BlankMonsterGenerator(
-                Container.Resolve<IMonsterGenerator>()
-            );
-
-            _gameWorld.MapGenerator = blankMapGeneration;
-            _gameWorld.MonsterGenerator = blankMonsterGenerator;
-
-            _gameWorld.NewGame();
-
-            _gameWorld.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
+            NewGameWithNoWallsNoMonsters();
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));

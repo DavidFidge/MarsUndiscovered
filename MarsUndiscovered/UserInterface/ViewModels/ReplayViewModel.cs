@@ -10,25 +10,26 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             GameWorldProvider.LoadReplay(filename);
             SetupNewReplay();
-            Notify();
+            GetNewTurnData();
         }
 
         private void SetupNewReplay()
         {
-            MapViewModel.SetupNewMap(GameWorld);
-            MessageLogCount = 0;
+            SetUpViewModels();
             TurnNumber = 1;
         }
 
-        public void ExecuteNextReplayCommand()
+        public bool ExecuteNextReplayCommand()
         {
             var wasCommandExecuted = GameWorld.ExecuteNextReplayCommand();
 
             if (!wasCommandExecuted)
-                return;
+                return false;
 
             TurnNumber++;
             GetNewTurnData();
+
+            return true;
         }
     }
 }
