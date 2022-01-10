@@ -185,15 +185,20 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             _gameWorld.Player.Position = new Point(0, 0);
 
+            var path = _gameWorld.GetPathToPlayer(new Point(2, 2));
+
             // Act
-            var result = _gameWorld.MoveRequest(new Point(2, 2));
+            var result1 = _gameWorld.MoveRequest(path);
+            var result2 = _gameWorld.MoveRequest(path);
 
             // Assert
-            Assert.AreEqual(4, result.Count);
-            Assert.IsTrue(result[0].Command is WalkCommand);
-            Assert.IsTrue(result[1].Command is MoveCommand);
-            Assert.IsTrue(result[2].Command is WalkCommand);
-            Assert.IsTrue(result[3].Command is MoveCommand);
+            Assert.AreEqual(2, result1.Count);
+            Assert.IsTrue(result1[0].Command is WalkCommand);
+            Assert.IsTrue(result1[1].Command is MoveCommand);
+
+            Assert.AreEqual(2, result2.Count);
+            Assert.IsTrue(result2[0].Command is WalkCommand);
+            Assert.IsTrue(result2[1].Command is MoveCommand);
         }
 
         [TestMethod]
@@ -210,13 +215,18 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             wall.Position = new Point(2, 2);
             _gameWorld.Map.SetTerrain(wall);
 
+            var path = _gameWorld.GetPathToPlayer(new Point(2, 2));
+
             // Act
-            var result = _gameWorld.MoveRequest(new Point(2, 2));
+            var result1 = _gameWorld.MoveRequest(path);
+            var result2 = _gameWorld.MoveRequest(path);
 
             // Assert
-            Assert.AreEqual(2, result.Count);
-            Assert.IsTrue(result[0].Command is WalkCommand);
-            Assert.IsTrue(result[1].Command is MoveCommand);
+            Assert.AreEqual(2, result1.Count);
+            Assert.IsTrue(result1[0].Command is WalkCommand);
+            Assert.IsTrue(result1[1].Command is MoveCommand);
+
+            Assert.AreEqual(0, result2.Count);
         }
 
         [TestMethod]
@@ -233,8 +243,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             wall.Position = new Point(1, 1);
             _gameWorld.Map.SetTerrain(wall);
 
+            var path = _gameWorld.GetPathToPlayer(new Point(1, 1));
+
             // Act
-            var result = _gameWorld.MoveRequest(new Point(1, 1));
+            var result = _gameWorld.MoveRequest(path);
 
             // Assert
             Assert.AreEqual(1, result.Count);
@@ -254,8 +266,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var monster = _gameWorld.Monsters.Values.First();
             var healthBefore = monster.Health;
 
+            var path = _gameWorld.GetPathToPlayer(new Point(0, 1));
+
             // Act
-            _gameWorld.MoveRequest(new Point(0, 1));
+            _gameWorld.MoveRequest(path);
 
             // Assert
             Assert.AreEqual(1, _gameWorld.HistoricalCommands.Count());
@@ -290,14 +304,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.RebuildGoalMaps();
             var monster = _gameWorld.Monsters.Values.First();
 
+            var path = _gameWorld.GetPathToPlayer(new Point(0, 3));
+
             // Act
-            var result = _gameWorld.MoveRequest(new Point(0, 3));
+            var result1 = _gameWorld.MoveRequest(path);
+            var result2 = _gameWorld.MoveRequest(path);
 
             // Assert
-            Assert.AreEqual(3, result.Count);
-            Assert.IsTrue(result[0].Command is WalkCommand); // Player walk
-            Assert.IsTrue(result[1].Command is MoveCommand); // Player move
-            Assert.IsTrue(result[2].Command is MoveCommand); // Monster move
+            Assert.AreEqual(3, result1.Count);
+            Assert.IsTrue(result1[0].Command is WalkCommand); // Player walk
+            Assert.IsTrue(result1[1].Command is MoveCommand); // Player move
+            Assert.IsTrue(result1[2].Command is MoveCommand); // Monster move
 
             Assert.AreEqual(1, _gameWorld.HistoricalCommands.Count());
             Assert.AreEqual(0, _gameWorld.HistoricalCommands.MoveCommands.Count);
@@ -305,6 +322,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(0, _gameWorld.HistoricalCommands.AttackCommands.Count);
             Assert.AreEqual(new Point(0, 1), _gameWorld.Player.Position);
             Assert.AreEqual(new Point(0, 2), monster.Position);
+
+            Assert.AreEqual(0, result2.Count);
         }
     }
 }

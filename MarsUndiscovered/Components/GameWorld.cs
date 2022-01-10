@@ -119,14 +119,9 @@ namespace MarsUndiscovered.Components
             return ExecuteCommand(walkCommand).ToList();
         }
 
-        public IList<CommandResult> MoveRequest(Point destination)
+        public IList<CommandResult> MoveRequest(Path path)
         {
             var commandResults = new List<CommandResult>();
-
-            if (!Map.Bounds().Contains(destination))
-                return commandResults;
-
-            var path = Map.AStar.ShortestPath(Player.Position, destination);
 
             if (path == null)
                 return commandResults;
@@ -136,23 +131,33 @@ namespace MarsUndiscovered.Components
                 return MoveRequest(Direction.GetDirection(Player.Position, path.GetStep(0)));
             }
 
-            foreach (var point in path.Steps)
+            var nextPoint = path.GetStep(0);
+
+            if (Player.Position != path.Start)
             {
-                if (Map.GetObjectAt<Wall>(point) != null)
+                var subsequentSteps = path.Steps
+                    .SkipWhile(s => s != Player.Position)
+                    .Skip(1)
+                    .ToList();
+
+                if (!subsequentSteps.Any())
                     return commandResults;
 
-                foreach (var surroundingPoint in AdjacencyRule.EightWay.Neighbors(Player.Position))
-                {
-                    if (Map.Bounds().Contains(surroundingPoint) && Map.GetObjectAt<Monster>(surroundingPoint) != null)
-                        return commandResults;
-                }
-
-                var result = MoveRequest(Direction.GetDirection(Player.Position, point));
-
-                commandResults.AddRange(result);
+                nextPoint = subsequentSteps.First();
             }
 
-            return commandResults;
+            if (Map.GetObjectAt<Wall>(nextPoint) != null)
+                return commandResults;
+
+            foreach (var surroundingPoint in AdjacencyRule.EightWay.Neighbors(Player.Position))
+            {
+                if (Map.Bounds().Contains(surroundingPoint) && Map.GetObjectAt<Monster>(surroundingPoint) != null)
+                    return commandResults;
+            }
+
+            var result = MoveRequest(Direction.GetDirection(Player.Position, nextPoint));
+
+            return result;
         }
 
         public IEnumerable<CommandResult> NextTurn()

@@ -22,7 +22,7 @@ namespace MarsUndiscovered.Interfaces
         GoalMaps GoalMaps { get; }
         void RebuildGoalMaps();
         IList<CommandResult> MoveRequest(Direction direction);
-        IList<CommandResult> MoveRequest(Point destination);
+        IList<CommandResult> MoveRequest(Path path);
         IGameTurnService GameTurnService { get; }
         IList<string> GetMessagesSince(int currentCount);
         SaveGameResult SaveGame(string saveGameName, bool overwrite);
