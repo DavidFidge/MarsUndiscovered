@@ -199,7 +199,7 @@ namespace MarsUndiscovered
             }
 
             _gameTimeService.Update(gameTime);
-            _gameInputService.Poll();
+            _gameInputService.Poll(GraphicsDevice.Viewport.Bounds);
             _userInterface.Update(gameTime);
 
             base.Update(gameTime);

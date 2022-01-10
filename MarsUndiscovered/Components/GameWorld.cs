@@ -119,6 +119,42 @@ namespace MarsUndiscovered.Components
             return ExecuteCommand(walkCommand).ToList();
         }
 
+        public IList<CommandResult> MoveRequest(Point destination)
+        {
+            var commandResults = new List<CommandResult>();
+
+            if (!Map.Bounds().Contains(destination))
+                return commandResults;
+
+            var path = Map.AStar.ShortestPath(Player.Position, destination);
+
+            if (path == null)
+                return commandResults;
+
+            if (path.Length == 1)
+            {
+                return MoveRequest(Direction.GetDirection(Player.Position, path.GetStep(0)));
+            }
+
+            foreach (var point in path.Steps)
+            {
+                if (Map.GetObjectAt<Wall>(point) != null)
+                    return commandResults;
+
+                foreach (var surroundingPoint in AdjacencyRule.EightWay.Neighbors(Player.Position))
+                {
+                    if (Map.Bounds().Contains(surroundingPoint) && Map.GetObjectAt<Monster>(surroundingPoint) != null)
+                        return commandResults;
+                }
+
+                var result = MoveRequest(Direction.GetDirection(Player.Position, point));
+
+                commandResults.AddRange(result);
+            }
+
+            return commandResults;
+        }
+
         public IEnumerable<CommandResult> NextTurn()
         {
             foreach (var monster in Monsters.LiveMonsters)
@@ -333,6 +369,14 @@ namespace MarsUndiscovered.Components
         public PlayerStatus GetPlayerStatus()
         {
             return Mapper.Map<PlayerStatus>(Player);
+        }
+
+        public Path GetPathToPlayer(Point mapPosition)
+        {
+            if (!Map.Bounds().Contains(mapPosition))
+                return null;
+
+            return Map.AStar.ShortestPath(Player.Position, mapPosition);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace MarsUndiscovered.Graphics
         public SpriteFont MapFont { get; set; }
         public SpriteFont GoalMapFont { get; set; }
         public Effect TextureMaterialEffect { get; set; }
+        public MapTileQuad MouseHover { get; set; }
         public MapTileQuad Wall { get; set; }
         public MapTileQuad Floor { get; set; }
         public MapTileQuad Player { get; set; }
@@ -87,6 +88,13 @@ namespace MarsUndiscovered.Graphics
                 GoalMapFont,
                 TextureMaterialEffect,
                 Color.White
+            );
+
+            MouseHover = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                new Color(Color.LightYellow, 0.3f)
             );
         }
     }

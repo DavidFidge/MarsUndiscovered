@@ -35,7 +35,8 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<MoveDownRightRequest>,
         IRequestHandler<MoveLeftRequest>,
         IRequestHandler<MoveRightRequest>,
-        IRequestHandler<MoveWaitRequest>
+        IRequestHandler<MoveWaitRequest>,
+        IRequestHandler<MouseHoverViewRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -125,6 +126,9 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(LeftClickViewRequest request, CancellationToken cancellationToken)
         {
+            var ray = _gameCamera.GetPointerRay(request.X, request.Y);
+            _viewModel.Move(ray);
+
             return Unit.Task;
         }
 
@@ -205,6 +209,15 @@ namespace MarsUndiscovered.UserInterface.Views
                 GameInputService?.ChangeInput(MouseHandler, _gameOverKeyboardHandler);
                 StatusParagraph.Text = DelimitWithDashes("YOU ARE DEAD. PRESS SPACE TO EXIT GAME.");
             }
+        }
+
+        public Task<Unit> Handle(MouseHoverViewRequest request, CancellationToken cancellationToken)
+        {
+            var ray = _gameCamera.GetPointerRay(request.X, request.Y);
+
+            _viewModel.MapViewModel.ShowHover(ray);
+
+            return Unit.Task;
         }
     }
 }

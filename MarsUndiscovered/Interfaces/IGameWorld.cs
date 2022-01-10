@@ -6,6 +6,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
+using GoRogue.Pathing;
 
 using MarsUndiscovered.Components;
 
@@ -21,6 +22,7 @@ namespace MarsUndiscovered.Interfaces
         GoalMaps GoalMaps { get; }
         void RebuildGoalMaps();
         IList<CommandResult> MoveRequest(Direction direction);
+        IList<CommandResult> MoveRequest(Point destination);
         IGameTurnService GameTurnService { get; }
         IList<string> GetMessagesSince(int currentCount);
         SaveGameResult SaveGame(string saveGameName, bool overwrite);
@@ -35,5 +37,6 @@ namespace MarsUndiscovered.Interfaces
         bool ExecuteNextReplayCommand();
         IList<MonsterStatus> GetStatusOfMonstersInView();
         PlayerStatus GetPlayerStatus();
+        Path GetPathToPlayer(Point mapPosition);
     }
 }

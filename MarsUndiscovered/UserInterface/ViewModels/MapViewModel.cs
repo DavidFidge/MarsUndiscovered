@@ -6,12 +6,16 @@ using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 
 using GoRogue.GameFramework;
+using GoRogue.Pathing;
 
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 
-using SadRogue.Primitives;
+using Microsoft.Xna.Framework;
+
 using SadRogue.Primitives.GridViews;
+
+using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -31,6 +35,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private ArrayView<MapTileEntity> _terrainTiles;
         private ArrayView<MapTileEntity> _actorTiles;
         private ArrayView<GoalMapEntity> _goalMapTiles;
+        private ArrayView<MapTileEntity> _mouseHoverTiles;
+        private Path _mouseHoverPath;
 
         public MapViewModel(
             ISceneGraph sceneGraph,
@@ -53,6 +59,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             _terrainTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
             _actorTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
+            _mouseHoverTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
             _goalMapTiles = new ArrayView<GoalMapEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
 
             _mapEntity = _mapEntityFactory.Create();
@@ -138,12 +145,20 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             actorTileEntity.Initialize(point);
             _actorTiles[point] = actorTileEntity;
 
+            var mouseHoverEntity = _mapTileEntityFactory.Create();
+            mouseHoverEntity.Initialize(point);
+            mouseHoverEntity.SetMouseHover();
+            mouseHoverEntity.IsVisible = false;
+            _mouseHoverTiles[point] = mouseHoverEntity;
+
             var goalMapTileEntity = _goalMapEntityFactory.Create();
             goalMapTileEntity.Initialize(point);
             _goalMapTiles[point] = goalMapTileEntity;
 
+
             _sceneGraph.Add(terrainTileEntity, mapTileRootEntity);
             _sceneGraph.Add(actorTileEntity, mapTileRootEntity);
+            _sceneGraph.Add(mouseHoverEntity, mapTileRootEntity);
             _sceneGraph.Add(goalMapTileEntity, mapTileRootEntity);
         }
 
@@ -205,6 +220,58 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 _goalMapTiles[point].IsVisible = true;
                 _goalMapTiles[point].Text = Math.Round(goalMapValue.Value, 2).ToString();
             }
+        }
+
+        public void ShowHover(Ray ray)
+        {
+            UpdateMouseHoverPathTileVisibility(false);
+
+            var mapPosition = MousePointerRayToMapPosition(ray);
+
+            if (mapPosition == null)
+                return;
+
+            _mouseHoverPath = _gameWorld.GetPathToPlayer(mapPosition.Value);
+
+            UpdateMouseHoverPathTileVisibility(true);
+        }
+
+        private void UpdateMouseHoverPathTileVisibility(bool isVisible)
+        {
+            if (_mouseHoverPath == null)
+                return;
+
+            foreach (var point in _mouseHoverPath.Steps)
+            {
+                _mouseHoverTiles[point].IsVisible = isVisible;
+            }
+        }
+
+        public Point? MousePointerRayToMapPosition(Ray ray)
+        {
+            var worldTransform = _sceneGraph.GetWorldTransform(_mapEntity);
+
+            var plane = new Plane(
+                new Vector3(0, 0, worldTransform.Translation.Z),
+                new Vector3(worldTransform.Translation.X, 0, worldTransform.Translation.Z),
+                new Vector3(0, worldTransform.Translation.Y, worldTransform.Translation.Z)
+            );
+
+            var factor = ray.Intersects(plane);
+
+            if (factor == null)
+                return null;
+
+            var intersectionPoint = ray.Position + factor.Value * ray.Direction;
+
+            var untranslatedMapCoords = intersectionPoint - worldTransform.Translation;
+
+            var mapPosition = new Point(
+                (int)((untranslatedMapCoords.X + Graphics.Assets.TileQuadWidth / 2) / Graphics.Assets.TileQuadWidth),
+                (int)((-untranslatedMapCoords.Y + Graphics.Assets.TileQuadHeight / 2) / Graphics.Assets.TileQuadHeight)
+            );
+
+            return mapPosition;
         }
     }
 }

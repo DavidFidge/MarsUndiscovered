@@ -1,4 +1,7 @@
 ﻿using MarsUndiscovered.UserInterface.Data;
+
+using Microsoft.Xna.Framework;
+
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
@@ -22,6 +25,18 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void Move(Direction direction)
         {
             GameWorld.MoveRequest(direction);
+            GetNewTurnData();
+        }
+
+        public void Move(Ray pointerRay)
+        {
+            var point = MapViewModel.MousePointerRayToMapPosition(pointerRay);
+
+            if (point == null)
+                return;
+
+            GameWorld.MoveRequest(point.Value);
+
             GetNewTurnData();
         }
     }

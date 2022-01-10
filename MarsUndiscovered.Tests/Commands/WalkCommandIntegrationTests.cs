@@ -88,6 +88,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
             var monster = _gameWorld.Monsters.Values.First();
             var healthBefore = monster.Health;
+            _gameWorld.RebuildGoalMaps();
 
             // Act
             _gameWorld.MoveRequest(Direction.Down);
@@ -174,6 +175,136 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(0, newGameWorld.HistoricalCommands.AttackCommands.Count);
             Assert.AreEqual(_gameWorld.Player.Position, newGameWorld.Player.Position);
             Assert.AreEqual(new Point(0, 1), newGameWorld.Player.Position);
+        }
+
+        [TestMethod]
+        public void Should_Walk_To_Position()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonsters();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            // Act
+            var result = _gameWorld.MoveRequest(new Point(2, 2));
+
+            // Assert
+            Assert.AreEqual(4, result.Count);
+            Assert.IsTrue(result[0].Command is WalkCommand);
+            Assert.IsTrue(result[1].Command is MoveCommand);
+            Assert.IsTrue(result[2].Command is WalkCommand);
+            Assert.IsTrue(result[3].Command is MoveCommand);
+        }
+
+        [TestMethod]
+        public void Should_Walk_To_Position_And_Stop_At_Wall()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonsters();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            var gameObjectFactory = Container.Resolve<IGameObjectFactory>();
+
+            var wall = gameObjectFactory.CreateWall();
+            wall.Position = new Point(2, 2);
+            _gameWorld.Map.SetTerrain(wall);
+
+            // Act
+            var result = _gameWorld.MoveRequest(new Point(2, 2));
+
+            // Assert
+            Assert.AreEqual(2, result.Count);
+            Assert.IsTrue(result[0].Command is WalkCommand);
+            Assert.IsTrue(result[1].Command is MoveCommand);
+        }
+
+        [TestMethod]
+        public void Should_Perform_NonMove_If_MoveDestination_Is_Wall_And_Only_One_Square()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonsters();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            var gameObjectFactory = Container.Resolve<IGameObjectFactory>();
+
+            var wall = gameObjectFactory.CreateWall();
+            wall.Position = new Point(1, 1);
+            _gameWorld.Map.SetTerrain(wall);
+
+            // Act
+            var result = _gameWorld.MoveRequest(new Point(1, 1));
+
+            // Assert
+            Assert.AreEqual(1, result.Count);
+            Assert.IsTrue(result[0].Command is WalkCommand);
+        }
+
+        [TestMethod]
+        public void Walk_Player_Into_Adjacent_Monster_Via_MoveRequestDestination_Should_Attack()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonsters();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
+            _gameWorld.RebuildGoalMaps();
+
+            var monster = _gameWorld.Monsters.Values.First();
+            var healthBefore = monster.Health;
+
+            // Act
+            _gameWorld.MoveRequest(new Point(0, 1));
+
+            // Assert
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.Count());
+            Assert.AreEqual(0, _gameWorld.HistoricalCommands.MoveCommands.Count);
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands.Count);
+            Assert.AreEqual(0, _gameWorld.HistoricalCommands.AttackCommands.Count);
+            Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
+
+            var walkCommand = _gameWorld.HistoricalCommands.WalkCommands[0];
+
+            Assert.AreEqual(CommandResultEnum.Success, walkCommand.CommandResult.Result);
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+
+            var attackCommand =
+                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as AttackCommand;
+
+            Assert.IsNotNull(attackCommand);
+            Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
+
+            Assert.IsTrue(monster.Health < healthBefore);
+            Assert.AreEqual("You hit the roach", attackCommand.CommandResult.Messages[0]);
+        }
+
+        [TestMethod]
+        public void Walk_Player_Into_Monster_Via_MoveRequestDestination_Should_Stop_Adjacent_To_Monster()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonsters();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 3)));
+            _gameWorld.RebuildGoalMaps();
+            var monster = _gameWorld.Monsters.Values.First();
+
+            // Act
+            var result = _gameWorld.MoveRequest(new Point(0, 3));
+
+            // Assert
+            Assert.AreEqual(3, result.Count);
+            Assert.IsTrue(result[0].Command is WalkCommand); // Player walk
+            Assert.IsTrue(result[1].Command is MoveCommand); // Player move
+            Assert.IsTrue(result[2].Command is MoveCommand); // Monster move
+
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.Count());
+            Assert.AreEqual(0, _gameWorld.HistoricalCommands.MoveCommands.Count);
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands.Count);
+            Assert.AreEqual(0, _gameWorld.HistoricalCommands.AttackCommands.Count);
+            Assert.AreEqual(new Point(0, 1), _gameWorld.Player.Position);
+            Assert.AreEqual(new Point(0, 2), monster.Position);
         }
     }
 }

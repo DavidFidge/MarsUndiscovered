@@ -56,6 +56,12 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
         }
 
+        public void SetMouseHover()
+        {
+            MapTileQuad = Assets.MouseHover;
+            IsVisible = true;
+        }
+
         public void Draw(Matrix view, Matrix projection, Matrix world)
         {
             if (IsVisible)
