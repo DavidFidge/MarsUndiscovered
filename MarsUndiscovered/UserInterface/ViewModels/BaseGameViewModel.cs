@@ -15,6 +15,12 @@ using MarsUndiscovered.UserInterface.Data;
 
 using MediatR;
 
+using Microsoft.Xna.Framework;
+
+using SadRogue.Primitives;
+
+using Point = SadRogue.Primitives.Point;
+
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public abstract class BaseGameViewModel<T> : BaseViewModel<T>,
@@ -76,6 +82,30 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             MessageLogCount += Messages.Count;
 
             Notify();
+        }
+
+        public string GetGameObjectInformationAt(Ray pointerRay)
+        {
+            var point = MapViewModel.MousePointerRayToMapPosition(pointerRay);
+
+            if (point == null)
+                return null;
+
+            var tooltip = GameWorld.GetGameObjectInformationAt(point.Value);
+
+            return tooltip;
+        }
+
+        public Direction GetMapQuadrantOfRay(Ray pointerRay)
+        {
+            var point = MapViewModel.MousePointerRayToMapPosition(pointerRay);
+
+            if (point == null)
+                return Direction.None;
+
+            var centrePoint = new Point(GameWorld.Map.Width / 2, GameWorld.Map.Height / 2);
+
+            return Direction.GetDirection(centrePoint, point.Value);
         }
     }
 }

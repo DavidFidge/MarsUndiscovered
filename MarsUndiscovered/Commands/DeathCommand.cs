@@ -40,7 +40,7 @@ namespace MarsUndiscovered.Commands
 
         protected override CommandResult ExecuteInternal()
         {
-            var message = $"{Source.NameAsAttackerSpecificArticle} {Source.ToHaveConjugation} died!";
+            var message = $"{Source.NameSpecificArticleUpperCase} {Source.ToHaveConjugation} died!";
             Source.IsDead = true;
 
             if (!(Source is Player))

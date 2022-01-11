@@ -52,14 +52,14 @@ namespace MarsUndiscovered.Commands
 
             Target.Health -= _damage;
 
-            var message = $"{Source.NameAsAttackerSpecificArticle} hit {Target.NameAsDefenderSpecificArticle}";
+            var message = $"{Source.NameSpecificArticleUpperCase} hit {Target.NameSpecificArticleLowerCase}";
 
             var commandResult = CommandResult.Success(this, message);
 
             if (Target.Health <= 0)
             {
                 var deathCommand = CommandFactory.CreateDeathCommand(GameWorld);
-                deathCommand.Initialise(Target, Source.NameAsDefenderGenericArticle);
+                deathCommand.Initialise(Target, Source.NameGenericArticleLowerCase);
                 commandResult.SubsequentCommands.Add(deathCommand);
             }
 

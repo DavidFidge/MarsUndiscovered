@@ -38,8 +38,7 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<MoveDownRightRequest>,
         IRequestHandler<MoveLeftRequest>,
         IRequestHandler<MoveRightRequest>,
-        IRequestHandler<MoveWaitRequest>,
-        IRequestHandler<MouseHoverViewRequest>
+        IRequestHandler<MoveWaitRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -67,13 +66,14 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            SetupChildPanel(_inGameOptionsView);
-            SetupConsole();
             CreateLayoutPanels();
             SetupInGameOptionsButton(LeftPanel);
             CreatePlayerPanel();
             CreateMessageLog();
             CreateStatusPanel();
+            SetupConsole();
+            SetupChildPanel(_inGameOptionsView);
+
             _stopwatchProvider.Start();
         }
 
@@ -236,8 +236,10 @@ namespace MarsUndiscovered.UserInterface.Views
             }
         }
 
-        public Task<Unit> Handle(MouseHoverViewRequest request, CancellationToken cancellationToken)
+        public override Task<Unit> Handle(MouseHoverViewRequest request, CancellationToken cancellationToken)
         {
+            base.Handle(request, cancellationToken);
+
             var ray = _gameCamera.GetPointerRay(request.X, request.Y);
 
             _viewModel.MapViewModel.ShowHover(ray);

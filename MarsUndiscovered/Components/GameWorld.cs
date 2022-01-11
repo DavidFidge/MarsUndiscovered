@@ -383,5 +383,20 @@ namespace MarsUndiscovered.Components
 
             return Map.AStar.ShortestPath(Player.Position, mapPosition);
         }
+
+        public string GetGameObjectInformationAt(Point point)
+        {
+            if (!Map.Bounds().Contains(point))
+                return null;
+
+            var monster = Map.GetObjectAt<Monster>(point);
+
+            if (monster != null)
+            {
+                return monster.GetInformation(Player);
+            }
+
+            return null;
+        }
     }
 }

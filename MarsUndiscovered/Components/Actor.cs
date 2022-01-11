@@ -7,12 +7,13 @@ namespace MarsUndiscovered.Components
     public abstract class Actor : MarsGameObject
     {
         public static int BaseHealth = 100;
-        public virtual string NameAsDefenderSpecificArticle => $"the {Name.ToLower()}";
-        public virtual string NameAsAttackerSpecificArticle => $"The {Name.ToLower()}";
-        public virtual string NameAsDefenderGenericArticle => $"{GenericArticle} {Name.ToLower()}";
-        public virtual string NameAsAttackerGenericArticle => $"{GenericArticle} {Name.ToLower()}";
-        public virtual string GenericArticle => "a";
-        public virtual string PossessiveName => NameAsDefenderSpecificArticle.EndsWith("s") ? $"{NameAsDefenderSpecificArticle}'" : $"{NameAsDefenderSpecificArticle}'s";
+        public virtual string NameSpecificArticleLowerCase => $"the {Name.ToLower()}";
+        public virtual string NameSpecificArticleUpperCase => $"The {Name.ToLower()}";
+        public virtual string NameGenericArticleLowerCase => $"{GenericArticleLowerCase} {Name.ToLower()}";
+        public virtual string NameGenericArticleUpperCase => $"{GenericArticleUpperCase} {Name.ToLower()}";
+        protected virtual string GenericArticleLowerCase => "a";
+        protected virtual string GenericArticleUpperCase => "A";
+        public virtual string PossessiveName => NameSpecificArticleLowerCase.EndsWith("s") ? $"{NameSpecificArticleLowerCase}'" : $"{NameSpecificArticleLowerCase}'s";
         public virtual string ToHaveConjugation => "has";
         public bool IsDead { get; set; } = false;
         public int Health { get; set; }

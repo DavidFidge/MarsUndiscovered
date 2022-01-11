@@ -14,10 +14,10 @@ namespace MarsUndiscovered.Components
     public class Player : Actor, IMementoState<PlayerSaveData>, ISaveable
     {
         public override string Name => "You";
-        public override string NameAsDefenderSpecificArticle => Name.ToLower();
-        public override string NameAsDefenderGenericArticle => Name.ToLower();
-        public override string NameAsAttackerSpecificArticle => Name;
-        public override string NameAsAttackerGenericArticle => Name;
+        public override string NameSpecificArticleLowerCase => Name.ToLower();
+        public override string NameGenericArticleLowerCase => Name.ToLower();
+        public override string NameSpecificArticleUpperCase => Name;
+        public override string NameGenericArticleUpperCase => Name;
         public override string PossessiveName => $"{Name.ToLower()}r";
         public override string ToHaveConjugation => "have";
 

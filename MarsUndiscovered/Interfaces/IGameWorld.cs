@@ -38,5 +38,6 @@ namespace MarsUndiscovered.Interfaces
         IList<MonsterStatus> GetStatusOfMonstersInView();
         PlayerStatus GetPlayerStatus();
         Path GetPathToPlayer(Point mapPosition);
+        string GetGameObjectInformationAt(Point point);
     }
 }

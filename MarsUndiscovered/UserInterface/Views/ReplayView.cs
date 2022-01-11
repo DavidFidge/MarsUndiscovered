@@ -38,13 +38,13 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            SetupChildPanel(_inReplayOptionsView);
             CreateLayoutPanels();
             SetupInReplayOptionsButton(LeftPanel);
             CreateReplayView();
             CreatePlayerPanel();
             CreateMessageLog();
             CreateStatusPanel();
+            SetupChildPanel(_inReplayOptionsView);
         }
 
         private void CreateReplayView()

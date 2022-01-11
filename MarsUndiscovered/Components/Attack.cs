@@ -6,16 +6,16 @@ namespace MarsUndiscovered.Components
 {
     public class Attack
     {
-        private readonly Range<int> _damageRange;
+        public Range<int> DamageRange { get; private set; }
 
         public Attack(Range<int> damageRange)
         {
-            _damageRange = damageRange;
+            DamageRange = damageRange;
         }
 
         public int Roll()
         {
-            return GlobalRandom.DefaultRNG.Next(_damageRange.Min, _damageRange.Max);
+            return GlobalRandom.DefaultRNG.Next(DamageRange.Min, DamageRange.Max);
         }
     }
 }

@@ -1,21 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
 
+using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
+
+using MediatR;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using SadRogue.Primitives;
+
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public abstract class BaseGameView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>
+    public abstract class BaseGameView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>,
+        IRequestHandler<MouseHoverViewRequest>
         where TViewModel : BaseGameViewModel<TData>
         where TData : BaseGameData, new()
     {
@@ -28,6 +36,11 @@ namespace MarsUndiscovered.UserInterface.Views
         protected PlayerPanel PlayerPanel;
         protected IList<MonsterPanel> MonsterPanels = new List<MonsterPanel>();
         protected RichParagraph StatusParagraph;
+        protected RichParagraph HoverPanelLeftTooltip;
+        protected RichParagraph HoverPanelRightTooltip;
+        protected Panel GameViewPanel { get; set; }
+        protected Panel HoverPanelLeft { get; set; }
+        protected Panel HoverPanelRight { get; set; }
 
         protected BaseGameView(IGameCamera gameCamera, TViewModel viewModel) : base(viewModel)
         {
@@ -64,6 +77,42 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Height(0.1f);
 
             RootPanel.AddChild(BottomPanel);
+
+            GameViewPanel = new Panel()
+                .Anchor(Anchor.CenterRight)
+                .Width(Constants.MiddlePanelWidth)
+                .NoSkin()
+                .NoPadding()
+                .Height(0.79f)
+                .Offset(new Vector2(20f, 120f));
+
+            HoverPanelLeft = new Panel()
+                .Anchor(Anchor.TopLeft)
+                .Width(0.45f)
+                .Skin(PanelSkin.Simple)
+                .AutoHeight()
+                .Hidden();
+
+            GameViewPanel.AddChild(HoverPanelLeft);
+
+            HoverPanelLeftTooltip = new RichParagraph();
+
+            HoverPanelLeft.AddChild(HoverPanelLeftTooltip);
+
+            HoverPanelRight = new Panel()
+                .Anchor(Anchor.TopRight)
+                .Width(0.45f)
+                .Skin(PanelSkin.Simple)
+                .AutoHeight()
+                .Hidden();
+
+            HoverPanelRightTooltip = new RichParagraph();
+
+            HoverPanelRight.AddChild(HoverPanelRightTooltip);
+
+            GameViewPanel.AddChild(HoverPanelRight);
+
+            RootPanel.AddChild(GameViewPanel);
         }
 
         protected void CreateStatusPanel()
@@ -119,7 +168,6 @@ namespace MarsUndiscovered.UserInterface.Views
 
             base.Update();
         }
-
 
         protected virtual void ResetViews()
         {
@@ -177,6 +225,38 @@ namespace MarsUndiscovered.UserInterface.Views
         protected string DelimitWithDashes(string text)
         {
             return $"--- {text} ---";
+        }
+
+        public virtual Task<Unit> Handle(MouseHoverViewRequest request, CancellationToken cancellationToken)
+        {
+            var ray = _gameCamera.GetPointerRay(request.X, request.Y);
+
+            var gameObjectInformation = _viewModel.GetGameObjectInformationAt(ray);
+
+            if (!String.IsNullOrEmpty(gameObjectInformation))
+            {
+                var direction = _viewModel.GetMapQuadrantOfRay(ray);
+
+                if (direction == Direction.Right || direction == Direction.DownRight || direction == Direction.UpRight)
+                {
+                    HoverPanelLeftTooltip.Text = gameObjectInformation;
+                    HoverPanelLeft.Visible = true;
+                    HoverPanelRight.Visible = false;
+                }
+                else
+                {
+                    HoverPanelRightTooltip.Text = gameObjectInformation;
+                    HoverPanelLeft.Visible = false;
+                    HoverPanelRight.Visible = true;
+                }
+            }
+            else
+            {
+                HoverPanelLeft.Visible = false;
+                HoverPanelRight.Visible = false;
+            }
+
+            return Unit.Task;
         }
     }
 }

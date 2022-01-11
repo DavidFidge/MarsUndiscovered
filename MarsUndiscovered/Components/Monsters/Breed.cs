@@ -4,7 +4,8 @@ namespace MarsUndiscovered.Components
 {
     public abstract class Breed
     {
-        public virtual string GenericArticle => "a";
+        public virtual string GenericArticleLowerCase => "a";
+        public virtual string GenericArticleUpperCase => "A";
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal HealthModifier { get; set; }
