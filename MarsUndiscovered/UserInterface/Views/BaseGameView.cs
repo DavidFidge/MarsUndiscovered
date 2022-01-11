@@ -46,19 +46,21 @@ namespace MarsUndiscovered.UserInterface.Views
             RootPanel.AddChild(LeftPanel);
 
             TopPanel = new Panel()
-                .Anchor(Anchor.TopCenter)
+                .Anchor(Anchor.TopRight)
                 .Width(Constants.MiddlePanelWidth)
                 .NoSkin()
                 .NoPadding()
+                .Offset(new Vector2(20f, 0))
                 .Height(0.14f);
 
             RootPanel.AddChild(TopPanel);
 
             BottomPanel = new Panel()
-                .Anchor(Anchor.BottomCenter)
+                .Anchor(Anchor.BottomRight)
                 .Width(Constants.MiddlePanelWidth)
                 .NoSkin()
                 .NoPadding()
+                .Offset(new Vector2(20f, 0))
                 .Height(0.1f);
 
             RootPanel.AddChild(BottomPanel);
@@ -81,7 +83,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Anchor(Anchor.Auto)
                 .NoPadding();
 
-            _messageLog.ExtraSpaceBetweenLines = -10;
+            _messageLog.ExtraSpaceBetweenLines = -14;
             _messageLog.LockSelection = true;
             TopPanel.AddChild(_messageLog);
 

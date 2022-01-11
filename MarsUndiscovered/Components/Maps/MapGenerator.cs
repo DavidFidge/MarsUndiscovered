@@ -19,8 +19,8 @@ namespace MarsUndiscovered.Components.Maps
 {
     public class MapGenerator : BaseComponent, IMapGenerator
     {
-        public const int MapWidth = 76;
-        public const int MapHeight = 29;
+        public const int MapWidth = 84;
+        public const int MapHeight = 26;
 
         public IGameObjectFactory GameObjectFactory { get; set; }
 
