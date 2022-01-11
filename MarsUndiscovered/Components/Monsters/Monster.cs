@@ -37,7 +37,7 @@ namespace MarsUndiscovered.Components
             return stringBuilder.ToString();
         }
 
-        public Monster(uint id) : base(1, idGenerator: () => id)
+        public Monster(uint id) : base(idGenerator: () => id)
         {
         }
 

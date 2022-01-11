@@ -21,7 +21,7 @@ namespace MarsUndiscovered.Components
 
         public abstract Attack BasicAttack { get; }
 
-        public Actor(int layer, bool isWalkable = true, bool isTransparent = true, Func<uint> idGenerator = null, IComponentCollection customComponentCollection = null) : base(layer, isWalkable, isTransparent, idGenerator, customComponentCollection)
+        public Actor(Func<uint> idGenerator = null, IComponentCollection customComponentCollection = null) : base(1, true, true, idGenerator, customComponentCollection)
         {
         }
     }
