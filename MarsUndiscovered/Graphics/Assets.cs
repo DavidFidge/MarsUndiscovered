@@ -23,9 +23,13 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad Floor { get; set; }
         public MapTileQuad Player { get; set; }
         public MapTileQuad Roach { get; set; }
+        public MapTileQuad Weapon { get; set; }
+        public MapTileQuad Gadget { get; set; }
         public GoalMapQuad GoalMapQuad { get; set; }
 
         private readonly IGameProvider _gameProvider;
+
+        private Color _itemColour = Color.Yellow;
 
         public Assets(IGameProvider gameProvider)
         {
@@ -69,6 +73,26 @@ namespace MarsUndiscovered.Graphics
                 TextureMaterialEffect,
                 '@',
                 Color.Yellow
+            );
+
+            Weapon = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '^',
+                _itemColour
+            );
+
+            Gadget = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '=',
+                _itemColour
             );
 
             Roach = new MapTileQuad(

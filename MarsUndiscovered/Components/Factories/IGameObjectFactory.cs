@@ -18,5 +18,7 @@ namespace MarsUndiscovered.Components.Factories
         Floor CreateFloor(uint id);
         Monster CreateMonster();
         Monster CreateMonster(uint id);
+        Item CreateItem();
+        Item CreateItem(uint id);
     }
 }

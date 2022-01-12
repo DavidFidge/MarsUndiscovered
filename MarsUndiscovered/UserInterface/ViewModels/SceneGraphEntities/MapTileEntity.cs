@@ -44,6 +44,18 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
         }
 
+        public void SetWeapon()
+        {
+            MapTileQuad = Assets.Weapon;
+            IsVisible = true;
+        }
+
+        public void SetGadget()
+        {
+            MapTileQuad = Assets.Gadget;
+            IsVisible = true;
+        }
+
         public void SetMonster(Breed breed)
         {
             switch (breed)

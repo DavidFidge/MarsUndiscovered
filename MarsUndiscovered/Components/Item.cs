@@ -4,9 +4,9 @@ using GoRogue.Components;
 
 namespace MarsUndiscovered.Components
 {
-    public abstract class Item : MarsGameObject
+    public class Item : MarsGameObject
     {
-        public Item(Func<uint> idGenerator = null, IComponentCollection customComponentCollection = null) : base(2, true, isTransparent, idGenerator, customComponentCollection)
+        public Item(uint id) : base(2, true, true, () => id)
         {
         }
     }

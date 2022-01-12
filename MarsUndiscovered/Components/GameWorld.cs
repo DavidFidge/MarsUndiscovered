@@ -40,6 +40,7 @@ namespace MarsUndiscovered.Components
         public WallCollection Walls { get; private set; }
         public FloorCollection Floors { get; private set; }
         public MonsterCollection Monsters { get; private set; }
+        public ItemCollection Items { get; private set; }
         public CommandCollection HistoricalCommands { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
         public MessageLog MessageLog { get; } = new MessageLog();

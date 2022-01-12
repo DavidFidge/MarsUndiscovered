@@ -21,7 +21,7 @@ namespace MarsUndiscovered.Components
 
         public override Attack BasicAttack { get; } = new Attack(new Range<int>(5, 10));
 
-        public Player(uint id) : base(() => id)
+        public Player(uint id) : base(id)
         {
             MaxHealth = BaseHealth;
             Health = MaxHealth;

@@ -34,6 +34,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private ArrayView<MapTileRootEntity> _mapTileRootEntities;
         private ArrayView<MapTileEntity> _terrainTiles;
         private ArrayView<MapTileEntity> _actorTiles;
+        private ArrayView<MapTileEntity> _itemTiles;
         private ArrayView<GoalMapEntity> _goalMapTiles;
         private ArrayView<MapTileEntity> _mouseHoverTiles;
         private Path _mouseHoverPath;
@@ -59,6 +60,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             _terrainTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
             _actorTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
+            _itemTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
             _mouseHoverTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
             _goalMapTiles = new ArrayView<GoalMapEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
 
@@ -83,6 +85,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             _terrainTiles[point].IsVisible = false;
             _actorTiles[point].IsVisible = false;
+            _itemTiles[point].IsVisible = false;
             _goalMapTiles[point].IsVisible = false;
 
             var gameObjects = _gameWorld.Map
@@ -145,6 +148,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             actorTileEntity.Initialize(point);
             _actorTiles[point] = actorTileEntity;
 
+            var itemTileEntity = _mapTileEntityFactory.Create();
+            itemTileEntity.Initialize(point);
+            _itemTiles[point] = itemTileEntity;
+
             var mouseHoverEntity = _mapTileEntityFactory.Create();
             mouseHoverEntity.Initialize(point);
             mouseHoverEntity.SetMouseHover();
@@ -157,6 +164,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
 
             _sceneGraph.Add(terrainTileEntity, mapTileRootEntity);
+            _sceneGraph.Add(itemTileEntity, mapTileRootEntity);
             _sceneGraph.Add(actorTileEntity, mapTileRootEntity);
             _sceneGraph.Add(mouseHoverEntity, mapTileRootEntity);
             _sceneGraph.Add(goalMapTileEntity, mapTileRootEntity);
@@ -183,6 +191,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     _actorTiles[point].SetPlayer();
                 else if (actor is Monster monster)
                     _actorTiles[point].SetMonster(monster.Breed);
+
+                return;
+            }
+
+            var item = gameObjects.FirstOrDefault(go => go is Item);
+
+            if (item != null)
+            {
+                if (item is Weapon)
+                    _itemTiles[point].SetWeapon();
+
+                else if (item is Gadget)
+                    _actorTiles[point].SetGadget();
 
                 return;
             }

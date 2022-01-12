@@ -76,6 +76,16 @@ namespace MarsUndiscovered.Components.Factories
             return ResolveWithGivenId<Monster>(id);
         }
 
+        public Item CreateItem()
+        {
+            return ResolveWithNextId<Item>();
+        }
+
+        public Item CreateItem(uint id)
+        {
+            return ResolveWithGivenId<Item>(id);
+        }
+
         private T ResolveWithNextId<T>() where T : IGameObject
         {
             var gameObject = _container.Resolve<T>(new Arguments { { "id", GetNextId() } });

@@ -13,6 +13,8 @@ namespace MarsUndiscovered.Interfaces
         MapTileQuad Roach { get; set; }
         GoalMapQuad GoalMapQuad { get; set; }
         MapTileQuad MouseHover { get; set; }
+        MapTileQuad Weapon { get; set; }
+        MapTileQuad Gadget { get; set; }
         void LoadContent();
     }
 }

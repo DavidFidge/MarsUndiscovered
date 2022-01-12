@@ -23,7 +23,8 @@ using SadRogue.Primitives;
 namespace MarsUndiscovered.UserInterface.Views
 {
     public abstract class BaseGameView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>,
-        IRequestHandler<MouseHoverViewRequest>
+        IRequestHandler<MouseHoverViewRequest>,
+        INotificationHandler<OpenInventoryNotification> 
         where TViewModel : BaseGameViewModel<TData>
         where TData : BaseGameData, new()
     {
