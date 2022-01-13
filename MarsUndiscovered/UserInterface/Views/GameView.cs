@@ -236,11 +236,11 @@ namespace MarsUndiscovered.UserInterface.Views
             }
         }
 
-        public override Task<Unit> Handle(MouseHoverViewRequest request, CancellationToken cancellationToken)
+        public override Task Handle(MouseHoverViewNotification notification, CancellationToken cancellationToken)
         {
-            base.Handle(request, cancellationToken);
+            base.Handle(notification, cancellationToken);
 
-            var ray = _gameCamera.GetPointerRay(request.X, request.Y);
+            var ray = _gameCamera.GetPointerRay(notification.X, notification.Y);
 
             _viewModel.MapViewModel.ShowHover(ray);
 

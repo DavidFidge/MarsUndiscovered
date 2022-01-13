@@ -37,6 +37,7 @@ namespace MarsUndiscovered.Components
         public ISaveGameService SaveGameService { get; set; }
         public IMapGenerator MapGenerator { get; set; }
         public IMonsterGenerator MonsterGenerator { get; set; }
+        public IItemGenerator ItemGenerator { get; set; }
         public WallCollection Walls { get; private set; }
         public FloorCollection Floors { get; private set; }
         public MonsterCollection Monsters { get; private set; }
@@ -94,6 +95,11 @@ namespace MarsUndiscovered.Components
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
 
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
+
             RebuildGoalMaps();
         }
 
@@ -102,6 +108,7 @@ namespace MarsUndiscovered.Components
             Walls = new WallCollection(GameObjectFactory);
             Floors = new FloorCollection(GameObjectFactory);
             Monsters = new MonsterCollection(GameObjectFactory);
+            Items = new ItemCollection(GameObjectFactory);
             HistoricalCommands = new CommandCollection(CommandFactory, this);
 
             GameObjectFactory.Reset();
@@ -237,6 +244,11 @@ namespace MarsUndiscovered.Components
             MonsterGenerator.SpawnMonster(spawnMonsterParams, Map, Monsters);
         }
 
+        public void SpawnItem(SpawnItemParams spawnItemParams)
+        {
+            ItemGenerator.SpawnItem(spawnItemParams, Map, Items);
+        }
+
         public SaveGameResult SaveGame(string saveGameName, bool overwrite)
         {
             if (!overwrite)
@@ -309,6 +321,7 @@ namespace MarsUndiscovered.Components
             Walls.SaveState(saveGameService);
             Floors.SaveState(saveGameService);
             Monsters.SaveState(saveGameService);
+            Items.SaveState(saveGameService);
             MessageLog.SaveState(saveGameService);
             Player.SaveState(saveGameService);
             HistoricalCommands.SaveState(saveGameService);
@@ -328,6 +341,7 @@ namespace MarsUndiscovered.Components
             Walls.LoadState(saveGameService);
             Floors.LoadState(saveGameService);
             Monsters.LoadState(saveGameService);
+            Items.LoadState(saveGameService);
             MessageLog.LoadState(saveGameService);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
@@ -342,6 +356,11 @@ namespace MarsUndiscovered.Components
             foreach (var monster in Monsters.Values)
             {
                 Map.AddEntity(monster);
+            }
+
+            foreach (var item in Items.Values)
+            {
+                Map.AddEntity(item);
             }
         }
 

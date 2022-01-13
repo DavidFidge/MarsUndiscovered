@@ -199,11 +199,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             if (item != null)
             {
-                if (item is Weapon)
-                    _itemTiles[point].SetWeapon();
-
-                else if (item is Gadget)
-                    _actorTiles[point].SetGadget();
+                _itemTiles[point].SetItem(((Item)item).ItemType);
 
                 return;
             }
@@ -270,6 +266,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public Point? MousePointerRayToMapPosition(Ray ray)
         {
+            if (_mapEntity == null)
+                return null;
+
             var worldTransform = _sceneGraph.GetWorldTransform(_mapEntity);
 
             var plane = new Plane(

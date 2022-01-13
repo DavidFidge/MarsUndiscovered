@@ -4,10 +4,7 @@ using GoRogue.Components;
 
 namespace MarsUndiscovered.Components
 {
-    public class Weapon : Item
+    public abstract class Weapon : ItemType
     {
-        public Weapon(uint id) : base(id)
-        {
-        }
     }
 }

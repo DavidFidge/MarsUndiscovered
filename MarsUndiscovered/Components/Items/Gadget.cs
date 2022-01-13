@@ -4,10 +4,8 @@ using GoRogue.Components;
 
 namespace MarsUndiscovered.Components
 {
-    public class Gadget : Item
+    public abstract class Gadget : ItemType
     {
-        public Gadget(uint id) : base(id)
-        {
-        }
+        protected abstract int RechargeDelay { get; }
     }
 }

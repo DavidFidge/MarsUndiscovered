@@ -78,7 +78,7 @@ namespace MarsUndiscovered.UserInterface.Input
             if (!CanSendMouseMoveEvent())
                 return;
 
-            Mediator.Send(new MouseHoverViewRequest(mouseState.X, mouseState.Y));
+            Mediator.Publish(new MouseHoverViewNotification(mouseState.X, mouseState.Y));
         }
     }
 }

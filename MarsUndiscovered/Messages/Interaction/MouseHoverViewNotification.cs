@@ -2,9 +2,9 @@
 
 namespace MarsUndiscovered.Messages
 {
-    public class MouseHoverViewRequest : IRequest
+    public class MouseHoverViewNotification : INotification
     {
-        public MouseHoverViewRequest(int x, int y)
+        public MouseHoverViewNotification(int x, int y)
         {
             X = x;
             Y = y;

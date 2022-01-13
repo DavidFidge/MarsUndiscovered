@@ -81,7 +81,7 @@ namespace MarsUndiscovered.Graphics
                 TileQuadHeight,
                 MapFont,
                 TextureMaterialEffect,
-                '^',
+                '↑',
                 _itemColour
             );
 
@@ -91,7 +91,7 @@ namespace MarsUndiscovered.Graphics
                 TileQuadHeight,
                 MapFont,
                 TextureMaterialEffect,
-                '=',
+                '⏻',
                 _itemColour
             );
 

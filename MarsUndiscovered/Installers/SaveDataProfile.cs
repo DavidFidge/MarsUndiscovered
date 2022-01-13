@@ -40,6 +40,10 @@ namespace MarsUndiscovered.Installers
                 .ConstructUsing(sd => _gameObjectFactory.CreateMonster(sd.Id))
                 .ForMember(d => d.Breed, o => o.MapFrom(s => Breed.GetBreed(s.BreedName)));
 
+            CreateMap<ItemSaveData, Item>()
+                .ConstructUsing(sd => _gameObjectFactory.CreateItem(sd.Id))
+                .ForMember(d => d.ItemType, o => o.MapFrom(s => ItemType.GetItemType(s.ItemTypeName)));
+
             CreateMap<GameWorldSaveData, GameWorld>();
 
             CreateMap<MoveCommandSaveData, MoveCommand>();
@@ -59,6 +63,7 @@ namespace MarsUndiscovered.Installers
             CreateMap<Floor, FloorSaveData>();
             CreateMap<Player, PlayerSaveData>();
             CreateMap<Monster, MonsterSaveData>();
+            CreateMap<Item, ItemSaveData>();
             CreateMap<GameWorld, GameWorldSaveData>();
             CreateMap<GameObjectFactory, GameObjectFactoryData>();
 

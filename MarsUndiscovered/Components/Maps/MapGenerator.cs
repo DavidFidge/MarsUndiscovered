@@ -63,7 +63,7 @@ namespace MarsUndiscovered.Components.Maps
         {
             Debug.Assert(floors.Any() || walls.Any(), "Walls and/or Floors must be populated");
 
-            var map = new Map(MapWidth, MapHeight, 1, Distance.Chebyshev);
+            var map = new Map(MapWidth, MapHeight, 2, Distance.Chebyshev);
 
             var wallsFloors = walls.Values.Cast<Terrain>()
                 .Union(floors.Values)

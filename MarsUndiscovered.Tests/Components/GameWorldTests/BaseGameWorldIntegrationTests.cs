@@ -1,8 +1,5 @@
 ﻿using System.Linq;
 
-using FrigidRogue.MonoGame.Core.Components;
-
-using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
@@ -10,12 +7,10 @@ using MarsUndiscovered.Interfaces;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using SadRogue.Primitives;
-
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
     [TestClass]
-    public class BaseGameWorldIntegrationTests : BaseIntegrationTest
+    public abstract class BaseGameWorldIntegrationTests : BaseIntegrationTest
     {
         protected GameWorld _gameWorld;
 
@@ -39,7 +34,25 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.NewGame();
         }
 
-        protected void NewGameWithNoWallsNoMonsters()
+        protected void NewGameWithNoMonstersNoItems()
+        {
+            // Arrange
+            var blankMonsterGenerator = new BlankMonsterGenerator(
+                Container.Resolve<IMonsterGenerator>()
+            );
+
+            var blankItemGenerator = new BlankItemGenerator(
+                Container.Resolve<IItemGenerator>()
+            );
+
+            _gameWorld.MonsterGenerator = blankMonsterGenerator;
+            _gameWorld.ItemGenerator = blankItemGenerator;
+            _gameWorld.NewGame();
+            _gameWorld.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
+            _gameWorld.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
+        }
+
+        protected void NewGameWithNoWallsNoMonstersNoItems()
         {
             // Arrange
             var blankMapGeneration = new BlankMapGenerator(
@@ -51,10 +64,16 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 Container.Resolve<IMonsterGenerator>()
             );
 
+            var blankItemGenerator = new BlankItemGenerator(
+                Container.Resolve<IItemGenerator>()
+            );
+
             _gameWorld.MapGenerator = blankMapGeneration;
             _gameWorld.MonsterGenerator = blankMonsterGenerator;
+            _gameWorld.ItemGenerator = blankItemGenerator;
             _gameWorld.NewGame();
             _gameWorld.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
+            _gameWorld.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
         }
     }
 }

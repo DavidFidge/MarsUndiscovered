@@ -52,11 +52,26 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
 
         [TestMethod]
-        public void Should_Save_Then_Load_Game()
+        public void Should_Spawn_Items()
         {
             // Arrange
             _gameWorld.NewGame();
+            var currentItemCount = _gameWorld.Items.Count;
+
+            // Act
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+
+            // Assert
+            Assert.AreEqual(currentItemCount + 1, _gameWorld.Items.Count);
+        }
+
+        [TestMethod]
+        public void Should_Save_Then_Load_Game()
+        {
+            // Arrange
+            NewGameWithNoMonstersNoItems();
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 
             // Act
@@ -72,8 +87,15 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(_gameWorld.GameObjects.Count, newGameWorld.GameObjects.Count);
             Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<Wall>().Count(), newGameWorld.GameObjects.Values.OfType<Wall>().Count());
             Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<Floor>().Count(), newGameWorld.GameObjects.Values.OfType<Floor>().Count());
-            Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<Monster>().Count(), newGameWorld.GameObjects.Values.OfType<Monster>().Count());
-            Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<Player>().Count(), newGameWorld.GameObjects.Values.OfType<Player>().Count());
+            Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Monster>().Count());
+            Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Item>().Count());
+            Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Player>().Count());
+
+            var mapEntities = newGameWorld.Map.Entities.ToList();
+
+            Assert.IsTrue(mapEntities.Select(s => s.Item).Contains(newGameWorld.GameObjects.Values.OfType<Player>().First()));
+            Assert.IsTrue(mapEntities.Select(s => s.Item).Contains(newGameWorld.GameObjects.Values.OfType<Item>().First()));
+            Assert.IsTrue(mapEntities.Select(s => s.Item).Contains(newGameWorld.GameObjects.Values.OfType<Monster>().First()));
 
             Assert.AreEqual(_gameWorld.Player.ID, newGameWorld.Player.ID);
             Assert.AreEqual(_gameWorld.Player.Position, newGameWorld.Player.Position);
@@ -85,7 +107,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void GetStatusOfMonstersInView_Should_Return_Monster_Statuses()
         {
             // Arrange
-            NewGameWithNoWallsNoMonsters();
+            NewGameWithNoWallsNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
@@ -112,7 +134,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Monsters_Should_Stop_Acting_When_Player_Dies()
         {
             // Arrange
-            NewGameWithNoWallsNoMonsters();
+            NewGameWithNoWallsNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));

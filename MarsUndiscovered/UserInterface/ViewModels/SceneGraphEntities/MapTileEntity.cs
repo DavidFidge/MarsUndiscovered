@@ -44,15 +44,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
         }
 
-        public void SetWeapon()
+        public void SetItem(ItemType itemType)
         {
-            MapTileQuad = Assets.Weapon;
-            IsVisible = true;
-        }
+            switch (itemType)
+            {
+                case Weapon _:
+                    MapTileQuad = Assets.Weapon;
+                    break;
 
-        public void SetGadget()
-        {
-            MapTileQuad = Assets.Gadget;
+                case Gadget _:
+                    MapTileQuad = Assets.Gadget;
+                    break;
+            }
+
             IsVisible = true;
         }
 

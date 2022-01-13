@@ -17,5 +17,15 @@ namespace MarsUndiscovered.Components
         {
             return GlobalRandom.DefaultRNG.Next(DamageRange.Min, DamageRange.Max);
         }
+
+        public Attack Create(int powerLevel)
+        {
+            var minDamage = DamageRange.Min + powerLevel;
+            var maxDamage = DamageRange.Max + powerLevel;
+
+            var damageRange = new Range<int>(minDamage <= 0 ? 1 : minDamage, maxDamage <= 0 ? 1 : maxDamage);
+
+            return new Attack(damageRange);
+        }
     }
 }

@@ -3,7 +3,7 @@ using MarsUndiscovered.Components.SaveData;
 
 namespace MarsUndiscovered.Components
 {
-    public class ItemCollection : GameObjectCollection<Wall, WallSaveData>
+    public class ItemCollection : GameObjectCollection<Item, ItemSaveData>
     {
         private readonly IGameObjectFactory _gameObjectFactory;
 
@@ -14,7 +14,7 @@ namespace MarsUndiscovered.Components
 
         protected override Item Create(uint id)
         {
-            return _gameObjectFactory.CreateWall(id);
+            return _gameObjectFactory.CreateItem(id);
         }
     }
 }

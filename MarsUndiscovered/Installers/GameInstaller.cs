@@ -74,6 +74,9 @@ namespace MarsUndiscovered.Installers
                 Component.For<IMonsterGenerator>()
                     .ImplementedBy<MonsterGenerator>(),
 
+                Component.For<IItemGenerator>()
+                    .ImplementedBy<ItemGenerator>(),
+
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IScreen>(),
 

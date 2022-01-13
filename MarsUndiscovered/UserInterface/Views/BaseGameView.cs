@@ -23,8 +23,8 @@ using SadRogue.Primitives;
 namespace MarsUndiscovered.UserInterface.Views
 {
     public abstract class BaseGameView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>,
-        IRequestHandler<MouseHoverViewRequest>,
-        INotificationHandler<OpenInventoryNotification> 
+        INotificationHandler<MouseHoverViewNotification>,
+        INotificationHandler<OpenInventoryNotification>
         where TViewModel : BaseGameViewModel<TData>
         where TData : BaseGameData, new()
     {
@@ -228,9 +228,9 @@ namespace MarsUndiscovered.UserInterface.Views
             return $"--- {text} ---";
         }
 
-        public virtual Task<Unit> Handle(MouseHoverViewRequest request, CancellationToken cancellationToken)
+        public virtual Task Handle(MouseHoverViewNotification notification, CancellationToken cancellationToken)
         {
-            var ray = _gameCamera.GetPointerRay(request.X, request.Y);
+            var ray = _gameCamera.GetPointerRay(notification.X, notification.Y);
 
             var gameObjectInformation = _viewModel.GetGameObjectInformationAt(ray);
 
@@ -257,6 +257,11 @@ namespace MarsUndiscovered.UserInterface.Views
                 HoverPanelRight.Visible = false;
             }
 
+            return Unit.Task;
+        }
+
+        public Task Handle(OpenInventoryNotification notification, CancellationToken cancellationToken)
+        {
             return Unit.Task;
         }
     }
