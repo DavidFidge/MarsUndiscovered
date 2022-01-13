@@ -44,8 +44,13 @@ namespace MarsUndiscovered.Installers
                 .ConstructUsing(sd => _gameObjectFactory.CreateItem(sd.Id))
                 .ForMember(d => d.ItemType, o => o.MapFrom(s => ItemType.GetItemType(s.ItemTypeName)));
 
-            CreateMap<GameWorldSaveData, GameWorld>();
+            CreateMap<InventorySaveData, Inventory>()
+                .ForMember(d => d.Items, o => o.Ignore())
+                .ForMember(d => d.ItemKeyAssignments, o => o.Ignore())
+                .ForMember(d => d.CallItem, o => o.Ignore())
+                .ForMember(d => d.CallItemType, o => o.Ignore());
 
+            CreateMap<GameWorldSaveData, GameWorld>();
             CreateMap<MoveCommandSaveData, MoveCommand>();
             CreateMap<WalkCommandSaveData, WalkCommand>();
             CreateMap<AttackCommandSaveData, AttackCommand>();
@@ -66,6 +71,12 @@ namespace MarsUndiscovered.Installers
             CreateMap<Item, ItemSaveData>();
             CreateMap<GameWorld, GameWorldSaveData>();
             CreateMap<GameObjectFactory, GameObjectFactoryData>();
+
+            CreateMap<Inventory, InventorySaveData>()
+                .ForMember(d => d.ItemIds, o => o.MapFrom(s => s.Items.Select(i => i.ID).ToList()))
+                .ForMember(d => d.ItemKeyAssignments, o => o.MapFrom(s => s.ItemKeyAssignments.ToDictionary(k => k.Key, v => v.Value.Select(i => i.ID).ToList())))
+                .ForMember(d => d.CallItem, o => o.MapFrom(s => s.CallItem.ToDictionary(k => k.Key.ID, v => v.Value)))
+                .ForMember(d => d.CallItemType, o => o.MapFrom(s => s.CallItemType.ToDictionary(k => k.Key.Name, v => v.Value)));
 
             CreateMap<MoveCommand, MoveCommandSaveData>();
             CreateMap<WalkCommand, WalkCommandSaveData>();

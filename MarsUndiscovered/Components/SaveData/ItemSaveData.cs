@@ -9,5 +9,7 @@
         public Attack MeleeAttack { get; set; }
         public int DamageShieldPercentage { get; set; }
         public int TotalRechargeDelay { get; set; }
+        public int HealPercentOfMax { get; set; }
+        public int MaxHealthIncrease { get; set; }
     }
 }

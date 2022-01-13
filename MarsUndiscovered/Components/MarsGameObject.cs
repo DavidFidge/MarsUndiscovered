@@ -37,9 +37,7 @@ namespace MarsUndiscovered.Components
 
         protected void SetWithAutoMapper<T>(IMemento<T> state, IMapper mapper) where T : GameObjectSaveData
         {
-            var memento = new Memento<T>(state.State);
-
-            Memento<T>.SetWithAutoMapper(this, memento, mapper);
+            Memento<T>.SetWithAutoMapper(this, state, mapper);
         }
     }
 }

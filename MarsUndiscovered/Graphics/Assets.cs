@@ -25,6 +25,7 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad Roach { get; set; }
         public MapTileQuad Weapon { get; set; }
         public MapTileQuad Gadget { get; set; }
+        public MapTileQuad NanoFlask { get; set; }
         public GoalMapQuad GoalMapQuad { get; set; }
 
         private readonly IGameProvider _gameProvider;
@@ -92,6 +93,16 @@ namespace MarsUndiscovered.Graphics
                 MapFont,
                 TextureMaterialEffect,
                 '⏻',
+                _itemColour
+            );
+
+            NanoFlask = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                'Ū',
                 _itemColour
             );
 

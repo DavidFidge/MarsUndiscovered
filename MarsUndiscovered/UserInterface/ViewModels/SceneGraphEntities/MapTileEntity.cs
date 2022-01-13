@@ -55,6 +55,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 case Gadget _:
                     MapTileQuad = Assets.Gadget;
                     break;
+
+                case NanoFlask _:
+                    MapTileQuad = Assets.NanoFlask;
+                    break;
             }
 
             IsVisible = true;

@@ -10,6 +10,8 @@ namespace MarsUndiscovered.Components
         public static Dictionary<string, ItemType> ItemTypes;
         public static ShieldGenerator ShieldGenerator = new ShieldGenerator();
         public static MagnesiumPipe MagnesiumPipe = new MagnesiumPipe();
+
+        public virtual bool GroupsInInventory { get; } = false;
         public abstract void ApplyProperties(Item item);
 
         public virtual void ApplyEnchantmentLevel(Item item)

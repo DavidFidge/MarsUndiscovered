@@ -16,6 +16,9 @@ namespace MarsUndiscovered.Components
         public Attack MeleeAttack { get; set; }
         public int DamageShieldPercentage { get; set; }
         public int TotalRechargeDelay { get; set; }
+        public int HealPercentOfMax { get; set; }
+        public int MaxHealthIncrease { get; set; }
+        public bool GroupsInInventory { get; set; }
 
         public Item(uint id) : base(2, true, true, () => id)
         {
@@ -38,6 +41,11 @@ namespace MarsUndiscovered.Components
         public void SetLoadState(IMemento<ItemSaveData> memento, IMapper mapper)
         {
             SetWithAutoMapper<ItemSaveData>(memento, mapper);
+        }
+
+        public bool CanGroupWith(Item item)
+        {
+            return GroupsInInventory && item.ItemType == ItemType;
         }
     }
 }
