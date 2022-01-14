@@ -102,7 +102,7 @@ namespace MarsUndiscovered.Graphics
                 TileQuadHeight,
                 MapFont,
                 TextureMaterialEffect,
-                'Ū',
+                '૪',
                 _itemColour
             );
 
