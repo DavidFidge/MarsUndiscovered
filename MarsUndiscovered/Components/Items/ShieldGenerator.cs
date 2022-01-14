@@ -7,12 +7,27 @@ namespace MarsUndiscovered.Components
     public class ShieldGenerator : Gadget
     {
         private int _damageShieldPercentage = 30;
-        public override string Name => "Shield Generator";
+        public override string Name => nameof(ShieldGenerator);
+
+        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity)
+        {
+            var baseDescription = base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity);
+
+            if (!String.IsNullOrEmpty(baseDescription))
+                return baseDescription;
+
+            if (!itemDiscovery.IsEnchantLevelDiscovered)
+                return $"A Shield Generator Gadget";
+
+            return $"A {GetEnchantText(item)} Shield Generator Gadget";
+        }
 
         protected override int RechargeDelay => 300;
 
         public override void ApplyProperties(Item item)
         {
+            base.ApplyProperties(item);
+
             item.DamageShieldPercentage = _damageShieldPercentage + (item.EnchantmentLevel * 10);
 
             if (item.DamageShieldPercentage <= 0)

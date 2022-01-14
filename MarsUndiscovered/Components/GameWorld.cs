@@ -55,6 +55,8 @@ namespace MarsUndiscovered.Components
             }
         }
 
+        public Inventory Inventory { get; private set; }
+
         private BaseGameActionCommand[] _replayHistoricalCommands;
         private int _replayHistoricalCommandIndex;
 
@@ -89,6 +91,8 @@ namespace MarsUndiscovered.Components
             Player = GameObjectFactory.CreatePlayer()
                 .PositionedAt(Map.RandomPosition(MapHelpers.EmptyPointOnFloor))
                 .AddToMap(Map);
+
+            Inventory = new Inventory(this);
 
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
@@ -325,6 +329,7 @@ namespace MarsUndiscovered.Components
             MessageLog.SaveState(saveGameService);
             Player.SaveState(saveGameService);
             HistoricalCommands.SaveState(saveGameService);
+            Inventory.SaveState(saveGameService);
 
             var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameService.Mapper);
             saveGameService.SaveToStore(gameWorldSaveData);
@@ -362,6 +367,9 @@ namespace MarsUndiscovered.Components
             {
                 Map.AddEntity(item);
             }
+
+            Inventory = new Inventory(this);
+            Inventory.LoadState(saveGameService);
         }
 
         public IMemento<GameWorldSaveData> GetSaveState(IMapper mapper)

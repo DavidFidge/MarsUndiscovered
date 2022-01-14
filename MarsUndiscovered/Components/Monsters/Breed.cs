@@ -6,7 +6,7 @@ namespace MarsUndiscovered.Components
     {
         public virtual string GenericArticleLowerCase => "a";
         public virtual string GenericArticleUpperCase => "A";
-        public string Name { get; set; }
+        public abstract string Name { get; }
         public string Description { get; set; }
         public decimal HealthModifier { get; set; }
 
@@ -18,12 +18,12 @@ namespace MarsUndiscovered.Components
         {
             Breeds = new Dictionary<string, Breed>();
 
-            Breeds.Add(Roach.Name.ToLower(), Roach);
+            Breeds.Add(Roach.Name, Roach);
         }
 
         public static Breed GetBreed(string breed)
         {
-            return Breeds[breed.ToLower()];
+            return Breeds[breed];
         }
     }
 }

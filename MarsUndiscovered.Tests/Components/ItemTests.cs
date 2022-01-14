@@ -47,5 +47,95 @@ namespace MarsUndiscovered.Tests.Components
             Assert.AreEqual(300, item.CurrentRechargeDelay);
             Assert.AreEqual(300, item.TotalRechargeDelay);
         }
+
+        [TestMethod]
+        public void Should_Create_HealingBots()
+        {
+            // Act
+            var item = new Item(1)
+                .WithItemType(ItemType.HealingBots);
+
+            // Assert
+            Assert.AreEqual(ItemType.HealingBots, item.ItemType);
+            Assert.AreEqual(0, item.EnchantmentLevel);
+            Assert.IsNull(item.MeleeAttack);
+            Assert.IsFalse(item.IsCharged);
+            Assert.AreEqual(100, item.HealPercentOfMax);
+            Assert.AreEqual((int)(Actor.BaseHealth * 0.5), item.MaxHealthIncrease);
+        }
+
+        [TestMethod]
+        public void CanGroupWith_Should_Return_If_Items_Can_Group()
+        {
+            // Act
+            var item1 = new Item(1).WithItemType(ItemType.HealingBots);
+            var item2 = new Item(2).WithItemType(ItemType.HealingBots);
+            var item3 = new Item(3).WithItemType(ItemType.MagnesiumPipe);
+            var item4 = new Item(4).WithItemType(ItemType.MagnesiumPipe);
+
+            // Assert
+            Assert.IsTrue(item1.CanGroupWith(item2));
+            Assert.IsFalse(item3.CanGroupWith(item4));
+            Assert.IsFalse(item1.CanGroupWith(item4));
+        }
+
+        [TestMethod]
+        [DataRow(1, false, "A Blue NanoFlask")]
+        [DataRow(2, false, "2 Blue NanoFlasks")]
+        [DataRow(1, true, "A NanoFlask of Healing Bots")]
+        [DataRow(2, true, "2 NanoFlasks of Healing Bots")]
+        public void Should_Get_HealingBots_Description(int quantity, bool isDiscovered, string expectedResult)
+        {
+            var item = new Item(1)
+                .WithItemType(ItemType.HealingBots);
+
+            // Act
+            var result = item.GetDescription(new ItemTypeDiscovery("A Blue") { IsItemTypeDiscovered = isDiscovered }, quantity);
+
+            // Assert
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod]
+        [DataRow(1, false, false, "A Shiny Gadget")]
+        [DataRow(1, false, true, "A Shield Generator Gadget")]
+        [DataRow(1, true, true, "A +1 Shield Generator Gadget")]
+        [DataRow(0, true, true, "A +0 Shield Generator Gadget")]
+        [DataRow(-1, true, true, "A -1 Shield Generator Gadget")]
+        public void Should_Get_ShieldGenerator_Description(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
+        {
+            var item = new Item(1)
+                .WithItemType(ItemType.ShieldGenerator)
+                .WithEnchantmentLevel(enchantmentLevel);
+
+            item.ItemDiscovery.IsEnchantLevelDiscovered = isEnchantDiscovered;
+
+            // Act
+            var result = item.GetDescription(new ItemTypeDiscovery("A Shiny") { IsItemTypeDiscovered = isDiscovered }, 1);
+
+            // Assert
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod]
+        [DataRow(1, false, true, "A Magnesium Pipe")]
+        [DataRow(1, false, false, "An Unknown Weapon")]
+        [DataRow(1, true, true, "A +1 Magnesium Pipe")]
+        [DataRow(0, true, true, "A +0 Magnesium Pipe")]
+        [DataRow(-1, true, true, "A -1 Magnesium Pipe")]
+        public void Should_Get_MagnesiumPipe_Description(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
+        {
+            var item = new Item(1)
+                .WithItemType(ItemType.MagnesiumPipe)
+                .WithEnchantmentLevel(enchantmentLevel);
+
+            item.ItemDiscovery.IsEnchantLevelDiscovered = isEnchantDiscovered;
+
+            // Act
+            var result = item.GetDescription(new ItemTypeDiscovery("A Shiny") { IsItemTypeDiscovered = isDiscovered }, 1);
+
+            // Assert
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }

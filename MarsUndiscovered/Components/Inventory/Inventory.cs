@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +7,8 @@ using AutoMapper;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
+
+using GoRogue.Random;
 
 using MarsUndiscovered.Components.SaveData;
 using MarsUndiscovered.Interfaces;
@@ -18,27 +19,15 @@ using NGenerics.Extensions;
 
 namespace MarsUndiscovered.Components
 {
-    public class ItemGroup : List<Item>
-    {
-        public ItemGroup(Item item)
-        {
-            Add(item);
-        }
-
-        public ItemGroup(List<Item> item)
-        {
-            AddRange(item);
-        }
-    }
-
     public class Inventory : IMementoState<InventorySaveData>, ISaveable, ICollection<Item>
     {
         private readonly IGameWorld _gameWorld;
 
-        public List<Item> Items { get; set; }
+        public List<Item> Items { get; set; } = new List<Item>();
         public Dictionary<Keys, ItemGroup> ItemKeyAssignments { get; set; } = new Dictionary<Keys, ItemGroup>();
         public Dictionary<Item, string> CallItem { get; set; } = new Dictionary<Item, string>();
         public Dictionary<ItemType, string> CallItemType { get; set; } = new Dictionary<ItemType, string>();
+        public Dictionary<ItemType, ItemTypeDiscovery> ItemTypeDiscoveries { get; set; } = new Dictionary<ItemType, ItemTypeDiscovery>();
 
         private static readonly Keys[] CandidateKeys = {
             Keys.A,
@@ -69,6 +58,79 @@ namespace MarsUndiscovered.Components
             Keys.Z
         };
 
+        private static string[] RandomFlaskNames =
+        {
+            "A Red",
+            "An Orange",
+            "A Yellow",
+            "A Blue",
+            "A Green",
+            "A Purple",
+            "A White",
+            "A Black",
+            "A Violet",
+            "A Magenta",
+            "An Aqua",
+            "A Turquoise"
+        };
+
+        private static string[] RandomGadgetNames =
+        {
+            "A Shiny",
+            "A Sparkling",
+            "A Smooth",
+            "A Rough",
+            "A Vibrating",
+            "A Warm",
+            "A Cold",
+            "A Dull",
+            "A Mysterious",
+            "A Complicated",
+            "An Intricate",
+            "A Fiddly"
+        };
+
+        public Inventory(IGameWorld gameWorld)
+        {
+            _gameWorld = gameWorld;
+
+            var unusedFlaskNames = new List<string>(RandomFlaskNames);
+
+            var index = GlobalRandom.DefaultRNG.Next(0, unusedFlaskNames.Count - 1);
+            ItemTypeDiscoveries.Add(ItemType.HealingBots, new ItemTypeDiscovery(unusedFlaskNames[index]));
+
+            var unusedGadgetNames = new List<string>(RandomGadgetNames);
+            index = GlobalRandom.DefaultRNG.Next(0, unusedGadgetNames.Count - 1);
+            ItemTypeDiscoveries.Add(ItemType.ShieldGenerator, new ItemTypeDiscovery(unusedGadgetNames[index]));
+        }
+
+        public List<InventoryItem> GetInventoryItems()
+        {
+            var inventoryItems = ItemKeyAssignments.Keys
+                .Select(
+                    key =>
+                    {
+                        var item = ItemKeyAssignments[key].First();
+
+                        ItemTypeDiscoveries.TryGetValue(item.ItemType, out var itemTypeDiscovery);
+
+                        return new InventoryItem
+                        {
+                            ItemDescription = item.GetDescription(
+                                itemTypeDiscovery,
+                                ItemKeyAssignments[key].Count
+                            ),
+                            ItemType = item.ItemType,
+                            Key = key,
+                            KeyDescription = $"{key.ToString().ToLower()})",
+                            LongDescription = item.GetLongDescription(itemTypeDiscovery)
+                        };
+                    }
+                ).ToList();
+
+            return inventoryItems;
+        }
+        
         public Keys GetNextUnusedKey()
         {
             return CandidateKeys.First(k => !ItemKeyAssignments.ContainsKey(k));
@@ -76,6 +138,9 @@ namespace MarsUndiscovered.Components
 
         public void AssignNewKey(Item item, Keys key)
         {
+            if (!CandidateKeys.Contains(key))
+                return;
+
             var currentItemAssignment = ItemKeyAssignments.First(i => i.Value.Contains(item));
 
             if (ItemKeyAssignments.ContainsKey(key))
@@ -99,11 +164,6 @@ namespace MarsUndiscovered.Components
             return null;
         }
 
-        public Inventory(IGameWorld gameWorld)
-        {
-            _gameWorld = gameWorld;
-        }
-
         public IMemento<InventorySaveData> GetSaveState(IMapper mapper)
         {
             var mementoForDerivedType = Memento<InventorySaveData>.CreateWithAutoMapper(this, mapper);
@@ -124,6 +184,9 @@ namespace MarsUndiscovered.Components
                 .ToDictionary(k => _gameWorld.Items[k.Key], v => v.Value);
 
             CallItemType = memento.State.CallItemType
+                .ToDictionary(k => ItemType.ItemTypes[k.Key], v => v.Value);
+
+            ItemTypeDiscoveries = memento.State.ItemTypeDiscoveries
                 .ToDictionary(k => ItemType.ItemTypes[k.Key], v => v.Value);
         }
 
@@ -151,6 +214,9 @@ namespace MarsUndiscovered.Components
         public void Add(Item item)
         {
             if (item == null)
+                return;
+
+            if (Items.Contains(item))
                 return;
 
             Items.Add(item);

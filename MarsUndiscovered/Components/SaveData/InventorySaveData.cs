@@ -10,5 +10,6 @@ namespace MarsUndiscovered.Components.SaveData
         public Dictionary<Keys, List<uint>> ItemKeyAssignments { get; set; }
         public Dictionary<uint, string> CallItem { get; set; }
         public Dictionary<string, string> CallItemType { get; set; }
+        public Dictionary<string, ItemTypeDiscovery> ItemTypeDiscoveries { get; set; }
     }
 }

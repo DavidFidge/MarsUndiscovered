@@ -19,6 +19,7 @@ namespace MarsUndiscovered.Components
         public int HealPercentOfMax { get; set; }
         public int MaxHealthIncrease { get; set; }
         public bool GroupsInInventory { get; set; }
+        public ItemDiscovery ItemDiscovery { get; set; } = new ItemDiscovery();
 
         public Item(uint id) : base(2, true, true, () => id)
         {
@@ -29,6 +30,13 @@ namespace MarsUndiscovered.Components
             ItemType = itemType;
             ItemType.ApplyEnchantmentLevel(this);
             ItemType.ApplyProperties(this);
+
+            return this;
+        }
+
+        public Item WithEnchantmentLevel(int enchantmentLevel)
+        {
+            EnchantmentLevel = enchantmentLevel;
 
             return this;
         }
@@ -46,6 +54,16 @@ namespace MarsUndiscovered.Components
         public bool CanGroupWith(Item item)
         {
             return GroupsInInventory && item.ItemType == ItemType;
+        }
+
+        public string GetDescription(ItemTypeDiscovery itemTypeDiscovery, int quantity)
+        {
+            return ItemType.GetDescription(this, ItemDiscovery, itemTypeDiscovery, quantity);
+        }
+
+        public string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
+        {
+            return "Placeholder for long description";
         }
     }
 }
