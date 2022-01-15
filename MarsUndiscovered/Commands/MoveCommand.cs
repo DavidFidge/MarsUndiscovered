@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 using AutoMapper;
 
@@ -10,9 +9,10 @@ using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
 
+using MarsUndiscovered.Components;
 using MarsUndiscovered.Messages;
 
-using Point = SadRogue.Primitives.Point;
+using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Commands
 {
@@ -42,13 +42,28 @@ namespace MarsUndiscovered.Commands
 
         protected override CommandResult ExecuteInternal()
         {
+            var subsequentCommands = new List<BaseGameActionCommand>();
+
             GameObject.Position = FromTo.Item2;
+
+            if (GameObject is Player)
+            {
+                var item = GameObject.CurrentMap.GetObjectAt<Item>(GameObject.Position);
+
+                if (item != null)
+                {
+                    var pickUpItemCommand = CommandFactory.CreatePickUpItemCommand(GameWorld);
+                    pickUpItemCommand.Initialise(item, GameObject);
+                    subsequentCommands.Add(pickUpItemCommand);
+                }
+            }
+
             GameWorld.RebuildGoalMaps();
 
             Mediator.Publish(new MapTileChangedNotification(FromTo.Item1));
             Mediator.Publish(new MapTileChangedNotification(FromTo.Item2));
 
-            return Result(CommandResult.Success(this));
+            return Result(CommandResult.Success(this, subsequentCommands));
         }
 
         protected override void UndoInternal()

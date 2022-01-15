@@ -11,6 +11,7 @@ namespace MarsUndiscovered.Components.Factories
         public IFactory<WalkCommand> WalkCommandFactory { get; set; }
         public IFactory<AttackCommand> AttackCommandFactory { get; set; }
         public IFactory<DeathCommand> DeathCommandFactory { get; set; }
+        public IFactory<PickUpItemCommand> PickUpItemCommandFactory { get; set; }
 
         private T CreateCommand<T, TData>(Func<T> createMethod, IGameWorld gameWorld) where T : BaseMarsGameActionCommand<TData>
         {
@@ -36,6 +37,11 @@ namespace MarsUndiscovered.Components.Factories
         public DeathCommand CreateDeathCommand(IGameWorld gameWorld)
         {
             return CreateCommand<DeathCommand, DeathCommandSaveData>(() => DeathCommandFactory.Create(), gameWorld);
+        }
+
+        public PickUpItemCommand CreatePickUpItemCommand(IGameWorld gameWorld)
+        {
+            return CreateCommand<PickUpItemCommand, PickUpItemSaveData>(() => PickUpItemCommandFactory.Create(), gameWorld);
         }
     }
 }

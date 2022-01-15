@@ -32,6 +32,7 @@ namespace MarsUndiscovered.Interfaces
         FloorCollection Floors { get; }
         MonsterCollection Monsters { get; }
         ItemCollection Items { get; }
+        Inventory Inventory { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
         LoadGameResult LoadReplay(string saveGameName);

@@ -1,58 +1,65 @@
 ﻿using System;
-using FrigidRogue.MonoGame.Core.Interfaces.Services;
-using FrigidRogue.TestInfrastructure;
-using GoRogue.Components;
+using System.Linq;
+
+using FrigidRogue.MonoGame.Core.Components;
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components;
-using MarsUndiscovered.Interfaces;
-using MediatR;
+using MarsUndiscovered.Components.Factories;
+using MarsUndiscovered.Tests.Components.GameWorldTests;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NSubstitute;
+
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Commands
 {
     [TestClass]
-    public class MoveCommandTests : BaseTest
+    public class MoveCommandTests : BaseGameWorldIntegrationTests
     {
-        private MoveCommand _moveCommand;
-
-        [TestInitialize]
-        public override void Setup()
-        {
-            base.Setup();
-
-            _moveCommand = SetupBaseComponent(new MoveCommand());
-
-            _moveCommand.SetGameWorld(Substitute.For<IGameWorld>());
-
-            _moveCommand.GameTurnService = Substitute.For<IGameTurnService>();
-        }
-
         [TestMethod]
         public void MoveCommand_Should_Move_GameObject()
         {
             // Arrange
-            var testGameObject = new TestGameObject(new Point(1, 1), 1);
-            var newPosition = new Point(2, 2);
-            _moveCommand.Initialise(testGameObject, new Tuple<Point, Point>(new Point(1, 1), newPosition));
+            NewGameWithNoWallsNoMonstersNoItems();
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            var commandFactory = Container.Resolve<ICommandFactory>();
+
+            var moveCommand = commandFactory.CreateMoveCommand(_gameWorld);
+            var newPosition = new Point(0, 1);
+
+            moveCommand.Initialise(_gameWorld.Player, new Tuple<Point, Point>(_gameWorld.Player.Position, newPosition));
 
             // Act
-             _moveCommand.Execute();
+            var result = moveCommand.Execute();
 
             // Assert
-            Assert.AreEqual(testGameObject.Position, newPosition);
+            Assert.AreEqual(_gameWorld.Player.Position, newPosition);
+            Assert.AreEqual(CommandResultEnum.Success, result.Result);
         }
 
-        private class TestGameObject : MarsGameObject
+        [TestMethod]
+        public void MoveCommand_Should_Create_Subsequent_Command_To_Pick_Up_Object()
         {
-            public TestGameObject(Point position, int layer, bool isWalkable = true, bool isTransparent = true, Func<uint> idGenerator = null, IComponentCollection customComponentCollection = null) : base(position, layer, isWalkable, isTransparent, idGenerator, customComponentCollection)
-            {
-            }
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+            var newPosition = new Point(0, 1);
 
-            public TestGameObject(int layer, bool isWalkable = true, bool isTransparent = true, Func<uint> idGenerator = null, IComponentCollection customComponentCollection = null) : base(layer, isWalkable, isTransparent, idGenerator, customComponentCollection)
-            {
-            }
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(newPosition));
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            var commandFactory = Container.Resolve<ICommandFactory>();
+
+            var moveCommand = commandFactory.CreateMoveCommand(_gameWorld);
+
+            moveCommand.Initialise(_gameWorld.Player, new Tuple<Point, Point>(_gameWorld.Player.Position, newPosition));
+
+            // Act
+            var result = moveCommand.Execute();
+
+            // Assert
+            Assert.AreEqual(1, result.SubsequentCommands.Count);
+            Assert.IsTrue(result.SubsequentCommands.First() is PickUpItemCommand);
         }
     }
 }

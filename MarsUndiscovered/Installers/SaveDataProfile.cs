@@ -56,6 +56,7 @@ namespace MarsUndiscovered.Installers
             CreateMap<WalkCommandSaveData, WalkCommand>();
             CreateMap<AttackCommandSaveData, AttackCommand>();
             CreateMap<DeathCommandSaveData, DeathCommand>();
+            CreateMap<PickUpItemSaveData, PickUpItemCommand>();
         }
 
         private void MapForSave()
@@ -84,6 +85,7 @@ namespace MarsUndiscovered.Installers
             CreateMap<WalkCommand, WalkCommandSaveData>();
             CreateMap<AttackCommand, AttackCommandSaveData>();
             CreateMap<DeathCommand, DeathCommandSaveData>();
+            CreateMap<PickUpItemCommand, PickUpItemSaveData>();
         }
     }
 }

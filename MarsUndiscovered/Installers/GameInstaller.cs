@@ -168,6 +168,9 @@ namespace MarsUndiscovered.Installers
                     .AsFactory(),
 
                 Component.For<IFactory<DeathCommand>>()
+                    .AsFactory(),
+
+                Component.For<IFactory<PickUpItemCommand>>()
                     .AsFactory()
             );
         }

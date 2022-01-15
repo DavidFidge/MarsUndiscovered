@@ -93,15 +93,21 @@ namespace MarsUndiscovered.Components
 
             Inventory = new Inventory(this);
 
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            //SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            //SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            //SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            //SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
 
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
 
@@ -361,12 +367,14 @@ namespace MarsUndiscovered.Components
 
             foreach (var monster in Monsters.Values)
             {
-                Map.AddEntity(monster);
+                if (monster.Position != Point.None)
+                    Map.AddEntity(monster);
             }
 
             foreach (var item in Items.Values)
             {
-                Map.AddEntity(item);
+                if (item.Position != Point.None)
+                    Map.AddEntity(item);
             }
 
             Inventory = new Inventory(this);

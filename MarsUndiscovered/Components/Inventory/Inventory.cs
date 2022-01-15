@@ -23,6 +23,9 @@ namespace MarsUndiscovered.Components
     {
         private readonly IGameWorld _gameWorld;
 
+        private static int ItemLimit => 26;
+        public bool CanPickUpItem => Items.Count < ItemLimit;
+
         public List<Item> Items { get; set; } = new List<Item>();
         public Dictionary<Keys, ItemGroup> ItemKeyAssignments { get; set; } = new Dictionary<Keys, ItemGroup>();
         public Dictionary<Item, string> CallItem { get; set; } = new Dictionary<Item, string>();
@@ -129,7 +132,16 @@ namespace MarsUndiscovered.Components
 
             return inventoryItems;
         }
-        
+
+        public string GetInventoryDescriptionAsSingleItem(Item item)
+        {
+            ItemTypeDiscoveries.TryGetValue(item.ItemType, out var itemTypeDiscovery);
+            return item.GetDescription(
+                itemTypeDiscovery,
+                1
+            );
+        }
+
         public Keys GetNextUnusedKey()
         {
             return CandidateKeys.First(k => !ItemKeyAssignments.ContainsKey(k));

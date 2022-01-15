@@ -22,10 +22,6 @@ namespace MarsUndiscovered.Commands
     {
         public Direction Direction { get; set; }
         public Player Player { get; private set; }
-
-        [JsonIgnore]
-        public ICommandFactory CommandFactory { get; set; }
-
         protected Map Map => GameWorld.Map;
 
         public void Initialise(Player player, Direction direction)
