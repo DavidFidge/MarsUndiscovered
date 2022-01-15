@@ -24,6 +24,9 @@ namespace MarsUndiscovered.UserInterface.Input
 
             if (ActionMap.ActionIs<NextReplayCommandRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new NextReplayCommandRequest());
+
+            if (ActionMap.ActionIs<OpenReplayInventoryRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new OpenReplayInventoryRequest());
         }
 
         public override void HandleKeyboardKeyRepeat(Keys repeatingKey, KeyboardModifier keyboardModifier)

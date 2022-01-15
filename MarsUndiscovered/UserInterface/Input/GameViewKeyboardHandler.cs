@@ -25,6 +25,9 @@ namespace MarsUndiscovered.UserInterface.Input
             if (ActionMap.ActionIs<OpenConsoleRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new OpenConsoleRequest());
 
+            if (ActionMap.ActionIs<OpenGameInventoryRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new OpenGameInventoryRequest());
+
             ProcessMovement(keyInFocus, keyboardModifier);
         }
 

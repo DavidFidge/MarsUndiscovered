@@ -47,12 +47,11 @@ namespace MarsUndiscovered.Components
         public MessageLog MessageLog { get; } = new MessageLog();
         public IMapper Mapper { get; set; }
         public uint Seed { get; set; }
+
         public string LoadGameDetail
         {
             get => $"Seed: {Seed}";
-            set
-            {
-            }
+            set { }
         }
 
         public Inventory Inventory { get; private set; }
@@ -427,6 +426,11 @@ namespace MarsUndiscovered.Components
             }
 
             return null;
+        }
+
+        public List<InventoryItem> GetInventoryItems()
+        {
+            return Inventory.GetInventoryItems();
         }
     }
 }

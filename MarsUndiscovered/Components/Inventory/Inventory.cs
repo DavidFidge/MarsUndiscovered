@@ -122,7 +122,6 @@ namespace MarsUndiscovered.Components
                             ),
                             ItemType = item.ItemType,
                             Key = key,
-                            KeyDescription = $"{key.ToString().ToLower()})",
                             LongDescription = item.GetLongDescription(itemTypeDiscovery)
                         };
                     }

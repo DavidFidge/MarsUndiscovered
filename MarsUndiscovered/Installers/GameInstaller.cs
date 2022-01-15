@@ -54,6 +54,8 @@ namespace MarsUndiscovered.Installers
             RegisterGameView(container, store);
             RegisterReplayView(container, store);
             RegisterSaveGameView(container, store);
+            RegisterInventoryGameView(container, store);
+            RegisterInventoryReplayView(container, store);
 
             RegisterKeyboardHandlers(container);
             RegisterMouseHandlers(container);
@@ -319,6 +321,26 @@ namespace MarsUndiscovered.Installers
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IConsoleCommand>()
                     .WithServiceDefaultInterfaces()
+            );
+        }
+
+        private void RegisterInventoryGameView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<InventoryGameView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, InventoryGameViewKeyboardHandler>()),
+
+                Component.For<InventoryGameViewModel>()
+            );
+        }
+
+        private void RegisterInventoryReplayView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<InventoryReplayView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, InventoryReplayViewKeyboardHandler>()),
+
+                Component.For<InventoryReplayViewModel>()
             );
         }
     }

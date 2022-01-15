@@ -28,6 +28,8 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<CloseInGameOptionsRequest>,
         IRequestHandler<OpenConsoleRequest>,
         IRequestHandler<CloseConsoleRequest>,
+        IRequestHandler<OpenGameInventoryRequest>,
+        IRequestHandler<CloseGameInventoryRequest>,
         IRequestHandler<LeftClickViewRequest>,
         IRequestHandler<RightClickViewRequest>,
         IRequestHandler<MoveUpRequest>,
@@ -42,6 +44,7 @@ namespace MarsUndiscovered.UserInterface.Views
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
+        private readonly InventoryGameView _inventoryGameView;
         private readonly GameViewGameOverKeyboardHandler _gameOverKeyboardHandler;
         private readonly IStopwatchProvider _stopwatchProvider;
         private Path _currentMovePath;
@@ -52,6 +55,7 @@ namespace MarsUndiscovered.UserInterface.Views
             GameViewModel gameViewModel,
             InGameOptionsView inGameOptionsView,
             ConsoleView consoleView,
+            InventoryGameView inventoryGameView,
             GameViewGameOverKeyboardHandler gameOverKeyboardHandler,
             IGameCamera gameCamera,
             IStopwatchProvider stopwatchProvider
@@ -60,6 +64,7 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _inGameOptionsView = inGameOptionsView;
             _consoleView = consoleView;
+            _inventoryGameView = inventoryGameView;
             _gameOverKeyboardHandler = gameOverKeyboardHandler;
             _stopwatchProvider = stopwatchProvider;
         }
@@ -72,6 +77,7 @@ namespace MarsUndiscovered.UserInterface.Views
             CreateMessageLog();
             CreateStatusPanel();
             SetupConsole();
+            SetupInventoryGame();
             SetupChildPanel(_inGameOptionsView);
 
             _stopwatchProvider.Start();
@@ -110,37 +116,48 @@ namespace MarsUndiscovered.UserInterface.Views
             RootPanel.AddChild(_consoleView.RootPanel);
         }
 
-        public Task<Unit> Handle(OpenInGameOptionsRequest request, CancellationToken cancellationToken)
+        private void SetupInventoryGame()
+        {
+            _inventoryGameView.Initialize();
+
+            RootPanel.AddChild(_inventoryGameView.RootPanel);
+        }
+
+        private void BeforeViewChange()
         {
             _currentMovePath = null;
+        }
+
+        public Task<Unit> Handle(OpenInGameOptionsRequest request, CancellationToken cancellationToken)
+        {
+            BeforeViewChange();
             _inGameOptionsView.Show();
             return Unit.Task;
         }
 
         public Task<Unit> Handle(CloseInGameOptionsRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             _inGameOptionsView.Hide();
             return Unit.Task;
         }
 
         public Task<Unit> Handle(OpenConsoleRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             _consoleView.Show();
             return Unit.Task;
         }
 
         public Task<Unit> Handle(CloseConsoleRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
             _consoleView.Hide();
             return Unit.Task;
         }
 
         public Task<Unit> Handle(LeftClickViewRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             var ray = _gameCamera.GetPointerRay(request.X, request.Y);
             _currentMovePath = _viewModel.GetPathToDestination(ray);
 
@@ -149,13 +166,13 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(RightClickViewRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             return Unit.Task;
         }
 
         public Task<Unit> Handle(MoveUpRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             _viewModel.Move(request.Direction);
 
             return Unit.Task;
@@ -163,7 +180,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(MoveDownRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             _viewModel.Move(request.Direction);
 
             return Unit.Task;
@@ -171,7 +188,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(MoveLeftRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             _viewModel.Move(request.Direction);
 
             return Unit.Task;
@@ -179,7 +196,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(MoveRightRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             _viewModel.Move(request.Direction);
 
             return Unit.Task;
@@ -187,7 +204,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(MoveUpLeftRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             _viewModel.Move(request.Direction);
 
             return Unit.Task;
@@ -195,7 +212,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(MoveUpRightRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             _viewModel.Move(request.Direction);
 
             return Unit.Task;
@@ -203,7 +220,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(MoveDownLeftRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             _viewModel.Move(request.Direction);
 
             return Unit.Task;
@@ -211,7 +228,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(MoveDownRightRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             _viewModel.Move(request.Direction);
 
             return Unit.Task;
@@ -219,7 +236,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(MoveWaitRequest request, CancellationToken cancellationToken)
         {
-            _currentMovePath = null;
+            BeforeViewChange();
             _viewModel.Move(request.Direction);
 
             return Unit.Task;
@@ -262,6 +279,19 @@ namespace MarsUndiscovered.UserInterface.Views
                 if (isComplete)
                     _currentMovePath = null;
             }
+        }
+
+        public Task<Unit> Handle(OpenGameInventoryRequest request, CancellationToken cancellationToken)
+        {
+            BeforeViewChange();
+            _inventoryGameView.Show();
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(CloseGameInventoryRequest request, CancellationToken cancellationToken)
+        {
+            _inventoryGameView.Hide();
+            return Unit.Task;
         }
     }
 }

@@ -21,19 +21,24 @@ namespace MarsUndiscovered.UserInterface.Views
     public class ReplayView : BaseGameView<ReplayViewModel, ReplayData>,
         IRequestHandler<NextReplayCommandRequest>,
         IRequestHandler<OpenInReplayOptionsRequest>,
-        IRequestHandler<CloseInReplayOptionsRequest>
+        IRequestHandler<CloseInReplayOptionsRequest>,
+        IRequestHandler<OpenReplayInventoryRequest>,
+        IRequestHandler<CloseReplayInventoryRequest>
     {
         private readonly InReplayOptionsView _inReplayOptionsView;
+        private readonly InventoryReplayView _inventoryReplayView;
         private Label _turnLabel;
 
         public ReplayView(
             ReplayViewModel gameViewModel,
             InReplayOptionsView inReplayOptionsView,
+            InventoryReplayView inventoryReplayView,
             IGameCamera gameCamera
         )
             : base(gameCamera, gameViewModel)
         {
             _inReplayOptionsView = inReplayOptionsView;
+            _inventoryReplayView = inventoryReplayView;
         }
 
         protected override void InitializeInternal()
@@ -44,7 +49,15 @@ namespace MarsUndiscovered.UserInterface.Views
             CreatePlayerPanel();
             CreateMessageLog();
             CreateStatusPanel();
+            SetupInventoryGame();
             SetupChildPanel(_inReplayOptionsView);
+        }
+
+        private void SetupInventoryGame()
+        {
+            _inventoryReplayView.Initialize();
+
+            RootPanel.AddChild(_inventoryReplayView.RootPanel);
         }
 
         private void CreateReplayView()
@@ -109,6 +122,18 @@ namespace MarsUndiscovered.UserInterface.Views
             base.ViewModelChanged();
 
             _turnLabel.Text = $"Turn {_viewModel.TurnNumber}";
+        }
+
+        public Task<Unit> Handle(OpenReplayInventoryRequest request, CancellationToken cancellationToken)
+        {
+            _inventoryReplayView.Show();
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(CloseReplayInventoryRequest request, CancellationToken cancellationToken)
+        {
+            _inventoryReplayView.Hide();
+            return Unit.Task;
         }
     }
 }

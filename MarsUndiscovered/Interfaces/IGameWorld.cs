@@ -41,5 +41,6 @@ namespace MarsUndiscovered.Interfaces
         Path GetPathToPlayer(Point mapPosition);
         string GetGameObjectInformationAt(Point point);
         void SpawnItem(SpawnItemParams spawnItemParams);
+        List<InventoryItem> GetInventoryItems();
     }
 }

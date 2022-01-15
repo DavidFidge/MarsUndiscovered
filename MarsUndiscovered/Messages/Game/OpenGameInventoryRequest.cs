@@ -2,12 +2,10 @@
 using MediatR;
 using Microsoft.Xna.Framework.Input;
 
-using SadRogue.Primitives;
-
 namespace MarsUndiscovered.Messages
 {
-    [ActionMap(Name = "Open Inventory", DefaultKey = Keys.I)]
-    public class OpenInventoryNotification : INotification
+    [ActionMap(Name = "Open Game Inventory", DefaultKey = Keys.I)]
+    public class OpenGameInventoryRequest : IRequest
     {
     }
 }
