@@ -4,6 +4,8 @@ using System.Linq;
 
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.ConsoleCommands;
+using FrigidRogue.MonoGame.Core.Extensions;
+
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 
@@ -24,6 +26,12 @@ namespace MarsUndiscovered.ConsoleCommands
             {
                 var itemType = consoleCommand.Params[0];
 
+                if (!ItemType.ItemTypes.ContainsKey(itemType))
+                {
+                    consoleCommand.Result = $"Invalid item type {itemType}. Valid item types are {ItemType.ItemTypes.Keys.ToCsv()}.";
+                    return;
+                }
+
                 GameWorldProvider.GameWorld.SpawnItem(new SpawnItemParams().WithItemType(itemType));
 
                 consoleCommand.Result = $"Spawned item {itemType}";
@@ -31,7 +39,7 @@ namespace MarsUndiscovered.ConsoleCommands
                 return;
             }
 
-            consoleCommand.Result = "Required Parameter ItemType";
+            consoleCommand.Result = $"Required Parameter ItemType. Valid item types are {ItemType.ItemTypes.Keys.ToCsv()}.";
         }
     }
 }

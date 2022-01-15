@@ -37,7 +37,10 @@ namespace MarsUndiscovered.Components
 
         public static ItemType GetItemType(string itemType)
         {
-            return ItemTypes[itemType];
+            if (ItemTypes.ContainsKey(itemType))
+                return ItemTypes[itemType];
+
+            return null;
         }
 
         public abstract string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity);

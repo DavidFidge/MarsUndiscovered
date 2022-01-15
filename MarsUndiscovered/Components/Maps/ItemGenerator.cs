@@ -15,6 +15,9 @@ namespace MarsUndiscovered.Components.Maps
 
         public Item SpawnItem(SpawnItemParams spawnItemParams, Map map, ItemCollection itemCollection)
         {
+            if (spawnItemParams.ItemType == null)
+                return null;
+
             var item = GameObjectFactory
                 .CreateItem()
                 .WithItemType(spawnItemParams.ItemType)

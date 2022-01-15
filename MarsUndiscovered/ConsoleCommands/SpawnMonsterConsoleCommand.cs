@@ -4,6 +4,8 @@ using System.Linq;
 
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.ConsoleCommands;
+using FrigidRogue.MonoGame.Core.Extensions;
+
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 
@@ -24,14 +26,19 @@ namespace MarsUndiscovered.ConsoleCommands
             {
                 var breed = consoleCommand.Params[0];
 
+                if (!Breed.Breeds.ContainsKey(breed))
+                {
+                    consoleCommand.Result = $"Invalid breed {breed}. Valid breeds are {Breed.Breeds.Keys.ToCsv()}.";
+                    return;
+
+                }
+
                 GameWorldProvider.GameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(breed));
-
                 consoleCommand.Result = $"Spawned monster {breed}";
-
                 return;
             }
 
-            consoleCommand.Result = "Required Parameter Breed";
+            consoleCommand.Result = $"Required Parameter Breed. Valid breeds are {Breed.Breeds.Keys.ToCsv()}.";
         }
     }
 }

@@ -17,7 +17,6 @@ using MarsUndiscovered.Components;
 using MarsUndiscovered.Messages;
 using MediatR;
 
-using Microsoft.Win32;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
