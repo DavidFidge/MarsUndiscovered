@@ -17,6 +17,7 @@ using MarsUndiscovered.Components;
 using MarsUndiscovered.Messages;
 using MediatR;
 
+using Microsoft.Win32;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -83,6 +84,8 @@ namespace MarsUndiscovered
                 _startNewGameFromCommandLine = true;
 
             EffectCollection = new EffectCollection(_gameProvider);
+
+            Window.AllowUserResizing = true;
         }
 
         /// <summary>
