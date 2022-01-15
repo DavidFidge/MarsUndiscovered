@@ -1,5 +1,5 @@
 ﻿using System;
-using FrigidRogue.MonoGame.Core.Components;
+
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Interfaces;
 
@@ -7,41 +7,34 @@ namespace MarsUndiscovered.Components.Factories
 {
     public class CommandFactory : ICommandFactory
     {
-        public IFactory<MoveCommand> MoveCommandFactory { get; set; }
-        public IFactory<WalkCommand> WalkCommandFactory { get; set; }
-        public IFactory<AttackCommand> AttackCommandFactory { get; set; }
-        public IFactory<DeathCommand> DeathCommandFactory { get; set; }
-        public IFactory<PickUpItemCommand> PickUpItemCommandFactory { get; set; }
-
-        private T CreateCommand<T, TData>(Func<T> createMethod, IGameWorld gameWorld) where T : BaseMarsGameActionCommand<TData>
-        {
-            var command = createMethod();
-            command.SetGameWorld(gameWorld);
-            return command;
-        }
+        public ICommandFactory<MoveCommand> MoveCommandFactory { get; set; }
+        public ICommandFactory<WalkCommand> WalkCommandFactory { get; set; }
+        public ICommandFactory<AttackCommand> AttackCommandFactory { get; set; }
+        public ICommandFactory<DeathCommand> DeathCommandFactory { get; set; }
+        public ICommandFactory<PickUpItemCommand> PickUpItemCommandFactory { get; set; }
 
         public MoveCommand CreateMoveCommand(IGameWorld gameWorld)
         {
-            return CreateCommand<MoveCommand, MoveCommandSaveData>(() => MoveCommandFactory.Create(), gameWorld);
+            return MoveCommandFactory.Create(gameWorld);
         }
 
         public WalkCommand CreateWalkCommand(IGameWorld gameWorld)
         {
-            return CreateCommand<WalkCommand, WalkCommandSaveData>(() => WalkCommandFactory.Create(), gameWorld);
+            return WalkCommandFactory.Create(gameWorld);
         }
         public AttackCommand CreateAttackCommand(IGameWorld gameWorld)
         {
-            return CreateCommand<AttackCommand, AttackCommandSaveData>(() => AttackCommandFactory.Create(), gameWorld);
+            return AttackCommandFactory.Create(gameWorld);
         }
 
         public DeathCommand CreateDeathCommand(IGameWorld gameWorld)
         {
-            return CreateCommand<DeathCommand, DeathCommandSaveData>(() => DeathCommandFactory.Create(), gameWorld);
+            return DeathCommandFactory.Create(gameWorld);
         }
 
         public PickUpItemCommand CreatePickUpItemCommand(IGameWorld gameWorld)
         {
-            return CreateCommand<PickUpItemCommand, PickUpItemSaveData>(() => PickUpItemCommandFactory.Create(), gameWorld);
+            return PickUpItemCommandFactory.Create(gameWorld);
         }
     }
 }

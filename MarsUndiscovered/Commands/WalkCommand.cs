@@ -24,6 +24,10 @@ namespace MarsUndiscovered.Commands
         public Player Player { get; private set; }
         protected Map Map => GameWorld.Map;
 
+        public WalkCommand(IGameWorld gameWorld) : base(gameWorld)
+        {
+        }
+
         public void Initialise(Player player, Direction direction)
         {
             Player = player;

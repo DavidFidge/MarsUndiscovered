@@ -11,6 +11,7 @@ using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.GameFramework;
 
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Interfaces;
 
 using SadRogue.Primitives;
 
@@ -20,7 +21,11 @@ namespace MarsUndiscovered.Commands
     {
         public Item Item { get; private set; }
         public IGameObject GameObject { get; private set; }
-        
+
+        public PickUpItemCommand(IGameWorld gameWorld) : base(gameWorld)
+        {
+        }
+
         public void Initialise(Item item, IGameObject gameObject)
         {
             GameObject = gameObject;

@@ -9,9 +9,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components;
-using MarsUndiscovered.Components.Factories;
-
-using Newtonsoft.Json;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Commands
 {
@@ -22,8 +20,9 @@ namespace MarsUndiscovered.Commands
 
         private int _damage;
 
-        [JsonIgnore]
-        public ICommandFactory CommandFactory { get; set; }
+        public AttackCommand(IGameWorld gameWorld) : base(gameWorld)
+        {
+        }
 
         public void Initialise(Actor source, Actor target)
         {

@@ -9,6 +9,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 
 using SadRogue.Primitives;
@@ -20,6 +21,10 @@ namespace MarsUndiscovered.Commands
         public string KilledByMessage { get; private set; }
         public Actor Source { get; private set; }
         private Point _oldPosition;
+
+        public DeathCommand(IGameWorld gameWorld) : base(gameWorld)
+        {
+        }
 
         public void Initialise(Actor source, string killedByMessage)
         {

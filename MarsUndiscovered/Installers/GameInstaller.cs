@@ -158,19 +158,19 @@ namespace MarsUndiscovered.Installers
                 Component.For<ICommandFactory>()
                     .ImplementedBy<CommandFactory>(),
 
-                Component.For<IFactory<MoveCommand>>()
+                Component.For<ICommandFactory<MoveCommand>>()
                    .AsFactory(),
 
-                Component.For<IFactory<WalkCommand>>()
+                Component.For<ICommandFactory<WalkCommand>>()
                     .AsFactory(),
 
-                Component.For<IFactory<AttackCommand>>()
+                Component.For<ICommandFactory<AttackCommand>>()
                     .AsFactory(),
 
-                Component.For<IFactory<DeathCommand>>()
+                Component.For<ICommandFactory<DeathCommand>>()
                     .AsFactory(),
 
-                Component.For<IFactory<PickUpItemCommand>>()
+                Component.For<ICommandFactory<PickUpItemCommand>>()
                     .AsFactory()
             );
         }

@@ -10,6 +10,7 @@ using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.GameFramework;
 
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 
 using SadRogue.Primitives;
@@ -20,6 +21,10 @@ namespace MarsUndiscovered.Commands
     {
         public IGameObject GameObject { get; private set; }
         public Tuple<Point, Point> FromTo { get; set; }
+
+        public MoveCommand(IGameWorld gameWorld) : base(gameWorld)
+        {
+        }
 
         public void Initialise(IGameObject gameObject, Tuple<Point, Point> fromTo)
         {

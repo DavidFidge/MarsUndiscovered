@@ -20,6 +20,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
 
             var monster = _gameWorld.Monsters.Values.First();
+            var oldMonsterPosition = monster.Position;
             var commandFactory = Container.Resolve<ICommandFactory>();
 
             var deathCommand = commandFactory.CreateDeathCommand(_gameWorld);
@@ -30,7 +31,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
-            Assert.IsFalse(_gameWorld.Map.GetObjectsAt(monster.Position).Any(m => m is Monster));
+            Assert.IsFalse(_gameWorld.Map.GetObjectsAt(oldMonsterPosition).Any(m => m is Monster));
             Assert.IsTrue(monster.IsDead);
             Assert.AreEqual("The roach has died!", result.Messages[0]);
             Assert.AreEqual("killed by you", ((DeathCommand)result.Command).KilledByMessage);
