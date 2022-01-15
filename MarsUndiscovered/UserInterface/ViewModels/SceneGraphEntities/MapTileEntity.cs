@@ -18,7 +18,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public MapTileQuad MapTileQuad { get; set; }
         public bool IsVisible { get; set; }
 
-        public void Initialize(Point position)
+        public MapTileEntity(Point position)
         {
             Position = position;
             Transform.ChangeTranslation(

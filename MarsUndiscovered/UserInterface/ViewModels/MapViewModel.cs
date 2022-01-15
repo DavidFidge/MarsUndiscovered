@@ -24,7 +24,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public ISceneGraph SceneGraph => _sceneGraph;
 
         private readonly ISceneGraph _sceneGraph;
-        private readonly IFactory<MapTileEntity> _mapTileEntityFactory;
+        private readonly IMapTileEntityFactory _mapTileEntityFactory;
         private readonly IFactory<MapTileRootEntity> _mapTileRootEntityFactory;
         private readonly IFactory<MapEntity> _mapEntityFactory;
         private readonly IFactory<GoalMapEntity> _goalMapEntityFactory;
@@ -41,7 +41,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public MapViewModel(
             ISceneGraph sceneGraph,
-            IFactory<MapTileEntity> mapTileEntityFactory,
+            IMapTileEntityFactory mapTileEntityFactory,
             IFactory<MapTileRootEntity> mapTileRootEntityFactory,
             IFactory<MapEntity> mapEntityFactory,
             IFactory<GoalMapEntity> goalMapEntityFactory
@@ -138,29 +138,25 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             }
         }
 
-        private void CreateTileGraph(Point point, MapTileRootEntity mapTileRootEntity)
+        private void CreateTileGraph(Point position, MapTileRootEntity mapTileRootEntity)
         {
-            var terrainTileEntity = _mapTileEntityFactory.Create();
-            terrainTileEntity.Initialize(point);
-            _terrainTiles[point] = terrainTileEntity;
+            var terrainTileEntity = _mapTileEntityFactory.Create(position);
+            _terrainTiles[position] = terrainTileEntity;
 
-            var actorTileEntity = _mapTileEntityFactory.Create();
-            actorTileEntity.Initialize(point);
-            _actorTiles[point] = actorTileEntity;
+            var actorTileEntity = _mapTileEntityFactory.Create(position);
+            _actorTiles[position] = actorTileEntity;
 
-            var itemTileEntity = _mapTileEntityFactory.Create();
-            itemTileEntity.Initialize(point);
-            _itemTiles[point] = itemTileEntity;
+            var itemTileEntity = _mapTileEntityFactory.Create(position);
+            _itemTiles[position] = itemTileEntity;
 
-            var mouseHoverEntity = _mapTileEntityFactory.Create();
-            mouseHoverEntity.Initialize(point);
+            var mouseHoverEntity = _mapTileEntityFactory.Create(position);
             mouseHoverEntity.SetMouseHover();
             mouseHoverEntity.IsVisible = false;
-            _mouseHoverTiles[point] = mouseHoverEntity;
+            _mouseHoverTiles[position] = mouseHoverEntity;
 
             var goalMapTileEntity = _goalMapEntityFactory.Create();
-            goalMapTileEntity.Initialize(point);
-            _goalMapTiles[point] = goalMapTileEntity;
+            goalMapTileEntity.Initialize(position);
+            _goalMapTiles[position] = goalMapTileEntity;
 
 
             _sceneGraph.Add(terrainTileEntity, mapTileRootEntity);

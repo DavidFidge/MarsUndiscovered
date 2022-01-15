@@ -103,7 +103,6 @@ namespace MarsUndiscovered.Installers
                 Component.For<IActionMapStore>()
                     .ImplementedBy<DefaultActionMapStore>(),
 
-
                 Component.For<MapViewModel>()
                     .LifeStyle.Transient,
 
@@ -131,7 +130,7 @@ namespace MarsUndiscovered.Installers
                 Component.For<MapTileEntity>()
                     .LifeStyle.Transient,
 
-                Component.For<IFactory<MapTileEntity>>()
+                Component.For<IMapTileEntityFactory>()
                     .AsFactory(),
 
                 Component.For<MapEntity>()
