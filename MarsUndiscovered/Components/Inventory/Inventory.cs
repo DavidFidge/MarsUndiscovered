@@ -31,6 +31,9 @@ namespace MarsUndiscovered.Components
         public Dictionary<Item, string> CallItem { get; set; } = new Dictionary<Item, string>();
         public Dictionary<ItemType, string> CallItemType { get; set; } = new Dictionary<ItemType, string>();
         public Dictionary<ItemType, ItemTypeDiscovery> ItemTypeDiscoveries { get; set; } = new Dictionary<ItemType, ItemTypeDiscovery>();
+        public Item EquippedWeapon { get; private set; }
+        public int Count => ItemKeyAssignments.Count;
+        public bool IsReadOnly => false;
 
         private static readonly Keys[] CandidateKeys = {
             Keys.A,
@@ -140,6 +143,12 @@ namespace MarsUndiscovered.Components
                 itemTypeDiscovery,
                 1
             );
+        }
+
+        public string GetInventoryDescriptionAsSingleItemLowerCase(Item item)
+        {
+            var itemDescription = GetInventoryDescriptionAsSingleItem(item);
+             return $"{itemDescription.Substring(0, 1).ToLower()}{itemDescription.Substring(1)}";
         }
 
         public Keys GetNextUnusedKey()
@@ -266,6 +275,7 @@ namespace MarsUndiscovered.Components
             if (!Items.Contains(item))
                 return false;
 
+            Unequip(item);
             Items.Remove(item);
 
             var key = ItemKeyAssignments.First(v => v.Value.Contains(item)).Key;
@@ -282,7 +292,76 @@ namespace MarsUndiscovered.Components
             return true;
         }
 
-        public int Count => ItemKeyAssignments.Count;
-        public bool IsReadOnly => false;
+        public void Equip(Item item)
+        {
+            if (!CanEquip(item))
+                return;
+
+            if (item.ItemType is Weapon)
+            {
+                EquippedWeapon = item;
+            }
+        }
+
+        public bool CanEquip(Item item)
+        {
+            if (item == null)
+                return false;
+
+            if (!Items.Contains(item))
+                return false;
+
+            if (IsEquipped(item))
+                return false;
+
+            if (item.ItemType is Weapon)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool IsEquipped(Item item)
+        {
+            if (item == null)
+                return false;
+
+            if (item == EquippedWeapon)
+                return true;
+
+            return false;
+        }
+
+        public void Unequip(Item item)
+        {
+            if (!CanUnequip(item))
+                return;
+
+            if (item == EquippedWeapon)
+                EquippedWeapon = null;
+        }
+
+        public bool CanUnequip(Item item)
+        {
+            if (item == null)
+                return false;
+
+            if (!Items.Contains(item))
+                return false;
+
+            if (item == EquippedWeapon)
+                return true;
+
+            return false;
+        }
+
+        public Item GetEquippedItemOfType(ItemType itemType)
+        {
+            if (itemType is Weapon)
+                return EquippedWeapon;
+
+            return null;
+        }
     }
 }

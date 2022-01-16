@@ -45,6 +45,7 @@ namespace MarsUndiscovered.Commands
 
             Memento<PickUpItemSaveData>.SetWithAutoMapper(this, memento, mapper);
             GameObject = GameWorld.GameObjects[memento.State.GameObjectId];
+            Item = GameWorld.Items[memento.State.ItemId];
         }
 
         protected override CommandResult ExecuteInternal()
@@ -53,11 +54,10 @@ namespace MarsUndiscovered.Commands
 
             if (player == null)
             {
-                return Result(CommandResult.Failure(this, "Monsters currently do not pick up items"));
+                return Result(CommandResult.Exception(this, "Monsters currently do not pick up items"));
             }
 
-            var itemDescription = GameWorld.Inventory.GetInventoryDescriptionAsSingleItem(Item);
-            itemDescription = $"{itemDescription.Substring(0, 1).ToLower()}{itemDescription.Substring(1)}";
+            var itemDescription = GameWorld.Inventory.GetInventoryDescriptionAsSingleItemLowerCase(Item);
 
             if (!GameWorld.Inventory.CanPickUpItem)
             {

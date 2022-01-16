@@ -170,6 +170,15 @@ namespace MarsUndiscovered.Installers
                     .AsFactory(),
 
                 Component.For<ICommandFactory<PickUpItemCommand>>()
+                    .AsFactory(),
+
+                Component.For<ICommandFactory<DropItemCommand>>()
+                    .AsFactory(),
+
+                Component.For<ICommandFactory<EquipItemCommand>>()
+                    .AsFactory(),
+
+                Component.For<ICommandFactory<UnequipItemCommand>>()
                     .AsFactory()
             );
         }

@@ -12,6 +12,9 @@ namespace MarsUndiscovered.Components.Factories
         public ICommandFactory<AttackCommand> AttackCommandFactory { get; set; }
         public ICommandFactory<DeathCommand> DeathCommandFactory { get; set; }
         public ICommandFactory<PickUpItemCommand> PickUpItemCommandFactory { get; set; }
+        public ICommandFactory<EquipItemCommand> EquipItemCommandFactory { get; set; }
+        public ICommandFactory<UnequipItemCommand> UnequipItemCommandFactory { get; set; }
+        public ICommandFactory<DropItemCommand> DropItemCommandFactory { get; set; }
 
         public MoveCommand CreateMoveCommand(IGameWorld gameWorld)
         {
@@ -35,6 +38,21 @@ namespace MarsUndiscovered.Components.Factories
         public PickUpItemCommand CreatePickUpItemCommand(IGameWorld gameWorld)
         {
             return PickUpItemCommandFactory.Create(gameWorld);
+        }
+
+        public EquipItemCommand CreateEquipItemCommand(IGameWorld gameWorld)
+        {
+            return EquipItemCommandFactory.Create(gameWorld);
+        }
+
+        public UnequipItemCommand CreateUnequipItemCommand(IGameWorld gameWorld)
+        {
+            return UnequipItemCommandFactory.Create(gameWorld);
+        }
+
+        public DropItemCommand CreateDropItemCommand(IGameWorld gameWorld)
+        {
+            return DropItemCommandFactory.Create(gameWorld);
         }
     }
 }

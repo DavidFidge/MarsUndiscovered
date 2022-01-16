@@ -310,5 +310,140 @@ namespace MarsUndiscovered.Tests.Components
             Assert.AreEqual("b)", resultKeyB.KeyDescription);
             Assert.AreEqual("2 NanoFlasks of Healing Bots", resultKeyB.ItemDescription);
         }
+
+        [TestMethod]
+        public void Should_Equip_Weapon()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+
+            // Act
+            _gameWorld.Inventory.Equip(item);
+
+            // Assert
+            Assert.AreEqual(item, _gameWorld.Inventory.EquippedWeapon);
+            Assert.IsTrue(_gameWorld.Inventory.IsEquipped(item));
+        }
+
+        [TestMethod]
+        public void Should_Unequip_Weapon()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+            _gameWorld.Inventory.Equip(item);
+
+            // Act
+            _gameWorld.Inventory.Unequip(item);
+
+            // Assert
+            Assert.IsNull(_gameWorld.Inventory.EquippedWeapon);
+            Assert.IsFalse(_gameWorld.Inventory.IsEquipped(item));
+        }
+
+        [TestMethod]
+        public void Removing_An_Item_From_Inventory_Should_Also_Unequip_Weapon()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+            _gameWorld.Inventory.Equip(item);
+
+            // Act
+            _gameWorld.Inventory.Remove(item);
+
+            // Assert
+            Assert.IsNull(_gameWorld.Inventory.EquippedWeapon);
+            Assert.IsFalse(_gameWorld.Inventory.IsEquipped(item));
+        }
+
+        [TestMethod]
+        public void CanEquip_Weapon_Should_Return_True()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+
+            // Act
+            var result = _gameWorld.Inventory.CanEquip(item);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void CanEquip_NonEquippable_ItemType_Should_Return_False()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+
+            // Act
+            var result = _gameWorld.Inventory.CanEquip(item);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void CanEquip_Weapon_Should_Return_False_If_Already_Equipped()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+            _gameWorld.Inventory.Equip(item);
+
+            // Act
+            var result = _gameWorld.Inventory.CanEquip(item);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void CanUnequip_Weapon_Should_Return_True()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+            _gameWorld.Inventory.Equip(item);
+
+            // Act
+            var result = _gameWorld.Inventory.CanUnequip(item);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void CanUnequip_Weapon_Should_Return_False_When_Not_Equipped()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+
+            // Act
+            var result = _gameWorld.Inventory.CanUnequip(item);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
     }
 }

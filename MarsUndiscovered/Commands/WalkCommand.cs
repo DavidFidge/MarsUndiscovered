@@ -81,7 +81,7 @@ namespace MarsUndiscovered.Commands
                         return Result(CommandResult.Success(this, command));
                     }
 
-                    return Result(CommandResult.Failure(this, $"You bump into a {actorAt.Name}"));
+                    return Result(CommandResult.Exception(this, $"You bump into a {actorAt.Name}"));
                 }
                 if (terrainAtDestination is Wall)
                 {
@@ -89,7 +89,7 @@ namespace MarsUndiscovered.Commands
                 }
             }
 
-            return Result(CommandResult.Failure(this, $"Cannot move {Direction}"));
+            return Result(CommandResult.Exception(this, $"Cannot move {Direction}"));
         }
 
         protected override void UndoInternal()

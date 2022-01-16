@@ -90,7 +90,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var result = pickUpItemCommand.Execute();
 
             // Assert
-            Assert.AreEqual(CommandResultEnum.Failure, result.Result);
+            Assert.AreEqual(CommandResultEnum.Exception, result.Result);
             Assert.IsTrue(_gameWorld.Map.GetObjectsAt(monster.Position).Any(m => m is Item));
             Assert.AreEqual("Monsters currently do not pick up items", result.Messages[0]);
         }
