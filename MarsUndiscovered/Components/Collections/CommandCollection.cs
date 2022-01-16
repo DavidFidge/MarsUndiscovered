@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
-using MarsUndiscovered.Commands;
+
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Interfaces;
 
@@ -12,6 +15,8 @@ namespace MarsUndiscovered.Components
 {
     public class CommandCollection : IEnumerable<BaseGameActionCommand>, ISaveable
     {
+        private readonly List<PropertyInfo> _commandCollectionPropertyInfos;
+
         public CommandCollection(ICommandFactory commandFactory, IGameWorld gameWorld)
         {
             AttackCommands = new AttackCommandCollection(commandFactory, gameWorld);
@@ -22,6 +27,16 @@ namespace MarsUndiscovered.Components
             UnequipItemCommands = new UnequipItemCommandCollection(commandFactory, gameWorld);
             DropItemCommands = new DropItemCommandCollection(commandFactory, gameWorld);
             PickUpItemCommands = new PickUpItemCommandCollection(commandFactory, gameWorld);
+
+            _commandCollectionPropertyInfos = GetType()
+                .GetProperties()
+                .Where(p => p.PropertyType.BaseType != null)
+                .Where(p => p.PropertyType.BaseType.GenericTypeArguments.Any())
+                .Where(
+                    p => typeof(BaseGameActionCommand).IsAssignableFrom(p.PropertyType.BaseType.GenericTypeArguments[0])
+                )
+                .Where(p => typeof(IList).IsAssignableFrom(p.PropertyType))
+                .ToList();
         }
 
         public AttackCommandCollection AttackCommands { get; set; }
@@ -35,29 +50,15 @@ namespace MarsUndiscovered.Components
 
         public IEnumerator<BaseGameActionCommand> GetEnumerator()
         {
-            foreach (var item in AttackCommands)
-                yield return item;
+            foreach (var commandCollectionProperty in _commandCollectionPropertyInfos)
+            {
+                var commandCollection = (IList)commandCollectionProperty.GetValue(this);
 
-            foreach (var item in WalkCommands)
-                yield return item;
-
-            foreach (var item in MoveCommands)
-                yield return item;
-
-            foreach (var item in DeathCommands)
-                yield return item;
-
-            foreach (var item in EquipItemCommands)
-                yield return item;
-
-            foreach (var item in UnequipItemCommands)
-                yield return item;
-
-            foreach (var item in PickUpItemCommands)
-                yield return item;
-
-            foreach (var item in DropItemCommands)
-                yield return item;
+                foreach (var command in commandCollection)
+                {
+                    yield return (BaseGameActionCommand)command;
+                }
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -67,57 +68,32 @@ namespace MarsUndiscovered.Components
 
         public void SaveState(ISaveGameService saveGameService)
         {
-            AttackCommands.SaveState(saveGameService);
-            WalkCommands.SaveState(saveGameService);
-            MoveCommands.SaveState(saveGameService);
-            DeathCommands.SaveState(saveGameService);
-            EquipItemCommands.SaveState(saveGameService);
-            UnequipItemCommands.SaveState(saveGameService);
-            PickUpItemCommands.SaveState(saveGameService);
-            DropItemCommands.SaveState(saveGameService);
+            SaveLoad(saveGameService, (s, sgs) => s.SaveState(sgs));
         }
 
         public void LoadState(ISaveGameService saveGameService)
         {
-            AttackCommands.LoadState(saveGameService);
-            WalkCommands.LoadState(saveGameService);
-            MoveCommands.LoadState(saveGameService);
-            DeathCommands.LoadState(saveGameService);
-            EquipItemCommands.LoadState(saveGameService);
-            UnequipItemCommands.LoadState(saveGameService);
-            PickUpItemCommands.LoadState(saveGameService);
-            DropItemCommands.LoadState(saveGameService);
+            SaveLoad(saveGameService, (s, sgs) => s.LoadState(sgs));
+        }
+
+        private void SaveLoad(ISaveGameService saveGameService, Action<ISaveable, ISaveGameService> action)
+        {
+            foreach (var property in _commandCollectionPropertyInfos)
+            {
+                var saveable = (ISaveable)property.GetValue(this);
+                action(saveable, saveGameService);
+            }
         }
 
         public void AddCommand(BaseGameActionCommand command)
         {
-            switch (command)
-            {
-                case AttackCommand attackCommand:
-                    AttackCommands.Add(attackCommand);
-                    break;
-                case MoveCommand moveCommand:
-                    MoveCommands.Add(moveCommand);
-                    break;
-                case WalkCommand walkCommand:
-                    WalkCommands.Add(walkCommand);
-                    break;
-                case DeathCommand deathCommand:
-                    DeathCommands.Add(deathCommand);
-                    break;
-                case EquipItemCommand equipItemCommand:
-                    EquipItemCommands.Add(equipItemCommand);
-                    break;
-                case UnequipItemCommand unequipItemCommand:
-                    UnequipItemCommands.Add(unequipItemCommand);
-                    break;
-                case PickUpItemCommand pickUpItemCommand:
-                    PickUpItemCommands.Add(pickUpItemCommand);
-                    break;
-                case DropItemCommand dropItemCommand:
-                    DropItemCommands.Add(dropItemCommand);
-                    break;
-            }
+            var commandType = command.GetType();
+
+            var propertyInfo = _commandCollectionPropertyInfos.First(p => p.PropertyType.BaseType.GenericTypeArguments[0].IsAssignableFrom(commandType));
+
+            var commandCollection = (IList)propertyInfo.GetValue(this);
+
+            commandCollection.Add(command);
         }
     }
 }
