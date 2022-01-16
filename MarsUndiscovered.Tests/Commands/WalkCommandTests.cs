@@ -14,7 +14,7 @@ using SadRogue.Primitives;
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
     [TestClass]
-    public class WalkCommandIntegrationTests : BaseGameWorldIntegrationTests
+    public class WalkCommandTests : BaseGameWorldIntegrationTests
     {
         [TestMethod]
         public void WalkCommand_Should_Move_Player_For_Valid_Square()

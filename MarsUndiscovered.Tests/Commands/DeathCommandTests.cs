@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
     [TestClass]
-    public class DeathCommandIntegrationTests : BaseGameWorldIntegrationTests
+    public class DeathCommandTests : BaseGameWorldIntegrationTests
     {
         [TestMethod]
         public void DeathCommand_On_Monster_Should_Set_IsDead_Flag_And_Remove_From_Map()
