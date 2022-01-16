@@ -40,6 +40,31 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
 
         [TestMethod]
+        public void EquipItemCommand_Should_Not_Equip_An_ItemType_That_Cannot_Be_Equipped()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+            _gameWorld.Player.Position = new Point(0, 0);
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).AtPosition(_gameWorld.Player.Position));
+            var item = _gameWorld.Items.First().Value;
+            _gameWorld.Inventory.Add(item);
+            _gameWorld.Map.RemoveEntity(item);
+            item.Position = Point.None;
+
+            var commandFactory = Container.Resolve<ICommandFactory>();
+
+            var equipItemCommand = commandFactory.CreateEquipItemCommand(_gameWorld);
+            equipItemCommand.Initialise(item);
+
+            // Act
+            var result = equipItemCommand.Execute();
+
+            // Assert
+            Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
+            Assert.AreEqual($"Cannot equip this type of item", result.Messages[0]);
+        }
+
+        [TestMethod]
         public void EquipItemCommand_Should_Swap_Weapon_If_One_Already_Equipped()
         {
             // Arrange
@@ -106,7 +131,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var result = equipItemCommand2.Execute();
 
             // Assert
-            Assert.AreEqual(CommandResultEnum.Success, result.Result);
+            Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
             Assert.AreSame(item, _gameWorld.Inventory.EquippedWeapon);
             Assert.IsTrue(_gameWorld.Inventory.Items.Contains(item));
             Assert.AreEqual("Item is already equipped", result.Messages[0]);

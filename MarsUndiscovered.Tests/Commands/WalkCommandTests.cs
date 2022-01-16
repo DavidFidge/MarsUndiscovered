@@ -161,6 +161,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.Player.Position = new Point(0, 0);
 
             _gameWorld.MoveRequest(Direction.Down);
+            _gameWorld.MoveRequest(Direction.Down);
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 
             // Act
@@ -169,12 +170,18 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.AreNotSame(_gameWorld, newGameWorld);
-            Assert.AreEqual(1, newGameWorld.HistoricalCommands.Count());
-            Assert.AreEqual(0, newGameWorld.HistoricalCommands.MoveCommands.Count);
-            Assert.AreEqual(1, newGameWorld.HistoricalCommands.WalkCommands.Count);
-            Assert.AreEqual(0, newGameWorld.HistoricalCommands.AttackCommands.Count);
+            Assert.AreEqual(2, newGameWorld.HistoricalCommands.Count());
+            Assert.AreEqual(2, newGameWorld.HistoricalCommands.WalkCommands.Count);
             Assert.AreEqual(_gameWorld.Player.Position, newGameWorld.Player.Position);
-            Assert.AreEqual(new Point(0, 1), newGameWorld.Player.Position);
+            Assert.AreEqual(new Point(0, 2), newGameWorld.Player.Position);
+
+            var walkCommand1 = newGameWorld.HistoricalCommands.WalkCommands[0];
+            Assert.AreEqual(1, walkCommand1.TurnDetails.SequenceNumber);
+            Assert.AreEqual(1, walkCommand1.TurnDetails.TurnNumber);
+
+            var walkCommand2 = newGameWorld.HistoricalCommands.WalkCommands[1];
+            Assert.AreEqual(3, walkCommand2.TurnDetails.SequenceNumber); // sequence number 2 is used in the move command, which is performed inside the walk command
+            Assert.AreEqual(2, walkCommand2.TurnDetails.TurnNumber);
         }
 
         [TestMethod]

@@ -13,7 +13,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     public abstract class BaseInventoryViewModel<T> : BaseViewModel<T>
         where T : BaseInventoryData, new()
     {
-        private List<InventoryItem> _inventoryItems;
+        protected List<InventoryItem> _inventoryItems;
         public IGameWorldProvider GameWorldProvider { get; set; }
 
         public List<InventoryItem> GetInventoryItems()

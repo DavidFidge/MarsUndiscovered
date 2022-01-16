@@ -12,6 +12,9 @@ namespace MarsUndiscovered.UserInterface.Input
         {
             if (ActionMap.ActionIs<CloseGameInventoryRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new CloseGameInventoryRequest());
+
+            if (ActionMap.ActionIs<InventoryItemSelectionRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new InventoryItemSelectionRequest(keyInFocus));
         }
     }
 }

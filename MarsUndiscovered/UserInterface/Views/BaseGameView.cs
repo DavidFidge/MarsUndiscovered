@@ -261,5 +261,11 @@ namespace MarsUndiscovered.UserInterface.Views
 
             return Unit.Task;
         }
+
+        public override void Hide()
+        {
+            base.Hide();
+            _viewModel.IsActive = false;
+        }
     }
 }

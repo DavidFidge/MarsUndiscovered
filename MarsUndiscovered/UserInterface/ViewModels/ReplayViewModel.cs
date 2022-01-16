@@ -1,4 +1,5 @@
-﻿using MarsUndiscovered.UserInterface.Data;
+﻿using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Data;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -8,9 +9,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void LoadReplay(string filename)
         {
+            IsActive = true;
             GameWorldProvider.LoadReplay(filename);
             SetupNewReplay();
-            GetNewTurnData();
+            Mediator.Publish(new RefreshViewNotification());
         }
 
         private void SetupNewReplay()
@@ -27,7 +29,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 return false;
 
             TurnNumber++;
-            GetNewTurnData();
+            Mediator.Publish(new RefreshViewNotification());
 
             return true;
         }

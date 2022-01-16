@@ -28,7 +28,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var commandFactory = Container.Resolve<ICommandFactory>();
 
             var dropItemCommand = commandFactory.CreateDropItemCommand(_gameWorld);
-            dropItemCommand.Initialise(item, _gameWorld.Player);
+            dropItemCommand.Initialise(_gameWorld.Player, item);
 
             // Act
             var result = dropItemCommand.Execute();
@@ -56,13 +56,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var commandFactory = Container.Resolve<ICommandFactory>();
 
             var dropItemCommand = commandFactory.CreateDropItemCommand(_gameWorld);
-            dropItemCommand.Initialise(item1, _gameWorld.Player);
+            dropItemCommand.Initialise(_gameWorld.Player, item1);
 
             // Act
             var result = dropItemCommand.Execute();
 
             // Assert
-            Assert.AreEqual(CommandResultEnum.Success, result.Result);
+            Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
             Assert.AreNotSame(item1, _gameWorld.Map.GetObjectAt<Item>(_gameWorld.Player.Position));
             Assert.AreSame(item2, _gameWorld.Map.GetObjectAt<Item>(_gameWorld.Player.Position));
             Assert.AreEqual("Cannot drop item - there is another item in the way", result.Messages[0]);

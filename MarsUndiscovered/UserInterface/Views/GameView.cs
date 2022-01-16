@@ -284,6 +284,7 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(OpenGameInventoryRequest request, CancellationToken cancellationToken)
         {
             BeforeViewChange();
+            _inventoryGameView.SetInventoryMode(request.InventoryMode);
             _inventoryGameView.Show();
             return Unit.Task;
         }

@@ -27,7 +27,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         INotificationHandler<MapTileChangedNotification>,
         INotificationHandler<EntityTransformChangedNotification>,
         INotificationHandler<ToggleShowGoalMapNotification>,
-        INotificationHandler<GoalMapChangedNotification>
+        INotificationHandler<GoalMapChangedNotification>,
+        INotificationHandler<RefreshViewNotification>
         where T : BaseGameData, new()
         
     {
@@ -41,6 +42,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public IList<string> Messages { get; set; }
 
+        public bool IsActive { get; set; }
+
         protected int MessageLogCount;
 
         protected void SetUpViewModels()
@@ -51,29 +54,37 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public Task Handle(EntityTransformChangedNotification notification, CancellationToken cancellationToken)
         {
-            SceneGraph.HandleEntityTransformChanged(notification);
+            if (IsActive)
+                SceneGraph.HandleEntityTransformChanged(notification);
+
             return Unit.Task;
         }
 
         public Task Handle(ToggleShowGoalMapNotification notification, CancellationToken cancellationToken)
         {
-            MapViewModel.ToggleShowGoalMap();
+            if (IsActive)
+                MapViewModel.ToggleShowGoalMap();
+
             return Unit.Task;
         }
 
         public Task Handle(GoalMapChangedNotification notification, CancellationToken cancellationToken)
         {
-            MapViewModel.UpdateGoalMapText();
+            if (IsActive)
+                MapViewModel.UpdateGoalMapText();
+
             return Unit.Task;
         }
 
         public Task Handle(MapTileChangedNotification notification, CancellationToken cancellationToken)
         {
-            MapViewModel.UpdateTile(notification.Point);
+            if (IsActive)
+                MapViewModel.UpdateTile(notification.Point);
+
             return Unit.Task;
         }
 
-        protected void GetNewTurnData()
+        private void RefreshView()
         {
             MonsterStatusInView = GameWorld.GetStatusOfMonstersInView();
             PlayerStatus = GameWorld.GetPlayerStatus();
@@ -106,6 +117,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             var centrePoint = new Point(GameWorld.Map.Width / 2, GameWorld.Map.Height / 2);
 
             return Direction.GetDirection(centrePoint, point.Value);
+        }
+
+        public Task Handle(RefreshViewNotification notification, CancellationToken cancellationToken)
+        {
+            if (IsActive)
+                RefreshView();
+
+            return Unit.Task;
         }
     }
 }

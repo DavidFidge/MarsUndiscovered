@@ -5,6 +5,8 @@ using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
 
 using InputHandlers.Keyboard;
 
+using MarsUndiscovered.UserInterface.Views;
+
 using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input
@@ -26,7 +28,26 @@ namespace MarsUndiscovered.UserInterface.Input
                 Mediator.Send(new OpenConsoleRequest());
 
             if (ActionMap.ActionIs<OpenGameInventoryRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new OpenGameInventoryRequest());
+            {
+                var actionName = ActionMap.ActionName<OpenGameInventoryRequest>(keyInFocus, keyboardModifier);
+
+                var inventoryMode = InventoryMode.View;
+
+                switch (actionName)
+                {
+                    case "Equip":
+                        inventoryMode = InventoryMode.Equip;
+                        break;
+                    case "Unequip":
+                        inventoryMode = InventoryMode.Unequip;
+                        break;
+                    case "Drop":
+                        inventoryMode = InventoryMode.Drop;
+                        break;
+                }
+
+                Mediator.Send(new OpenGameInventoryRequest(inventoryMode));
+            }
 
             ProcessMovement(keyInFocus, keyboardModifier);
         }

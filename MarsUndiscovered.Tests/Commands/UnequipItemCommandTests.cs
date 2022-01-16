@@ -64,7 +64,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var result = unequipItemCommand.Execute();
 
             // Assert
-            Assert.AreEqual(CommandResultEnum.Success, result.Result);
+            Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
             Assert.IsNull(_gameWorld.Inventory.EquippedWeapon);
             Assert.AreEqual($"Item is already unequipped", result.Messages[0]);
         }

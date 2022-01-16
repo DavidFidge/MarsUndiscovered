@@ -7,6 +7,7 @@ using SadRogue.Primitives;
 namespace MarsUndiscovered.Messages
 {
     [ActionMap(Name = "Move Up", DefaultKey = Keys.NumPad8)]
+    [ActionMap(Name = "Move Up Vi", DefaultKey = Keys.K)]
     public class MoveUpRequest : MoveRequest
     {
         public MoveUpRequest() : base(Direction.Up)

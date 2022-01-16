@@ -2,7 +2,7 @@
 
 namespace MarsUndiscovered.Commands
 {
-    public class DeathCommandSaveData
+    public class DeathCommandSaveData : BaseCommandSaveData
     {
         public uint SourceId { get; set; }
     }

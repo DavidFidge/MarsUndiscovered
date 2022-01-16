@@ -10,6 +10,8 @@ using GoRogue.Pathing;
 
 using MarsUndiscovered.Components;
 
+using Microsoft.Xna.Framework.Input;
+
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Interfaces
@@ -43,5 +45,8 @@ namespace MarsUndiscovered.Interfaces
         string GetGameObjectInformationAt(Point point);
         void SpawnItem(SpawnItemParams spawnItemParams);
         List<InventoryItem> GetInventoryItems();
+        IList<CommandResult> DropItemRequest(Keys itemKey);
+        IList<CommandResult> EquipItemRequest(Keys itemKey);
+        IList<CommandResult> UnequipItemRequest(Keys itemKey);
     }
 }

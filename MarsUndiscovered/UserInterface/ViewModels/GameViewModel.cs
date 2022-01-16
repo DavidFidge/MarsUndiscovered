@@ -1,5 +1,6 @@
 ﻿using GoRogue.Pathing;
 
+using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 
 using Microsoft.Xna.Framework;
@@ -14,22 +15,24 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     {
         public void NewGame(uint? seed = null)
         {
+            IsActive = true;
             GameWorldProvider.NewGame(seed);
             SetUpViewModels();
-            GetNewTurnData();
+            Mediator.Publish(new RefreshViewNotification());
         }
 
         public void LoadGame(string filename)
         {
+            IsActive = true;
             GameWorldProvider.LoadGame(filename);
             SetUpViewModels();
-            GetNewTurnData();
+            Mediator.Publish(new RefreshViewNotification());
         }
 
         public void Move(Direction direction)
         {
             GameWorld.MoveRequest(direction);
-            GetNewTurnData();
+            Mediator.Publish(new RefreshViewNotification());
         }
 
         public Path GetPathToDestination(Ray pointerRay)
@@ -52,7 +55,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (result.IsEmpty())
                 return true;
 
-            GetNewTurnData();
+            Mediator.Publish(new RefreshViewNotification());
 
             if (path.Length == 1)
                 return true;

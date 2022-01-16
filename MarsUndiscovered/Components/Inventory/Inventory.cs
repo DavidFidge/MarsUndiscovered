@@ -128,7 +128,10 @@ namespace MarsUndiscovered.Components
                             ),
                             ItemType = item.ItemType,
                             Key = key,
-                            LongDescription = item.GetLongDescription(itemTypeDiscovery)
+                            LongDescription = item.GetLongDescription(itemTypeDiscovery),
+                            CanEquip = CanEquip(item),
+                            CanDrop = true,
+                            CanUnequip = CanUnequip(item)
                         };
                     }
                 ).ToList();
@@ -314,6 +317,11 @@ namespace MarsUndiscovered.Components
             if (IsEquipped(item))
                 return false;
 
+            return TypeCanBeEquipped(item);
+        }
+
+        public bool TypeCanBeEquipped(Item item)
+        {
             if (item.ItemType is Weapon)
             {
                 return true;

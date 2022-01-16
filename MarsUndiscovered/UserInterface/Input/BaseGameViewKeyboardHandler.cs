@@ -30,13 +30,6 @@ namespace MarsUndiscovered.UserInterface.Input
 
             if (keyInFocus == Keys.G)
                 Mediator.Publish(new ToggleShowGoalMapNotification());
-
-            _cameraMovement.MoveCamera(keysDown);
-        }
-
-        public override void HandleKeyboardKeyLost(Keys[] keysDown, KeyboardModifier keyboardModifier)
-        {
-            _cameraMovement.MoveCamera(keysDown);
         }
 
         public override void HandleKeyboardKeysReleased()

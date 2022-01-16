@@ -20,6 +20,8 @@ using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Components.SaveData;
 
+using Microsoft.Xna.Framework.Input;
+
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
@@ -238,6 +240,8 @@ namespace MarsUndiscovered.Components
             {
                 foreach (var nextTurnResult in NextTurn())
                     yield return nextTurnResult;
+
+                GameTurnService.NextTurn();
             }
         }
 
@@ -496,6 +500,42 @@ namespace MarsUndiscovered.Components
         public List<InventoryItem> GetInventoryItems()
         {
             return Inventory.GetInventoryItems();
+        }
+
+        public IList<CommandResult> DropItemRequest(Keys itemKey)
+        {
+            if (!Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
+                return null;
+
+            var dropItemCommand = CommandFactory.CreateDropItemCommand(this);
+
+            dropItemCommand.Initialise(Player, itemGroup.First());
+
+            return ExecuteCommand(dropItemCommand).ToList();
+        }
+
+        public IList<CommandResult> EquipItemRequest(Keys itemKey)
+        {
+            if (!Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
+                return null;
+
+            var equipItemCommand = CommandFactory.CreateEquipItemCommand(this);
+
+            equipItemCommand.Initialise(itemGroup.First());
+
+            return ExecuteCommand(equipItemCommand).ToList();
+        }
+
+        public IList<CommandResult> UnequipItemRequest(Keys itemKey)
+        {
+            if (!Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
+                return null;
+
+            var unequipItemCommand = CommandFactory.CreateUnequipItemCommand(this);
+
+            unequipItemCommand.Initialise(itemGroup.First());
+
+            return ExecuteCommand(unequipItemCommand).ToList();
         }
     }
 }

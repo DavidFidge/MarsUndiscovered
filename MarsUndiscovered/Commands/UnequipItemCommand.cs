@@ -45,7 +45,7 @@ namespace MarsUndiscovered.Commands
 
             _isNotEquipped = !GameWorld.Inventory.IsEquipped(Item);
             if (_isNotEquipped)
-                return Result(CommandResult.Success(this, $"Item is already unequipped"));
+                return Result(CommandResult.NoMove(this, $"Item is already unequipped"));
 
             GameWorld.Inventory.Unequip(Item);
 

@@ -19,6 +19,7 @@ namespace MarsUndiscovered.Commands
         public Item Item { get; private set; }
         private Item _previousItem;
         private bool _isAlreadyEquipped;
+        private bool _canEquipType;
 
         public EquipItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -45,6 +46,12 @@ namespace MarsUndiscovered.Commands
         protected override CommandResult ExecuteInternal()
         {
             var itemDescription = GameWorld.Inventory.GetInventoryDescriptionAsSingleItemLowerCase(Item);
+
+            _canEquipType = GameWorld.Inventory.TypeCanBeEquipped(Item);
+
+            if (!_canEquipType)
+                return Result(CommandResult.NoMove(this, $"Cannot equip this type of item"));
+
             _previousItem = GameWorld.Inventory.GetEquippedItemOfType(Item.ItemType);
 
             var currentItemDescription = String.Empty;
@@ -55,7 +62,7 @@ namespace MarsUndiscovered.Commands
             _isAlreadyEquipped = GameWorld.Inventory.IsEquipped(Item);
 
             if (_isAlreadyEquipped)
-                return Result(CommandResult.Success(this, $"Item is already equipped"));
+                return Result(CommandResult.NoMove(this, $"Item is already equipped"));
 
             GameWorld.Inventory.Unequip(_previousItem);
             GameWorld.Inventory.Equip(Item);
@@ -76,7 +83,7 @@ namespace MarsUndiscovered.Commands
 
         protected override void UndoInternal()
         {
-            if (_isAlreadyEquipped)
+            if (_isAlreadyEquipped || !_canEquipType)
                 return;
 
             GameWorld.Inventory.Unequip(Item);

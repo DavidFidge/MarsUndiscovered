@@ -2,7 +2,7 @@
 
 namespace MarsUndiscovered.Commands
 {
-    public class EquipItemSaveData
+    public class EquipItemSaveData : BaseCommandSaveData
     {
         public uint ItemId { get; set; }
     }

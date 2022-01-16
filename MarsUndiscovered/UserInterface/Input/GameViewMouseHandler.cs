@@ -44,13 +44,7 @@ namespace MarsUndiscovered.UserInterface.Input
 
             _mouseStateBeforeRotation = null;
 
-            //Mouse.SetCursor(MouseCursor.Arrow);
             base.HandleRightMouseDragDone(mouseState, originalMouseState);
-        }
-
-        public override void HandleMouseScrollWheelMove(MouseState mouseState, int difference)
-        {
-            Mediator.Send(new ZoomViewRequest(difference));
         }
 
         public override void HandleLeftMouseClick(MouseState mouseState, MouseState origin)

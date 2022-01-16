@@ -7,6 +7,8 @@ using MarsUndiscovered.UserInterface.ViewModels;
 
 using GeonBit.UI.Entities;
 
+using MarsUndiscovered.Components;
+
 using Microsoft.Xna.Framework;
 
 using NGenerics.Extensions;
@@ -21,6 +23,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel InventoryHoverPanel;
         protected Panel InventoryContainerPanel;
         protected SelectList InventoryItems;
+        protected Label _inventoryLabel;
 
         public BaseInventoryView(
             TViewModel inventoryViewModel
@@ -55,11 +58,11 @@ namespace MarsUndiscovered.UserInterface.Views
 
             InventoryContainerPanel.AddChild(InventoryPanel);
 
-            var inventoryLabel = new Label("Your Inventory:")
+            _inventoryLabel = new Label("Your Inventory:")
                 .NoPadding()
                 .Anchor(Anchor.Auto);
 
-            InventoryPanel.AddChild(inventoryLabel);
+            InventoryPanel.AddChild(_inventoryLabel);
 
             InventoryItems = new SelectList()
                 .NoSkin()
@@ -87,8 +90,13 @@ namespace MarsUndiscovered.UserInterface.Views
 
             foreach (var item in inventoryItems)
             {
-                InventoryItems.AddItem($"{item.KeyDescription} {item.ItemDescription}");
+                InventoryItems.AddItem(GetInventoryItemText(item));
             }
+        }
+
+        protected virtual string GetInventoryItemText(InventoryItem item)
+        {
+            return $"{item.KeyDescription} {item.ItemDescription}";
         }
     }
 }

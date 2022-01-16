@@ -64,7 +64,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var result = pickUpItemCommand.Execute();
 
             // Assert
-            Assert.AreEqual(CommandResultEnum.Success, result.Result);
+            Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
             Assert.IsTrue(_gameWorld.Map.GetObjectsAt(_gameWorld.Player.Position).Any(m => m is Item));
             Assert.AreEqual("Your inventory is too full to pick up a Magnesium Pipe", result.Messages[0]);
         }

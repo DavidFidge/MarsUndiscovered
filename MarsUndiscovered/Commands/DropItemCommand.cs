@@ -27,7 +27,7 @@ namespace MarsUndiscovered.Commands
         {
         }
 
-        public void Initialise(Item item, IGameObject gameObject)
+        public void Initialise(IGameObject gameObject, Item item)
         {
             GameObject = gameObject;
             Item = item;
@@ -56,7 +56,7 @@ namespace MarsUndiscovered.Commands
 
             if (existingItem != null)
             {
-                return Result(CommandResult.Success(this, "Cannot drop item - there is another item in the way"));
+                return Result(CommandResult.NoMove(this, "Cannot drop item - there is another item in the way"));
             }
 
             _wasEquipped = GameWorld.Inventory.IsEquipped(Item);

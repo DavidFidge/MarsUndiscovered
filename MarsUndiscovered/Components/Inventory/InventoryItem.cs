@@ -9,5 +9,8 @@ namespace MarsUndiscovered.Components
         public string ItemDescription { get; set; }
         public string LongDescription { get; set; }
         public ItemType ItemType { get; set; }
+        public bool CanEquip { get; set; }
+        public bool CanUnequip { get; set; }
+        public bool CanDrop { get; set; }
     }
 }
