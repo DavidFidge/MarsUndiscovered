@@ -48,5 +48,7 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> DropItemRequest(Keys itemKey);
         IList<CommandResult> EquipItemRequest(Keys itemKey);
         IList<CommandResult> UnequipItemRequest(Keys itemKey);
+        void UpdateFieldOfView();
+        void AfterCreateGame();
     }
 }

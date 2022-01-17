@@ -18,6 +18,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsActive = true;
             GameWorldProvider.NewGame(seed);
             SetUpViewModels();
+            GameWorldProvider.AfterCreateGame();
             Mediator.Publish(new RefreshViewNotification());
         }
 
@@ -26,6 +27,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsActive = true;
             GameWorldProvider.LoadGame(filename);
             SetUpViewModels();
+            GameWorldProvider.AfterCreateGame();
             Mediator.Publish(new RefreshViewNotification());
         }
 

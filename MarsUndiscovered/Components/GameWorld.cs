@@ -9,7 +9,7 @@ using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
-
+using GoRogue.FOV;
 using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Interfaces;
 
@@ -19,6 +19,7 @@ using GoRogue.Random;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Messages;
 
 using Microsoft.Xna.Framework.Input;
 
@@ -34,6 +35,7 @@ namespace MarsUndiscovered.Components
     {
         public Map Map { get; private set; }
         public GoalMaps GoalMaps { get; set; }
+        public IFOV FieldOfView { get; set; }
         public Player Player { get; private set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public ICommandFactory CommandFactory { get; set; }
@@ -116,6 +118,12 @@ namespace MarsUndiscovered.Components
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
 
             RebuildGoalMaps();
+            CreateFieldOfView();
+        }
+
+        private void CreateFieldOfView()
+        {
+            FieldOfView = new RecursiveShadowcastingFOV(Map.TransparencyView);
         }
 
         private void Reset()
@@ -127,6 +135,17 @@ namespace MarsUndiscovered.Components
             HistoricalCommands = new CommandCollection(CommandFactory, this);
 
             GameObjectFactory.Reset();
+        }
+
+        public void UpdateFieldOfView()
+        {
+            FieldOfView.Calculate(Player.Position);
+            Mediator.Publish(new FieldOfViewChangedNotifcation(FieldOfView.NewlySeen, FieldOfView.NewlyUnseen));
+        }
+
+        public void AfterCreateGame()
+        {
+            Mediator.Publish(new FieldOfViewChangedNotifcation(FieldOfView.CurrentFOV, Map.Positions()));
         }
 
         public void RebuildGoalMaps()
@@ -416,6 +435,7 @@ namespace MarsUndiscovered.Components
             Inventory.LoadState(saveGameService);
 
             LoadRandomNumberSaveData(saveGameService);
+            CreateFieldOfView();
         }
 
         private void LoadRandomNumberSaveData(ISaveGameService saveGameService)
