@@ -189,9 +189,9 @@ namespace MarsUndiscovered.Components
 
         public IMemento<InventorySaveData> GetSaveState(IMapper mapper)
         {
-            var mementoForDerivedType = Memento<InventorySaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = Memento<InventorySaveData>.CreateWithAutoMapper(this, mapper);
 
-            return new Memento<InventorySaveData>(mementoForDerivedType.State);
+            return new Memento<InventorySaveData>(memento.State);
         }
 
         public void SetLoadState(IMemento<InventorySaveData> memento, IMapper mapper)

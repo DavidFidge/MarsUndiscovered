@@ -35,7 +35,7 @@ namespace MarsUndiscovered.Components
     {
         public Map Map { get; private set; }
         public GoalMaps GoalMaps { get; set; }
-        public IFOV FieldOfView { get; set; }
+        public MapSeenTiles MapSeenTiles { get; set; }
         public Player Player { get; private set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public ICommandFactory CommandFactory { get; set; }
@@ -85,11 +85,11 @@ namespace MarsUndiscovered.Components
 
             var wallsFloors = MapGenerator.CreateOutdoorWallsFloors();
 
-            foreach (var item in wallsFloors.ToArray().OfType<Wall>().ToList())
-                Walls.Add(item.ID, item);
+            foreach (var wall in wallsFloors.ToArray().OfType<Wall>().ToList())
+                Walls.Add(wall.ID, wall);
 
-            foreach (var item in wallsFloors.ToArray().OfType<Floor>().ToList())
-                Floors.Add(item.ID, item);
+            foreach (var floor in wallsFloors.ToArray().OfType<Floor>().ToList())
+                Floors.Add(floor.ID, floor);
 
             Map = MapGenerator.CreateMap(Walls, Floors);
 
@@ -99,10 +99,8 @@ namespace MarsUndiscovered.Components
 
             Inventory = new Inventory(this);
 
-            //SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            //SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            //SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            //SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
 
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
@@ -118,12 +116,7 @@ namespace MarsUndiscovered.Components
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
 
             RebuildGoalMaps();
-            CreateFieldOfView();
-        }
-
-        private void CreateFieldOfView()
-        {
-            FieldOfView = new RecursiveShadowcastingFOV(Map.TransparencyView);
+            MapSeenTiles = new MapSeenTiles(Map, this);
         }
 
         private void Reset()
@@ -139,13 +132,18 @@ namespace MarsUndiscovered.Components
 
         public void UpdateFieldOfView()
         {
-            FieldOfView.Calculate(Player.Position);
-            Mediator.Publish(new FieldOfViewChangedNotifcation(FieldOfView.NewlySeen, FieldOfView.NewlyUnseen));
+            Map.PlayerFOV.Calculate(Player.Position);
+
+            MapSeenTiles.Update(Map.PlayerFOV.CurrentFOV);
+
+            Mediator.Publish(new FieldOfViewChangedNotifcation(Map.PlayerFOV.NewlySeen, Map.PlayerFOV.NewlyUnseen, MapSeenTiles.SeenTiles));
         }
 
         public void AfterCreateGame()
         {
-            Mediator.Publish(new FieldOfViewChangedNotifcation(FieldOfView.CurrentFOV, Map.Positions()));
+            MapSeenTiles.Update(Map.PlayerFOV.CurrentFOV);
+
+            Mediator.Publish(new FieldOfViewChangedNotifcation(Map.PlayerFOV.CurrentFOV, Map.Positions(), MapSeenTiles.SeenTiles));
         }
 
         public void RebuildGoalMaps()
@@ -285,6 +283,58 @@ namespace MarsUndiscovered.Components
             ItemGenerator.SpawnItem(spawnItemParams, Map, Items);
         }
 
+        public void CreateWall(Point position)
+        {
+            var wall = GameObjectFactory.CreateWall();
+            wall.Position = position;
+            wall.Index = position.ToIndex(Map.Width);
+            Walls.Add(wall.ID, wall);
+
+            DestroyFloor(position, false);
+            Map.SetTerrain(wall);
+            UpdateFieldOfView();
+        }
+        public void CreateFloor(Point position)
+        {
+            var floor = GameObjectFactory.CreateFloor();
+            floor.Position = position;
+            floor.Index = position.ToIndex(Map.Width);
+            Floors.Add(floor.ID, floor);
+
+            DestroyWall(position, false);
+            Map.RemoveTerrain(floor);
+            UpdateFieldOfView();
+        }
+
+        public void DestroyWall(Point position, bool replaceWithFloor = true)
+        {
+            var wall = Map.GetObjectAt<Wall>(position);
+
+            if (wall == null)
+                return;
+
+            wall.IsDestroyed = true;
+
+            Map.RemoveTerrain(wall);
+
+            if (replaceWithFloor)
+                CreateFloor(position);
+        }
+
+        public void DestroyFloor(Point position, bool replaceWithWall = true)
+        {
+            var floor = Map.GetObjectAt<Floor>(position);
+
+            if (floor == null)
+                return;
+
+            floor.IsDestroyed = true;
+            Map.RemoveTerrain(floor);
+
+            if (replaceWithWall)
+                CreateWall(position);
+        }
+
         public SaveGameResult SaveGame(string saveGameName, bool overwrite)
         {
             if (!overwrite)
@@ -351,26 +401,6 @@ namespace MarsUndiscovered.Components
             return false;
         }
 
-        public void SaveState(ISaveGameService saveGameService)
-        {
-            GameObjectFactory.SaveState(saveGameService);
-            Walls.SaveState(saveGameService);
-            Floors.SaveState(saveGameService);
-            Monsters.SaveState(saveGameService);
-            Items.SaveState(saveGameService);
-            MessageLog.SaveState(saveGameService);
-            Player.SaveState(saveGameService);
-            HistoricalCommands.SaveState(saveGameService);
-            Inventory.SaveState(saveGameService);
-
-            var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameService.Mapper);
-            saveGameService.SaveToStore(gameWorldSaveData);
-
-            var randomNumberSaveData = GetRandomNumberSaveData();
-
-            saveGameService.SaveToStore(new Memento<RandomNumberSaveData>(randomNumberSaveData));
-        }
-
         private RandomNumberSaveData GetRandomNumberSaveData()
         {
             var xorShift128Generator = (XorShift128Generator)GlobalRandom.DefaultRNG;
@@ -435,7 +465,29 @@ namespace MarsUndiscovered.Components
             Inventory.LoadState(saveGameService);
 
             LoadRandomNumberSaveData(saveGameService);
-            CreateFieldOfView();
+            MapSeenTiles = new MapSeenTiles(Map, this);
+            MapSeenTiles.LoadState(saveGameService);
+        }
+
+        public void SaveState(ISaveGameService saveGameService)
+        {
+            GameObjectFactory.SaveState(saveGameService);
+            Walls.SaveState(saveGameService);
+            Floors.SaveState(saveGameService);
+            Monsters.SaveState(saveGameService);
+            Items.SaveState(saveGameService);
+            MessageLog.SaveState(saveGameService);
+            Player.SaveState(saveGameService);
+            HistoricalCommands.SaveState(saveGameService);
+            Inventory.SaveState(saveGameService);
+            MapSeenTiles.SaveState(saveGameService);
+
+            var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameService.Mapper);
+            saveGameService.SaveToStore(gameWorldSaveData);
+
+            var randomNumberSaveData = GetRandomNumberSaveData();
+
+            saveGameService.SaveToStore(new Memento<RandomNumberSaveData>(randomNumberSaveData));
         }
 
         private void LoadRandomNumberSaveData(ISaveGameService saveGameService)

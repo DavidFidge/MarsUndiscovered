@@ -60,6 +60,10 @@ namespace MarsUndiscovered.Installers
             CreateMap<EquipItemSaveData, EquipItemCommand>();
             CreateMap<UnequipItemSaveData, UnequipItemCommand>();
             CreateMap<DropItemSaveData, DropItemCommand>();
+            CreateMap<SeenTileSaveData, SeenTile>()
+                .ForMember(d => d.LastSeenGameObjects, o => o.Ignore());
+            CreateMap<MapSeenTilesSaveData, MapSeenTiles>()
+                .ForMember(d => d.SeenTiles, o => o.Ignore());
         }
 
         private void MapForSave()
@@ -92,6 +96,17 @@ namespace MarsUndiscovered.Installers
             CreateMap<EquipItemCommand, EquipItemSaveData>();
             CreateMap<UnequipItemCommand, UnequipItemSaveData>();
             CreateMap<DropItemCommand, DropItemSaveData>();
+            CreateMap<MapSeenTiles, MapSeenTilesSaveData>()
+                .ForMember(
+                    d => d.SeenTiles,
+                    o => o.MapFrom(s => s.SeenTiles.ToArray())
+                );
+
+            CreateMap<SeenTile, SeenTileSaveData>()
+                .ForMember(
+                    d => d.LastSeenGameObjectIds,
+                    o => o.MapFrom(s => s.LastSeenGameObjects.Select(i => i.ID).ToList())
+                );
         }
     }
 }

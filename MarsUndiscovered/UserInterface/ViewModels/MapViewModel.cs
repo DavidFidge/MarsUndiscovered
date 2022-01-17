@@ -25,6 +25,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private readonly ISceneGraph _sceneGraph;
         private readonly IMapTileEntityFactory _mapTileEntityFactory;
+        private readonly IFieldOfViewTileEntityFactory _fieldOfViewTileEntityFactory;
         private readonly IFactory<MapTileRootEntity> _mapTileRootEntityFactory;
         private readonly IFactory<MapEntity> _mapEntityFactory;
         private readonly IFactory<GoalMapEntity> _goalMapEntityFactory;
@@ -35,7 +36,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private ArrayView<MapTileEntity> _terrainTiles;
         private ArrayView<MapTileEntity> _actorTiles;
         private ArrayView<MapTileEntity> _itemTiles;
-        private ArrayView<MapTileEntity> _fieldOfViewTiles;
+        private ArrayView<FieldOfViewTileEntity> _fieldOfViewTiles;
         private ArrayView<GoalMapEntity> _goalMapTiles;
         private ArrayView<MapTileEntity> _mouseHoverTiles;
         private Path _mouseHoverPath;
@@ -43,6 +44,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public MapViewModel(
             ISceneGraph sceneGraph,
             IMapTileEntityFactory mapTileEntityFactory,
+            IFieldOfViewTileEntityFactory fieldOfViewTileEntityFactory,
             IFactory<MapTileRootEntity> mapTileRootEntityFactory,
             IFactory<MapEntity> mapEntityFactory,
             IFactory<GoalMapEntity> goalMapEntityFactory
@@ -53,6 +55,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _mapTileRootEntityFactory = mapTileRootEntityFactory;
             _mapEntityFactory = mapEntityFactory;
             _goalMapEntityFactory = goalMapEntityFactory;
+            _fieldOfViewTileEntityFactory = fieldOfViewTileEntityFactory;
         }
 
         public void SetupNewMap(IGameWorld gameWorld)
@@ -62,7 +65,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _terrainTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
             _actorTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
             _itemTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
-            _fieldOfViewTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
+            _fieldOfViewTiles = new ArrayView<FieldOfViewTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
             _mouseHoverTiles = new ArrayView<MapTileEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
             _goalMapTiles = new ArrayView<GoalMapEntity>(_gameWorld.Map.Width, _gameWorld.Map.Height);
 
@@ -90,9 +93,16 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _itemTiles[point].IsVisible = false;
             _goalMapTiles[point].IsVisible = false;
 
-            var gameObjects = _gameWorld.Map
-                .GetObjectsAt(point)
-                .ToList();
+            IEnumerable<IGameObject> gameObjects;
+
+            if (_fieldOfViewTiles[point].IsVisible && _fieldOfViewTiles[point].HasBeenSeen)
+            {
+                gameObjects = _gameWorld.MapSeenTiles.SeenTiles[point].LastSeenGameObjects;
+            }
+            else
+            {
+                gameObjects = _gameWorld.Map.GetObjectsAt(point);
+            }
 
             UpdateTileGoalMap(point, gameObjects);
             UpdateTileGameObjects(point, gameObjects);
@@ -151,9 +161,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             var itemTileEntity = _mapTileEntityFactory.Create(position);
             _itemTiles[position] = itemTileEntity;
 
-            var fieldOfViewTileEntity = _mapTileEntityFactory.Create(position);
+            var fieldOfViewTileEntity = _fieldOfViewTileEntityFactory.Create(position);
             _fieldOfViewTiles[position] = fieldOfViewTileEntity;
-            fieldOfViewTileEntity.SetFieldOfView();
+            fieldOfViewTileEntity.SetFieldOfViewUnrevealed();
 
             var mouseHoverEntity = _mapTileEntityFactory.Create(position);
             mouseHoverEntity.SetMouseHover();
@@ -186,7 +196,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             }
         }
 
-        private void UpdateTileGameObjects(Point point, List<IGameObject> gameObjects)
+        private void UpdateTileGameObjects(Point point, IEnumerable<IGameObject> gameObjects)
         {
             var actor = gameObjects.FirstOrDefault(go => go is Actor);
 
@@ -223,7 +233,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 _terrainTiles[point].SetWall();
         }
 
-        private void UpdateTileGoalMap(Point point, List<IGameObject> gameObjects)
+        private void UpdateTileGoalMap(Point point, IEnumerable<IGameObject> gameObjects)
         {
             if (!_showGoalMap)
                 return;
@@ -244,7 +254,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             }
         }
 
-        public void UpdateFieldOfView(IEnumerable<Point> newlyVisiblePoints, IEnumerable<Point> newlyHiddenPoints)
+        public void UpdateFieldOfView(
+            IEnumerable<Point> newlyVisiblePoints,
+            IEnumerable<Point> newlyHiddenPoints,
+            ArrayView<SeenTile> seenTiles
+        )
         {
             if (_fieldOfViewTiles == null)
                 return;
@@ -253,7 +267,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             // reset points to all hidden, then show visible points.
             foreach (var newlyHiddenPoint in newlyHiddenPoints)
             {
-                _fieldOfViewTiles[newlyHiddenPoint].IsVisible = true;
+                if (seenTiles[newlyHiddenPoint].HasBeenSeen)
+                {
+                    _fieldOfViewTiles[newlyHiddenPoint].SetFieldOfViewHasBeenSeen();
+                    UpdateTile(newlyHiddenPoint);
+                }
+                else
+                {
+                    _fieldOfViewTiles[newlyHiddenPoint].SetFieldOfViewUnrevealed();
+                }
             }
 
             foreach (var newlyVisiblePoint in newlyVisiblePoints)
@@ -261,6 +283,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 // Field of view tiles are black squares that obscure the map, so
                 // to make a tile visible we hide the black tile
                 _fieldOfViewTiles[newlyVisiblePoint].IsVisible = false;
+                UpdateTile(newlyVisiblePoint);
             }
         }
         

@@ -133,6 +133,12 @@ namespace MarsUndiscovered.Installers
                 Component.For<IMapTileEntityFactory>()
                     .AsFactory(),
 
+                Component.For<FieldOfViewTileEntity>()
+                    .LifeStyle.Transient,
+
+                Component.For<IFieldOfViewTileEntityFactory>()
+                    .AsFactory(),
+
                 Component.For<MapEntity>()
                     .LifeStyle.Transient,
 

@@ -56,7 +56,7 @@ namespace MarsUndiscovered.Commands
                 Source.CurrentMap.RemoveEntity(Source);
                 _oldPosition = Source.Position;
                 Source.Position = Point.None;
-                Mediator.Publish(new MapTileChangedNotification(Source.Position));
+                Mediator.Publish(new MapTileChangedNotification(_oldPosition));
             }
 
             return Result(CommandResult.Success(this, message));

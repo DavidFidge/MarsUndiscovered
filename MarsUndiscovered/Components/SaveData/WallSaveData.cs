@@ -2,5 +2,6 @@
 {
     public class WallSaveData : TerrainSaveData
     {
+        public bool IsDestroyed { get; set; }
     }
 }

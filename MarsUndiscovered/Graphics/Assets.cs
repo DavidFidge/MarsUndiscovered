@@ -26,7 +26,8 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad Weapon { get; set; }
         public MapTileQuad Gadget { get; set; }
         public MapTileQuad NanoFlask { get; set; }
-        public MapTileQuad FieldOfViewQuad { get; set; }
+        public MapTileQuad FieldOfViewUnrevealedQuad { get; set; }
+        public MapTileQuad FieldOfViewHasBeenSeenQuad { get; set; }
         public GoalMapQuad GoalMapQuad { get; set; }
 
         private readonly IGameProvider _gameProvider;
@@ -126,11 +127,18 @@ namespace MarsUndiscovered.Graphics
                 Color.White
             );
 
-            FieldOfViewQuad = new MapTileQuad(
+            FieldOfViewUnrevealedQuad = new MapTileQuad(
                 _gameProvider,
                 TileQuadWidth,
                 TileQuadHeight,
                 new Color(Color.Black, 1f)
+            );
+
+            FieldOfViewHasBeenSeenQuad = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                new Color(Color.Black, 0.5f)
             );
 
             MouseHover = new MapTileQuad(

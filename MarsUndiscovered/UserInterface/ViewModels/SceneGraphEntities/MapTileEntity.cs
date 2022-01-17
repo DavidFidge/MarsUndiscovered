@@ -82,12 +82,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = false;
         }
 
-        public void SetFieldOfView()
-        {
-            MapTileQuad = Assets.FieldOfViewQuad;
-            IsVisible = false;
-        }
-
         public void Draw(Matrix view, Matrix projection, Matrix world)
         {
             if (IsVisible)

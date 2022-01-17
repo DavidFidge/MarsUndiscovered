@@ -15,6 +15,7 @@ using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Interfaces;
 using Newtonsoft.Json;
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Commands
 {
@@ -55,24 +56,33 @@ namespace MarsUndiscovered.Commands
             var playerPosition = Player.Position;
             var newPlayerPosition = Player.Position + Direction;
 
-            if (Map.GameObjectCanMove(Player, newPlayerPosition))
+            if (Map.Bounds().Contains(newPlayerPosition))
             {
-                var terrainAtDestination = Map.GetTerrainAt(newPlayerPosition);
-
-                if (terrainAtDestination is Floor)
+                if (Map.GameObjectCanMove(Player, newPlayerPosition))
                 {
-                    var gameObjectsAt = Map.GetObjectsAt(newPlayerPosition);
+                    var terrainAtDestination = Map.GetTerrainAt(newPlayerPosition);
 
-                    var actorAt = gameObjectsAt.FirstOrDefault(go => go is Actor) as Actor;
-
-                    if (actorAt == null)
+                    if (terrainAtDestination is Floor)
                     {
                         var command = CommandFactory.CreateMoveCommand(GameWorld);
 
                         command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
 
                         return Result(CommandResult.Success(this, command));
+
                     }
+
+                    if (terrainAtDestination is Wall)
+                    {
+                        return Result(CommandResult.NoMove(this, "The unrelenting red rock is cold and dry"));
+                    }
+                }
+                else
+                {
+                    // Maps get created with the setting where there cannot be multiple objects in the same layer.
+                    // Thus if player cannot move to the new position then a monster should be there.
+                    var actorAt = Map.GetObjectAt<Actor>(newPlayerPosition);
+
                     if (actorAt is Monster)
                     {
                         var command = CommandFactory.CreateAttackCommand(GameWorld);
@@ -81,11 +91,8 @@ namespace MarsUndiscovered.Commands
                         return Result(CommandResult.Success(this, command));
                     }
 
-                    return Result(CommandResult.Exception(this, $"You bump into a {actorAt.Name}"));
-                }
-                if (terrainAtDestination is Wall)
-                {
-                    return Result(CommandResult.NoMove(this, "The unrelenting red rock is cold and dry"));
+                    if (actorAt != null)
+                        return Result(CommandResult.Exception(this, $"You bump into a {actorAt.Name}"));
                 }
             }
 

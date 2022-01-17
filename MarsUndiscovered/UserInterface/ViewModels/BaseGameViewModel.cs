@@ -133,7 +133,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public Task Handle(FieldOfViewChangedNotifcation notification, CancellationToken cancellationToken)
         {
             if (IsActive)
-                MapViewModel.UpdateFieldOfView(notification.NewlyVisiblePoints, notification.NewlyHiddenPoints);
+                MapViewModel.UpdateFieldOfView(notification.NewlyVisibleTiles, notification.NewlyHiddenTiles, notification.SeenTiles);
 
             return Unit.Task;
         }

@@ -42,13 +42,13 @@ namespace MarsUndiscovered.Components.Maps
                         if (s)
                         {
                             var floor = GameObjectFactory.CreateFloor();
-                            floor.CreatedIndex = index;
+                            floor.Index = index;
                             gameObject = floor;
                         }
                         else
                         {
                             var wall = GameObjectFactory.CreateWall();
-                            wall.CreatedIndex = index;
+                            wall.Index = index;
                             gameObject = wall;
                         }
 
@@ -63,11 +63,12 @@ namespace MarsUndiscovered.Components.Maps
         {
             Debug.Assert(floors.Any() || walls.Any(), "Walls and/or Floors must be populated");
 
-            var map = new Map(MapWidth, MapHeight, 2, Distance.Chebyshev);
+            var map = new Map(MapWidth, MapHeight, 2, Distance.Chebyshev, UInt32.MaxValue, 1, 0);
 
             var wallsFloors = walls.Values.Cast<Terrain>()
                 .Union(floors.Values)
-                .OrderBy(t => t.CreatedIndex)
+                .Where(t => !t.IsDestroyed)
+                .OrderBy(t => t.Index)
                 .ToArrayView(map.Width);
 
             map.ApplyTerrainOverlay(wallsFloors);

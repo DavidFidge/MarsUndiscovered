@@ -50,17 +50,11 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void WalkCommand_Should_Return_NoMove_Result_For_Wall()
         {
             // Arrange
-            var gameObjectFactory = Container.Resolve<IGameObjectFactory>();
-
             NewGameWithNoWallsNoMonstersNoItems();
-            
+
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition = new Point(1, 0);
-            var wall = gameObjectFactory.CreateWall();
-
-            wall.Position = wallPosition;
-
-            _gameWorld.Map.SetTerrain(wall);
+            _gameWorld.CreateWall(wallPosition);
 
             // Act
             _gameWorld.MoveRequest(Direction.Right);
@@ -216,11 +210,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             _gameWorld.Player.Position = new Point(0, 0);
 
-            var gameObjectFactory = Container.Resolve<IGameObjectFactory>();
-
-            var wall = gameObjectFactory.CreateWall();
-            wall.Position = new Point(2, 2);
-            _gameWorld.Map.SetTerrain(wall);
+            _gameWorld.CreateWall(new Point(2, 2));
 
             var path = _gameWorld.GetPathToPlayer(new Point(2, 2));
 
@@ -244,11 +234,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             _gameWorld.Player.Position = new Point(0, 0);
 
-            var gameObjectFactory = Container.Resolve<IGameObjectFactory>();
-
-            var wall = gameObjectFactory.CreateWall();
-            wall.Position = new Point(1, 1);
-            _gameWorld.Map.SetTerrain(wall);
+            _gameWorld.CreateWall(new Point(1, 1));
 
             var path = _gameWorld.GetPathToPlayer(new Point(1, 1));
 

@@ -36,6 +36,7 @@ namespace MarsUndiscovered.Interfaces
         ItemCollection Items { get; }
         Inventory Inventory { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
+        MapSeenTiles MapSeenTiles { get; set; }
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
         LoadGameResult LoadReplay(string saveGameName);
         bool ExecuteNextReplayCommand();
