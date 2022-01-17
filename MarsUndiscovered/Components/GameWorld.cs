@@ -9,7 +9,7 @@ using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
-
+using GoRogue.FOV;
 using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Interfaces;
 
@@ -34,6 +34,7 @@ namespace MarsUndiscovered.Components
     {
         public Map Map { get; private set; }
         public GoalMaps GoalMaps { get; set; }
+        public IFOV FieldOfView { get; set; }
         public Player Player { get; private set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public ICommandFactory CommandFactory { get; set; }
@@ -116,6 +117,13 @@ namespace MarsUndiscovered.Components
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
 
             RebuildGoalMaps();
+            CreateFieldOfView();
+        }
+
+        private void CreateFieldOfView()
+        {
+            FieldOfView = new RecursiveShadowcastingFOV(Map.TransparencyView);
+            UpdateFieldOfView();
         }
 
         private void Reset()
@@ -127,6 +135,11 @@ namespace MarsUndiscovered.Components
             HistoricalCommands = new CommandCollection(CommandFactory, this);
 
             GameObjectFactory.Reset();
+        }
+
+        public void UpdateFieldOfView()
+        {
+            FieldOfView.Calculate(Player.Position);
         }
 
         public void RebuildGoalMaps()
@@ -416,6 +429,7 @@ namespace MarsUndiscovered.Components
             Inventory.LoadState(saveGameService);
 
             LoadRandomNumberSaveData(saveGameService);
+            CreateFieldOfView();
         }
 
         private void LoadRandomNumberSaveData(ISaveGameService saveGameService)
