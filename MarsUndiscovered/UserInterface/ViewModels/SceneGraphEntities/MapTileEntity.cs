@@ -79,7 +79,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void SetMouseHover()
         {
             MapTileQuad = Assets.MouseHover;
-            IsVisible = true;
+            IsVisible = false;
+        }
+
+        public void SetFieldOfView()
+        {
+            MapTileQuad = Assets.FieldOfViewQuad;
+            IsVisible = false;
         }
 
         public void Draw(Matrix view, Matrix projection, Matrix world)

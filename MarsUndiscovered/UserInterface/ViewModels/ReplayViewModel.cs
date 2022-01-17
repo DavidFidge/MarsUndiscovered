@@ -18,6 +18,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private void SetupNewReplay()
         {
             SetUpViewModels();
+            GameWorldProvider.AfterCreateGame();
             TurnNumber = 1;
         }
 

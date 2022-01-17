@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+
 using MediatR;
 using SadRogue.Primitives;
 
@@ -11,8 +13,8 @@ namespace MarsUndiscovered.Messages
 
         public FieldOfViewChangedNotifcation(IEnumerable<Point> newlyVisiblePoints, IEnumerable<Point> newlyHiddenPoints)
         {
-            NewlyVisiblePoints = newlyVisiblePoints;
-            NewlyHiddenPoints = newlyHiddenPoints;
+            NewlyVisiblePoints = newlyVisiblePoints.ToList();
+            NewlyHiddenPoints = newlyHiddenPoints.ToList();
         }
     }
 }

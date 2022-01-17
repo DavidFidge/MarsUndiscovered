@@ -153,10 +153,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             var fieldOfViewTileEntity = _mapTileEntityFactory.Create(position);
             _fieldOfViewTiles[position] = fieldOfViewTileEntity;
+            fieldOfViewTileEntity.SetFieldOfView();
 
             var mouseHoverEntity = _mapTileEntityFactory.Create(position);
             mouseHoverEntity.SetMouseHover();
-            mouseHoverEntity.IsVisible = false;
             _mouseHoverTiles[position] = mouseHoverEntity;
 
             var goalMapTileEntity = _goalMapEntityFactory.Create();
@@ -170,6 +170,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             // Field of view needs to come last to ensure it will block any tiles
             _sceneGraph.Add(fieldOfViewTileEntity, mapTileRootEntity);
+
+            // Debug tiles
             _sceneGraph.Add(goalMapTileEntity, mapTileRootEntity);
         }
 
@@ -244,6 +246,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void UpdateFieldOfView(IEnumerable<Point> newlyVisiblePoints, IEnumerable<Point> newlyHiddenPoints)
         {
+            if (_fieldOfViewTiles == null)
+                return;
+
             // Process hidden points first, this method can then be used to 
             // reset points to all hidden, then show visible points.
             foreach (var newlyHiddenPoint in newlyHiddenPoints)

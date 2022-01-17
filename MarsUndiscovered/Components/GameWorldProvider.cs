@@ -40,6 +40,11 @@ namespace MarsUndiscovered.Components
             GameWorld.NewGame(seed);
         }
 
+        public void AfterCreateGame()
+        {
+            GameWorld.AfterCreateGame();
+        }
+
         public void LoadReplay(string gameName)
         {
             GameWorld = _gameWorldFactory.Create();

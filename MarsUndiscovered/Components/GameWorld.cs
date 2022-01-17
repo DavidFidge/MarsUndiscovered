@@ -19,6 +19,7 @@ using GoRogue.Random;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Messages;
 
 using Microsoft.Xna.Framework.Input;
 
@@ -123,7 +124,6 @@ namespace MarsUndiscovered.Components
         private void CreateFieldOfView()
         {
             FieldOfView = new RecursiveShadowcastingFOV(Map.TransparencyView);
-            UpdateFieldOfView();
         }
 
         private void Reset()
@@ -140,6 +140,12 @@ namespace MarsUndiscovered.Components
         public void UpdateFieldOfView()
         {
             FieldOfView.Calculate(Player.Position);
+            Mediator.Publish(new FieldOfViewChangedNotifcation(FieldOfView.NewlySeen, FieldOfView.NewlyUnseen));
+        }
+
+        public void AfterCreateGame()
+        {
+            Mediator.Publish(new FieldOfViewChangedNotifcation(FieldOfView.CurrentFOV, Map.Positions()));
         }
 
         public void RebuildGoalMaps()

@@ -10,5 +10,6 @@ namespace MarsUndiscovered.Interfaces
         public void LoadGame(string filename);
         public void LoadReplay(string filename);
         void NewGame(uint? seed = null);
+        void AfterCreateGame();
     }
 }
