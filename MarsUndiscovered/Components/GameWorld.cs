@@ -462,6 +462,9 @@ namespace MarsUndiscovered.Components
 
             var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameService.Mapper);
             saveGameService.SaveToStore(gameWorldSaveData);
+
+            // Not sure I like this idea, as a memento is supposed to hold state, not a reference to an object. It does make the code more straightforward for saving and loading
+            // though.
             saveGameService.SaveToStore(new Memento<XorShift128Generator>((XorShift128Generator)GlobalRandom.DefaultRNG));
         }
 
