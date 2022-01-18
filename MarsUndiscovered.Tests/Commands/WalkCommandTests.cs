@@ -144,14 +144,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_With_Commands()
         {
             // Arrange
-            var blankMapGeneration = new BlankMapGenerator(
-                Container.Resolve<IGameObjectFactory>(),
-                Container.Resolve<IMapGenerator>()
-            );
-
-            _gameWorld.MapGenerator = blankMapGeneration;
-
-            _gameWorld.NewGame();
+            NewGameWithNoWallsNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 0);
 
             _gameWorld.MoveRequest(Direction.Down);

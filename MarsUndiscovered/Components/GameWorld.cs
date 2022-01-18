@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 using AutoMapper;
 
@@ -9,13 +8,14 @@ using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
-using GoRogue.FOV;
+
 using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Interfaces;
 
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
+
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Components.SaveData;
@@ -401,30 +401,7 @@ namespace MarsUndiscovered.Components
             return false;
         }
 
-        private RandomNumberSaveData GetRandomNumberSaveData()
-        {
-            var xorShift128Generator = (XorShift128Generator)GlobalRandom.DefaultRNG;
 
-            var xorShift128GeneratorType = typeof(XorShift128Generator);
-            var abstractGeneratorType = typeof(AbstractGenerator);
-
-            var bytesAvailableFieldBool = xorShift128GeneratorType.GetField("_bytesAvailable", BindingFlags.NonPublic | BindingFlags.Instance);
-            var xFieldULong = xorShift128GeneratorType.GetField("_x", BindingFlags.NonPublic | BindingFlags.Instance);
-            var yFieldULong = xorShift128GeneratorType.GetField("_y", BindingFlags.NonPublic | BindingFlags.Instance);
-            var bitBufferFieldUInt = abstractGeneratorType.GetField("_bitBuffer", BindingFlags.NonPublic | BindingFlags.Instance);
-            var bitCountFieldInt = abstractGeneratorType.GetField("_bitCount", BindingFlags.NonPublic | BindingFlags.Instance);
-
-            var randomNumberSaveData = new RandomNumberSaveData
-            {
-                BytesAvailable = (bool)bytesAvailableFieldBool.GetValue(xorShift128Generator),
-                X = (ulong)xFieldULong.GetValue(xorShift128Generator),
-                Y = (ulong)yFieldULong.GetValue(xorShift128Generator),
-                BitBuffer = (uint)bitBufferFieldUInt.GetValue(xorShift128Generator),
-                BitCount = (int)bitCountFieldInt.GetValue(xorShift128Generator),
-                Seed = xorShift128Generator.Seed
-            };
-            return randomNumberSaveData;
-        }
 
         public void LoadState(ISaveGameService saveGameService)
         {
@@ -464,9 +441,10 @@ namespace MarsUndiscovered.Components
             Inventory = new Inventory(this);
             Inventory.LoadState(saveGameService);
 
-            LoadRandomNumberSaveData(saveGameService);
             MapSeenTiles = new MapSeenTiles(Map, this);
             MapSeenTiles.LoadState(saveGameService);
+
+            GlobalRandom.DefaultRNG = saveGameService.GetFromStore<XorShift128Generator>().State;
         }
 
         public void SaveState(ISaveGameService saveGameService)
@@ -484,34 +462,7 @@ namespace MarsUndiscovered.Components
 
             var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameService.Mapper);
             saveGameService.SaveToStore(gameWorldSaveData);
-
-            var randomNumberSaveData = GetRandomNumberSaveData();
-
-            saveGameService.SaveToStore(new Memento<RandomNumberSaveData>(randomNumberSaveData));
-        }
-
-        private void LoadRandomNumberSaveData(ISaveGameService saveGameService)
-        {
-            var randomNumberSaveData = saveGameService.GetFromStore<RandomNumberSaveData>();
-
-            var xorShift128Generator = (XorShift128Generator)GlobalRandom.DefaultRNG;
-
-            xorShift128Generator.Seed = randomNumberSaveData.State.Seed;
-
-            var xorShift128GeneratorType = typeof(XorShift128Generator);
-            var abstractGeneratorType = typeof(AbstractGenerator);
-
-            var bytesAvailableFieldBool = xorShift128GeneratorType.GetField("_bytesAvailable", BindingFlags.NonPublic | BindingFlags.Instance);
-            var xFieldULong = xorShift128GeneratorType.GetField("_x", BindingFlags.NonPublic | BindingFlags.Instance);
-            var yFieldULong = xorShift128GeneratorType.GetField("_y", BindingFlags.NonPublic | BindingFlags.Instance);
-            var bitBufferFieldUInt = abstractGeneratorType.GetField("_bitBuffer", BindingFlags.NonPublic | BindingFlags.Instance);
-            var bitCountFieldInt = abstractGeneratorType.GetField("_bitCount", BindingFlags.NonPublic | BindingFlags.Instance);
-
-            bytesAvailableFieldBool.SetValue(xorShift128Generator, randomNumberSaveData.State.BytesAvailable);
-            xFieldULong.SetValue(xorShift128Generator, randomNumberSaveData.State.X);
-            yFieldULong.SetValue(xorShift128Generator, randomNumberSaveData.State.Y);
-            bitBufferFieldUInt.SetValue(xorShift128Generator, randomNumberSaveData.State.BitBuffer);
-            bitCountFieldInt.SetValue(xorShift128Generator, randomNumberSaveData.State.BitCount);
+            saveGameService.SaveToStore(new Memento<XorShift128Generator>((XorShift128Generator)GlobalRandom.DefaultRNG));
         }
 
         public IMemento<GameWorldSaveData> GetSaveState(IMapper mapper)
