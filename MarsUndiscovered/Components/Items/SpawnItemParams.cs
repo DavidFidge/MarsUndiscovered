@@ -5,6 +5,7 @@ namespace MarsUndiscovered.Components
 {
     public class SpawnItemParams
     {
+        public Guid? MapId { get; set; }
         public ItemType ItemType { get; set; }
         public Point? Position { get; set; }
         public Point? AvoidPosition { get; set; }
@@ -30,6 +31,13 @@ namespace MarsUndiscovered.Components
             spawnItemParams.Position = point;
 
             CheckPositionAgainstAvoidPosition(spawnItemParams);
+
+            return spawnItemParams;
+        }
+
+        public static SpawnItemParams OnMap(this SpawnItemParams spawnItemParams, Guid mapId)
+        {
+            spawnItemParams.MapId = mapId;
 
             return spawnItemParams;
         }

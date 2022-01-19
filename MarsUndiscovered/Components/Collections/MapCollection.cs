@@ -52,6 +52,8 @@ namespace MarsUndiscovered.Components
 
                 if (map.Id == memento.State.CurrentMapId)
                     CurrentMap = map;
+
+                Add(map);
             }
         }
     }

@@ -4,8 +4,6 @@ using GoRogue.Random;
 
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components;
-using MarsUndiscovered.Components.Factories;
-using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Interfaces;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -318,6 +316,49 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             Assert.IsNull(newGameWorld.CurrentMap.GetObjectAt<Monster>(new Point(2, 2)));
             Assert.IsNotNull(newGameWorld.CurrentMap.GetObjectAt<Monster>(new Point(3, 3)));
+        }
+
+        [TestMethod]
+        public void Should_Save_Then_Load_Game_Multiple_Maps()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+
+            var maps = _gameWorld.Maps.ToList();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[0].Id).WithBreed(Breed.Roach).AtPosition(new Point(2, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[1].Id).WithBreed(Breed.Roach).AtPosition(new Point(2, 2)));
+
+            var monsterMap1 = _gameWorld.Monsters.First().Value;
+            var monsterMap2 = _gameWorld.Monsters.Skip(1).First().Value;
+
+            _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
+
+            // Act
+            var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            newGameWorld.LoadGame("TestShouldSaveThenLoad");
+
+            // Assert
+            Assert.AreEqual(2, newGameWorld.Maps.Count);
+            var newGameMaps = newGameWorld.Maps.ToList();
+            Assert.AreEqual(2, newGameMaps.Count);
+            Assert.AreEqual(maps[0].Id, newGameMaps[0].Id);
+            Assert.AreEqual(maps[1].Id, newGameMaps[1].Id);
+
+            Assert.AreEqual(newGameMaps[0], newGameWorld.CurrentMap);
+            Assert.AreEqual(newGameMaps[0], newGameWorld.Player.CurrentMap);
+
+            var newGameMonsterMap1 = newGameWorld.Monsters.First().Value;
+            var newGameMonsterMap2 = newGameWorld.Monsters.Skip(1).First().Value;
+
+            Assert.AreEqual(newGameMonsterMap1.CurrentMap, newGameMaps[0]);
+            Assert.AreEqual(newGameMonsterMap2.CurrentMap, newGameMaps[1]);
+
+            Assert.IsNotNull(newGameMaps[0].GetObjectAt<Monster>(new Point(2, 2)));
+            Assert.IsNotNull(newGameMaps[1].GetObjectAt<Monster>(new Point(2, 2)));
+            Assert.AreNotSame(newGameMaps[0].GetObjectAt<Monster>(new Point(2, 2)), newGameMaps[1].GetObjectAt<Monster>(new Point(2, 2)));
         }
     }
 }

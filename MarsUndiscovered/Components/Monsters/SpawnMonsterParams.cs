@@ -6,6 +6,8 @@ namespace MarsUndiscovered.Components
     public class SpawnMonsterParams
     {
         public Breed Breed { get; set; }
+
+        public Guid? MapId { get; set; }
         public Point? Position { get; set; }
         public Point? AvoidPosition { get; set; }
         public uint AvoidPositionRange { get; set; }
@@ -30,6 +32,13 @@ namespace MarsUndiscovered.Components
             spawnMonsterParams.Position = point;
 
             CheckPositionAgainstAvoidPosition(spawnMonsterParams);
+
+            return spawnMonsterParams;
+        }
+
+        public static SpawnMonsterParams OnMap(this SpawnMonsterParams spawnMonsterParams, Guid mapId)
+        {
+            spawnMonsterParams.MapId = mapId;
 
             return spawnMonsterParams;
         }

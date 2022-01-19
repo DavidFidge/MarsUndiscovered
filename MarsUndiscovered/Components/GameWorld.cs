@@ -83,6 +83,40 @@ namespace MarsUndiscovered.Components
 
             Logger.Debug("Generating game world");
 
+            Maps.CurrentMap = CreateMap();
+            var map2 = CreateMap();
+
+            Player = GameObjectFactory.CreatePlayer()
+                .PositionedAt(CurrentMap.RandomPosition(MapHelpers.EmptyPointOnFloor))
+                .AddToMap(CurrentMap);
+
+            Inventory = new Inventory(this);
+
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+
+            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed(Breed.Roach));
+
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
+
+            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
+            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
+
+            RebuildGoalMaps();
+        }
+
+        private MarsMap CreateMap()
+        {
             var map = MapGenerator.CreateMap(this, GameObjectFactory, Components.Maps.MapGenerator.CreateOutdoorWallsFloors);
 
             var terrain = GameObjects
@@ -98,31 +132,8 @@ namespace MarsUndiscovered.Components
                 Floors.Add(floor.ID, floor);
 
             Maps.Add(map);
-            Maps.CurrentMap = map;
 
-            Player = GameObjectFactory.CreatePlayer()
-                .PositionedAt(CurrentMap.RandomPosition(MapHelpers.EmptyPointOnFloor))
-                .AddToMap(CurrentMap);
-
-            Inventory = new Inventory(this);
-
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
-
-            RebuildGoalMaps();
+            return map;
         }
 
         private void Reset()
@@ -280,12 +291,16 @@ namespace MarsUndiscovered.Components
 
         public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
         {
-            MonsterGenerator.SpawnMonster(spawnMonsterParams, GameObjectFactory, CurrentMap, Monsters);
+            var map = spawnMonsterParams.MapId.HasValue ? Maps.First(m => m.Id == spawnMonsterParams.MapId) : CurrentMap;
+
+            MonsterGenerator.SpawnMonster(spawnMonsterParams, GameObjectFactory, map, Monsters);
         }
 
         public void SpawnItem(SpawnItemParams spawnItemParams)
         {
-            ItemGenerator.SpawnItem(spawnItemParams, GameObjectFactory, CurrentMap, Items);
+            var map = spawnItemParams.MapId.HasValue ? Maps.First(m => m.Id == spawnItemParams.MapId) : CurrentMap;
+
+            ItemGenerator.SpawnItem(spawnItemParams, GameObjectFactory, map, Items);
         }
 
         public void CreateWall(Point position)
