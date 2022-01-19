@@ -21,7 +21,7 @@ namespace MarsUndiscovered.Components
 
         public abstract Attack BasicAttack { get; }
 
-        public Actor(uint id) : base(1, true, true, () => id)
+        public Actor(uint id) : base(Constants.ActorLayer, false, true, () => id)
         {
         }
     }

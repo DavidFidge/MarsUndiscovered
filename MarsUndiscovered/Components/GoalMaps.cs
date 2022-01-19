@@ -28,26 +28,32 @@ namespace MarsUndiscovered.Components
                         .Reverse()
                         .ToList();
 
+                    _goalStates[x, y] = GoalState.Clear;
+
                     foreach (var gameObject in gameObjects)
                     {
-                        switch (gameObject)
+                        if (gameObject is Player _)
                         {
-                            case Player _:
-                                _goalStates[x, y] = GoalState.Goal;
-                                continue; // always continue for player
-
-                            case Monster _:
-                                _goalStates[x, y] = GoalState.Obstacle;
-                                continue; // always continue for monster
-
-                            case Wall _:
-                                _goalStates[x, y] = GoalState.Obstacle;
-                                break;
-
-                            case Floor _:
-                                _goalStates[x, y] = GoalState.Clear;
-                                break;
+                            _goalStates[x, y] = GoalState.Goal;
+                            break;
                         }
+                        if (gameObject is Monster _)
+                        {
+                            _goalStates[x, y] = GoalState.Obstacle;
+                            break;
+                        }
+                        if (gameObject is MapExit _)
+                        {
+                            _goalStates[x, y] = GoalState.Obstacle;
+                            break;
+                        }
+                        if (gameObject is Wall _)
+                        {
+                            _goalStates[x, y] = GoalState.Obstacle;
+                            break;
+                        }
+
+                        // We can reach here if the object type was an item or a floor, if so keep on looking.
                     }
                 }
             }

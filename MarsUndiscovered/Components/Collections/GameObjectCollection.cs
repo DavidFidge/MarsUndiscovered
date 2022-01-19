@@ -24,9 +24,9 @@ namespace MarsUndiscovered.Components
 
         public void LoadState(ISaveGameService saveGameService)
         {
-            var gameObjectSaveData = saveGameService.GetListFromStore<TState>();
+            var saveData = saveGameService.GetListFromStore<TState>();
 
-            foreach (var gameObjectSaveDataItem in gameObjectSaveData)
+            foreach (var gameObjectSaveDataItem in saveData)
             {
                 var gameObject = Create(gameObjectSaveDataItem.State.Id);
 
@@ -34,6 +34,12 @@ namespace MarsUndiscovered.Components
 
                 Add(gameObject.ID, gameObject);
             }
+
+            AfterCollectionLoaded(saveData);
+        }
+
+        protected virtual void AfterCollectionLoaded(IList<IMemento<TState>> saveData)
+        {
         }
 
         protected abstract T Create(uint id);

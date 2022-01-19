@@ -1,10 +1,14 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
+using GoRogue.GameFramework;
+
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 
 using Microsoft.Xna.Framework;
+
+using SadRogue.Primitives;
 
 using IDrawable = FrigidRogue.MonoGame.Core.Graphics.IDrawable;
 using Point = SadRogue.Primitives.Point;
@@ -41,6 +45,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void SetPlayer()
         {
             MapTileQuad = Assets.Player;
+            IsVisible = true;
+        }
+
+        public void SetMapExit(Direction direction)
+        {
+            MapTileQuad = direction == Direction.Down ? Assets.MapExitDown : Assets.MapExitUp;
+
             IsVisible = true;
         }
 

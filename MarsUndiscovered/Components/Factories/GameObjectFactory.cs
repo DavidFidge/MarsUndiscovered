@@ -86,6 +86,16 @@ namespace MarsUndiscovered.Components.Factories
             return ResolveWithGivenId<Item>(id);
         }
 
+        public MapExit CreateMapExit()
+        {
+            return ResolveWithNextId<MapExit>();
+        }
+
+        public MapExit CreateMapExit(uint id)
+        {
+            return ResolveWithGivenId<MapExit>(id);
+        }
+
         private T ResolveWithNextId<T>() where T : IGameObject
         {
             var gameObject = _container.Resolve<T>(new Arguments { { "id", GetNextId() } });

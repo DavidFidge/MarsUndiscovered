@@ -14,5 +14,6 @@ namespace MarsUndiscovered.Components.Factories
         EquipItemCommand CreateEquipItemCommand(IGameWorld gameWorld);
         UnequipItemCommand CreateUnequipItemCommand(IGameWorld gameWorld);
         DropItemCommand CreateDropItemCommand(IGameWorld gameWorld);
+        ChangeMapCommand CreateChangeMapCommand(IGameWorld gameWorld);
     }
 }

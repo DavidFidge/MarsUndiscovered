@@ -45,6 +45,10 @@ namespace MarsUndiscovered.Installers
                 .ConstructUsing(sd => _gameObjectFactory.CreateItem(sd.Id))
                 .ForMember(d => d.ItemType, o => o.MapFrom(s => ItemType.GetItemType(s.ItemTypeName)));
 
+            CreateMap<MapExitSaveData, MapExit>()
+                .ConstructUsing(sd => _gameObjectFactory.CreateMapExit(sd.Id))
+                .ForMember(d => d.Destination, o => o.Ignore());
+
             CreateMap<InventorySaveData, Inventory>()
                 .ForMember(d => d.Items, o => o.Ignore())
                 .ForMember(d => d.ItemKeyAssignments, o => o.Ignore())
@@ -53,14 +57,7 @@ namespace MarsUndiscovered.Installers
                 .ForMember(d => d.ItemTypeDiscoveries, o => o.Ignore());
 
             CreateMap<GameWorldSaveData, GameWorld>();
-            CreateMap<MoveCommandSaveData, MoveCommand>();
-            CreateMap<WalkCommandSaveData, WalkCommand>();
-            CreateMap<AttackCommandSaveData, AttackCommand>();
-            CreateMap<DeathCommandSaveData, DeathCommand>();
-            CreateMap<PickUpItemSaveData, PickUpItemCommand>();
-            CreateMap<EquipItemSaveData, EquipItemCommand>();
-            CreateMap<UnequipItemSaveData, UnequipItemCommand>();
-            CreateMap<DropItemSaveData, DropItemCommand>();
+
             CreateMap<MapCollectionSaveData, MapCollection>()
                 .ForMember(d => d.CurrentMap, o => o.Ignore());
 
@@ -69,6 +66,15 @@ namespace MarsUndiscovered.Installers
 
             CreateMap<SeenTileSaveData, SeenTile>()
                 .ForMember(d => d.LastSeenGameObjects, o => o.Ignore());
+
+            CreateMap<MoveCommandSaveData, MoveCommand>();
+            CreateMap<WalkCommandSaveData, WalkCommand>();
+            CreateMap<AttackCommandSaveData, AttackCommand>();
+            CreateMap<DeathCommandSaveData, DeathCommand>();
+            CreateMap<PickUpItemSaveData, PickUpItemCommand>();
+            CreateMap<EquipItemSaveData, EquipItemCommand>();
+            CreateMap<UnequipItemSaveData, UnequipItemCommand>();
+            CreateMap<DropItemSaveData, DropItemCommand>();
         }
 
         private void MapForSave()
@@ -83,6 +89,7 @@ namespace MarsUndiscovered.Installers
             CreateMap<Player, PlayerSaveData>();
             CreateMap<Monster, MonsterSaveData>();
             CreateMap<Item, ItemSaveData>();
+            CreateMap<MapExit, MapExitSaveData>();
             CreateMap<GameWorld, GameWorldSaveData>();
             CreateMap<GameObjectFactory, GameObjectFactorySaveData>();
 

@@ -21,7 +21,7 @@ namespace MarsUndiscovered.Components
         public bool GroupsInInventory { get; set; }
         public ItemDiscovery ItemDiscovery { get; set; } = new ItemDiscovery();
 
-        public Item(uint id) : base(2, true, true, () => id)
+        public Item(uint id) : base(Constants.ItemLayer, true, true, () => id)
         {
         }
 

@@ -27,6 +27,7 @@ namespace MarsUndiscovered.Components
             UnequipItemCommands = new UnequipItemCommandCollection(commandFactory, gameWorld);
             DropItemCommands = new DropItemCommandCollection(commandFactory, gameWorld);
             PickUpItemCommands = new PickUpItemCommandCollection(commandFactory, gameWorld);
+            ChangeMapCommands = new ChangeMapCommandCollection(commandFactory, gameWorld);
 
             _commandCollectionPropertyInfos = GetType()
                 .GetProperties()
@@ -47,6 +48,7 @@ namespace MarsUndiscovered.Components
         public UnequipItemCommandCollection UnequipItemCommands { get; set; }
         public DropItemCommandCollection DropItemCommands { get; set; }
         public PickUpItemCommandCollection PickUpItemCommands { get; set; }
+        public ChangeMapCommandCollection ChangeMapCommands { get; set; }
 
         public IEnumerator<BaseGameActionCommand> GetEnumerator()
         {

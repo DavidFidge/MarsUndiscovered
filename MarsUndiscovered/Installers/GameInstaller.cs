@@ -79,6 +79,9 @@ namespace MarsUndiscovered.Installers
                 Component.For<IItemGenerator>()
                     .ImplementedBy<ItemGenerator>(),
 
+                Component.For<IMapExitGenerator>()
+                    .ImplementedBy<MapExitGenerator>(),
+
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IScreen>(),
 
@@ -186,6 +189,9 @@ namespace MarsUndiscovered.Installers
                     .AsFactory(),
 
                 Component.For<ICommandFactory<UnequipItemCommand>>()
+                    .AsFactory(),
+
+                Component.For<ICommandFactory<ChangeMapCommand>>()
                     .AsFactory()
             );
         }

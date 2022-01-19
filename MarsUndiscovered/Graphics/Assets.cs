@@ -22,6 +22,8 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad Wall { get; set; }
         public MapTileQuad Floor { get; set; }
         public MapTileQuad Player { get; set; }
+        public MapTileQuad MapExitDown { get; set; }
+        public MapTileQuad MapExitUp { get; set; }
         public MapTileQuad Roach { get; set; }
         public MapTileQuad Weapon { get; set; }
         public MapTileQuad Gadget { get; set; }
@@ -115,6 +117,28 @@ namespace MarsUndiscovered.Graphics
                 MapFont,
                 TextureMaterialEffect,
                 'r',
+                Color.SaddleBrown
+            );
+
+            MapExitDown = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '>',
+                _itemColour,
+                Color.SaddleBrown
+            );
+
+            MapExitUp = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '<',
+                _itemColour,
                 Color.SaddleBrown
             );
 

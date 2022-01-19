@@ -90,6 +90,19 @@ namespace MarsUndiscovered.Commands
 
                     if (actorAt != null)
                         return Result(CommandResult.Exception(this, $"You bump into a {actorAt.Name}"));
+
+                    var mapExitAt = map.GetObjectAt<MapExit>(newPlayerPosition);
+
+                    if (mapExitAt != null)
+                    {
+                        var command = CommandFactory.CreateChangeMapCommand(GameWorld);
+
+                        command.Initialise(Player, mapExitAt);
+
+                        var exitText = mapExitAt.Direction == Direction.Down ? "descend" : "ascend";
+
+                        return Result(CommandResult.Success(this, $"You {exitText}", command));
+                    }
                 }
             }
 

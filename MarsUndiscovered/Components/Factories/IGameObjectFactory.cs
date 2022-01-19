@@ -20,5 +20,7 @@ namespace MarsUndiscovered.Components.Factories
         Monster CreateMonster(uint id);
         Item CreateItem();
         Item CreateItem(uint id);
+        MapExit CreateMapExit();
+        MapExit CreateMapExit(uint id);
     }
 }

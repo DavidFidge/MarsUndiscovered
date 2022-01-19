@@ -33,6 +33,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsNotNull(_gameWorld.Player);
             Assert.IsNotNull(_gameWorld.GameObjects);
             Assert.IsTrue(_gameWorld.GameObjects.Count > 0);
+            Assert.IsTrue(_gameWorld.MapExits.Count > 0);
             Assert.IsTrue(_gameWorld.Seed > 0);
             Assert.AreEqual(MarsMap.MapWidth, _gameWorld.CurrentMap.Width);
             Assert.AreEqual(MarsMap.MapHeight, _gameWorld.CurrentMap.Height);
@@ -331,9 +332,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[0].Id).WithBreed(Breed.Roach).AtPosition(new Point(2, 2)));
             _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[1].Id).WithBreed(Breed.Roach).AtPosition(new Point(2, 2)));
 
-            var monsterMap1 = _gameWorld.Monsters.First().Value;
-            var monsterMap2 = _gameWorld.Monsters.Skip(1).First().Value;
-
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 
             // Act
@@ -359,6 +357,38 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsNotNull(newGameMaps[0].GetObjectAt<Monster>(new Point(2, 2)));
             Assert.IsNotNull(newGameMaps[1].GetObjectAt<Monster>(new Point(2, 2)));
             Assert.AreNotSame(newGameMaps[0].GetObjectAt<Monster>(new Point(2, 2)), newGameMaps[1].GetObjectAt<Monster>(new Point(2, 2)));
+        }
+
+        [TestMethod]
+        public void Should_Save_Then_Load_Game_MapExits()
+        {
+            // Arrange
+            NewGameWithNoWallsNoMonstersNoItems();
+
+            var maps = _gameWorld.Maps.ToList();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
+
+            // Act
+            var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            newGameWorld.LoadGame("TestShouldSaveThenLoad");
+
+            // Assert
+            Assert.AreEqual(2, newGameWorld.MapExits.Count);
+
+            var mapExit1 = newGameWorld.MapExits.Values.First(m => m.CurrentMap.Equals(newGameWorld.CurrentMap));
+            var mapExit2 = newGameWorld.MapExits.Values.First(m => !m.CurrentMap.Equals(newGameWorld.CurrentMap));
+
+            Assert.AreEqual(mapExit2, mapExit1.Destination);
+            Assert.AreEqual(mapExit1, mapExit2.Destination);
+
+            Assert.AreEqual(Direction.Down, mapExit1.Direction);
+            Assert.AreEqual(Direction.Up, mapExit2.Direction);
+
+            Assert.AreNotEqual(Point.None, mapExit1.LandingPosition);
+            Assert.AreNotEqual(Point.None, mapExit2.LandingPosition);
         }
     }
 }

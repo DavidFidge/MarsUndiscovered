@@ -44,10 +44,12 @@ namespace MarsUndiscovered.Components
         public IMapGenerator MapGenerator { get; set; }
         public IMonsterGenerator MonsterGenerator { get; set; }
         public IItemGenerator ItemGenerator { get; set; }
+        public IMapExitGenerator MapExitGenerator { get; set; }
         public WallCollection Walls { get; private set; }
         public FloorCollection Floors { get; private set; }
         public MonsterCollection Monsters { get; private set; }
         public ItemCollection Items { get; private set; }
+        public MapExitCollection MapExits { get; private set; }
         public CommandCollection HistoricalCommands { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
         public MessageLog MessageLog { get; } = new MessageLog();
@@ -112,6 +114,10 @@ namespace MarsUndiscovered.Components
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
 
+            var mapExit2 = SpawnMapExit(new SpawnMapExitParams().OnMap(map2.Id).WithDirection(Direction.Up));
+            var mapExit1 = SpawnMapExit(new SpawnMapExitParams().OnMap(CurrentMap.Id).ToMapExit(mapExit2.ID).WithDirection(Direction.Down));
+            mapExit2.Destination = mapExit1;
+
             RebuildGoalMaps();
         }
 
@@ -142,6 +148,7 @@ namespace MarsUndiscovered.Components
             Floors = new FloorCollection(GameObjectFactory);
             Monsters = new MonsterCollection(GameObjectFactory);
             Items = new ItemCollection(GameObjectFactory);
+            MapExits = new MapExitCollection(GameObjectFactory);
             Maps = new MapCollection(this);
             HistoricalCommands = new CommandCollection(CommandFactory, this);
 
@@ -160,6 +167,14 @@ namespace MarsUndiscovered.Components
             CurrentMap.UpdateSeenTiles(CurrentMap.PlayerFOV.CurrentFOV);
 
             Mediator.Publish(new FieldOfViewChangedNotifcation(CurrentMap.PlayerFOV.CurrentFOV, CurrentMap.Positions(), CurrentMap.SeenTiles));
+        }
+
+        public void ChangeMap(MarsMap map)
+        {
+            Maps.CurrentMap = map;
+            Mediator.Publish(new MapChangedNotification());
+
+            RebuildGoalMaps();
         }
 
         public void RebuildGoalMaps()
@@ -218,7 +233,7 @@ namespace MarsUndiscovered.Components
 
         public IEnumerable<CommandResult> NextTurn()
         {
-            foreach (var monster in Monsters.LiveMonsters)
+            foreach (var monster in Monsters.LiveMonsters.Where(m => m.CurrentMap.Equals(CurrentMap)))
             {
                 if (Player.IsDead)
                     yield break;
@@ -303,6 +318,13 @@ namespace MarsUndiscovered.Components
             ItemGenerator.SpawnItem(spawnItemParams, GameObjectFactory, map, Items);
         }
 
+        private MapExit SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
+        {
+            var map = spawnMapExitParams.MapId.HasValue ? Maps.First(m => m.Id == spawnMapExitParams.MapId) : CurrentMap;
+
+            return MapExitGenerator.SpawnMapExit(spawnMapExitParams, GameObjectFactory, map, MapExits);
+        }
+
         public void CreateWall(Point position)
         {
             var wall = GameObjectFactory.CreateWall();
@@ -314,6 +336,7 @@ namespace MarsUndiscovered.Components
             CurrentMap.SetTerrain(wall);
             UpdateFieldOfView();
         }
+
         public void CreateFloor(Point position)
         {
             var floor = GameObjectFactory.CreateFloor();
@@ -433,6 +456,7 @@ namespace MarsUndiscovered.Components
             Floors.LoadState(saveGameService);
             Monsters.LoadState(saveGameService);
             Items.LoadState(saveGameService);
+            MapExits.LoadState(saveGameService);
             MessageLog.LoadState(saveGameService);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
@@ -453,6 +477,7 @@ namespace MarsUndiscovered.Components
             Floors.SaveState(saveGameService);
             Monsters.SaveState(saveGameService);
             Items.SaveState(saveGameService);
+            MapExits.SaveState(saveGameService);
             MessageLog.SaveState(saveGameService);
             Player.SaveState(saveGameService);
             HistoricalCommands.SaveState(saveGameService);

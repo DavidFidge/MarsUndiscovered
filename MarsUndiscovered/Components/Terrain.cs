@@ -6,7 +6,7 @@ namespace MarsUndiscovered.Components
     {
         public bool IsDestroyed { get; set; }
 
-        public Terrain(uint id, bool isWalkable = true, bool isTransparent = true) : base(0, isWalkable, isTransparent, idGenerator: () => id)
+        public Terrain(uint id, bool isWalkable = true, bool isTransparent = true) : base(Constants.TerrainLayer, isWalkable, isTransparent, idGenerator: () => id)
         {
         }
 

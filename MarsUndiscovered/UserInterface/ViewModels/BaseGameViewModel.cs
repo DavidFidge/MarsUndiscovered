@@ -29,7 +29,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         INotificationHandler<ToggleShowGoalMapNotification>,
         INotificationHandler<GoalMapChangedNotification>,
         INotificationHandler<RefreshViewNotification>,
-        INotificationHandler<FieldOfViewChangedNotifcation>
+        INotificationHandler<FieldOfViewChangedNotifcation>,
+        INotificationHandler<MapChangedNotification>
         where T : BaseGameData, new()
     {
         public IGameWorldProvider GameWorldProvider { get; set; }
@@ -134,6 +135,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             if (IsActive)
                 MapViewModel.UpdateFieldOfView(notification.NewlyVisibleTiles, notification.NewlyHiddenTiles, notification.SeenTiles);
+
+            return Unit.Task;
+        }
+
+        public Task Handle(MapChangedNotification notification, CancellationToken cancellationToken)
+        {
+            if (IsActive)
+                MapViewModel.UpdateAllTiles();
 
             return Unit.Task;
         }

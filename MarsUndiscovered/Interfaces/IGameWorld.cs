@@ -51,5 +51,6 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> UnequipItemRequest(Keys itemKey);
         void UpdateFieldOfView();
         void AfterCreateGame();
+        void ChangeMap(MarsMap map);
     }
 }

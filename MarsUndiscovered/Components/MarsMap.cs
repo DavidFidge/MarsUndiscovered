@@ -31,7 +31,7 @@ namespace MarsUndiscovered.Components
         public int Level { get; set; }
         public ArrayView<SeenTile> SeenTiles { get; set; }
 
-        public MarsMap(IGameWorld gameWorld) : base(MapWidth, MapHeight, 2, Distance.Chebyshev, UInt32.MaxValue, 1, 0)
+        public MarsMap(IGameWorld gameWorld) : base(MapWidth, MapHeight, 3, Distance.Chebyshev, UInt32.MaxValue, UInt32.MaxValue, 0)
         {
             Id = Guid.NewGuid();
             Level = 1;
