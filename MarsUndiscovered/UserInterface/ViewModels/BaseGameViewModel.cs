@@ -114,7 +114,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (point == null)
                 return Direction.None;
 
-            var centrePoint = new Point(GameWorld.Map.Width / 2, GameWorld.Map.Height / 2);
+            var centrePoint = new Point(GameWorld.CurrentMap.Width / 2, GameWorld.CurrentMap.Height / 2);
 
             return Direction.GetDirection(centrePoint, point.Value);
         }

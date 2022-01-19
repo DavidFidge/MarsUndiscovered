@@ -22,7 +22,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
             _gameWorld.Inventory.Add(item);
-            _gameWorld.Map.RemoveEntity(item);
+            _gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
 
             var commandFactory = Container.Resolve<ICommandFactory>();
@@ -52,7 +52,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
             _gameWorld.Inventory.Add(item);
-            _gameWorld.Map.RemoveEntity(item);
+            _gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
 
             var commandFactory = Container.Resolve<ICommandFactory>();

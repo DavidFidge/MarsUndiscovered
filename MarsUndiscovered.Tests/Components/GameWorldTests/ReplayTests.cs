@@ -31,7 +31,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             var blankMapGeneration = new BlankMapGenerator(
-                Container.Resolve<IGameObjectFactory>(),
+                _gameWorld.GameObjectFactory,
                 Container.Resolve<IMapGenerator>()
             );
 
@@ -46,7 +46,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Act
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-            newGameWorld.MapGenerator = blankMapGeneration;
+
+            var blankMapGenerationNewGameWorld = new BlankMapGenerator(
+                newGameWorld.GameObjectFactory,
+                Container.Resolve<IMapGenerator>()
+            );
+
+            newGameWorld.MapGenerator = blankMapGenerationNewGameWorld;
 
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
@@ -61,7 +67,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             var blankMapGeneration = new BlankMapGenerator(
-                Container.Resolve<IGameObjectFactory>(),
+                _gameWorld.GameObjectFactory,
                 Container.Resolve<IMapGenerator>()
             );
 
@@ -75,7 +81,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SaveGame("TestReplay", true);
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-            newGameWorld.MapGenerator = blankMapGeneration;
+
+            var blankMapGenerationNewGameWorld = new BlankMapGenerator(
+                newGameWorld.GameObjectFactory,
+                Container.Resolve<IMapGenerator>()
+            );
+
+            newGameWorld.MapGenerator = blankMapGenerationNewGameWorld;
 
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
@@ -96,7 +108,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             var blankMapGeneration = new BlankMapGenerator(
-                Container.Resolve<IGameObjectFactory>(),
+                _gameWorld.GameObjectFactory,
                 Container.Resolve<IMapGenerator>()
             );
 
@@ -110,7 +122,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SaveGame("TestReplay", true);
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-            newGameWorld.MapGenerator = blankMapGeneration;
+
+            var blankMapGenerationNewGameWorld = new BlankMapGenerator(
+                newGameWorld.GameObjectFactory,
+                Container.Resolve<IMapGenerator>()
+            );
+
+            newGameWorld.MapGenerator = blankMapGenerationNewGameWorld;
 
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
@@ -131,7 +149,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             var blankMapGeneration = new BlankMapGenerator(
-                Container.Resolve<IGameObjectFactory>(),
+                _gameWorld.GameObjectFactory,
                 Container.Resolve<IMapGenerator>()
             );
 
@@ -143,9 +161,16 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SaveGame("TestReplay", true);
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-            newGameWorld.MapGenerator = blankMapGeneration;
+
+            var blankMapGenerationNewGameWorld = new BlankMapGenerator(
+                newGameWorld.GameObjectFactory,
+                Container.Resolve<IMapGenerator>()
+            );
+
+            newGameWorld.MapGenerator = blankMapGenerationNewGameWorld;
 
             newGameWorld.LoadReplay("TestReplay");
+
             newGameWorld.Player.Position = new Point(0, 0);
 
             // Act

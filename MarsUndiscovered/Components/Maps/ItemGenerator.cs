@@ -11,14 +11,12 @@ namespace MarsUndiscovered.Components.Maps
 {
     public class ItemGenerator : BaseComponent, IItemGenerator
     {
-        public IGameObjectFactory GameObjectFactory { get; set; }
-
-        public Item SpawnItem(SpawnItemParams spawnItemParams, Map map, ItemCollection itemCollection)
+        public Item SpawnItem(SpawnItemParams spawnItemParams, IGameObjectFactory gameObjectFactory, Map map, ItemCollection itemCollection)
         {
             if (spawnItemParams.ItemType == null)
                 return null;
 
-            var item = GameObjectFactory
+            var item = gameObjectFactory
                 .CreateItem()
                 .WithItemType(spawnItemParams.ItemType)
                 .PositionedAt(GetPosition(spawnItemParams, map))

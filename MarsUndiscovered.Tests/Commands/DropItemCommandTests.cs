@@ -22,7 +22,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
             _gameWorld.Inventory.Add(item);
-            _gameWorld.Map.RemoveEntity(item);
+            _gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
 
             var commandFactory = Container.Resolve<ICommandFactory>();
@@ -35,7 +35,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
-            Assert.AreSame(item, _gameWorld.Map.GetObjectAt<Item>(_gameWorld.Player.Position));
+            Assert.AreSame(item, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
             Assert.AreEqual("You drop a Magnesium Pipe", result.Messages[0]);
         }
 
@@ -48,7 +48,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item1 = _gameWorld.Items.First().Value;
             _gameWorld.Inventory.Add(item1);
-            _gameWorld.Map.RemoveEntity(item1);
+            _gameWorld.CurrentMap.RemoveEntity(item1);
             item1.Position = Point.None;
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item2 = _gameWorld.Items.Skip(1).First().Value;
@@ -63,8 +63,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
-            Assert.AreNotSame(item1, _gameWorld.Map.GetObjectAt<Item>(_gameWorld.Player.Position));
-            Assert.AreSame(item2, _gameWorld.Map.GetObjectAt<Item>(_gameWorld.Player.Position));
+            Assert.AreNotSame(item1, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
+            Assert.AreSame(item2, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
             Assert.AreEqual("Cannot drop item - there is another item in the way", result.Messages[0]);
         }
     }

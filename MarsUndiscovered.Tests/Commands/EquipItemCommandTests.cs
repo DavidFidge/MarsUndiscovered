@@ -22,7 +22,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
             _gameWorld.Inventory.Add(item);
-            _gameWorld.Map.RemoveEntity(item);
+            _gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
 
             var commandFactory = Container.Resolve<ICommandFactory>();
@@ -48,7 +48,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
             _gameWorld.Inventory.Add(item);
-            _gameWorld.Map.RemoveEntity(item);
+            _gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
 
             var commandFactory = Container.Resolve<ICommandFactory>();
@@ -75,7 +75,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             );
             var item1 = _gameWorld.Items.First().Value;
             _gameWorld.Inventory.Add(item1);
-            _gameWorld.Map.RemoveEntity(item1);
+            _gameWorld.CurrentMap.RemoveEntity(item1);
             item1.Position = Point.None;
 
             _gameWorld.SpawnItem(
@@ -83,7 +83,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             );
             var item2 = _gameWorld.Items.Skip(1).First().Value;
             _gameWorld.Inventory.Add(item2);
-            _gameWorld.Map.RemoveEntity(item2);
+            _gameWorld.CurrentMap.RemoveEntity(item2);
             item2.Position = Point.None;
 
             var commandFactory = Container.Resolve<ICommandFactory>();
@@ -115,7 +115,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
             _gameWorld.Inventory.Add(item);
-            _gameWorld.Map.RemoveEntity(item);
+            _gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
 
             var commandFactory = Container.Resolve<ICommandFactory>();

@@ -125,7 +125,8 @@ namespace MarsUndiscovered.Installers
 
                 Component.For<IGameObjectFactory>()
                     .ImplementedBy<GameObjectFactory>()
-                    .DependsOn(Dependency.OnValue<IWindsorContainer>(container)),
+                    .DependsOn(Dependency.OnValue<IWindsorContainer>(container))
+                    .LifeStyle.Transient,
 
                 Component.For<MapTileEntity>()
                     .LifeStyle.Transient,

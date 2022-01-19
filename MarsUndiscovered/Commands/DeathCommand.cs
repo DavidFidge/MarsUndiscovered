@@ -8,6 +8,8 @@ using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
+using GoRogue.GameFramework;
+
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
@@ -21,6 +23,7 @@ namespace MarsUndiscovered.Commands
         public string KilledByMessage { get; private set; }
         public Actor Source { get; private set; }
         private Point _oldPosition;
+        private Map _sourceMap;
 
         public DeathCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -53,7 +56,8 @@ namespace MarsUndiscovered.Commands
 
             if (!(Source is Player))
             {
-                Source.CurrentMap.RemoveEntity(Source);
+                _sourceMap = Source.CurrentMap;
+                _sourceMap.RemoveEntity(Source);
                 _oldPosition = Source.Position;
                 Source.Position = Point.None;
                 Mediator.Publish(new MapTileChangedNotification(_oldPosition));
@@ -66,7 +70,7 @@ namespace MarsUndiscovered.Commands
         {
             Source.IsDead = false;
             Source.Position = _oldPosition;
-            GameWorld.Map.AddEntity(Source);
+            _sourceMap.AddEntity(Source);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
-            Assert.IsFalse(_gameWorld.Map.GetObjectsAt(_gameWorld.Player.Position).Any(m => m is Item));
+            Assert.IsFalse(_gameWorld.CurrentMap.GetObjectsAt(_gameWorld.Player.Position).Any(m => m is Item));
             Assert.AreEqual("You pick up a Magnesium Pipe", result.Messages[0]);
         }
 
@@ -65,7 +65,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
-            Assert.IsTrue(_gameWorld.Map.GetObjectsAt(_gameWorld.Player.Position).Any(m => m is Item));
+            Assert.IsTrue(_gameWorld.CurrentMap.GetObjectsAt(_gameWorld.Player.Position).Any(m => m is Item));
             Assert.AreEqual("Your inventory is too full to pick up a Magnesium Pipe", result.Messages[0]);
         }
 
@@ -91,7 +91,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.AreEqual(CommandResultEnum.Exception, result.Result);
-            Assert.IsTrue(_gameWorld.Map.GetObjectsAt(monster.Position).Any(m => m is Item));
+            Assert.IsTrue(_gameWorld.CurrentMap.GetObjectsAt(monster.Position).Any(m => m is Item));
             Assert.AreEqual("Monsters currently do not pick up items", result.Messages[0]);
         }
     }

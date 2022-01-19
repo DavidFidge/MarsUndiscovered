@@ -8,12 +8,9 @@ using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
-using GoRogue.GameFramework;
-
 using MarsUndiscovered.Components;
-using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Interfaces;
-using Newtonsoft.Json;
+
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
@@ -23,7 +20,6 @@ namespace MarsUndiscovered.Commands
     {
         public Direction Direction { get; set; }
         public Player Player { get; private set; }
-        protected Map Map => GameWorld.Map;
 
         public WalkCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -55,12 +51,13 @@ namespace MarsUndiscovered.Commands
 
             var playerPosition = Player.Position;
             var newPlayerPosition = Player.Position + Direction;
+            var map = Player.CurrentMap;
 
-            if (Map.Bounds().Contains(newPlayerPosition))
+            if (map.Bounds().Contains(newPlayerPosition))
             {
-                if (Map.GameObjectCanMove(Player, newPlayerPosition))
+                if (map.GameObjectCanMove(Player, newPlayerPosition))
                 {
-                    var terrainAtDestination = Map.GetTerrainAt(newPlayerPosition);
+                    var terrainAtDestination = map.GetTerrainAt(newPlayerPosition);
 
                     if (terrainAtDestination is Floor)
                     {
@@ -81,7 +78,7 @@ namespace MarsUndiscovered.Commands
                 {
                     // Maps get created with the setting where there cannot be multiple objects in the same layer.
                     // Thus if player cannot move to the new position then a monster should be there.
-                    var actorAt = Map.GetObjectAt<Actor>(newPlayerPosition);
+                    var actorAt = map.GetObjectAt<Actor>(newPlayerPosition);
 
                     if (actorAt is Monster)
                     {

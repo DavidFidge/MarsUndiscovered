@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 using AutoMapper;
 
@@ -60,10 +61,14 @@ namespace MarsUndiscovered.Installers
             CreateMap<EquipItemSaveData, EquipItemCommand>();
             CreateMap<UnequipItemSaveData, UnequipItemCommand>();
             CreateMap<DropItemSaveData, DropItemCommand>();
+            CreateMap<MapCollectionSaveData, MapCollection>()
+                .ForMember(d => d.CurrentMap, o => o.Ignore());
+
+            CreateMap<MapSaveData, MarsMap>()
+                .ForMember(d => d.SeenTiles, o => o.Ignore());
+
             CreateMap<SeenTileSaveData, SeenTile>()
                 .ForMember(d => d.LastSeenGameObjects, o => o.Ignore());
-            CreateMap<MapSeenTilesSaveData, MapSeenTiles>()
-                .ForMember(d => d.SeenTiles, o => o.Ignore());
         }
 
         private void MapForSave()
@@ -79,7 +84,7 @@ namespace MarsUndiscovered.Installers
             CreateMap<Monster, MonsterSaveData>();
             CreateMap<Item, ItemSaveData>();
             CreateMap<GameWorld, GameWorldSaveData>();
-            CreateMap<GameObjectFactory, GameObjectFactoryData>();
+            CreateMap<GameObjectFactory, GameObjectFactorySaveData>();
 
             CreateMap<Inventory, InventorySaveData>()
                 .ForMember(d => d.ItemIds, o => o.MapFrom(s => s.Items.Select(i => i.ID).ToList()))
@@ -96,10 +101,20 @@ namespace MarsUndiscovered.Installers
             CreateMap<EquipItemCommand, EquipItemSaveData>();
             CreateMap<UnequipItemCommand, UnequipItemSaveData>();
             CreateMap<DropItemCommand, DropItemSaveData>();
-            CreateMap<MapSeenTiles, MapSeenTilesSaveData>()
+
+            CreateMap<MapCollection, MapCollectionSaveData>()
+                .ForMember(
+                    d => d.Maps,
+                    o => o.MapFrom(s => s)
+                );
+
+            CreateMap<MarsMap, MapSaveData>()
                 .ForMember(
                     d => d.SeenTiles,
-                    o => o.MapFrom(s => s.SeenTiles.ToArray())
+                    o => o.MapFrom(s => s.SeenTiles.ToArray()))
+                .ForMember(
+                    d => d.GameObjectIds,
+                    o => o.MapFrom(s => s.GetGameObjectIds())
                 );
 
             CreateMap<SeenTile, SeenTileSaveData>()

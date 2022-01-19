@@ -31,13 +31,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.NewGame();
 
             // Assert
-            Assert.IsNotNull(_gameWorld.Map);
+            Assert.IsNotNull(_gameWorld.CurrentMap);
             Assert.IsNotNull(_gameWorld.Player);
             Assert.IsNotNull(_gameWorld.GameObjects);
             Assert.IsTrue(_gameWorld.GameObjects.Count > 0);
             Assert.IsTrue(_gameWorld.Seed > 0);
-            Assert.AreEqual(MapGenerator.MapWidth, _gameWorld.Map.Width);
-            Assert.AreEqual(MapGenerator.MapHeight, _gameWorld.Map.Height);
+            Assert.AreEqual(MarsMap.MapWidth, _gameWorld.CurrentMap.Width);
+            Assert.AreEqual(MarsMap.MapHeight, _gameWorld.CurrentMap.Height);
         }
 
         [TestMethod]
@@ -95,7 +95,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Player>().Count());
             Assert.AreEqual(0, newGameWorld.Inventory.Items.Count);
 
-            var mapEntities = newGameWorld.Map.Entities.ToList();
+            var mapEntities = newGameWorld.CurrentMap.Entities.ToList();
 
             Assert.IsTrue(mapEntities.Select(s => s.Item).Contains(newGameWorld.GameObjects.Values.OfType<Player>().First()));
             Assert.IsTrue(mapEntities.Select(s => s.Item).Contains(newGameWorld.GameObjects.Values.OfType<Item>().First()));
@@ -232,13 +232,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.UpdateFieldOfView();
 
             // Assert
-            Assert.IsFalse(_gameWorld.MapSeenTiles.SeenTiles[new Point(2, 2)].HasBeenSeen);
-            Assert.IsTrue(_gameWorld.MapSeenTiles.SeenTiles[new Point(1, 0)].HasBeenSeen);
-            Assert.IsTrue(_gameWorld.MapSeenTiles.SeenTiles[new Point(0, 1)].HasBeenSeen);
+            Assert.IsFalse(_gameWorld.CurrentMap.SeenTiles[new Point(2, 2)].HasBeenSeen);
+            Assert.IsTrue(_gameWorld.CurrentMap.SeenTiles[new Point(1, 0)].HasBeenSeen);
+            Assert.IsTrue(_gameWorld.CurrentMap.SeenTiles[new Point(0, 1)].HasBeenSeen);
 
-            Assert.IsFalse(_gameWorld.Map.PlayerFOV.CurrentFOV.Contains(new Point(2, 2)));
-            Assert.IsTrue(_gameWorld.Map.PlayerFOV.CurrentFOV.Contains(new Point(1, 0)));
-            Assert.IsTrue(_gameWorld.Map.PlayerFOV.CurrentFOV.Contains(new Point(0, 1)));
+            Assert.IsFalse(_gameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(new Point(2, 2)));
+            Assert.IsTrue(_gameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(new Point(1, 0)));
+            Assert.IsTrue(_gameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(new Point(0, 1)));
         }
 
         [TestMethod]
@@ -265,17 +265,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.UpdateFieldOfView();
 
             // Assert
-            Assert.IsTrue(_gameWorld.MapSeenTiles.SeenTiles[new Point(2, 2)].HasBeenSeen);
-            Assert.IsTrue(_gameWorld.MapSeenTiles.SeenTiles[new Point(3, 3)].HasBeenSeen);
+            Assert.IsTrue(_gameWorld.CurrentMap.SeenTiles[new Point(2, 2)].HasBeenSeen);
+            Assert.IsTrue(_gameWorld.CurrentMap.SeenTiles[new Point(3, 3)].HasBeenSeen);
 
-            Assert.IsFalse(_gameWorld.Map.PlayerFOV.CurrentFOV.Contains(new Point(2, 2)));
-            Assert.IsFalse(_gameWorld.Map.PlayerFOV.CurrentFOV.Contains(new Point(3, 3)));
+            Assert.IsFalse(_gameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(new Point(2, 2)));
+            Assert.IsFalse(_gameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(new Point(3, 3)));
 
-            Assert.IsTrue(_gameWorld.MapSeenTiles.SeenTiles[new Point(2, 2)].LastSeenGameObjects.Contains(monster));
-            Assert.IsFalse(_gameWorld.MapSeenTiles.SeenTiles[new Point(3, 3)].LastSeenGameObjects.Contains(monster));
+            Assert.IsTrue(_gameWorld.CurrentMap.SeenTiles[new Point(2, 2)].LastSeenGameObjects.Contains(monster));
+            Assert.IsFalse(_gameWorld.CurrentMap.SeenTiles[new Point(3, 3)].LastSeenGameObjects.Contains(monster));
 
-            Assert.IsNull(_gameWorld.Map.GetObjectAt<Monster>(new Point(2, 2)));
-            Assert.IsNotNull(_gameWorld.Map.GetObjectAt<Monster>(new Point(3, 3)));
+            Assert.IsNull(_gameWorld.CurrentMap.GetObjectAt<Monster>(new Point(2, 2)));
+            Assert.IsNotNull(_gameWorld.CurrentMap.GetObjectAt<Monster>(new Point(3, 3)));
         }
 
         [TestMethod]
@@ -307,17 +307,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             newGameWorld.LoadGame("TestShouldSaveThenLoad");
 
             // Assert
-            Assert.IsTrue(newGameWorld.MapSeenTiles.SeenTiles[new Point(2, 2)].HasBeenSeen);
-            Assert.IsTrue(newGameWorld.MapSeenTiles.SeenTiles[new Point(3, 3)].HasBeenSeen);
+            Assert.IsTrue(newGameWorld.CurrentMap.SeenTiles[new Point(2, 2)].HasBeenSeen);
+            Assert.IsTrue(newGameWorld.CurrentMap.SeenTiles[new Point(3, 3)].HasBeenSeen);
 
-            Assert.IsFalse(newGameWorld.Map.PlayerFOV.CurrentFOV.Contains(new Point(2, 2)));
-            Assert.IsFalse(newGameWorld.Map.PlayerFOV.CurrentFOV.Contains(new Point(3, 3)));
+            Assert.IsFalse(newGameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(new Point(2, 2)));
+            Assert.IsFalse(newGameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(new Point(3, 3)));
 
-            Assert.IsTrue(newGameWorld.MapSeenTiles.SeenTiles[new Point(2, 2)].LastSeenGameObjects.Any(m => m.ID == monster.ID));
-            Assert.IsFalse(newGameWorld.MapSeenTiles.SeenTiles[new Point(3, 3)].LastSeenGameObjects.Any(m => m.ID == monster.ID));
+            Assert.IsTrue(newGameWorld.CurrentMap.SeenTiles[new Point(2, 2)].LastSeenGameObjects.Any(m => m.ID == monster.ID));
+            Assert.IsFalse(newGameWorld.CurrentMap.SeenTiles[new Point(3, 3)].LastSeenGameObjects.Any(m => m.ID == monster.ID));
 
-            Assert.IsNull(newGameWorld.Map.GetObjectAt<Monster>(new Point(2, 2)));
-            Assert.IsNotNull(newGameWorld.Map.GetObjectAt<Monster>(new Point(3, 3)));
+            Assert.IsNull(newGameWorld.CurrentMap.GetObjectAt<Monster>(new Point(2, 2)));
+            Assert.IsNotNull(newGameWorld.CurrentMap.GetObjectAt<Monster>(new Point(3, 3)));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using GoRogue.GameFramework;
 
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 
 namespace MarsUndiscovered.Tests.Components
@@ -14,7 +15,12 @@ namespace MarsUndiscovered.Tests.Components
             OriginalItemGenerator = originalItemGenerator;
         }
 
-        public Item SpawnItem(SpawnItemParams spawnItemParams, Map map, ItemCollection itemCollection)
+        public Item SpawnItem(
+            SpawnItemParams spawnItemParams,
+            IGameObjectFactory gameObjectFactory,
+            Map map,
+            ItemCollection itemCollection
+        )
         {
             return null;
         }

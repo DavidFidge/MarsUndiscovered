@@ -26,7 +26,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             var blankMapGeneration = new BlankMapGenerator(
-                Container.Resolve<IGameObjectFactory>(),
+                _gameWorld.GameObjectFactory,
                 Container.Resolve<IMapGenerator>()
             );
 
@@ -56,7 +56,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             var blankMapGeneration = new BlankMapGenerator(
-                Container.Resolve<IGameObjectFactory>(),
+                _gameWorld.GameObjectFactory,
                 Container.Resolve<IMapGenerator>()
             );
 

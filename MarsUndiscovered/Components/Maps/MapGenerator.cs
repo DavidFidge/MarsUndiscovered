@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
+
 using FrigidRogue.MonoGame.Core.Components;
+
 using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
 using GoRogue.Random;
@@ -11,22 +12,17 @@ using GoRogue.Random;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.GenerationSteps;
 using MarsUndiscovered.Extensions;
+using MarsUndiscovered.Interfaces;
 
-using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Components.Maps
 {
     public class MapGenerator : BaseComponent, IMapGenerator
     {
-        public const int MapWidth = 84;
-        public const int MapHeight = 26;
-
-        public IGameObjectFactory GameObjectFactory { get; set; }
-
-        public ArrayView<IGameObject> CreateOutdoorWallsFloors()
+        public static ArrayView<IGameObject> CreateOutdoorWallsFloors(IGameObjectFactory gameObjectFactory)
         {
-            var generator = new Generator(MapWidth, MapHeight);
+            var generator = new Generator(MarsMap.MapWidth, MarsMap.MapHeight);
 
             var fillProbability = GlobalRandom.DefaultRNG.NextUInt(40, 60);
             var cutoffBigAreaFill = GlobalRandom.DefaultRNG.NextUInt(2, 6);
@@ -41,13 +37,13 @@ namespace MarsUndiscovered.Components.Maps
 
                         if (s)
                         {
-                            var floor = GameObjectFactory.CreateFloor();
+                            var floor = gameObjectFactory.CreateFloor();
                             floor.Index = index;
                             gameObject = floor;
                         }
                         else
                         {
-                            var wall = GameObjectFactory.CreateWall();
+                            var wall = gameObjectFactory.CreateWall();
                             wall.Index = index;
                             gameObject = wall;
                         }
@@ -59,21 +55,23 @@ namespace MarsUndiscovered.Components.Maps
             return wallsFloors;
         }
 
-        public Map CreateMap(WallCollection walls, FloorCollection floors)
+        public MarsMap CreateMap(IGameWorld gameWorld, IList<Wall> walls, IList<Floor> floors)
         {
-            Debug.Assert(floors.Any() || walls.Any(), "Walls and/or Floors must be populated");
+            var map = new MarsMap(gameWorld);
 
-            var map = new Map(MapWidth, MapHeight, 2, Distance.Chebyshev, UInt32.MaxValue, 1, 0);
-
-            var wallsFloors = walls.Values.Cast<Terrain>()
-                .Union(floors.Values)
-                .Where(t => !t.IsDestroyed)
-                .OrderBy(t => t.Index)
-                .ToArrayView(map.Width);
-
-            map.ApplyTerrainOverlay(wallsFloors);
+            map.ApplyTerrainOverlay(walls, floors);
 
             return map;
+        }
+
+        public MarsMap CreateMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, Func<IGameObjectFactory, ArrayView<IGameObject>> wallsFloorsGenerator)
+        {
+            var wallsFloors = wallsFloorsGenerator(gameObjectFactory);
+
+            var walls = wallsFloors.ToArray().OfType<Wall>().ToList();
+            var floors = wallsFloors.ToArray().OfType<Floor>().ToList();
+
+            return CreateMap(gameWorld, walls, floors);
         }
     }
 }

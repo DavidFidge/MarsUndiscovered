@@ -33,9 +33,9 @@ namespace MarsUndiscovered.Components
 {
     public class GameWorld : BaseComponent, IGameWorld, ISaveable, IMementoState<GameWorldSaveData>
     {
-        public Map Map { get; private set; }
+        public MapCollection Maps { get; private set; }
+        public MarsMap CurrentMap => Maps.CurrentMap;
         public GoalMaps GoalMaps { get; set; }
-        public MapSeenTiles MapSeenTiles { get; set; }
         public Player Player { get; private set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public ICommandFactory CommandFactory { get; set; }
@@ -83,19 +83,26 @@ namespace MarsUndiscovered.Components
 
             Logger.Debug("Generating game world");
 
-            var wallsFloors = MapGenerator.CreateOutdoorWallsFloors();
+            var map = MapGenerator.CreateMap(this, GameObjectFactory, Components.Maps.MapGenerator.CreateOutdoorWallsFloors);
 
-            foreach (var wall in wallsFloors.ToArray().OfType<Wall>().ToList())
+            var terrain = GameObjects
+                .Values
+                .OfType<Terrain>()
+                .Where(g => Equals(g.CurrentMap, map))
+                .ToList();
+
+            foreach (var wall in terrain.OfType<Wall>())
                 Walls.Add(wall.ID, wall);
 
-            foreach (var floor in wallsFloors.ToArray().OfType<Floor>().ToList())
+            foreach (var floor in terrain.OfType<Floor>())
                 Floors.Add(floor.ID, floor);
 
-            Map = MapGenerator.CreateMap(Walls, Floors);
+            Maps.Add(map);
+            Maps.CurrentMap = map;
 
             Player = GameObjectFactory.CreatePlayer()
-                .PositionedAt(Map.RandomPosition(MapHelpers.EmptyPointOnFloor))
-                .AddToMap(Map);
+                .PositionedAt(CurrentMap.RandomPosition(MapHelpers.EmptyPointOnFloor))
+                .AddToMap(CurrentMap);
 
             Inventory = new Inventory(this);
 
@@ -116,7 +123,6 @@ namespace MarsUndiscovered.Components
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
 
             RebuildGoalMaps();
-            MapSeenTiles = new MapSeenTiles(Map, this);
         }
 
         private void Reset()
@@ -125,6 +131,7 @@ namespace MarsUndiscovered.Components
             Floors = new FloorCollection(GameObjectFactory);
             Monsters = new MonsterCollection(GameObjectFactory);
             Items = new ItemCollection(GameObjectFactory);
+            Maps = new MapCollection(this);
             HistoricalCommands = new CommandCollection(CommandFactory, this);
 
             GameObjectFactory.Reset();
@@ -132,23 +139,21 @@ namespace MarsUndiscovered.Components
 
         public void UpdateFieldOfView()
         {
-            Map.PlayerFOV.Calculate(Player.Position);
+            CurrentMap.UpdateFieldOfView(Player.Position);
 
-            MapSeenTiles.Update(Map.PlayerFOV.CurrentFOV);
-
-            Mediator.Publish(new FieldOfViewChangedNotifcation(Map.PlayerFOV.NewlySeen, Map.PlayerFOV.NewlyUnseen, MapSeenTiles.SeenTiles));
+            Mediator.Publish(new FieldOfViewChangedNotifcation(CurrentMap.PlayerFOV.NewlySeen, CurrentMap.PlayerFOV.NewlyUnseen, CurrentMap.SeenTiles));
         }
 
         public void AfterCreateGame()
         {
-            MapSeenTiles.Update(Map.PlayerFOV.CurrentFOV);
+            CurrentMap.UpdateSeenTiles(CurrentMap.PlayerFOV.CurrentFOV);
 
-            Mediator.Publish(new FieldOfViewChangedNotifcation(Map.PlayerFOV.CurrentFOV, Map.Positions(), MapSeenTiles.SeenTiles));
+            Mediator.Publish(new FieldOfViewChangedNotifcation(CurrentMap.PlayerFOV.CurrentFOV, CurrentMap.Positions(), CurrentMap.SeenTiles));
         }
 
         public void RebuildGoalMaps()
         {
-            GoalMaps.Rebuild(this);
+            GoalMaps.Rebuild(CurrentMap);
         }
 
         public IList<CommandResult> MoveRequest(Direction direction)
@@ -186,12 +191,12 @@ namespace MarsUndiscovered.Components
                 nextPoint = subsequentSteps.First();
             }
 
-            if (Map.GetObjectAt<Wall>(nextPoint) != null)
+            if (CurrentMap.GetObjectAt<Wall>(nextPoint) != null)
                 return commandResults;
 
             foreach (var surroundingPoint in AdjacencyRule.EightWay.Neighbors(Player.Position))
             {
-                if (Map.Bounds().Contains(surroundingPoint) && Map.GetObjectAt<Monster>(surroundingPoint) != null)
+                if (CurrentMap.Bounds().Contains(surroundingPoint) && CurrentMap.GetObjectAt<Monster>(surroundingPoint) != null)
                     return commandResults;
             }
 
@@ -215,7 +220,7 @@ namespace MarsUndiscovered.Components
 
                     var positionAfter = monster.Position.Add(direction);
 
-                    var player = Map.GetObjectAt<Player>(positionAfter);
+                    var player = CurrentMap.GetObjectAt<Player>(positionAfter);
 
                     if (player != null)
                     {
@@ -275,47 +280,47 @@ namespace MarsUndiscovered.Components
 
         public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
         {
-            MonsterGenerator.SpawnMonster(spawnMonsterParams, Map, Monsters);
+            MonsterGenerator.SpawnMonster(spawnMonsterParams, GameObjectFactory, CurrentMap, Monsters);
         }
 
         public void SpawnItem(SpawnItemParams spawnItemParams)
         {
-            ItemGenerator.SpawnItem(spawnItemParams, Map, Items);
+            ItemGenerator.SpawnItem(spawnItemParams, GameObjectFactory, CurrentMap, Items);
         }
 
         public void CreateWall(Point position)
         {
             var wall = GameObjectFactory.CreateWall();
             wall.Position = position;
-            wall.Index = position.ToIndex(Map.Width);
+            wall.Index = position.ToIndex(CurrentMap.Width);
             Walls.Add(wall.ID, wall);
 
             DestroyFloor(position, false);
-            Map.SetTerrain(wall);
+            CurrentMap.SetTerrain(wall);
             UpdateFieldOfView();
         }
         public void CreateFloor(Point position)
         {
             var floor = GameObjectFactory.CreateFloor();
             floor.Position = position;
-            floor.Index = position.ToIndex(Map.Width);
+            floor.Index = position.ToIndex(CurrentMap.Width);
             Floors.Add(floor.ID, floor);
 
             DestroyWall(position, false);
-            Map.RemoveTerrain(floor);
+            CurrentMap.RemoveTerrain(floor);
             UpdateFieldOfView();
         }
 
         public void DestroyWall(Point position, bool replaceWithFloor = true)
         {
-            var wall = Map.GetObjectAt<Wall>(position);
+            var wall = CurrentMap.GetObjectAt<Wall>(position);
 
             if (wall == null)
                 return;
 
             wall.IsDestroyed = true;
 
-            Map.RemoveTerrain(wall);
+            CurrentMap.RemoveTerrain(wall);
 
             if (replaceWithFloor)
                 CreateFloor(position);
@@ -323,13 +328,13 @@ namespace MarsUndiscovered.Components
 
         public void DestroyFloor(Point position, bool replaceWithWall = true)
         {
-            var floor = Map.GetObjectAt<Floor>(position);
+            var floor = CurrentMap.GetObjectAt<Floor>(position);
 
             if (floor == null)
                 return;
 
             floor.IsDestroyed = true;
-            Map.RemoveTerrain(floor);
+            CurrentMap.RemoveTerrain(floor);
 
             if (replaceWithWall)
                 CreateWall(position);
@@ -401,8 +406,6 @@ namespace MarsUndiscovered.Components
             return false;
         }
 
-
-
         public void LoadState(ISaveGameService saveGameService)
         {
             Reset();
@@ -421,28 +424,9 @@ namespace MarsUndiscovered.Components
             Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
             Player.LoadState(saveGameService);
             HistoricalCommands.LoadState(saveGameService);
-
-            Map = MapGenerator.CreateMap(Walls, Floors);
-
-            Map.AddEntity(Player);
-
-            foreach (var monster in Monsters.Values)
-            {
-                if (monster.Position != Point.None)
-                    Map.AddEntity(monster);
-            }
-
-            foreach (var item in Items.Values)
-            {
-                if (item.Position != Point.None)
-                    Map.AddEntity(item);
-            }
-
+            Maps.LoadState(saveGameService);
             Inventory = new Inventory(this);
             Inventory.LoadState(saveGameService);
-
-            MapSeenTiles = new MapSeenTiles(Map, this);
-            MapSeenTiles.LoadState(saveGameService);
 
             GlobalRandom.DefaultRNG = saveGameService.GetFromStore<XorShift128Generator>().State;
         }
@@ -458,7 +442,7 @@ namespace MarsUndiscovered.Components
             Player.SaveState(saveGameService);
             HistoricalCommands.SaveState(saveGameService);
             Inventory.SaveState(saveGameService);
-            MapSeenTiles.SaveState(saveGameService);
+            Maps.SaveState(saveGameService);
 
             var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameService.Mapper);
             saveGameService.SaveToStore(gameWorldSaveData);
@@ -478,6 +462,11 @@ namespace MarsUndiscovered.Components
             Memento<GameWorldSaveData>.SetWithAutoMapper(this, memento, mapper);
         }
 
+        public PlayerStatus GetPlayerStatus()
+        {
+            return Mapper.Map<PlayerStatus>(Player);
+        }
+
         public IList<MonsterStatus> GetStatusOfMonstersInView()
         {
             var status = Monsters.LiveMonsters
@@ -485,7 +474,7 @@ namespace MarsUndiscovered.Components
                     m =>
                     {
                         var monster = Mapper.Map<MonsterStatus>(m);
-                        monster.DistanceFromPlayer = Map.DistanceMeasurement.Calculate(m.Position, Player.Position);
+                        monster.DistanceFromPlayer = CurrentMap.DistanceMeasurement.Calculate(m.Position, Player.Position);
 
                         return monster;
                     }
@@ -495,25 +484,20 @@ namespace MarsUndiscovered.Components
             return status;
         }
 
-        public PlayerStatus GetPlayerStatus()
-        {
-            return Mapper.Map<PlayerStatus>(Player);
-        }
-
         public Path GetPathToPlayer(Point mapPosition)
         {
-            if (!Map.Bounds().Contains(mapPosition))
+            if (!CurrentMap.Bounds().Contains(mapPosition))
                 return null;
 
-            return Map.AStar.ShortestPath(Player.Position, mapPosition);
+            return CurrentMap.AStar.ShortestPath(Player.Position, mapPosition);
         }
 
         public string GetGameObjectInformationAt(Point point)
         {
-            if (!Map.Bounds().Contains(point))
+            if (!CurrentMap.Bounds().Contains(point))
                 return null;
 
-            var monster = Map.GetObjectAt<Monster>(point);
+            var monster = CurrentMap.GetObjectAt<Monster>(point);
 
             if (monster != null)
             {

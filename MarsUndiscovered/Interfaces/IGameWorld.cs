@@ -20,7 +20,7 @@ namespace MarsUndiscovered.Interfaces
     {
         Player Player { get; }
         void NewGame(uint? seed = null);
-        Map Map { get; }
+        MarsMap CurrentMap { get; }
         GoalMaps GoalMaps { get; }
         void RebuildGoalMaps();
         IList<CommandResult> MoveRequest(Direction direction);
@@ -34,9 +34,9 @@ namespace MarsUndiscovered.Interfaces
         FloorCollection Floors { get; }
         MonsterCollection Monsters { get; }
         ItemCollection Items { get; }
+        MapCollection Maps { get; }
         Inventory Inventory { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
-        MapSeenTiles MapSeenTiles { get; set; }
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
         LoadGameResult LoadReplay(string saveGameName);
         bool ExecuteNextReplayCommand();

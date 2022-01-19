@@ -104,13 +104,13 @@ namespace MarsUndiscovered.Components.Factories
 
         public void SaveState(ISaveGameService saveGameService)
         {
-            var gameObjectFactoryData = Memento<GameObjectFactoryData>.CreateWithAutoMapper(this, saveGameService.Mapper);
+            var gameObjectFactoryData = Memento<GameObjectFactorySaveData>.CreateWithAutoMapper(this, saveGameService.Mapper);
             saveGameService.SaveToStore(gameObjectFactoryData);
         }
 
         public void LoadState(ISaveGameService saveGameService)
         {
-            var gameObjectFactoryData = saveGameService.GetFromStore<GameObjectFactoryData>();
+            var gameObjectFactoryData = saveGameService.GetFromStore<GameObjectFactorySaveData>();
             LastId = gameObjectFactoryData.State.LastId;
         }
     }

@@ -36,7 +36,6 @@ namespace MarsUndiscovered.Components
         public void NewGame(uint? seed = null)
         {
             GameWorld = _gameWorldFactory.Create();
-
             GameWorld.NewGame(seed);
         }
 

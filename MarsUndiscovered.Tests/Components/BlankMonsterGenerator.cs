@@ -1,6 +1,7 @@
 ﻿using GoRogue.GameFramework;
 
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 
 namespace MarsUndiscovered.Tests.Components
@@ -14,7 +15,12 @@ namespace MarsUndiscovered.Tests.Components
             OriginalMonsterGenerator = originalMonsterGenerator;
         }
 
-        public Monster SpawnMonster(SpawnMonsterParams spawnMonsterParams, Map map, MonsterCollection monsterCollection)
+        public Monster SpawnMonster(
+            SpawnMonsterParams spawnMonsterParams,
+            IGameObjectFactory gameObjectFactory,
+            Map map,
+            MonsterCollection monsterCollection
+        )
         {
             return null;
         }

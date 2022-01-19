@@ -7,5 +7,6 @@ namespace MarsUndiscovered.Commands
     {
         public Direction Direction { get; set; }
         public uint PlayerId { get; set; }
+        public Guid MapId { get; set; }
     }
 }
