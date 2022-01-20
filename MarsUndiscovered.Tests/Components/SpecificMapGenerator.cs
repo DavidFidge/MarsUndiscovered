@@ -7,30 +7,31 @@ using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Interfaces;
 
+using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Tests.Components
 {
-    public class BlankMapGenerator : IMapGenerator
+    public class SpecificMapGenerator : IMapGenerator
     {
         public IMapGenerator OriginalMapGenerator { get; private set; }
 
         private readonly IGameObjectFactory _gameObjectFactory;
-        private readonly Func<IGameObject> _fillWith;
+        private readonly Func<Point, IGameObject> _terrainChooser;
 
-        public BlankMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator, Func<IGameObject> fillWith = null)
+        public SpecificMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator, IList<Point> wallPoints)
         {
             _gameObjectFactory = gameObjectFactory;
             OriginalMapGenerator = originalMapGenerator;
 
-            _fillWith = fillWith ?? (() => _gameObjectFactory.CreateFloor());
+            _terrainChooser = ((p) => wallPoints.Contains(p) ? (Terrain)_gameObjectFactory.CreateWall() : _gameObjectFactory.CreateFloor());
         }
 
         public ArrayView<IGameObject> CreateOutdoorWallsFloors(IGameObjectFactory gameObjectFactory)
         {
             var arrayView = new ArrayView<IGameObject>(MarsMap.MapWidth, MarsMap.MapHeight);
 
-            arrayView.ApplyOverlay(_ => _fillWith());
+            arrayView.ApplyOverlay(_terrainChooser);
 
             return arrayView;
         }

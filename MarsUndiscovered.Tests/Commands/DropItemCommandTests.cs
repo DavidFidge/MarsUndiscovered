@@ -17,7 +17,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void DropItemCommand_Should_Drop_Item_At_Players_Location()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
@@ -43,7 +43,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void DropItemCommand_Should_Not_Drop_Item_If_Item_Exists_At_Players_Location()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item1 = _gameWorld.Items.First().Value;

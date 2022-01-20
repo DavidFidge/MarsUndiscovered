@@ -17,7 +17,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void UnequipItemCommand_Should_Unequip_Weapon()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
@@ -47,7 +47,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void UnequipItemCommand_For_Item_Not_Equipped_Should_Do_Nothing()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;

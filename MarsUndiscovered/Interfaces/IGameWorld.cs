@@ -24,7 +24,6 @@ namespace MarsUndiscovered.Interfaces
         void RebuildGoalMaps();
         IList<CommandResult> MoveRequest(Direction direction);
         IList<CommandResult> MoveRequest(Path path);
-        IGameTurnService GameTurnService { get; }
         IList<string> GetMessagesSince(int currentCount);
         SaveGameResult SaveGame(string saveGameName, bool overwrite);
         LoadGameResult LoadGame(string saveGameName);
@@ -48,7 +47,7 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> DropItemRequest(Keys itemKey);
         IList<CommandResult> EquipItemRequest(Keys itemKey);
         IList<CommandResult> UnequipItemRequest(Keys itemKey);
-        void UpdateFieldOfView();
+        void UpdateFieldOfView(bool partialUpdate = true);
         void AfterCreateGame();
         void ChangeMap(MarsMap map);
     }

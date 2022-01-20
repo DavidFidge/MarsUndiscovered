@@ -18,7 +18,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void WalkCommand_Should_Move_Player_For_Valid_Square()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
 
@@ -48,7 +48,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void WalkCommand_Should_Return_NoMove_Result_For_Wall()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItemsNoExits();
 
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition = new Point(1, 0);
@@ -74,7 +74,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void WalkCommand_Player_Into_Monster_Should_Attack()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
@@ -111,7 +111,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void WalkCommand_With_NoDirection_With_Monster_Adjacent_Should_Result_In_Monster_Attacking_Player()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
@@ -142,7 +142,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_With_Commands()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 0);
 
             _gameWorld.MoveRequest(Direction.Down);
@@ -173,7 +173,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Walk_To_Position()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
 
@@ -197,7 +197,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Walk_To_Position_And_Stop_At_Wall()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
 
@@ -221,7 +221,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Perform_NonMove_If_MoveDestination_Is_Wall_And_Only_One_Square()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
 
@@ -241,7 +241,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Walk_Player_Into_Adjacent_Monster_Via_MoveRequestDestination_Should_Attack()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
@@ -281,7 +281,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Walk_Player_Into_Monster_Via_MoveRequestDestination_Should_Stop_Adjacent_To_Monster()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 3)));

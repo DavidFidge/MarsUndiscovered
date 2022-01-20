@@ -1,11 +1,11 @@
-﻿using GoRogue.Pathing;
+﻿using FrigidRogue.MonoGame.Core.Extensions;
+
+using GoRogue.Pathing;
 
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 
 using Microsoft.Xna.Framework;
-
-using NGenerics.Extensions;
 
 using SadRogue.Primitives;
 

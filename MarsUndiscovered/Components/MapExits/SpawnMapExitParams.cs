@@ -2,7 +2,7 @@
 
 namespace MarsUndiscovered.Components
 {
-    public class SpawnMapExitParams : BaseSpawnGameObject
+    public class SpawnMapExitParams : BaseSpawnGameObjectParams
     {
         public uint? DestinationMapExitId { get; set; }
         public Point LandingPosition { get; set; } = Point.None;

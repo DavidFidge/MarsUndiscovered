@@ -10,6 +10,7 @@ using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
 
+using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.SaveData;
 using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Interfaces;
@@ -31,6 +32,9 @@ namespace MarsUndiscovered.Components
         public int Level { get; set; }
         public ArrayView<SeenTile> SeenTiles { get; set; }
 
+        public IList<Wall> Walls { get; private set; }
+        public IList<Floor> Floors { get; private set; }
+
         public MarsMap(IGameWorld gameWorld) : base(MapWidth, MapHeight, 3, Distance.Chebyshev, UInt32.MaxValue, UInt32.MaxValue, 0)
         {
             Id = Guid.NewGuid();
@@ -48,9 +52,11 @@ namespace MarsUndiscovered.Components
         {
             Debug.Assert(floors.Any() || walls.Any(), "Walls and/or Floors must be populated");
 
-            var wallsFloors = walls.Cast<Terrain>()
-                .Union(floors)
-                .Where(t => !t.IsDestroyed)
+            Walls = walls.Where(w => !w.IsDestroyed).ToList();
+            Floors = floors.Where(w => !w.IsDestroyed).ToList();
+
+            var wallsFloors = Walls.Cast<Terrain>()
+                .Union(Floors)
                 .OrderBy(t => t.Index)
                 .ToArrayView(Width);
 
@@ -100,6 +106,64 @@ namespace MarsUndiscovered.Components
             }
         }
 
+        public Wall CreateWall(Point position, IGameObjectFactory gameObjectFactory)
+        {
+            var wall = GetTerrainAt<Wall>(position);
+
+            if (wall != null)
+                return wall;
+
+            wall = gameObjectFactory.CreateWall();
+            wall.Position = position;
+            wall.Index = position.ToIndex(Width);
+            Walls.Add(wall);
+            _gameWorld.Walls.Add(wall.ID, wall);
+
+            DestroyFloor(position);
+            SetTerrain(wall);
+            return wall;
+        }
+
+        public Floor CreateFloor(Point position, IGameObjectFactory gameObjectFactory)
+        {
+            var floor = GetTerrainAt<Floor>(position);
+
+            if (floor != null)
+                return floor;
+
+            floor = gameObjectFactory.CreateFloor();
+            floor.Position = position;
+            floor.Index = position.ToIndex(Width);
+            Floors.Add(floor);
+            _gameWorld.Floors.Add(floor.ID, floor);
+
+            DestroyWall(position);
+            SetTerrain(floor);
+            return floor;
+        }
+
+        private void DestroyWall(Point position)
+        {
+            var wall = GetObjectAt<Wall>(position);
+
+            if (wall == null)
+                return;
+
+            wall.IsDestroyed = true;
+            RemoveTerrain(wall);
+        }
+
+        private void DestroyFloor(Point position)
+        {
+            var floor = GetObjectAt<Floor>(position);
+
+            if (floor == null)
+                return;
+
+            floor.IsDestroyed = true;
+            RemoveTerrain(floor);
+        }
+
         public IMemento<MapSaveData> GetSaveState(IMapper mapper)
         {
             var memento = Memento<MapSaveData>.CreateWithAutoMapper(this, mapper);
@@ -142,6 +206,68 @@ namespace MarsUndiscovered.Components
                 .Where(g => g.CurrentMap.Equals(this))
                 .Select(s => s.ID)
                 .ToList();
+        }
+
+        public IList<T> GetTerrainAround<T>(Point position, AdjacencyRule adjacencyRule) where T : Terrain
+        {
+            return adjacencyRule.Neighbors(position)
+                .Where(p => this.Bounds().Contains(p))
+                .Select(GetTerrainAt<T>)
+                .Where(s => s != null)
+                .ToList();
+        }
+
+        public Point FindClosestFreeFloor(Point startPoint, bool contiguousFromStartingPoint = true)
+        {
+            var queue = new Queue<Point>();
+            var explored = new HashSet<Point>();
+            var wallPoints = new Queue<Point>();
+
+            queue.Enqueue(startPoint);
+            explored.Add(startPoint);
+
+            var adjacencyRule = AdjacencyRule.EightWay;
+            var enteredLoop = false;
+
+            while (wallPoints.Count > 0 || !enteredLoop)
+            {
+                enteredLoop = true;
+
+                while (queue.Count > 0)
+                {
+                    var point = queue.Dequeue();
+
+                    if (WalkabilityView[point])
+                        return point;
+
+                    var neighbours = adjacencyRule.Neighbors(point);
+
+                    foreach (var neighbor in neighbours)
+                    {
+                        if (this.Bounds().Contains(neighbor) && !explored.Contains(neighbor))
+                        {
+                            if (GetTerrainAt(neighbor) is Floor)
+                            {
+                                queue.Enqueue(neighbor);
+                            }
+                            else
+                            {
+                                wallPoints.Enqueue(neighbor);
+                            }
+
+                            explored.Add(neighbor);
+                        }
+                    }
+                }
+
+                if (!contiguousFromStartingPoint)
+                {
+                    while (wallPoints.Count > 0)
+                        queue.Enqueue(wallPoints.Dequeue());
+                }
+            }
+
+            return Point.None;
         }
     }
 }

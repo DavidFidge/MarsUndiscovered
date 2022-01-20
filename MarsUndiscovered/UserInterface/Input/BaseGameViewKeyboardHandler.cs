@@ -28,8 +28,11 @@ namespace MarsUndiscovered.UserInterface.Input
             if (keyInFocus == Keys.F12)
                 Environment.Exit(0);
 
-            if (keyInFocus == Keys.G)
+            if (keyInFocus == Keys.G && keyboardModifier == KeyboardModifier.Ctrl)
                 Mediator.Publish(new ToggleShowGoalMapNotification());
+
+            if (keyInFocus == Keys.M && keyboardModifier == KeyboardModifier.Ctrl)
+                Mediator.Publish(new ToggleShowEntireMapNotification());
         }
 
         public override void HandleKeyboardKeysReleased()

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using AutoMapper;
 
@@ -7,12 +9,14 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
+using GoRogue.Pathing;
 
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Commands
 {
@@ -56,13 +60,14 @@ namespace MarsUndiscovered.Commands
 
             _oldMap.RemoveEntity(GameObject);
 
-            // TODO - need to check if the position is taken
-            GameObject.Position = MapExit.Destination.LandingPosition;
-            MapExit.Destination.CurrentMap.AddEntity(GameObject);
+            var newMap = (MarsMap)MapExit.Destination.CurrentMap;
+
+            GameObject.Position = newMap.FindClosestFreeFloor(MapExit.Destination.LandingPosition);
+            newMap.AddEntity(GameObject);
 
             if (GameObject is Player)
             {
-                GameWorld.ChangeMap((MarsMap)MapExit.Destination.CurrentMap);
+                GameWorld.ChangeMap(newMap);
             }
             else
             {

@@ -32,6 +32,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private IGameWorld _gameWorld;
         private MapEntity _mapEntity;
         private bool _showGoalMap;
+        private bool _showEntireMap;
         private ArrayView<MapTileRootEntity> _mapTileRootEntities;
         private ArrayView<MapTileEntity> _terrainTiles;
         private ArrayView<MapTileEntity> _actorTiles;
@@ -111,6 +112,26 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             UpdateTileGameObjects(point, gameObjects);
         }
 
+        public void ToggleFieldOfView()
+        {
+            if (_mapEntity == null)
+                return;
+
+            _showEntireMap = !_showEntireMap;
+
+            if (_showEntireMap)
+            {
+                foreach (var tile in _fieldOfViewTiles.ToArray())
+                    tile.IsVisible = false;
+            }
+            else
+            {
+                _gameWorld.UpdateFieldOfView(false);
+            }
+
+            UpdateAllTiles();
+        }
+
         public void ToggleShowGoalMap()
         {
             if (_mapEntity == null)
@@ -169,7 +190,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             var fieldOfViewTileEntity = _fieldOfViewTileEntityFactory.Create(position);
             _fieldOfViewTiles[position] = fieldOfViewTileEntity;
+
             fieldOfViewTileEntity.SetFieldOfViewUnrevealed();
+
+            if (_showEntireMap)
+                fieldOfViewTileEntity.IsVisible = false;
 
             var mouseHoverEntity = _mapTileEntityFactory.Create(position);
             mouseHoverEntity.SetMouseHover();
@@ -276,7 +301,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             ArrayView<SeenTile> seenTiles
         )
         {
-            if (_fieldOfViewTiles == null)
+            if (_fieldOfViewTiles == null || _showEntireMap)
                 return;
 
             // Process hidden points first, this method can then be used to 

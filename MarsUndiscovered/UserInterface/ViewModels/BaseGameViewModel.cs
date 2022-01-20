@@ -25,6 +25,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         INotificationHandler<MapTileChangedNotification>,
         INotificationHandler<EntityTransformChangedNotification>,
         INotificationHandler<ToggleShowGoalMapNotification>,
+        INotificationHandler<ToggleShowEntireMapNotification>,
         INotificationHandler<GoalMapChangedNotification>,
         INotificationHandler<RefreshViewNotification>,
         INotificationHandler<FieldOfViewChangedNotifcation>,
@@ -141,6 +142,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             if (IsActive)
                 MapViewModel.UpdateAllTiles();
+
+            return Unit.Task;
+        }
+
+        public Task Handle(ToggleShowEntireMapNotification notification, CancellationToken cancellationToken)
+        {
+            if (IsActive)
+                MapViewModel.ToggleFieldOfView();
 
             return Unit.Task;
         }

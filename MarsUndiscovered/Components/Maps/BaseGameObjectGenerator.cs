@@ -10,15 +10,15 @@ namespace MarsUndiscovered.Components.Maps
 {
     public abstract class BaseGameObjectGenerator : BaseComponent
     {
-        protected Point GetPosition<T>(T spawnMonsterParams, Map map) where T : BaseSpawnGameObject
+        protected Point GetPosition<T>(T spawnGameObjectParams, Map map) where T : BaseSpawnGameObjectParams
         {
-            if (spawnMonsterParams.Position != null)
-                return spawnMonsterParams.Position.Value;
+            if (spawnGameObjectParams.Position != null)
+                return spawnGameObjectParams.Position.Value;
 
-            if (spawnMonsterParams.AvoidPosition != null)
+            if (spawnGameObjectParams.AvoidPosition != null)
                 return map.RandomPositionAwayFrom(
-                    spawnMonsterParams.AvoidPosition.Value,
-                    spawnMonsterParams.AvoidPositionRange,
+                    spawnGameObjectParams.AvoidPosition.Value,
+                    spawnGameObjectParams.AvoidPositionRange,
                     MapHelpers.EmptyPointOnFloor
                 );
 

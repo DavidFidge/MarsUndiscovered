@@ -1,6 +1,6 @@
 ﻿namespace MarsUndiscovered.Components
 {
-    public class SpawnItemParams : BaseSpawnGameObject
+    public class SpawnItemParams : BaseSpawnGameObjectParams
     {
         public ItemType ItemType { get; set; }
     }

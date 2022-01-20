@@ -115,8 +115,15 @@ namespace MarsUndiscovered.Components
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
 
             var mapExit2 = SpawnMapExit(new SpawnMapExitParams().OnMap(map2.Id).WithDirection(Direction.Up));
-            var mapExit1 = SpawnMapExit(new SpawnMapExitParams().OnMap(CurrentMap.Id).ToMapExit(mapExit2.ID).WithDirection(Direction.Down));
-            mapExit2.Destination = mapExit1;
+
+            if (mapExit2 != null)
+            {
+                var mapExit1 = SpawnMapExit(
+                    new SpawnMapExitParams().OnMap(CurrentMap.Id).ToMapExit(mapExit2.ID).WithDirection(Direction.Down)
+                );
+
+                mapExit2.Destination = mapExit1;
+            }
 
             RebuildGoalMaps();
         }
@@ -155,11 +162,30 @@ namespace MarsUndiscovered.Components
             GameObjectFactory.Reset();
         }
 
-        public void UpdateFieldOfView()
+        public void UpdateFieldOfView(bool partialUpdate = true)
         {
             CurrentMap.UpdateFieldOfView(Player.Position);
 
-            Mediator.Publish(new FieldOfViewChangedNotifcation(CurrentMap.PlayerFOV.NewlySeen, CurrentMap.PlayerFOV.NewlyUnseen, CurrentMap.SeenTiles));
+            if (partialUpdate)
+            {
+                Mediator.Publish(
+                    new FieldOfViewChangedNotifcation(
+                        CurrentMap.PlayerFOV.NewlySeen,
+                        CurrentMap.PlayerFOV.NewlyUnseen,
+                        CurrentMap.SeenTiles
+                    )
+                );
+            }
+            else
+            {
+                Mediator.Publish(
+                    new FieldOfViewChangedNotifcation(
+                        CurrentMap.PlayerFOV.CurrentFOV,
+                        CurrentMap.Positions(),
+                        CurrentMap.SeenTiles
+                    )
+                );
+            }
         }
 
         public void AfterCreateGame()
@@ -327,55 +353,14 @@ namespace MarsUndiscovered.Components
 
         public void CreateWall(Point position)
         {
-            var wall = GameObjectFactory.CreateWall();
-            wall.Position = position;
-            wall.Index = position.ToIndex(CurrentMap.Width);
-            Walls.Add(wall.ID, wall);
-
-            DestroyFloor(position, false);
-            CurrentMap.SetTerrain(wall);
+            CurrentMap.CreateWall(position, GameObjectFactory);
             UpdateFieldOfView();
         }
 
         public void CreateFloor(Point position)
         {
-            var floor = GameObjectFactory.CreateFloor();
-            floor.Position = position;
-            floor.Index = position.ToIndex(CurrentMap.Width);
-            Floors.Add(floor.ID, floor);
-
-            DestroyWall(position, false);
-            CurrentMap.RemoveTerrain(floor);
+            CurrentMap.CreateFloor(position, GameObjectFactory);
             UpdateFieldOfView();
-        }
-
-        public void DestroyWall(Point position, bool replaceWithFloor = true)
-        {
-            var wall = CurrentMap.GetObjectAt<Wall>(position);
-
-            if (wall == null)
-                return;
-
-            wall.IsDestroyed = true;
-
-            CurrentMap.RemoveTerrain(wall);
-
-            if (replaceWithFloor)
-                CreateFloor(position);
-        }
-
-        public void DestroyFloor(Point position, bool replaceWithWall = true)
-        {
-            var floor = CurrentMap.GetObjectAt<Floor>(position);
-
-            if (floor == null)
-                return;
-
-            floor.IsDestroyed = true;
-            CurrentMap.RemoveTerrain(floor);
-
-            if (replaceWithWall)
-                CreateWall(position);
         }
 
         public SaveGameResult SaveGame(string saveGameName, bool overwrite)

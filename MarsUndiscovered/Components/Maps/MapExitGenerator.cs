@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using FrigidRogue.MonoGame.Core.Extensions;
 
 using GoRogue.GameFramework;
+using GoRogue.Random;
+
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Messages;
@@ -15,27 +21,29 @@ namespace MarsUndiscovered.Components.Maps
         public MapExit SpawnMapExit(
             SpawnMapExitParams spawnMapExitParams,
             IGameObjectFactory gameObjectFactory,
-            Map map,
+            MarsMap map,
             MapExitCollection mapExitCollection
         )
         {
             MapExit destinationMapExit = null;
 
-            if (spawnMapExitParams.DestinationMapExitId != null)
+            if (spawnMapExitParams.DestinationMapExitId != null) 
                 destinationMapExit =
                     (MapExit)gameObjectFactory.GameObjects[spawnMapExitParams.DestinationMapExitId.Value];
 
-            var position = GetPosition(spawnMapExitParams, map);
+            var position = spawnMapExitParams.Position != null
+                ? GetPosition(spawnMapExitParams, map)
+                : GetPointOnWallAwayFromOtherExitPoints(map, mapExitCollection.Values);
 
             var landingPosition = spawnMapExitParams.LandingPosition;
 
-            // TODO - this needs much improvement!
             if (landingPosition.Equals(Point.None))
             {
                 landingPosition = position;
 
-                foreach (var dir in AdjacencyRule.EightWay.DirectionsOfNeighbors())
+                foreach (var dir in AdjacencyRule.Cardinals.DirectionsOfNeighbors())
                 {
+                    // Guaranteed to find a valid landing position due to GetPointOnWallAwayFromOtherExitPoints
                     var candidateLandingPosition = landingPosition.Add(dir);
                     if (map.Bounds().Contains(candidateLandingPosition) &&
                         map.GetTerrainAt(candidateLandingPosition) is Floor)
@@ -44,10 +52,9 @@ namespace MarsUndiscovered.Components.Maps
                         break;
                     }
                 }
-
-                if (landingPosition.Equals(position))
-                    throw new Exception("No landing position found for map exit");
             }
+
+            map.CreateFloor(position, gameObjectFactory);
 
             var mapExit = gameObjectFactory
                 .CreateMapExit()
@@ -62,6 +69,39 @@ namespace MarsUndiscovered.Components.Maps
             Mediator.Publish(new MapTileChangedNotification(mapExit.Position));
 
             return mapExit;
+        }
+
+        private Point GetPointOnWallAwayFromOtherExitPoints(MarsMap map, IEnumerable<IGameObject> mapExitCollection)
+        {
+            var candidateWallPositions = map.Walls
+                .Where(w => !w.IsDestroyed)
+                .Select(w => w.Position)
+                .Where(w => map.GetTerrainAround<Floor>(w, AdjacencyRule.Cardinals).Any())
+                .ToList();
+
+            if (!candidateWallPositions.Any())
+            {
+                // This would mean the whole map is a wall or there's no walls at all. Pick any empty point on the floor.
+                candidateWallPositions.Add(map.RandomPosition(MapHelpers.EmptyPointOnFloor));
+            }
+
+            var otherMapExitPoints = mapExitCollection
+                .Where(me => me.CurrentMap != null && me.CurrentMap.Equals(map))
+                .Select(me => me.Position)
+                .ToList();
+
+            if (otherMapExitPoints.Any())
+            {
+                var splitPositionsByMagnitude =
+                    candidateWallPositions.SplitIntoPointsBySumMagnitudeAgainstTargetPoints(otherMapExitPoints);
+
+                candidateWallPositions = splitPositionsByMagnitude.Item2.Any()
+                    ? splitPositionsByMagnitude.Item2.ToList()
+                    : splitPositionsByMagnitude.Item1.ToList();
+            }
+
+            var position = candidateWallPositions[GlobalRandom.DefaultRNG.Next(0, candidateWallPositions.Count - 1)];
+            return position;
         }
     }
 }

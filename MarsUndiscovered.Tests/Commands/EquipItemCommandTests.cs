@@ -17,7 +17,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void EquipItemCommand_Should_Equip_Weapon()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
@@ -43,7 +43,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void EquipItemCommand_Should_Not_Equip_An_ItemType_That_Cannot_Be_Equipped()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
@@ -68,7 +68,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void EquipItemCommand_Should_Swap_Weapon_If_One_Already_Equipped()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(
                 new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position)
@@ -110,7 +110,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void EquipItemCommand_Should_Do_Nothing_If_Trying_To_Equip_Item_Already_Equipped()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;

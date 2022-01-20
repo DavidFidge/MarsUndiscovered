@@ -1,6 +1,6 @@
 ﻿namespace MarsUndiscovered.Components
 {
-    public class SpawnMonsterParams : BaseSpawnGameObject
+    public class SpawnMonsterParams : BaseSpawnGameObjectParams
     {
         public Breed Breed { get; set; }
     }

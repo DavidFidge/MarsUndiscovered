@@ -16,7 +16,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void DeathCommand_On_Monster_Should_Set_IsDead_Flag_And_Remove_From_Map()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
 
             var monster = _gameWorld.Monsters.Values.First();
@@ -41,7 +41,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void DeathCommand_On_Player_Should_Set_IsDead_Flag()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             var commandFactory = Container.Resolve<ICommandFactory>();
 

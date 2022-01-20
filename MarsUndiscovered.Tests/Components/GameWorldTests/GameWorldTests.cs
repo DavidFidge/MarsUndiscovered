@@ -167,7 +167,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void GetStatusOfMonstersInView_Should_Return_Monster_Statuses()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
@@ -194,7 +194,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Monsters_Should_Stop_Acting_When_Player_Dies()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
@@ -221,7 +221,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void HasBeenSeen_Should_Be_False_For_Unseen_Tiles()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition = new Point(1, 1);
@@ -244,7 +244,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void HasBeenSeen_Should_Be_False_For_Unseen_Tiles_Should_Keep_GameObjects_That_Were_Last_Seen_There()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition = new Point(1, 1);
@@ -281,7 +281,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_MapSeenTiles()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition = new Point(1, 1);
@@ -323,7 +323,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_Multiple_Maps()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             var maps = _gameWorld.Maps.ToList();
 
@@ -363,7 +363,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_MapExits()
         {
             // Arrange
-            NewGameWithNoWallsNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems();
 
             var maps = _gameWorld.Maps.ToList();
 

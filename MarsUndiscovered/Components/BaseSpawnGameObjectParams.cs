@@ -3,7 +3,7 @@ using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Components
 {
-    public abstract class BaseSpawnGameObject
+    public abstract class BaseSpawnGameObjectParams
     {
         public Guid? MapId { get; set; }
         public Point? Position { get; set; }
@@ -11,9 +11,9 @@ namespace MarsUndiscovered.Components
         public uint AvoidPositionRange { get; set; }
     }
 
-    public static class BaseSpawnGameObjectFluentExtensions
+    public static class BaseSpawnGameObjectParamsFluentExtensions
     {
-        public static T AtPosition<T>(this T spawnMonsterParams, Point point) where T : BaseSpawnGameObject
+        public static T AtPosition<T>(this T spawnMonsterParams, Point point) where T : BaseSpawnGameObjectParams
         {
             spawnMonsterParams.Position = point;
 
@@ -22,14 +22,14 @@ namespace MarsUndiscovered.Components
             return spawnMonsterParams;
         }
 
-        public static T OnMap<T>(this T spawnMonsterParams, Guid mapId) where T : BaseSpawnGameObject
+        public static T OnMap<T>(this T spawnMonsterParams, Guid mapId) where T : BaseSpawnGameObjectParams
         {
             spawnMonsterParams.MapId = mapId;
 
             return spawnMonsterParams;
         }
 
-        private static void CheckPositionAgainstAvoidPosition<T>(T spawnMonsterParams) where T : BaseSpawnGameObject
+        private static void CheckPositionAgainstAvoidPosition<T>(T spawnMonsterParams) where T : BaseSpawnGameObjectParams
         {
             if (spawnMonsterParams.AvoidPosition != null &&
                 spawnMonsterParams.Position != null &&
@@ -44,7 +44,7 @@ namespace MarsUndiscovered.Components
             }
         }
 
-        public static T AvoidingPosition<T>(this T spawnMonsterParams, Point point, uint avoidPositionRange) where T : BaseSpawnGameObject
+        public static T AvoidingPosition<T>(this T spawnMonsterParams, Point point, uint avoidPositionRange) where T : BaseSpawnGameObjectParams
         {
             spawnMonsterParams.AvoidPosition = point;
             spawnMonsterParams.AvoidPositionRange = avoidPositionRange;

@@ -55,52 +55,46 @@ namespace MarsUndiscovered.Commands
             {
                 if (map.GameObjectCanMove(Player, newPlayerPosition))
                 {
-                    var terrainAtDestination = map.GetTerrainAt(newPlayerPosition);
+                    var command = CommandFactory.CreateMoveCommand(GameWorld);
 
-                    if (terrainAtDestination is Floor)
-                    {
-                        var command = CommandFactory.CreateMoveCommand(GameWorld);
+                    command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
 
-                        command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
-
-                        return Result(CommandResult.Success(this, command));
-
-                    }
-
-                    if (terrainAtDestination is Wall)
-                    {
-                        return Result(CommandResult.NoMove(this, "The unrelenting red rock is cold and dry"));
-                    }
+                    return Result(CommandResult.Success(this, command));
                 }
-                else
+
+                var terrainAtDestination = map.GetTerrainAt(newPlayerPosition);
+
+                if (terrainAtDestination is Wall)
                 {
-                    // Maps get created with the setting where there cannot be multiple objects in the same layer.
-                    // Thus if player cannot move to the new position then a monster should be there.
-                    var actorAt = map.GetObjectAt<Actor>(newPlayerPosition);
+                    return Result(CommandResult.NoMove(this, "The unrelenting red rock is cold and dry"));
+                }
 
-                    if (actorAt is Monster)
-                    {
-                        var command = CommandFactory.CreateAttackCommand(GameWorld);
-                        command.Initialise(Player, actorAt);
+                // Maps get created with the setting where there cannot be multiple objects in the same layer.
+                // Thus if player cannot move to the new position then a monster should be there.
+                var actorAt = map.GetObjectAt<Actor>(newPlayerPosition);
 
-                        return Result(CommandResult.Success(this, command));
-                    }
+                if (actorAt is Monster)
+                {
+                    var command = CommandFactory.CreateAttackCommand(GameWorld);
+                    command.Initialise(Player, actorAt);
 
-                    if (actorAt != null)
-                        return Result(CommandResult.Exception(this, $"You bump into a {actorAt.Name}"));
+                    return Result(CommandResult.Success(this, command));
+                }
 
-                    var mapExitAt = map.GetObjectAt<MapExit>(newPlayerPosition);
+                if (actorAt != null)
+                    return Result(CommandResult.Exception(this, $"You bump into a {actorAt.Name}"));
 
-                    if (mapExitAt != null)
-                    {
-                        var command = CommandFactory.CreateChangeMapCommand(GameWorld);
+                var mapExitAt = map.GetObjectAt<MapExit>(newPlayerPosition);
 
-                        command.Initialise(Player, mapExitAt);
+                if (mapExitAt != null)
+                {
+                    var command = CommandFactory.CreateChangeMapCommand(GameWorld);
 
-                        var exitText = mapExitAt.Direction == Direction.Down ? "descend" : "ascend";
+                    command.Initialise(Player, mapExitAt);
 
-                        return Result(CommandResult.Success(this, $"You {exitText}", command));
-                    }
+                    var exitText = mapExitAt.Direction == Direction.Down ? "descend" : "ascend";
+
+                    return Result(CommandResult.Success(this, $"You {exitText}", command));
                 }
             }
 
