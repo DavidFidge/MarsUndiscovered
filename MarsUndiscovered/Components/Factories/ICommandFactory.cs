@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MarsUndiscovered.Commands;
+﻿using MarsUndiscovered.Commands;
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components.Factories

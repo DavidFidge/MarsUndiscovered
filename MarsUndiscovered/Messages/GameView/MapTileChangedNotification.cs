@@ -1,6 +1,4 @@
-﻿using System;
-
-using MediatR;
+﻿using MediatR;
 
 using SadRogue.Primitives;
 

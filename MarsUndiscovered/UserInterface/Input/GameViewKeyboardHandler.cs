@@ -1,6 +1,4 @@
-﻿using System;
-
-using MarsUndiscovered.Messages;
+﻿using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
 
 using InputHandlers.Keyboard;

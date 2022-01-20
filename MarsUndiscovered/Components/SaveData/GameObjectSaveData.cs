@@ -1,6 +1,4 @@
-﻿using System;
-
-using SadRogue.Primitives;
+﻿using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Components.SaveData
 {

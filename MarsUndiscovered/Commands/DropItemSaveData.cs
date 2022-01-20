@@ -1,8 +1,4 @@
-﻿using System;
-
-using MarsUndiscovered.Components.SaveData;
-
-namespace MarsUndiscovered.Commands
+﻿namespace MarsUndiscovered.Commands
 {
     public class DropItemSaveData : BaseCommandSaveData
     {

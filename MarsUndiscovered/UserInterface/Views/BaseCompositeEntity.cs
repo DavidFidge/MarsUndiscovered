@@ -1,6 +1,4 @@
-﻿using System;
-
-using GeonBit.UI.Entities;
+﻿using GeonBit.UI.Entities;
 
 namespace MarsUndiscovered.UserInterface.Views
 {

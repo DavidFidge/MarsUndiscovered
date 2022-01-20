@@ -1,7 +1,4 @@
-﻿using System.Linq;
-
-using MarsUndiscovered.Components;
-using MarsUndiscovered.Components.Factories;
+﻿using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Interfaces;
 

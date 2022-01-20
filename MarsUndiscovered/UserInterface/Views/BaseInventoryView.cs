@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-using FrigidRogue.MonoGame.Core.View.Extensions;
+﻿using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;

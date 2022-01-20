@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using GoRogue.GameFramework;
-using MonoGame.Extended;
+
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Components

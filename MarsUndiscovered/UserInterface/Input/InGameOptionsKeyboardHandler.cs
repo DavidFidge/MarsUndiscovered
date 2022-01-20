@@ -1,5 +1,4 @@
-﻿using FrigidRogue.MonoGame.Core.Messages;
-using MarsUndiscovered.Messages;
+﻿using MarsUndiscovered.Messages;
 
 using FrigidRogue.MonoGame.Core.UserInterface;
 

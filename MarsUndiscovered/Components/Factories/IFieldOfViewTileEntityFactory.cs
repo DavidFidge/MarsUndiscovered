@@ -1,5 +1,4 @@
-﻿using MarsUndiscovered.Interfaces;
-using MarsUndiscovered.UserInterface.ViewModels;
+﻿using MarsUndiscovered.UserInterface.ViewModels;
 
 using SadRogue.Primitives;
 

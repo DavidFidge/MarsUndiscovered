@@ -1,8 +1,5 @@
 ﻿using System;
 
-using GoRogue.Components;
-using GoRogue.Random;
-
 using MonoGame.Extended;
 
 namespace MarsUndiscovered.Components

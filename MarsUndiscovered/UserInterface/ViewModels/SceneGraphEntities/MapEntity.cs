@@ -1,7 +1,5 @@
-﻿using System;
+﻿using FrigidRogue.MonoGame.Core.Components;
 
-using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.ViewModels

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using AutoMapper;
 
@@ -9,8 +8,6 @@ using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
-
-using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.Commands
 {

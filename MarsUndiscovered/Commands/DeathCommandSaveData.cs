@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MarsUndiscovered.Commands
+﻿namespace MarsUndiscovered.Commands
 {
     public class DeathCommandSaveData : BaseCommandSaveData
     {

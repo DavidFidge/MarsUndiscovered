@@ -1,10 +1,6 @@
-﻿using System;
-using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
+﻿using FrigidRogue.MonoGame.Core.Components;
 
 using GoRogue.GameFramework;
-
-using MarsUndiscovered.Components.SaveData;
 
 namespace MarsUndiscovered.Components
 {

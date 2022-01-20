@@ -1,6 +1,6 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
-using GoRogue.GameFramework;
+
 using MarsUndiscovered.Interfaces;
 
 using Microsoft.Xna.Framework;

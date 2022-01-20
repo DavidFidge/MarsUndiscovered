@@ -1,6 +1,4 @@
-﻿using System;
-
-using AutoMapper;
+﻿using AutoMapper;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 

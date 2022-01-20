@@ -1,6 +1,4 @@
-﻿using MarsUndiscovered.Components.SaveData;
-
-namespace MarsUndiscovered.Components
+﻿namespace MarsUndiscovered.Components
 {
     public abstract class Terrain : MarsGameObject
     {

@@ -1,7 +1,5 @@
 ﻿using System;
 
-using GoRogue.Components;
-
 namespace MarsUndiscovered.Components
 {
     public class ShieldGenerator : Gadget

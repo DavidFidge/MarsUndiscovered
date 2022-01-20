@@ -1,6 +1,4 @@
-﻿using System;
-
-using MarsUndiscovered.Commands;
+﻿using MarsUndiscovered.Commands;
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components.Factories

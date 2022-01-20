@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+
 using GoRogue.GameFramework;
 
 namespace MarsUndiscovered.Components.Factories

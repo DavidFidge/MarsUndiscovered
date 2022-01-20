@@ -1,6 +1,5 @@
 ﻿using System;
 using Castle.MicroKernel.Registration;
-using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using CommandLine;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;

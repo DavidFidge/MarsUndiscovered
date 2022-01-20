@@ -10,7 +10,6 @@ using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI.Entities;
 
 using MediatR;
-using SharpDX.MediaFoundation;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
