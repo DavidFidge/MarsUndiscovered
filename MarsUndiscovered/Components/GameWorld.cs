@@ -206,7 +206,7 @@ namespace MarsUndiscovered.Components
         {
             Maps.CurrentMap = map;
             Mediator.Publish(new MapChangedNotification());
-
+            UpdateFieldOfView(false);
             RebuildGoalMaps();
         }
 
