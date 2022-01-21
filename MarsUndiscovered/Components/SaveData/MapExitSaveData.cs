@@ -2,7 +2,7 @@
 
 namespace MarsUndiscovered.Components.SaveData
 {
-    public class MapExitSaveData : GameObjectSaveData
+    public class MapExitSaveData : IndestructibleSaveData
     {
         public uint DestinationId { get; set; }
         public Point LandingPosition { get; set; }

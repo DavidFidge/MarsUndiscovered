@@ -11,6 +11,8 @@
         public const int TerrainLayer = 0;
         public const int ActorLayer = 1;
         public const int ItemLayer = 2;
-        public const int MapExitLayer = 3;
+        public const int IndestructiblesLayer = 3;
+        public static int OutdoorAreaBorder = 2;
+        public static int ShipOffset = 2;
     }
 }

@@ -1,4 +1,6 @@
-﻿using FrigidRogue.MonoGame.Core.Graphics.Quads;
+﻿using System.Collections.Generic;
+
+using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using Microsoft.Xna.Framework.Graphics;
 
@@ -20,6 +22,8 @@ namespace MarsUndiscovered.Interfaces
         MapTileQuad NanoFlask { get; set; }
         MapTileQuad FieldOfViewUnrevealedQuad { get; set; }
         MapTileQuad FieldOfViewHasBeenSeenQuad { get; set; }
+        IDictionary<char, MapTileQuad> ShipParts { get; set; }
+
         void LoadContent();
     }
 }

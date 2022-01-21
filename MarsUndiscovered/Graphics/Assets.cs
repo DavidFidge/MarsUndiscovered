@@ -1,4 +1,6 @@
-﻿using FrigidRogue.MonoGame.Core.Graphics.Quads;
+﻿using System.Collections.Generic;
+
+using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using MarsUndiscovered.Interfaces;
 
@@ -31,6 +33,7 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad FieldOfViewUnrevealedQuad { get; set; }
         public MapTileQuad FieldOfViewHasBeenSeenQuad { get; set; }
         public GoalMapQuad GoalMapQuad { get; set; }
+        public IDictionary<char, MapTileQuad> ShipParts { get; set; }
 
         private readonly IGameProvider _gameProvider;
 
@@ -141,6 +144,25 @@ namespace MarsUndiscovered.Graphics
                 _itemColour,
                 Color.SaddleBrown
             );
+
+            ShipParts = new Dictionary<char, MapTileQuad>();
+            var shipPartChars = "{_-`.+|( ";
+
+            foreach (char ch in shipPartChars)
+            {
+                var shipPart = new MapTileQuad(
+                    _gameProvider,
+                    TileQuadWidth,
+                    TileQuadHeight,
+                    MapFont,
+                    TextureMaterialEffect,
+                    ch,
+                    Color.SteelBlue,
+                    Color.Black
+                );
+
+                ShipParts.Add(ch, shipPart);
+            }
 
             GoalMapQuad = new GoalMapQuad(
                 _gameProvider,

@@ -96,6 +96,13 @@ namespace MarsUndiscovered.Commands
 
                     return Result(CommandResult.Success(this, $"You {exitText}", command));
                 }
+
+                var shipAt = map.GetObjectAt<Ship>(newPlayerPosition);
+
+                if (shipAt != null)
+                {
+                    return Result(CommandResult.NoMove(this, "You don't have the parts you need to repair your ship!"));
+                }
             }
 
             return Result(CommandResult.Exception(this, $"Cannot move {Direction}"));

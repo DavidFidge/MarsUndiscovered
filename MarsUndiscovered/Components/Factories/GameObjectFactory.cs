@@ -95,6 +95,16 @@ namespace MarsUndiscovered.Components.Factories
             return ResolveWithGivenId<MapExit>(id);
         }
 
+        public Ship CreateShip()
+        {
+            return ResolveWithNextId<Ship>();
+        }
+
+        public Ship CreateShip(uint id)
+        {
+            return ResolveWithGivenId<Ship>(id);
+        }
+
         private T ResolveWithNextId<T>() where T : IGameObject
         {
             var gameObject = _container.Resolve<T>(new Arguments { { "id", GetNextId() } });

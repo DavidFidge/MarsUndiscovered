@@ -53,6 +53,12 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
         }
 
+        public void SetShip(char shipPart)
+        {
+            MapTileQuad = Assets.ShipParts[shipPart];
+            IsVisible = true;
+        }
+
         public void SetItem(ItemType itemType)
         {
             switch (itemType)

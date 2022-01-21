@@ -44,12 +44,14 @@ namespace MarsUndiscovered.Components
         public IMapGenerator MapGenerator { get; set; }
         public IMonsterGenerator MonsterGenerator { get; set; }
         public IItemGenerator ItemGenerator { get; set; }
+        public IShipGenerator ShipGenerator { get; set; }
         public IMapExitGenerator MapExitGenerator { get; set; }
         public WallCollection Walls { get; private set; }
         public FloorCollection Floors { get; private set; }
         public MonsterCollection Monsters { get; private set; }
         public ItemCollection Items { get; private set; }
         public MapExitCollection MapExits { get; private set; }
+        public ShipCollection Ships { get; private set; }
         public CommandCollection HistoricalCommands { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
         public MessageLog MessageLog { get; } = new MessageLog();
@@ -85,11 +87,15 @@ namespace MarsUndiscovered.Components
 
             Logger.Debug("Generating game world");
 
-            Maps.CurrentMap = CreateMap();
+            var currentMap = CreateMap();
+            Maps.CurrentMap = currentMap;
             var map2 = CreateMap();
 
-            Player = GameObjectFactory.CreatePlayer()
-                .PositionedAt(CurrentMap.RandomPosition(MapHelpers.EmptyPointOnFloor))
+            ShipGenerator.CreateShip(GameObjectFactory, currentMap, Ships);
+
+            Player = GameObjectFactory
+                .CreatePlayer()
+                .PositionedAt(new Point(CurrentMap.Width / 2, CurrentMap.Height - 2 - (Constants.ShipOffset - 1))) // Start off underneath the ship, extra -1 for the current ship design as there's a blank space on the bottom line
                 .AddToMap(CurrentMap);
 
             Inventory = new Inventory(this);
@@ -156,6 +162,7 @@ namespace MarsUndiscovered.Components
             Monsters = new MonsterCollection(GameObjectFactory);
             Items = new ItemCollection(GameObjectFactory);
             MapExits = new MapExitCollection(GameObjectFactory);
+            Ships = new ShipCollection(GameObjectFactory);
             Maps = new MapCollection(this);
             HistoricalCommands = new CommandCollection(CommandFactory, this);
 
@@ -442,6 +449,7 @@ namespace MarsUndiscovered.Components
             Monsters.LoadState(saveGameService);
             Items.LoadState(saveGameService);
             MapExits.LoadState(saveGameService);
+            Ships.LoadState(saveGameService);
             MessageLog.LoadState(saveGameService);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
@@ -463,6 +471,7 @@ namespace MarsUndiscovered.Components
             Monsters.SaveState(saveGameService);
             Items.SaveState(saveGameService);
             MapExits.SaveState(saveGameService);
+            Ships.SaveState(saveGameService);
             MessageLog.SaveState(saveGameService);
             Player.SaveState(saveGameService);
             HistoricalCommands.SaveState(saveGameService);

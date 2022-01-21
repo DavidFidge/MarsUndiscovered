@@ -48,6 +48,9 @@ namespace MarsUndiscovered.Installers
                 .ConstructUsing(sd => _gameObjectFactory.CreateMapExit(sd.Id))
                 .ForMember(d => d.Destination, o => o.Ignore());
 
+            CreateMap<ShipSaveData, Ship>()
+                .ConstructUsing(sd => _gameObjectFactory.CreateShip(sd.Id));
+
             CreateMap<InventorySaveData, Inventory>()
                 .ForMember(d => d.Items, o => o.Ignore())
                 .ForMember(d => d.ItemKeyAssignments, o => o.Ignore())
@@ -89,6 +92,7 @@ namespace MarsUndiscovered.Installers
             CreateMap<Monster, MonsterSaveData>();
             CreateMap<Item, ItemSaveData>();
             CreateMap<MapExit, MapExitSaveData>();
+            CreateMap<Ship, ShipSaveData>();
             CreateMap<GameWorld, GameWorldSaveData>();
             CreateMap<GameObjectFactory, GameObjectFactorySaveData>();
 

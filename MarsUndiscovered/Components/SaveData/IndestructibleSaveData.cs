@@ -1,6 +1,6 @@
 ﻿namespace MarsUndiscovered.Components.SaveData
 {
-    public class WallSaveData : TerrainSaveData
+    public abstract class IndestructibleSaveData : GameObjectSaveData
     {
     }
 }

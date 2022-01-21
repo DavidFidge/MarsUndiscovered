@@ -8,13 +8,13 @@ using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Components
 {
-    public class MapExit : MarsGameObject, IMementoState<MapExitSaveData>
+    public class MapExit : Indestructible, IMementoState<MapExitSaveData>
     {
         public MapExit Destination { get; set; }
         public Point LandingPosition { get; set; }
         public Direction Direction { get; set; }
 
-        public MapExit(uint id) : base(Constants.MapExitLayer, false, true, () => id)
+        public MapExit(uint id) : base(id)
         {
         }
 

@@ -26,7 +26,7 @@ namespace MarsUndiscovered.Components.Maps
             var fillProbability = GlobalRandom.DefaultRNG.NextUInt(40, 60);
             var cutoffBigAreaFill = GlobalRandom.DefaultRNG.NextUInt(2, 6);
 
-            generator.ConfigAndGenerateSafe(g => g.AddSteps(GeneratorAlgorithms.OutdoorGeneneration(fillProbability: (ushort)fillProbability, cutoffBigAreaFill: (int)cutoffBigAreaFill)));
+            generator.ConfigAndGenerateSafe(g => g.AddSteps(GeneratorAlgorithms.OutdoorGeneneration(fillProbability: (ushort)fillProbability, cutoffBigAreaFill: (int)cutoffBigAreaFill, border: Constants.OutdoorAreaBorder)));
 
             var wallsFloors = generator.Context
                 .GetFirst<ArrayView<bool>>()

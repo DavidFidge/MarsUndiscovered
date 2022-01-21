@@ -42,7 +42,7 @@ namespace MarsUndiscovered.Components
                             _goalStates[x, y] = GoalState.Obstacle;
                             break;
                         }
-                        if (gameObject is MapExit _)
+                        if (gameObject is Indestructible _)
                         {
                             _goalStates[x, y] = GoalState.Obstacle;
                             break;

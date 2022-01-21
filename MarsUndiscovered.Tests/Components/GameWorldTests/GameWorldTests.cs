@@ -87,8 +87,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(_gameWorld.GameObjectFactory.LastId, newGameWorld.GameObjectFactory.LastId);
 
             Assert.AreEqual(_gameWorld.GameObjects.Count, newGameWorld.GameObjects.Count);
-            Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<Wall>().Count(), newGameWorld.GameObjects.Values.OfType<Wall>().Count());
-            Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<Floor>().Count(), newGameWorld.GameObjects.Values.OfType<Floor>().Count());
+            Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<MarsGameObject>().Count(), newGameWorld.GameObjects.Values.OfType<MarsGameObject>().Count());
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Monster>().Count());
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Item>().Count());
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Player>().Count());

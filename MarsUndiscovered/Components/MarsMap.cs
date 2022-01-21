@@ -106,6 +106,7 @@ namespace MarsUndiscovered.Components
             }
         }
 
+
         public Wall CreateWall(Point position, IGameObjectFactory gameObjectFactory)
         {
             var wall = GetTerrainAt<Wall>(position);
@@ -113,13 +114,15 @@ namespace MarsUndiscovered.Components
             if (wall != null)
                 return wall;
 
+            if (!DestroyFloor(position))
+                return null;
+
             wall = gameObjectFactory.CreateWall();
             wall.Position = position;
             wall.Index = position.ToIndex(Width);
             Walls.Add(wall);
             _gameWorld.Walls.Add(wall.ID, wall);
 
-            DestroyFloor(position);
             SetTerrain(wall);
             return wall;
         }
@@ -131,37 +134,41 @@ namespace MarsUndiscovered.Components
             if (floor != null)
                 return floor;
 
+            if (!DestroyWall(position))
+                return null;
+
             floor = gameObjectFactory.CreateFloor();
             floor.Position = position;
             floor.Index = position.ToIndex(Width);
             Floors.Add(floor);
             _gameWorld.Floors.Add(floor.ID, floor);
 
-            DestroyWall(position);
             SetTerrain(floor);
             return floor;
         }
 
-        private void DestroyWall(Point position)
+        private bool DestroyWall(Point position)
         {
             var wall = GetObjectAt<Wall>(position);
 
-            if (wall == null)
-                return;
+            if (wall == null || !wall.IsDestroyable)
+                return false;
 
             wall.IsDestroyed = true;
             RemoveTerrain(wall);
+            return true;
         }
 
-        private void DestroyFloor(Point position)
+        private bool DestroyFloor(Point position)
         {
             var floor = GetObjectAt<Floor>(position);
 
-            if (floor == null)
-                return;
+            if (floor == null || !floor.IsDestroyable)
+                return false;
 
             floor.IsDestroyed = true;
             RemoveTerrain(floor);
+            return true;
         }
 
         public IMemento<MapSaveData> GetSaveState(IMapper mapper)
