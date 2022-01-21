@@ -123,8 +123,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             if (IsActive)
             {
-                RefreshView();
                 GameWorld.UpdateFieldOfView();
+                RefreshView();
             }
 
             return Unit.Task;

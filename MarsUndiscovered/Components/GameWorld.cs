@@ -504,10 +504,13 @@ namespace MarsUndiscovered.Components
         public IList<MonsterStatus> GetStatusOfMonstersInView()
         {
             var status = Monsters.LiveMonsters
+                .Where(m => m.CurrentMap.Equals(CurrentMap))
+                .Where(m => CurrentMap.PlayerFOV.BooleanResultView[m.Position])
                 .Select(
                     m =>
                     {
                         var monster = Mapper.Map<MonsterStatus>(m);
+
                         monster.DistanceFromPlayer = CurrentMap.DistanceMeasurement.Calculate(m.Position, Player.Position);
 
                         return monster;
