@@ -14,6 +14,6 @@ namespace MarsUndiscovered.Components
             gameObjects.Any(g => g is Floor);
 
         public static Func<Point, IEnumerable<IGameObject>, bool> EmptyPointOnFloor = (p, gameObjects) =>
-            PointOnFloor(p, gameObjects) && !gameObjects.Any(g => g is Actor || g is Item);
+            PointOnFloor(p, gameObjects) && !gameObjects.Any(g => g is Actor || g is Item || g is Indestructible || g is Wall);
     }
 }
