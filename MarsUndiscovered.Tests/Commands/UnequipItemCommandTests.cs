@@ -1,14 +1,16 @@
 ﻿using System.Linq;
+
 using FrigidRogue.MonoGame.Core.Components;
 
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Factories;
+using MarsUndiscovered.Tests.Components;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SadRogue.Primitives;
 
-namespace MarsUndiscovered.Tests.Components.GameWorldTests
+namespace MarsUndiscovered.Tests.Commands
 {
     [TestClass]
     public class UnequipItemCommandTests : BaseGameWorldIntegrationTests

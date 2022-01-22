@@ -1,13 +1,15 @@
 ﻿using System.Linq;
+
 using FrigidRogue.MonoGame.Core.Components;
 
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Factories;
+using MarsUndiscovered.Tests.Components;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MarsUndiscovered.Tests.Components.GameWorldTests
+namespace MarsUndiscovered.Tests.Commands
 {
     [TestClass]
     public class DeathCommandTests : BaseGameWorldIntegrationTests

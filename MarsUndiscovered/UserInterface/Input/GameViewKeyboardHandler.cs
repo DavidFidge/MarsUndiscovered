@@ -47,6 +47,9 @@ namespace MarsUndiscovered.UserInterface.Input
                 Mediator.Send(new OpenGameInventoryRequest(inventoryMode));
             }
 
+            if (ActionMap.ActionIs<AutoExploreRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new AutoExploreRequest());
+
             ProcessMovement(keyInFocus, keyboardModifier);
         }
 

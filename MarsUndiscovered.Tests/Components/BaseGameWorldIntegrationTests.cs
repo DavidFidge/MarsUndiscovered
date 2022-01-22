@@ -4,7 +4,7 @@ using MarsUndiscovered.Interfaces;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MarsUndiscovered.Tests.Components.GameWorldTests
+namespace MarsUndiscovered.Tests.Components
 {
     [TestClass]
     public abstract class BaseGameWorldIntegrationTests : BaseIntegrationTest

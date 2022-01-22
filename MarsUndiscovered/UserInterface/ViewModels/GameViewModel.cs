@@ -2,6 +2,7 @@
 
 using GoRogue.Pathing;
 
+using MarsUndiscovered.Components;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 
@@ -35,6 +36,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             GameWorld.MoveRequest(direction);
             Mediator.Publish(new RefreshViewNotification());
+        }
+
+        public AutoExploreResult AutoExplore()
+        {
+            var result = GameWorld.AutoExploreRequest();
+            Mediator.Publish(new RefreshViewNotification());
+            return result;
         }
 
         public Path GetPathToDestination(Ray pointerRay)

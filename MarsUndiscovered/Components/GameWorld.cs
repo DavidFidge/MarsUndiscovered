@@ -69,6 +69,8 @@ namespace MarsUndiscovered.Components
         private BaseGameActionCommand[] _replayHistoricalCommands;
         private int _replayHistoricalCommandIndex;
 
+        private AutoExploreGoalMap _autoExploreGoalMap;
+
         public GameWorld()
         {
             GlobalRandom.DefaultRNG = new XorShift128Generator();
@@ -167,8 +169,15 @@ namespace MarsUndiscovered.Components
             Ships = new ShipCollection(GameObjectFactory);
             Maps = new MapCollection(this);
             HistoricalCommands = new CommandCollection(CommandFactory, this);
+            _autoExploreGoalMap = new AutoExploreGoalMap();
 
             GameObjectFactory.Reset();
+        }
+
+        public void ResetFieldOfView()
+        {
+            CurrentMap.ResetFieldOfView();
+            UpdateFieldOfView(false);
         }
 
         public void UpdateFieldOfView(bool partialUpdate = true)
@@ -215,6 +224,20 @@ namespace MarsUndiscovered.Components
         public void RebuildGoalMaps()
         {
             GoalMaps.Rebuild(CurrentMap);
+        }
+
+        public AutoExploreResult AutoExploreRequest()
+        {
+            _autoExploreGoalMap.Rebuild(this);
+
+            var walkDirection = _autoExploreGoalMap.GoalMap.GetDirectionOfMinValue(Player.Position, false);
+
+            if (walkDirection != Direction.None)
+                MoveRequest(walkDirection);
+
+            _autoExploreGoalMap.Rebuild(this);
+
+            return new AutoExploreResult(_autoExploreGoalMap.GoalMap, this);
         }
 
         public IList<CommandResult> MoveRequest(Direction direction)
@@ -353,7 +376,7 @@ namespace MarsUndiscovered.Components
             ItemGenerator.SpawnItem(spawnItemParams, GameObjectFactory, map, Items);
         }
 
-        private MapExit SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
+        public MapExit SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
         {
             var map = spawnMapExitParams.MapId.HasValue ? Maps.First(m => m.Id == spawnMapExitParams.MapId) : CurrentMap;
 

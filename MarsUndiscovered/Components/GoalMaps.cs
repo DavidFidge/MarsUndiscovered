@@ -24,8 +24,7 @@ namespace MarsUndiscovered.Components
                 for (var y = 0; y < map.Height; y++)
                 {
                     var gameObjects = map
-                        .GetObjectsAt(new Point(x, y))
-                        .Reverse()
+                        .GetObjectsAt(x, y)
                         .ToList();
 
                     _goalStates[x, y] = GoalState.Clear;
