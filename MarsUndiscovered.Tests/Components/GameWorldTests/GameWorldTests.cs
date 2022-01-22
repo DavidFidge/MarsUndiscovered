@@ -171,22 +171,34 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 2)));
+            _gameWorld.UpdateFieldOfView(false);
 
             // Act
             var result = _gameWorld.GetStatusOfMonstersInView();
 
             // Assert
             Assert.AreEqual(2, result.Count);
+        }
 
-            foreach (var monster in result)
-            {
-                Assert.AreEqual(_gameWorld.Monsters.Values.First().Health, monster.Health);
-                Assert.AreEqual(_gameWorld.Monsters.Values.First().MaxHealth, monster.MaxHealth);
-                Assert.AreEqual(_gameWorld.Monsters.Values.First().Name, monster.Name);
-            }
+        [TestMethod]
+        public void GetStatusOfMonstersInView_Should_Return_Monsters_In_Field_Of_View_Only()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItems();
 
-            Assert.AreEqual(1, result[0].DistanceFromPlayer);
-            Assert.AreEqual(2, result[1].DistanceFromPlayer);
+            var wallPosition = new Point(1, 1);
+            _gameWorld.CreateWall(wallPosition);
+            _gameWorld.Player.Position = new Point(0, 0);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(2, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 2)));
+
+            _gameWorld.UpdateFieldOfView(false);
+
+            // Act
+            var result = _gameWorld.GetStatusOfMonstersInView();
+
+            // Assert
+            Assert.AreEqual(1, result.Count);
         }
 
         [TestMethod]

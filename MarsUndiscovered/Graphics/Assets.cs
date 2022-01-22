@@ -6,6 +6,8 @@ using MarsUndiscovered.Interfaces;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 
+using MarsUndiscovered.Components;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -30,6 +32,7 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad Weapon { get; set; }
         public MapTileQuad Gadget { get; set; }
         public MapTileQuad NanoFlask { get; set; }
+        public MapTileQuad ShipRepairParts { get; set; }
         public MapTileQuad FieldOfViewUnrevealedQuad { get; set; }
         public MapTileQuad FieldOfViewHasBeenSeenQuad { get; set; }
         public GoalMapQuad GoalMapQuad { get; set; }
@@ -143,6 +146,16 @@ namespace MarsUndiscovered.Graphics
                 '<',
                 _itemColour,
                 Color.SaddleBrown
+            );
+
+            ShipRepairParts = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '&',
+                _itemColour
             );
 
             ShipParts = new Dictionary<char, MapTileQuad>();

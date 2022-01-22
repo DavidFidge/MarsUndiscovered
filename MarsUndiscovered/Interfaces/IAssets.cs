@@ -23,6 +23,7 @@ namespace MarsUndiscovered.Interfaces
         MapTileQuad FieldOfViewUnrevealedQuad { get; set; }
         MapTileQuad FieldOfViewHasBeenSeenQuad { get; set; }
         IDictionary<char, MapTileQuad> ShipParts { get; set; }
+        MapTileQuad ShipRepairParts { get; set; }
 
         void LoadContent();
     }

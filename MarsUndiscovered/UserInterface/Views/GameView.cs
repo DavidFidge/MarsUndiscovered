@@ -249,6 +249,11 @@ namespace MarsUndiscovered.UserInterface.Views
                 GameInputService?.ChangeInput(MouseHandler, _gameOverKeyboardHandler);
                 StatusParagraph.Text = DelimitWithDashes("YOU ARE DEAD. PRESS SPACE TO EXIT GAME.");
             }
+            else if (_viewModel.PlayerStatus.IsVictorious)
+            {
+                GameInputService?.ChangeInput(MouseHandler, _gameOverKeyboardHandler);
+                StatusParagraph.Text = DelimitWithDashes("YOU ARE VICTORIOUS! PRESS SPACE TO EXIT GAME.");
+            }
         }
 
         public override Task Handle(MouseHoverViewNotification notification, CancellationToken cancellationToken)

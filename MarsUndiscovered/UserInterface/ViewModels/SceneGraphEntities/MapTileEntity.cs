@@ -74,6 +74,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 case NanoFlask _:
                     MapTileQuad = Assets.NanoFlask;
                     break;
+
+                case ShipRepairParts _:
+                    MapTileQuad = Assets.ShipRepairParts;
+                    break;
             }
 
             IsVisible = true;

@@ -8,6 +8,7 @@ namespace MarsUndiscovered.Components
         public static ShieldGenerator ShieldGenerator = new ShieldGenerator();
         public static MagnesiumPipe MagnesiumPipe = new MagnesiumPipe();
         public static HealingBots HealingBots = new HealingBots();
+        public static ShipRepairParts ShipRepairParts = new ShipRepairParts();
 
         public virtual bool GroupsInInventory { get; } = false;
 

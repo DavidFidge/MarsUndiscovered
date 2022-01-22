@@ -33,6 +33,7 @@ namespace MarsUndiscovered.Components
         public Item EquippedWeapon { get; private set; }
         public int Count => ItemKeyAssignments.Count;
         public bool IsReadOnly => false;
+        public bool HasShipRepairParts => Items.Any(i => i.ItemType is ShipRepairParts);
 
         private static readonly Keys[] CandidateKeys = {
             Keys.A,

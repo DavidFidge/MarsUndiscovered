@@ -53,8 +53,6 @@ namespace MarsUndiscovered.Commands
 
         protected override CommandResult ExecuteInternal()
         {
-            var subsequentCommands = new List<BaseGameActionCommand>();
-
             _oldMap = (MarsMap)GameObject.CurrentMap;
             _oldPosition = GameObject.Position;
 
@@ -68,15 +66,17 @@ namespace MarsUndiscovered.Commands
             if (GameObject is Player)
             {
                 GameWorld.ChangeMap(newMap);
+
+                var exitText = MapExit.Direction == Direction.Down ? "descend" : "ascend";
+                return Result(CommandResult.Success(this, $"You {exitText}"));
             }
             else
             {
                 GameWorld.RebuildGoalMaps();
 
                 Mediator.Publish(new MapTileChangedNotification(GameObject.Position));
+                return Result(CommandResult.Success(this));
             }
-
-            return Result(CommandResult.Success(this, subsequentCommands));
         }
 
         protected override void UndoInternal()

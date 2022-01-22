@@ -120,6 +120,8 @@ namespace MarsUndiscovered.Components
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
 
+            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShipRepairParts));
+
             var mapExit2 = SpawnMapExit(new SpawnMapExitParams().OnMap(map2.Id).WithDirection(Direction.Up));
 
             if (mapExit2 != null)
@@ -218,7 +220,7 @@ namespace MarsUndiscovered.Components
         public IList<CommandResult> MoveRequest(Direction direction)
         {
             var walkCommand = CommandFactory.CreateWalkCommand(this);
-            walkCommand.Initialise(Player, direction);
+            walkCommand.Initialise(direction);
 
             return ExecuteCommand(walkCommand).ToList();
         }

@@ -309,5 +309,53 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             Assert.AreEqual(0, result2.Count);
         }
+
+        [TestMethod]
+        public void WalkCommand_Into_Ship_With_Repair_Parts_Should_Set_Victory_Flag()
+        {
+            // Arrange
+            _gameWorld.NewGame();
+
+            var shipRepairParts = _gameWorld.Items.Values.First(i => i.ItemType is ShipRepairParts);
+
+            _gameWorld.Inventory.Add(shipRepairParts);
+
+            // Act - player always starts directly underneath ship, moving up will enter the ship
+            _gameWorld.MoveRequest(Direction.Up);
+
+            // Assert
+            Assert.IsTrue(_gameWorld.Player.IsVictorious);
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.Count());
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands.Count);
+
+            var walkCommand = _gameWorld.HistoricalCommands.WalkCommands[0];
+
+            Assert.AreEqual(CommandResultEnum.NoMove, walkCommand.CommandResult.Result);
+            Assert.AreEqual("You board your ship, make hasty repairs to critical parts and fire the engines! You have escaped!", walkCommand.CommandResult.Messages.First());
+            Assert.AreEqual(0, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+        }
+
+        [TestMethod]
+        public void WalkCommand_Into_Ship_Without_Repair_Parts_Should_Not_Set_Victory_Flag()
+        {
+            // Arrange
+            _gameWorld.NewGame();
+
+            var shipRepairParts = _gameWorld.Items.Values.First(i => i.ItemType is ShipRepairParts);
+
+            // Act - player always starts directly underneath ship, moving up will enter the ship
+            _gameWorld.MoveRequest(Direction.Up);
+
+            // Assert
+            Assert.IsFalse(_gameWorld.Player.IsVictorious);
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.Count());
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands.Count);
+
+            var walkCommand = _gameWorld.HistoricalCommands.WalkCommands[0];
+
+            Assert.AreEqual(CommandResultEnum.NoMove, walkCommand.CommandResult.Result);
+            Assert.AreEqual("You don't have the parts you need to repair your ship!", walkCommand.CommandResult.Messages.First());
+            Assert.AreEqual(0, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+        }
     }
 }

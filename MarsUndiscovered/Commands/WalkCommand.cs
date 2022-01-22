@@ -12,20 +12,21 @@ using MarsUndiscovered.Interfaces;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
+using SharpFont.PostScript;
+
 namespace MarsUndiscovered.Commands
 {
     public class WalkCommand : BaseMarsGameActionCommand<WalkCommandSaveData>
     {
         public Direction Direction { get; set; }
-        public Player Player { get; private set; }
+        public Player Player => GameWorld.Player;
 
         public WalkCommand(IGameWorld gameWorld) : base(gameWorld)
         {
         }
 
-        public void Initialise(Player player, Direction direction)
+        public void Initialise(Direction direction)
         {
-            Player = player;
             Direction = direction;
         }
 
@@ -39,7 +40,6 @@ namespace MarsUndiscovered.Commands
             base.SetLoadState(memento, mapper);
 
             Memento<WalkCommandSaveData>.SetWithAutoMapper(this, memento, mapper);
-            Player = (Player)GameWorld.GameObjects[memento.State.PlayerId];
         }
 
         protected override CommandResult ExecuteInternal()
@@ -91,16 +91,19 @@ namespace MarsUndiscovered.Commands
                     var command = CommandFactory.CreateChangeMapCommand(GameWorld);
 
                     command.Initialise(Player, mapExitAt);
-
-                    var exitText = mapExitAt.Direction == Direction.Down ? "descend" : "ascend";
-
-                    return Result(CommandResult.Success(this, $"You {exitText}", command));
+                    return Result(CommandResult.Success(this, command));
                 }
 
                 var shipAt = map.GetObjectAt<Ship>(newPlayerPosition);
 
                 if (shipAt != null)
                 {
+                    if (GameWorld.Inventory.HasShipRepairParts)
+                    {
+                        Player.IsVictorious = true;
+                        return Result(CommandResult.NoMove(this, "You board your ship, make hasty repairs to critical parts and fire the engines! You have escaped!"));
+                    }
+
                     return Result(CommandResult.NoMove(this, "You don't have the parts you need to repair your ship!"));
                 }
             }
@@ -110,6 +113,7 @@ namespace MarsUndiscovered.Commands
 
         protected override void UndoInternal()
         {
+            Player.IsVictorious = false;
         }
     }
 }

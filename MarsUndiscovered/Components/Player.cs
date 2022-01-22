@@ -18,6 +18,7 @@ namespace MarsUndiscovered.Components
         public override string NameGenericArticleUpperCase => Name;
         public override string PossessiveName => $"{Name.ToLower()}r";
         public override string ToHaveConjugation => "have";
+        public bool IsVictorious { get; set; }
 
         public override Attack BasicAttack { get; } = new Attack(new Range<int>(5, 10));
 
