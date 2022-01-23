@@ -19,6 +19,7 @@ namespace MarsUndiscovered.Components
         public int HealPercentOfMax { get; set; }
         public int MaxHealthIncrease { get; set; }
         public bool GroupsInInventory { get; set; }
+        public bool HasBeenDropped { get; set; }
         public ItemDiscovery ItemDiscovery { get; set; } = new ItemDiscovery();
 
         public Item(uint id) : base(Constants.ItemLayer, true, true, () => id)

@@ -19,6 +19,7 @@ namespace MarsUndiscovered.Commands
         public IGameObject GameObject { get; private set; }
         private bool _wasInInventory;
         private bool _wasEquipped;
+        private bool _oldHasBeenDropped;
 
         public DropItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -64,6 +65,8 @@ namespace MarsUndiscovered.Commands
             map.AddEntity(Item);
 
             var itemDescription = GameWorld.Inventory.GetInventoryDescriptionAsSingleItemLowerCase(Item);
+            _oldHasBeenDropped = Item.HasBeenDropped;
+            Item.HasBeenDropped = true;
 
             return Result(CommandResult.Success(this, $"You drop {itemDescription}"));
         }
@@ -79,6 +82,8 @@ namespace MarsUndiscovered.Commands
             {
                 GameWorld.Inventory.Equip(Item);
             }
+
+            Item.HasBeenDropped = _oldHasBeenDropped;
 
             Item.Position = Point.None;
 

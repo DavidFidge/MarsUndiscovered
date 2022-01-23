@@ -284,8 +284,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(_gameWorld.CurrentMap.SeenTiles[new Point(2, 2)].LastSeenGameObjects.Contains(monster));
             Assert.IsFalse(_gameWorld.CurrentMap.SeenTiles[new Point(3, 3)].LastSeenGameObjects.Contains(monster));
 
-            Assert.IsNull(_gameWorld.CurrentMap.GetObjectAt<Monster>(new Point(2, 2)));
-            Assert.IsNotNull(_gameWorld.CurrentMap.GetObjectAt<Monster>(new Point(3, 3)));
+            Assert.IsNull(_gameWorld.CurrentMap.GetObjectAt<Monster>(2, 2));
+            Assert.IsNotNull(_gameWorld.CurrentMap.GetObjectAt<Monster>(3, 3));
         }
 
         [TestMethod]
@@ -326,8 +326,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(newGameWorld.CurrentMap.SeenTiles[new Point(2, 2)].LastSeenGameObjects.Any(m => m.ID == monster.ID));
             Assert.IsFalse(newGameWorld.CurrentMap.SeenTiles[new Point(3, 3)].LastSeenGameObjects.Any(m => m.ID == monster.ID));
 
-            Assert.IsNull(newGameWorld.CurrentMap.GetObjectAt<Monster>(new Point(2, 2)));
-            Assert.IsNotNull(newGameWorld.CurrentMap.GetObjectAt<Monster>(new Point(3, 3)));
+            Assert.IsNull(newGameWorld.CurrentMap.GetObjectAt<Monster>(2, 2));
+            Assert.IsNotNull(newGameWorld.CurrentMap.GetObjectAt<Monster>(3, 3));
         }
 
         [TestMethod]
@@ -365,9 +365,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(newGameMonsterMap1.CurrentMap, newGameMaps[0]);
             Assert.AreEqual(newGameMonsterMap2.CurrentMap, newGameMaps[1]);
 
-            Assert.IsNotNull(newGameMaps[0].GetObjectAt<Monster>(new Point(2, 2)));
-            Assert.IsNotNull(newGameMaps[1].GetObjectAt<Monster>(new Point(2, 2)));
-            Assert.AreNotSame(newGameMaps[0].GetObjectAt<Monster>(new Point(2, 2)), newGameMaps[1].GetObjectAt<Monster>(new Point(2, 2)));
+            Assert.IsNotNull(newGameMaps[0].GetObjectAt<Monster>(2, 2));
+            Assert.IsNotNull(newGameMaps[1].GetObjectAt<Monster>(2, 2));
+            Assert.AreNotSame(newGameMaps[0].GetObjectAt<Monster>(2, 2), newGameMaps[1].GetObjectAt<Monster>(2, 2));
         }
 
         [TestMethod]

@@ -41,6 +41,11 @@ namespace MarsUndiscovered.Components
             Level = 1;
             _gameWorld = gameWorld;
 
+            ResetSeenTiles();
+        }
+
+        private void ResetSeenTiles()
+        {
             var seenTiles = this.Positions()
                 .Select(p => new SeenTile(p))
                 .ToArray();
@@ -88,6 +93,12 @@ namespace MarsUndiscovered.Components
             return Id.GetHashCode();
         }
 
+        public void ResetFieldOfView()
+        {
+            PlayerFOV.Reset();
+            ResetSeenTiles();
+        }
+
         public void UpdateFieldOfView(Point position)
         {
             PlayerFOV.Calculate(position);
@@ -105,7 +116,6 @@ namespace MarsUndiscovered.Components
                 seenTile.LastSeenGameObjects = GetObjectsAt(point).ToList();
             }
         }
-
 
         public Wall CreateWall(Point position, IGameObjectFactory gameObjectFactory)
         {
@@ -221,6 +231,22 @@ namespace MarsUndiscovered.Components
                 .Where(p => this.Bounds().Contains(p))
                 .Select(GetTerrainAt<T>)
                 .Where(s => s != null)
+                .ToList();
+        }
+
+        public IList<T> GetObjectsAround<T>(Point position, AdjacencyRule adjacencyRule) where T : class, IGameObject
+        {
+            return adjacencyRule.Neighbors(position)
+                .Where(p => this.Bounds().Contains(p))
+                .SelectMany(p => GetObjectsAt<T>(p))
+                .ToList();
+        }
+
+        public IList<IGameObject> GetObjectsAround(Point position, AdjacencyRule adjacencyRule)
+        {
+            return adjacencyRule.Neighbors(position)
+                .Where(p => this.Bounds().Contains(p))
+                .SelectMany(p => GetObjectsAt(p))
                 .ToList();
         }
 
