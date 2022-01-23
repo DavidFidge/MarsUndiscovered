@@ -136,6 +136,7 @@ namespace MarsUndiscovered.Components
             }
 
             RebuildGoalMaps();
+            ResetFieldOfView();
         }
 
         private MarsMap CreateMap()
@@ -226,16 +227,16 @@ namespace MarsUndiscovered.Components
             GoalMaps.Rebuild(CurrentMap);
         }
 
-        public AutoExploreResult AutoExploreRequest()
+        public AutoExploreResult AutoExploreRequest(bool fallbackToMapExit = false)
         {
-            _autoExploreGoalMap.Rebuild(this);
+            _autoExploreGoalMap.Rebuild(this, fallbackToMapExit);
 
             var walkDirection = _autoExploreGoalMap.GoalMap.GetDirectionOfMinValue(Player.Position, false);
 
             if (walkDirection != Direction.None)
                 MoveRequest(walkDirection);
 
-            _autoExploreGoalMap.Rebuild(this);
+            _autoExploreGoalMap.Rebuild(this, fallbackToMapExit);
 
             return new AutoExploreResult(_autoExploreGoalMap.GoalMap, this);
         }
@@ -344,6 +345,8 @@ namespace MarsUndiscovered.Components
 
             if (isPlayerAction && result.Result == CommandResultEnum.Success)
             {
+                UpdateFieldOfView();
+
                 foreach (var nextTurnResult in NextTurn())
                     yield return nextTurnResult;
 

@@ -13,7 +13,7 @@ namespace MarsUndiscovered.Components
         public GoalMap GoalMap { get; set; }
         private int _lastGameTurn = -1;
 
-        public void Rebuild(GameWorld gameWorld)
+        public void Rebuild(GameWorld gameWorld, bool fallbackToMapExit = false)
         {
             // No need to rebuild if there's been no turns since last rebuild
             if (gameWorld.GameTurnService.TurnNumber == _lastGameTurn)
@@ -60,7 +60,9 @@ namespace MarsUndiscovered.Components
 
                         if (map.PlayerFOV.BooleanResultView[x, y])
                         {
-                            if (map.GetObjectAt<Item>(x, y) != null)
+                            var item = map.GetObjectAt<Item>(x, y);
+
+                            if (item is { HasBeenDropped: false })
                             {
                                 _goalStates[x, y] = GoalState.Goal;
                                 hasGoalBeenSet = true;
@@ -78,7 +80,7 @@ namespace MarsUndiscovered.Components
                         {
                             if (gameObject is Player _)
                             {
-                                _goalStates[x, y] = GoalState.Obstacle;
+                                _goalStates[x, y] = GoalState.Clear;
                                 break;
                             }
 
@@ -98,9 +100,15 @@ namespace MarsUndiscovered.Components
                         }
                     }
                 }
+            }
 
-                // If no goal has yet been set then set the goal to the map exit
-                if (!hasGoalBeenSet)
+            GoalMap = new GoalMap(_goalStates, Distance.Chebyshev);
+
+            if (fallbackToMapExit)
+            {
+                var tryNextMove = GoalMap.GetDirectionOfMinValue(gameWorld.Player.Position, false);
+
+                if (tryNextMove == Direction.None)
                 {
                     var mapExitDown = gameWorld.MapExits.Values
                         .Where(m => m.CurrentMap.Equals(map))
@@ -108,11 +116,12 @@ namespace MarsUndiscovered.Components
                         .ToList();
 
                     if (mapExitDown.Any())
+                    {
                         _goalStates[mapExitDown.First().Position] = GoalState.Goal;
+                        GoalMap = new GoalMap(_goalStates, Distance.Chebyshev);
+                    }
                 }
             }
-
-            GoalMap = new GoalMap(_goalStates, Distance.Chebyshev);
         }
     }
 }
