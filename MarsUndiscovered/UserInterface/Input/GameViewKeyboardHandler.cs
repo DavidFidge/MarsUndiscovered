@@ -11,6 +11,8 @@ namespace MarsUndiscovered.UserInterface.Input
 {
     public class GameViewKeyboardHandler : BaseGameViewKeyboardHandler
     {
+        private Keys? _ctrlArrowKey = null;
+
         public GameViewKeyboardHandler(ICameraMovement cameraMovement) : base(cameraMovement)
         {
         }
@@ -62,32 +64,79 @@ namespace MarsUndiscovered.UserInterface.Input
 
         private void ProcessMovement(Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
-            if (ActionMap.ActionIs<MoveUpRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new MoveUpRequest());
+            if ((keyboardModifier & KeyboardModifier.Ctrl) == 0)
+            {
+                _ctrlArrowKey = null;
 
-            if (ActionMap.ActionIs<MoveUpLeftRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new MoveUpLeftRequest());
+                if (ActionMap.ActionIs<MoveUpRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new MoveUpRequest());
 
-            if (ActionMap.ActionIs<MoveUpRightRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new MoveUpRightRequest());
+                if (ActionMap.ActionIs<MoveUpLeftRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new MoveUpLeftRequest());
 
-            if (ActionMap.ActionIs<MoveDownRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new MoveDownRequest());
+                if (ActionMap.ActionIs<MoveUpRightRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new MoveUpRightRequest());
 
-            if (ActionMap.ActionIs<MoveDownLeftRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new MoveDownLeftRequest());
+                if (ActionMap.ActionIs<MoveDownRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new MoveDownRequest());
 
-            if (ActionMap.ActionIs<MoveDownRightRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new MoveDownRightRequest());
+                if (ActionMap.ActionIs<MoveDownLeftRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new MoveDownLeftRequest());
 
-            if (ActionMap.ActionIs<MoveLeftRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new MoveLeftRequest());
+                if (ActionMap.ActionIs<MoveDownRightRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new MoveDownRightRequest());
 
-            if (ActionMap.ActionIs<MoveRightRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new MoveRightRequest());
+                if (ActionMap.ActionIs<MoveLeftRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new MoveLeftRequest());
 
-            if (ActionMap.ActionIs<MoveWaitRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new MoveWaitRequest());
+                if (ActionMap.ActionIs<MoveRightRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new MoveRightRequest());
+
+                if (ActionMap.ActionIs<MoveWaitRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new MoveWaitRequest());
+            }
+            else
+            {
+                if (_ctrlArrowKey != null)
+                {
+                    if (keyInFocus != _ctrlArrowKey)
+                    {
+                        var keyUp = _ctrlArrowKey == Keys.Up || keyInFocus == Keys.Up;
+                        var keyDown = _ctrlArrowKey == Keys.Down || keyInFocus == Keys.Down;
+                        var keyLeft = _ctrlArrowKey == Keys.Left || keyInFocus == Keys.Left;
+                        var keyRight = _ctrlArrowKey == Keys.Right || keyInFocus == Keys.Right;
+
+                        if (keyUp && keyLeft)
+                        {
+                            Mediator.Send(new MoveUpLeftRequest());
+                            _ctrlArrowKey = null;
+                        }
+                        else if (keyDown && keyRight)
+                        {
+                            Mediator.Send(new MoveDownRightRequest());
+                            _ctrlArrowKey = null;
+                        }
+                        else if (keyDown && keyLeft)
+                        {
+                            Mediator.Send(new MoveDownLeftRequest());
+                            _ctrlArrowKey = null;
+                        }
+                        else if (keyUp && keyRight)
+                        {
+                            Mediator.Send(new MoveUpRightRequest());
+                            _ctrlArrowKey = null;
+                        }
+                        else
+                        {
+                            _ctrlArrowKey = null;
+                        }
+                    }
+                }
+                else
+                {
+                    _ctrlArrowKey = keyInFocus;
+                }
+            }
         }
     }
 }
