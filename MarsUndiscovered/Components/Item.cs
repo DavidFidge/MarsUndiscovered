@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
 
@@ -42,14 +43,44 @@ namespace MarsUndiscovered.Components
             return this;
         }
 
-        public IMemento<ItemSaveData> GetSaveState(IMapper mapper)
+        public IMemento<ItemSaveData> GetSaveState()
         {
-            return CreateWithAutoMapper<ItemSaveData>(mapper);
+            var memento = new Memento<ItemSaveData>();
+
+            base.PopulateSaveState(memento.State);
+
+            memento.State.ItemTypeName = ItemType.Name;
+            memento.State.EnchantmentLevel = EnchantmentLevel;
+            memento.State.CurrentRechargeDelay = CurrentRechargeDelay;
+            memento.State.IsCharged = IsCharged;
+            memento.State.MeleeAttack = (Attack)MeleeAttack.Clone();
+            memento.State.DamageShieldPercentage = DamageShieldPercentage;
+            memento.State.TotalRechargeDelay = TotalRechargeDelay;
+            memento.State.HealPercentOfMax = HealPercentOfMax;
+            memento.State.MaxHealthIncrease = MaxHealthIncrease;
+            memento.State.GroupsInInventory = GroupsInInventory;
+            memento.State.HasBeenDropped = HasBeenDropped;
+            memento.State.ItemDiscovery = (ItemDiscovery)ItemDiscovery.Clone();
+
+            return memento;
         }
 
-        public void SetLoadState(IMemento<ItemSaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<ItemSaveData> memento)
         {
-            SetWithAutoMapper<ItemSaveData>(memento, mapper);
+            base.PopulateLoadState(memento.State);
+
+            ItemType = ItemType.ItemTypes[memento.State.ItemTypeName];
+            EnchantmentLevel = memento.State.EnchantmentLevel;
+            CurrentRechargeDelay = memento.State.CurrentRechargeDelay;
+            IsCharged = memento.State.IsCharged;
+            MeleeAttack = (Attack)memento.State.MeleeAttack.Clone();
+            DamageShieldPercentage = memento.State.DamageShieldPercentage;
+            TotalRechargeDelay = memento.State.TotalRechargeDelay;
+            HealPercentOfMax = memento.State.HealPercentOfMax;
+            MaxHealthIncrease = memento.State.MaxHealthIncrease;
+            GroupsInInventory = memento.State.GroupsInInventory;
+            HasBeenDropped = memento.State.HasBeenDropped;
+            ItemDiscovery = (ItemDiscovery)memento.State.ItemDiscovery.Clone();
         }
 
         public bool CanGroupWith(Item item)

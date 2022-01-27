@@ -10,6 +10,5 @@ namespace MarsUndiscovered.Components.SaveData
         public bool IsWalkable { get; set; }
         public bool IsTransparent { get; set; }
         public uint Id { get; set; }
-        public int Layer { get; set; }
     }
 }

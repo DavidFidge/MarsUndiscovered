@@ -28,16 +28,19 @@ namespace MarsUndiscovered.Components
         {
         }
 
-        protected IMemento<T> CreateWithAutoMapper<T>(IMapper mapper) where T : GameObjectSaveData
+        protected void PopulateSaveState(GameObjectSaveData gameObjectSaveData)
         {
-            var mementoForDerivedType = Memento<T>.CreateWithAutoMapper(this, mapper);
-
-            return new Memento<T>(mementoForDerivedType.State);
+            gameObjectSaveData.Position = Position;
+            gameObjectSaveData.IsWalkable = IsWalkable;
+            gameObjectSaveData.IsTransparent = IsTransparent;
+            gameObjectSaveData.Id = ID;
         }
 
-        protected void SetWithAutoMapper<T>(IMemento<T> state, IMapper mapper) where T : GameObjectSaveData
+        protected void PopulateLoadState(GameObjectSaveData gameObjectSaveData)
         {
-            Memento<T>.SetWithAutoMapper(this, state, mapper);
+            Position = gameObjectSaveData.Position;
+            IsWalkable = gameObjectSaveData.IsWalkable;
+            IsTransparent = gameObjectSaveData.IsTransparent;
         }
     }
 }

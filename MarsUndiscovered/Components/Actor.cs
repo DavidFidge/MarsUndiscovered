@@ -1,4 +1,6 @@
-﻿namespace MarsUndiscovered.Components
+﻿using MarsUndiscovered.Components.SaveData;
+
+namespace MarsUndiscovered.Components
 {
     public abstract class Actor : MarsGameObject
     {
@@ -19,6 +21,23 @@
 
         public Actor(uint id) : base(Constants.ActorLayer, false, true, () => id)
         {
+        }
+
+        protected void PopulateSaveState(ActorSaveData actorSaveData)
+        {
+            actorSaveData.MaxHealth = MaxHealth;
+            actorSaveData.Health = Health;
+            actorSaveData.IsDead = IsDead;
+
+            base.PopulateSaveState(actorSaveData);
+        }
+
+        protected void PopulateLoadState(ActorSaveData actorSaveData)
+        {
+            base.PopulateLoadState(actorSaveData);
+            MaxHealth = actorSaveData.MaxHealth;
+            Health = actorSaveData.Health;
+            IsDead = actorSaveData.IsDead;
         }
     }
 }

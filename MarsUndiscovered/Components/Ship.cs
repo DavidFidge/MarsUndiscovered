@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
 
@@ -20,14 +21,20 @@ namespace MarsUndiscovered.Components
             return this;
         }
 
-        public IMemento<ShipSaveData> GetSaveState(IMapper mapper)
+        public IMemento<ShipSaveData> GetSaveState()
         {
-            return CreateWithAutoMapper<ShipSaveData>(mapper);
+            var memento = new Memento<ShipSaveData>();
+
+            base.PopulateSaveState(memento.State);
+            memento.State.ShipPart = ShipPart;
+
+            return memento;
         }
 
-        public void SetLoadState(IMemento<ShipSaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<ShipSaveData> memento)
         {
-            SetWithAutoMapper<ShipSaveData>(memento, mapper);
+            base.PopulateLoadState(memento.State);
+            ShipPart = memento.State.ShipPart;
         }
     }
 }
