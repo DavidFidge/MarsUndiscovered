@@ -20,8 +20,6 @@ namespace MarsUndiscovered.Interfaces
         Player Player { get; }
         void NewGame(uint? seed = null);
         MarsMap CurrentMap { get; }
-        GoalMaps GoalMaps { get; }
-        void RebuildGoalMaps();
         IList<CommandResult> MoveRequest(Direction direction);
         IList<CommandResult> MoveRequest(Path path);
         IList<string> GetMessagesSince(int currentCount);

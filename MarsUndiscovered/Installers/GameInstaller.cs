@@ -90,7 +90,7 @@ namespace MarsUndiscovered.Installers
 
                 Component.For<ScreenCollection>(),
 
-                Component.For<GoalMaps>(),
+                Component.For<MonsterGoal>(),
 
                 Component.For<IHeightMapGenerator>()
                     .ImplementedBy<HeightMapGenerator>(),

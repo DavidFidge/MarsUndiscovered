@@ -35,7 +35,6 @@ namespace MarsUndiscovered.Components
     {
         public MapCollection Maps { get; private set; }
         public MarsMap CurrentMap => Maps.CurrentMap;
-        public GoalMaps GoalMaps { get; set; }
         public Player Player { get; private set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public ICommandFactory CommandFactory { get; set; }
@@ -135,7 +134,6 @@ namespace MarsUndiscovered.Components
                 mapExit2.Destination = mapExit1;
             }
 
-            RebuildGoalMaps();
             ResetFieldOfView();
         }
 
@@ -219,19 +217,13 @@ namespace MarsUndiscovered.Components
             Maps.CurrentMap = map;
             Mediator.Publish(new MapChangedNotification());
             UpdateFieldOfView(false);
-            RebuildGoalMaps();
-        }
-
-        public void RebuildGoalMaps()
-        {
-            GoalMaps.Rebuild(CurrentMap);
         }
 
         public AutoExploreResult AutoExploreRequest(bool fallbackToMapExit = false)
         {
             _autoExploreGoalMap.Rebuild(this, fallbackToMapExit);
 
-            var walkDirection = _autoExploreGoalMap.GoalMap.GetDirectionOfMinValue(Player.Position, false);
+            var walkDirection = _autoExploreGoalMap.GoalMap.GetDirectionOfMinValue(Player.Position, AdjacencyRule.EightWay, false);
 
             if (walkDirection != Direction.None)
                 MoveRequest(walkDirection);
@@ -297,7 +289,7 @@ namespace MarsUndiscovered.Components
                 if (Player.IsDead)
                     yield break;
 
-                var direction = GoalMaps.GoalMap.GetDirectionOfMinValue(monster.Position, AdjacencyRule.EightWay);
+                var direction = monster.MonsterGoal.GetNextMove(this);
 
                 if (direction != Direction.None)
                 {
@@ -420,8 +412,6 @@ namespace MarsUndiscovered.Components
             if (loadGameResult.Success)
                 LoadState(SaveGameService);
 
-            RebuildGoalMaps();
-
             return loadGameResult;
         }
 
@@ -445,8 +435,6 @@ namespace MarsUndiscovered.Components
 
                 _replayHistoricalCommandIndex = 0;
             }
-
-            RebuildGoalMaps();
 
             return loadGameResult;
         }

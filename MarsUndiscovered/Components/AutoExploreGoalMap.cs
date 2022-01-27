@@ -9,9 +9,17 @@ namespace MarsUndiscovered.Components
 {
     public class AutoExploreGoalMap
     {
-        private ArrayView<GoalState> _goalStates;
-        public GoalMap GoalMap { get; set; }
+        public IGridView<double?> GoalMap => _goalMap;
+
+        private readonly ArrayView<GoalState> _goalStates;
+        private readonly GoalMap _goalMap;
         private int _lastGameTurn = -1;
+
+        public AutoExploreGoalMap()
+        {
+            _goalStates = new ArrayView<GoalState>(MarsMap.MapWidth, MarsMap.MapHeight);
+            _goalMap = new GoalMap(_goalStates, Distance.Chebyshev);
+        }
 
         public void Rebuild(GameWorld gameWorld, bool fallbackToMapExit = false)
         {
@@ -19,12 +27,12 @@ namespace MarsUndiscovered.Components
             if (gameWorld.GameTurnService.TurnNumber == _lastGameTurn)
                 return;
 
+            _goalStates.Clear();
+
             _lastGameTurn = gameWorld.GameTurnService.TurnNumber;
 
             var map = gameWorld.CurrentMap;
             var seenTiles = gameWorld.CurrentMap.SeenTiles;
-
-            _goalStates = new ArrayView<GoalState>(map.Width, map.Height);
 
             // If a monster is directly around the player then attack it
             var monstersAroundPlayer = map.GetObjectsAround<Monster>(gameWorld.Player.Position, AdjacencyRule.EightWay);
@@ -35,8 +43,6 @@ namespace MarsUndiscovered.Components
             }
             else
             {
-                var hasGoalBeenSet = false;
-
                 for (var x = 0; x < map.Width; x++)
                 {
                     for (var y = 0; y < map.Height; y++)
@@ -44,7 +50,6 @@ namespace MarsUndiscovered.Components
                         if (!seenTiles[x, y].HasBeenSeen)
                         {
                             _goalStates[x, y] = GoalState.Goal;
-                            hasGoalBeenSet = true;
                             continue;
                         }
 
@@ -53,7 +58,6 @@ namespace MarsUndiscovered.Components
                             if (seenTiles[x, y].HasUndroppedItem)
                             {
                                 _goalStates[x, y] = GoalState.Goal;
-                                hasGoalBeenSet = true;
                                 continue;
                             }
                         }
@@ -65,7 +69,6 @@ namespace MarsUndiscovered.Components
                             if (item is { HasBeenDropped: false })
                             {
                                 _goalStates[x, y] = GoalState.Goal;
-                                hasGoalBeenSet = true;
                                 continue;
                             }
                         }
@@ -102,11 +105,9 @@ namespace MarsUndiscovered.Components
                 }
             }
 
-            GoalMap = new GoalMap(_goalStates, Distance.Chebyshev);
-
             if (fallbackToMapExit)
             {
-                var tryNextMove = GoalMap.GetDirectionOfMinValue(gameWorld.Player.Position, false);
+                var tryNextMove = _goalMap.GetDirectionOfMinValue(gameWorld.Player.Position, false);
 
                 if (tryNextMove == Direction.None)
                 {
@@ -118,10 +119,11 @@ namespace MarsUndiscovered.Components
                     if (mapExitDown.Any())
                     {
                         _goalStates[mapExitDown.First().Position] = GoalState.Goal;
-                        GoalMap = new GoalMap(_goalStates, Distance.Chebyshev);
                     }
                 }
             }
+
+            _goalMap.Update();
         }
     }
 }

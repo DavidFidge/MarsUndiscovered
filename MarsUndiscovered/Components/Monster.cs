@@ -13,6 +13,8 @@ namespace MarsUndiscovered.Components
         public override string Description => Breed.Description;
         public override Attack BasicAttack => Breed.BasicAttack;
 
+        public MonsterGoal MonsterGoal { get; set; }
+
         public string GetInformation(Player player)
         {
             var stringBuilder = new StringBuilder();
@@ -39,6 +41,7 @@ namespace MarsUndiscovered.Components
 
         public Monster(uint id) : base(id)
         {
+            MonsterGoal = new MonsterGoal(this);
         }
 
         public Monster WithBreed(Breed breed)
@@ -53,12 +56,16 @@ namespace MarsUndiscovered.Components
         public void SetLoadState(IMemento<MonsterSaveData> memento, IMapper mapper)
         {
             SetWithAutoMapper(memento, mapper);
-            Breed = Breed.GetBreed(memento.State.BreedName);
+            MonsterGoal = new MonsterGoal(this);
         }
 
         public IMemento<MonsterSaveData> GetSaveState(IMapper mapper)
         {
-            return CreateWithAutoMapper<MonsterSaveData>(mapper);
+            var monsterSaveData = CreateWithAutoMapper<MonsterSaveData>(mapper);
+
+            monsterSaveData.State.MonsterGoalSaveData = MonsterGoal.GetSaveState(mapper);
+
+            return monsterSaveData;
         }
     }
 }

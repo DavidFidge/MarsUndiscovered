@@ -211,7 +211,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(1, 0)));
             _gameWorld.Player.Health = 1;
-            _gameWorld.RebuildGoalMaps();
 
             // Act
             var result = _gameWorld.MoveRequest(Direction.Down);

@@ -108,7 +108,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 gameObjects = _gameWorld.CurrentMap.GetObjectsAt(point).ToList();
             }
 
-            UpdateTileGoalMap(point, gameObjects);
             UpdateTileGameObjects(point, gameObjects);
         }
 
@@ -278,7 +277,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 _terrainTiles[point].SetWall();
         }
 
-        private void UpdateTileGoalMap(Point point, IList<IGameObject> gameObjects)
+        /// <summary>
+        /// Debug view of a goal map. Currently not used.
+        /// </summary>
+        private void UpdateTileGoalMap(Point point, IList<IGameObject> gameObjects, GoalMap goalMap)
         {
             if (!_showGoalMap)
                 return;
@@ -290,7 +292,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (floor == null)
                 return;
 
-            var goalMapValue = _gameWorld.GoalMaps.GoalMap[floor.Position];
+            var goalMapValue = goalMap[floor.Position];
 
             if (goalMapValue != null)
             {
