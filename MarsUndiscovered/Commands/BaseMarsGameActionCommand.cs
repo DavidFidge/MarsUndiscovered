@@ -19,5 +19,17 @@ namespace MarsUndiscovered.Commands
         {
             GameWorld = gameWorld;
         }
+
+        protected void PopulateSaveState(BaseCommandSaveData state)
+        {
+            state.AdvanceSequenceNumber = AdvanceSequenceNumber;
+            state.TurnDetails = (TurnDetails)TurnDetails.Clone();
+        }
+
+        protected void PopulateLoadState(BaseCommandSaveData state)
+        {
+            AdvanceSequenceNumber = state.AdvanceSequenceNumber;
+            TurnDetails = (TurnDetails)state.TurnDetails.Clone();
+        }
     }
 }

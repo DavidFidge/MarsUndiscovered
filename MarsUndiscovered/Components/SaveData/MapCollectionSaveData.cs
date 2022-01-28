@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using FrigidRogue.MonoGame.Core.Interfaces.Components;
+
 namespace MarsUndiscovered.Components.SaveData
 {
     public class MapCollectionSaveData : BaseSaveData
     {
         public Guid CurrentMapId { get; set; }
-        public IList<MapSaveData> Maps { get; set; }
+        public IList<IMemento<MapSaveData>> Maps { get; set; }
     }
 }

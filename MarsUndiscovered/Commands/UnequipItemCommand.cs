@@ -23,16 +23,17 @@ namespace MarsUndiscovered.Commands
             Item = item;
         }
 
-        public override IMemento<UnequipItemSaveData> GetSaveState(IMapper mapper)
+        public override IMemento<UnequipItemSaveData> GetSaveState()
         {
-            return Memento<UnequipItemSaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<UnequipItemSaveData>();
+            base.PopulateLoadState(memento.State);
+            memento.State.ItemId = Item.ID;
+            return memento;
         }
 
-        public override void SetLoadState(IMemento<UnequipItemSaveData> memento, IMapper mapper)
+        public override void SetLoadState(IMemento<UnequipItemSaveData> memento)
         {
-            base.SetLoadState(memento, mapper);
-
-            Memento<UnequipItemSaveData>.SetWithAutoMapper(this, memento, mapper);
+            base.PopulateLoadState(memento.State);
             Item = GameWorld.Items[memento.State.ItemId];
         }
 

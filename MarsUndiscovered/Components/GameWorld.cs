@@ -244,7 +244,7 @@ namespace MarsUndiscovered.Components
         public IList<CommandResult> MoveRequest(Direction direction)
         {
             var walkCommand = CommandFactory.CreateWalkCommand(this);
-            walkCommand.Initialise(direction);
+            walkCommand.Initialise(Player, direction);
 
             return ExecuteCommand(walkCommand).ToList();
         }
@@ -469,7 +469,7 @@ namespace MarsUndiscovered.Components
             Reset();
 
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
-            Memento<GameWorldSaveData>.SetWithAutoMapper(this, gameWorldSaveData, saveGameService.Mapper);
+            SetLoadState(gameWorldSaveData);
 
             GameObjectFactory.LoadState(saveGameService);
             Walls.LoadState(saveGameService);
@@ -506,7 +506,7 @@ namespace MarsUndiscovered.Components
             Inventory.SaveState(saveGameService);
             Maps.SaveState(saveGameService);
 
-            var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameService.Mapper);
+            var gameWorldSaveData = GetSaveState();
             saveGameService.SaveToStore(gameWorldSaveData);
 
             // Not sure I like this idea, as a memento is supposed to hold state, not a reference to an object. It does make the code more straightforward for saving and loading
@@ -514,14 +514,18 @@ namespace MarsUndiscovered.Components
             saveGameService.SaveToStore(new Memento<XorShift128Generator>((XorShift128Generator)GlobalRandom.DefaultRNG));
         }
 
-        public IMemento<GameWorldSaveData> GetSaveState(IMapper mapper)
+        public IMemento<GameWorldSaveData> GetSaveState()
         {
-            return Memento<GameWorldSaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<GameWorldSaveData>();
+            memento.State.Seed = Seed;
+            memento.State.LoadGameDetail = LoadGameDetail;
+            return memento;
         }
 
-        public void SetLoadState(IMemento<GameWorldSaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<GameWorldSaveData> memento)
         {
-            Memento<GameWorldSaveData>.SetWithAutoMapper(this, memento, mapper);
+            Seed = memento.State.Seed;
+            LoadGameDetail = memento.State.LoadGameDetail;
         }
 
         public PlayerStatus GetPlayerStatus()

@@ -35,8 +35,6 @@ namespace MarsUndiscovered.Components
             }
             else
             {
-                var hasGoalBeenSet = false;
-
                 for (var x = 0; x < map.Width; x++)
                 {
                     for (var y = 0; y < map.Height; y++)
@@ -44,7 +42,6 @@ namespace MarsUndiscovered.Components
                         if (!seenTiles[x, y].HasBeenSeen)
                         {
                             _goalStates[x, y] = GoalState.Goal;
-                            hasGoalBeenSet = true;
                             continue;
                         }
 
@@ -53,7 +50,6 @@ namespace MarsUndiscovered.Components
                             if (seenTiles[x, y].HasUndroppedItem)
                             {
                                 _goalStates[x, y] = GoalState.Goal;
-                                hasGoalBeenSet = true;
                                 continue;
                             }
                         }
@@ -65,7 +61,6 @@ namespace MarsUndiscovered.Components
                             if (item is { HasBeenDropped: false })
                             {
                                 _goalStates[x, y] = GoalState.Goal;
-                                hasGoalBeenSet = true;
                                 continue;
                             }
                         }

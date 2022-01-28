@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 using AutoMapper;
 
@@ -23,31 +24,31 @@ namespace MarsUndiscovered.Components
 
         public void SaveState(ISaveGameService saveGameService)
         {
-            var memento = GetSaveState(saveGameService.Mapper);
+            var memento = GetSaveState();
             saveGameService.SaveToStore(memento);
         }
 
         public void LoadState(ISaveGameService saveGameService)
         {
             var mapCollectionSaveData = saveGameService.GetFromStore<MapCollectionSaveData>();
-            SetLoadState(mapCollectionSaveData, saveGameService.Mapper);
+            SetLoadState(mapCollectionSaveData);
         }
 
-        public IMemento<MapCollectionSaveData> GetSaveState(IMapper mapper)
+        public IMemento<MapCollectionSaveData> GetSaveState()
         {
-            var memento = Memento<MapCollectionSaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<MapCollectionSaveData>();
+            memento.State.Maps = this.Select(m => m.GetSaveState()).ToList();
+            memento.State.CurrentMapId = CurrentMap.Id;
 
             return new Memento<MapCollectionSaveData>(memento.State);
         }
 
-        public void SetLoadState(IMemento<MapCollectionSaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<MapCollectionSaveData> memento)
         {
-            Memento<MapCollectionSaveData>.SetWithAutoMapper(this, memento, mapper);
-
             foreach (var mapSaveData in memento.State.Maps)
             {
                 var map = new MarsMap(_gameWorld);
-                map.SetLoadState(new Memento<MapSaveData>(mapSaveData), mapper);
+                map.SetLoadState(mapSaveData);
 
                 if (map.Id == memento.State.CurrentMapId)
                     CurrentMap = map;

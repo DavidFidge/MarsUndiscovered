@@ -24,6 +24,9 @@ namespace MarsUndiscovered.Components
 
         private static int ItemLimit => 26;
         public bool CanPickUpItem => Items.Count < ItemLimit;
+        public int Count => ItemKeyAssignments.Count;
+        public bool IsReadOnly => false;
+        public bool HasShipRepairParts => Items.Any(i => i.ItemType is ShipRepairParts);
 
         public List<Item> Items { get; set; } = new List<Item>();
         public Dictionary<Keys, ItemGroup> ItemKeyAssignments { get; set; } = new Dictionary<Keys, ItemGroup>();
@@ -31,9 +34,6 @@ namespace MarsUndiscovered.Components
         public Dictionary<ItemType, string> CallItemType { get; set; } = new Dictionary<ItemType, string>();
         public Dictionary<ItemType, ItemTypeDiscovery> ItemTypeDiscoveries { get; set; } = new Dictionary<ItemType, ItemTypeDiscovery>();
         public Item EquippedWeapon { get; private set; }
-        public int Count => ItemKeyAssignments.Count;
-        public bool IsReadOnly => false;
-        public bool HasShipRepairParts => Items.Any(i => i.ItemType is ShipRepairParts);
 
         private static readonly Keys[] CandidateKeys = {
             Keys.A,
@@ -187,17 +187,21 @@ namespace MarsUndiscovered.Components
             return null;
         }
 
-        public IMemento<InventorySaveData> GetSaveState(IMapper mapper)
+        public IMemento<InventorySaveData> GetSaveState()
         {
-            var memento = Memento<InventorySaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<InventorySaveData>();
+            memento.State.ItemIds = Items.Select(i => i.ID).ToList();
+            memento.State.ItemKeyAssignments = ItemKeyAssignments.ToDictionary(k => k.Key, v => v.Value.Select(i => i.ID).ToList());
+            memento.State.CallItem = CallItem.ToDictionary(k => k.Key.ID, v => v.Value);
+            memento.State.CallItemType = CallItemType.ToDictionary(k => k.Key.Name, v => v.Value);
+            memento.State.ItemTypeDiscoveries = ItemTypeDiscoveries.ToDictionary(k => k.Key.Name, v => v.Value);
+            memento.State.EquippedWeaponId = EquippedWeapon.ID;
 
-            return new Memento<InventorySaveData>(memento.State);
+            return memento;
         }
 
-        public void SetLoadState(IMemento<InventorySaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<InventorySaveData> memento)
         {
-            Memento<InventorySaveData>.SetWithAutoMapper(this, memento, mapper);
-
             Items = memento.State.ItemIds.Select(s => _gameWorld.Items[s]).ToList();
 
             ItemKeyAssignments = memento.State.ItemKeyAssignments
@@ -211,17 +215,19 @@ namespace MarsUndiscovered.Components
 
             ItemTypeDiscoveries = memento.State.ItemTypeDiscoveries
                 .ToDictionary(k => ItemType.ItemTypes[k.Key], v => v.Value);
+
+            EquippedWeapon = _gameWorld.Items[memento.State.EquippedWeaponId];
         }
 
         public void SaveState(ISaveGameService saveGameService)
         {
-            saveGameService.SaveToStore(GetSaveState(saveGameService.Mapper));
+            saveGameService.SaveToStore(GetSaveState());
         }
 
         public void LoadState(ISaveGameService saveGameService)
         {
             var playerSaveData = saveGameService.GetFromStore<InventorySaveData>();
-            SetLoadState(playerSaveData, saveGameService.Mapper);
+            SetLoadState(playerSaveData);
         }
 
         public IEnumerator<Item> GetEnumerator()

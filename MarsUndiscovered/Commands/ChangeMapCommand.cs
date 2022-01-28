@@ -37,16 +37,20 @@ namespace MarsUndiscovered.Commands
             MapExit = mapExit;
         }
 
-        public override IMemento<ChangeMapSaveData> GetSaveState(IMapper mapper)
+        public override IMemento<ChangeMapSaveData> GetSaveState()
         {
-            return Memento<ChangeMapSaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<ChangeMapSaveData>();
+            base.PopulateSaveState(memento.State);
+            memento.State.GameObjectId = GameObject.ID;
+            memento.State.MapExitId = MapExit.ID;
+
+            return memento;
         }
 
-        public override void SetLoadState(IMemento<ChangeMapSaveData> memento, IMapper mapper)
+        public override void SetLoadState(IMemento<ChangeMapSaveData> memento)
         {
-            base.SetLoadState(memento, mapper);
+            base.PopulateLoadState(memento.State);
 
-            Memento<ChangeMapSaveData>.SetWithAutoMapper(this, memento, mapper);
             GameObject = GameWorld.GameObjects[memento.State.GameObjectId];
             MapExit = (MapExit)GameWorld.GameObjects[memento.State.MapExitId];
         }

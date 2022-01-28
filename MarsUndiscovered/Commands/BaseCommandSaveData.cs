@@ -5,5 +5,6 @@ namespace MarsUndiscovered.Commands
     public abstract class BaseCommandSaveData
     {
         public TurnDetails TurnDetails { get; set; }
+        public bool AdvanceSequenceNumber { get; set; }
     }
 }
