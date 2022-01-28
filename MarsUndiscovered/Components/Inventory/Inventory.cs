@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using AutoMapper;
-
 using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using AutoMapper;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
@@ -55,7 +53,6 @@ namespace MarsUndiscovered.Components
         public CommandCollection HistoricalCommands { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
         public MessageLog MessageLog { get; } = new MessageLog();
-        public IMapper Mapper { get; set; }
         public uint Seed { get; set; }
 
         public string LoadGameDetail
@@ -530,7 +527,14 @@ namespace MarsUndiscovered.Components
 
         public PlayerStatus GetPlayerStatus()
         {
-            return Mapper.Map<PlayerStatus>(Player);
+            return new PlayerStatus
+            {
+                Health = Player.Health,
+                IsDead = Player.IsDead,
+                IsVictorious = Player.IsVictorious,
+                MaxHealth = Player.MaxHealth,
+                Name = Player.Name
+            };
         }
 
         public IList<MonsterStatus> GetStatusOfMonstersInView()
@@ -541,11 +545,15 @@ namespace MarsUndiscovered.Components
                 .Select(
                     m =>
                     {
-                        var monster = Mapper.Map<MonsterStatus>(m);
+                        var monsterStatus = new MonsterStatus
+                        {
+                            DistanceFromPlayer = CurrentMap.DistanceMeasurement.Calculate(m.Position, Player.Position),
+                            Health = m.Health,
+                            MaxHealth = m.MaxHealth,
+                            Name = m.Name
+                        };
 
-                        monster.DistanceFromPlayer = CurrentMap.DistanceMeasurement.Calculate(m.Position, Player.Position);
-
-                        return monster;
+                        return monsterStatus;
                     }
                 )
                 .ToList();

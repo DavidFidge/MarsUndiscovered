@@ -1,7 +1,5 @@
 ﻿using System;
 
-using AutoMapper;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
@@ -11,8 +9,6 @@ using MarsUndiscovered.Interfaces;
 
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-
-using SharpFont.PostScript;
 
 namespace MarsUndiscovered.Commands
 {
