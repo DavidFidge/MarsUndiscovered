@@ -31,6 +31,7 @@ namespace MarsUndiscovered.Components
             ItemTypes.Add(nameof(ShieldGenerator), ShieldGenerator);
             ItemTypes.Add(nameof(MagnesiumPipe), MagnesiumPipe);
             ItemTypes.Add(nameof(HealingBots), HealingBots);
+            ItemTypes.Add(nameof(ShipRepairParts), ShipRepairParts);
         }
 
         public static ItemType GetItemType(string itemType)

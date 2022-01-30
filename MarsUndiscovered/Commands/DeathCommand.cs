@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-
+﻿
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
@@ -31,17 +30,19 @@ namespace MarsUndiscovered.Commands
             KilledByMessage = $"killed by {killedByMessage}";
         }
 
-        public override IMemento<DeathCommandSaveData> GetSaveState(IMapper mapper)
+        public override IMemento<DeathCommandSaveData> GetSaveState()
         {
-            return Memento<DeathCommandSaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<DeathCommandSaveData>(new DeathCommandSaveData());
+            base.PopulateSaveState(memento.State);
+            memento.State.SourceId = Source.ID;
+            memento.State.KilledByMessage = KilledByMessage;
+            return memento;
         }
 
-        public override void SetLoadState(IMemento<DeathCommandSaveData> memento, IMapper mapper)
+        public override void SetLoadState(IMemento<DeathCommandSaveData> memento)
         {
-            base.SetLoadState(memento, mapper);
-
-            Memento<DeathCommandSaveData>.SetWithAutoMapper(this, memento, mapper);
-
+            base.PopulateLoadState(memento.State);
+            KilledByMessage = memento.State.KilledByMessage;
             Source = (Actor)GameWorld.GameObjects[memento.State.SourceId];
         }
 

@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
+﻿using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Services;
+
 using MarsUndiscovered.Components.SaveData;
 
 namespace MarsUndiscovered.Components
@@ -10,14 +11,18 @@ namespace MarsUndiscovered.Components
         {
         }
 
-        public IMemento<FloorSaveData> GetSaveState(IMapper mapper)
+        public IMemento<FloorSaveData> GetSaveState()
         {
-            return CreateWithAutoMapper<FloorSaveData>(mapper);
+            var memento = new Memento<FloorSaveData>(new FloorSaveData());
+
+            base.PopulateSaveState(memento.State);
+
+            return memento;
         }
 
-        public void SetLoadState(IMemento<FloorSaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<FloorSaveData> memento)
         {
-            SetWithAutoMapper<FloorSaveData>(memento, mapper);
+            base.PopulateLoadState(memento.State);
         }
     }
 }

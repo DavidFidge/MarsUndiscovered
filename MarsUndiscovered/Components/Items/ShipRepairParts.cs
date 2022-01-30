@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MarsUndiscovered.Components
+﻿namespace MarsUndiscovered.Components
 {
     public class ShipRepairParts : VictoryItemType
     {

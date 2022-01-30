@@ -1,7 +1,5 @@
 ﻿using System;
 
-using AutoMapper;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
@@ -27,16 +25,17 @@ namespace MarsUndiscovered.Commands
             Item = item;
         }
 
-        public override IMemento<EquipItemSaveData> GetSaveState(IMapper mapper)
+        public override IMemento<EquipItemSaveData> GetSaveState()
         {
-            return Memento<EquipItemSaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<EquipItemSaveData>(new EquipItemSaveData());
+            base.PopulateSaveState(memento.State);
+            memento.State.ItemId = Item.ID;
+            return memento;
         }
 
-        public override void SetLoadState(IMemento<EquipItemSaveData> memento, IMapper mapper)
+        public override void SetLoadState(IMemento<EquipItemSaveData> memento)
         {
-            base.SetLoadState(memento, mapper);
-
-            Memento<EquipItemSaveData>.SetWithAutoMapper(this, memento, mapper);
+            base.PopulateLoadState(memento.State);
             Item = GameWorld.Items[memento.State.ItemId];
         }
 

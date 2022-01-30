@@ -232,13 +232,12 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItems();
-
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition = new Point(1, 1);
             _gameWorld.CreateWall(wallPosition);
 
             // Act
-            _gameWorld.UpdateFieldOfView();
+            _gameWorld.ResetFieldOfView();
 
             // Assert
             Assert.IsFalse(_gameWorld.CurrentMap.SeenTiles[new Point(2, 2)].HasBeenSeen);

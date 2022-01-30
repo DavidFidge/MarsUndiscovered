@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-using AutoMapper;
-
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
@@ -181,24 +179,41 @@ namespace MarsUndiscovered.Components
             return true;
         }
 
-        public IMemento<MapSaveData> GetSaveState(IMapper mapper)
+        public IMemento<MapSaveData> GetSaveState()
         {
-            var memento = Memento<MapSaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<MapSaveData>(new MapSaveData());
+
+            memento.State.Id = Id;
+            memento.State.Level = Level;
+            memento.State.SeenTiles = SeenTiles.ToArray()
+                .Select(s => s.GetSaveState())
+                .ToList();
+
+            memento.State.GameObjectIds = _gameWorld.GameObjects.Values
+                .Where(g => g.CurrentMap != null)
+                .Where(g => g.CurrentMap.Equals(this))
+                .Select(s => s.ID)
+                .ToList();
 
             return new Memento<MapSaveData>(memento.State);
         }
 
-        public void SetLoadState(IMemento<MapSaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<MapSaveData> memento)
         {
-            Memento<MapSaveData>.SetWithAutoMapper(this, memento, mapper);
+            Id = memento.State.Id;
+            Level = memento.State.Level;
 
-            for (var i = 0; i < memento.State.SeenTiles.Length; i++)
-            {
-                SeenTiles[i] = mapper.Map<SeenTile>(memento.State.SeenTiles[i]);
-                SeenTiles[i].LastSeenGameObjects = memento.State.SeenTiles[i].LastSeenGameObjectIds
-                    .Select(id => _gameWorld.GameObjects[id])
-                    .ToList();
-            }
+            var seenTiles = memento.State.SeenTiles
+                .Select(s =>
+                    {
+                        var seenTiles = new SeenTile(s.State.Point);
+                        seenTiles.SetLoadState(s, _gameWorld.GameObjects);
+                        return seenTiles;
+                    }
+                )
+                .ToArray();
+
+            SeenTiles = new ArrayView<SeenTile>(seenTiles, MapWidth);
 
             var gameObjectsOnMap = memento.State.GameObjectIds
                 .Select(g => _gameWorld.GameObjects[g])
@@ -214,15 +229,6 @@ namespace MarsUndiscovered.Components
             {
                 AddEntity(nonTerrainObject);
             }
-        }
-
-        public IList<uint> GetGameObjectIds()
-        {
-            return _gameWorld.GameObjects.Values
-                .Where(g => g.CurrentMap != null)
-                .Where(g => g.CurrentMap.Equals(this))
-                .Select(s => s.ID)
-                .ToList();
         }
 
         public IList<T> GetTerrainAround<T>(Point position, AdjacencyRule adjacencyRule) where T : Terrain

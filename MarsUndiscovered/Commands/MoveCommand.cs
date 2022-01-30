@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using AutoMapper;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
@@ -32,17 +30,20 @@ namespace MarsUndiscovered.Commands
             FromTo = fromTo;
         }
 
-        public override IMemento<MoveCommandSaveData> GetSaveState(IMapper mapper)
+        public override IMemento<MoveCommandSaveData> GetSaveState()
         {
-            return Memento<MoveCommandSaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<MoveCommandSaveData>(new MoveCommandSaveData());
+            base.PopulateSaveState(memento.State);
+            memento.State.FromTo = new Tuple<Point, Point>(FromTo.Item1, FromTo.Item2);
+            memento.State.GameObjectId = GameObject.ID;
+            return memento;
         }
 
-        public override void SetLoadState(IMemento<MoveCommandSaveData> memento, IMapper mapper)
+        public override void SetLoadState(IMemento<MoveCommandSaveData> memento)
         {
-            base.SetLoadState(memento, mapper);
-
-            Memento<MoveCommandSaveData>.SetWithAutoMapper(this, memento, mapper);
+            base.PopulateLoadState(memento.State);
             GameObject = GameWorld.GameObjects[memento.State.GameObjectId];
+            FromTo = new Tuple<Point, Point>(memento.State.FromTo.Item1, memento.State.FromTo.Item2);
         }
 
         protected override CommandResult ExecuteInternal()

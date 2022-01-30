@@ -1,7 +1,8 @@
 ﻿using System.Text;
 
-using AutoMapper;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Services;
+
 using MarsUndiscovered.Components.SaveData;
 
 namespace MarsUndiscovered.Components
@@ -53,19 +54,22 @@ namespace MarsUndiscovered.Components
             return this;
         }
 
-        public void SetLoadState(IMemento<MonsterSaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<MonsterSaveData> memento)
         {
-            SetWithAutoMapper(memento, mapper);
+            base.PopulateLoadState(memento.State);
             MonsterGoal = new MonsterGoal(this);
         }
 
-        public IMemento<MonsterSaveData> GetSaveState(IMapper mapper)
+        public IMemento<MonsterSaveData> GetSaveState()
         {
-            var monsterSaveData = CreateWithAutoMapper<MonsterSaveData>(mapper);
+            var memento = new Memento<MonsterSaveData>(new MonsterSaveData());
 
-            monsterSaveData.State.MonsterGoalSaveData = MonsterGoal.GetSaveState(mapper);
+            base.PopulateSaveState(memento.State);
 
-            return monsterSaveData;
+            memento.State.BreedName = Breed.Name;
+            memento.State.MonsterGoalSaveData = MonsterGoal.GetSaveState(mapper);
+
+            return memento;
         }
     }
 }
