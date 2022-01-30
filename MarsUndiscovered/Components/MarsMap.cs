@@ -181,7 +181,7 @@ namespace MarsUndiscovered.Components
 
         public IMemento<MapSaveData> GetSaveState()
         {
-            var memento = new Memento<MapSaveData>();
+            var memento = new Memento<MapSaveData>(new MapSaveData());
 
             memento.State.Id = Id;
             memento.State.Level = Level;

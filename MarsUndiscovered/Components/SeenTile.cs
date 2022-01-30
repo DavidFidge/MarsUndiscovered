@@ -26,7 +26,7 @@ namespace MarsUndiscovered.Components
 
         public IMemento<SeenTileSaveData> GetSaveState()
         {
-            var memento = new Memento<SeenTileSaveData>();
+            var memento = new Memento<SeenTileSaveData>(new SeenTileSaveData());
 
             memento.State.Point = Point;
             memento.State.HasBeenSeen = HasBeenSeen;

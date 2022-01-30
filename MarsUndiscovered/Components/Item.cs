@@ -44,7 +44,7 @@ namespace MarsUndiscovered.Components
 
         public IMemento<ItemSaveData> GetSaveState()
         {
-            var memento = new Memento<ItemSaveData>();
+            var memento = new Memento<ItemSaveData>(new ItemSaveData());
 
             base.PopulateSaveState(memento.State);
 
@@ -52,14 +52,19 @@ namespace MarsUndiscovered.Components
             memento.State.EnchantmentLevel = EnchantmentLevel;
             memento.State.CurrentRechargeDelay = CurrentRechargeDelay;
             memento.State.IsCharged = IsCharged;
-            memento.State.MeleeAttack = (Attack)MeleeAttack.Clone();
+
+            if (memento.State.MeleeAttack != null)
+                memento.State.MeleeAttack = (Attack)MeleeAttack.Clone();
+
             memento.State.DamageShieldPercentage = DamageShieldPercentage;
             memento.State.TotalRechargeDelay = TotalRechargeDelay;
             memento.State.HealPercentOfMax = HealPercentOfMax;
             memento.State.MaxHealthIncrease = MaxHealthIncrease;
             memento.State.GroupsInInventory = GroupsInInventory;
             memento.State.HasBeenDropped = HasBeenDropped;
-            memento.State.ItemDiscovery = (ItemDiscovery)ItemDiscovery.Clone();
+
+            if (memento.State.ItemDiscovery != null)
+                memento.State.ItemDiscovery = (ItemDiscovery)ItemDiscovery.Clone();
 
             return memento;
         }
@@ -72,14 +77,19 @@ namespace MarsUndiscovered.Components
             EnchantmentLevel = memento.State.EnchantmentLevel;
             CurrentRechargeDelay = memento.State.CurrentRechargeDelay;
             IsCharged = memento.State.IsCharged;
-            MeleeAttack = (Attack)memento.State.MeleeAttack.Clone();
+
+            if (MeleeAttack != null)
+                MeleeAttack = (Attack)memento.State.MeleeAttack.Clone();
+
             DamageShieldPercentage = memento.State.DamageShieldPercentage;
             TotalRechargeDelay = memento.State.TotalRechargeDelay;
             HealPercentOfMax = memento.State.HealPercentOfMax;
             MaxHealthIncrease = memento.State.MaxHealthIncrease;
             GroupsInInventory = memento.State.GroupsInInventory;
             HasBeenDropped = memento.State.HasBeenDropped;
-            ItemDiscovery = (ItemDiscovery)memento.State.ItemDiscovery.Clone();
+
+            if (ItemDiscovery != null)
+                ItemDiscovery = (ItemDiscovery)memento.State.ItemDiscovery.Clone();
         }
 
         public bool CanGroupWith(Item item)

@@ -206,6 +206,7 @@ namespace MarsUndiscovered.Components
 
         public void AfterCreateGame()
         {
+            UpdateFieldOfView(false);
             CurrentMap.UpdateSeenTiles(CurrentMap.PlayerFOV.CurrentFOV);
 
             Mediator.Publish(new FieldOfViewChangedNotifcation(CurrentMap.PlayerFOV.CurrentFOV, CurrentMap.Positions(), CurrentMap.SeenTiles));
@@ -513,7 +514,7 @@ namespace MarsUndiscovered.Components
 
         public IMemento<GameWorldSaveData> GetSaveState()
         {
-            var memento = new Memento<GameWorldSaveData>();
+            var memento = new Memento<GameWorldSaveData>(new GameWorldSaveData());
             memento.State.Seed = Seed;
             memento.State.LoadGameDetail = LoadGameDetail;
             return memento;

@@ -32,7 +32,7 @@ namespace MarsUndiscovered.Commands
 
         public override IMemento<DeathCommandSaveData> GetSaveState()
         {
-            var memento = new Memento<DeathCommandSaveData>();
+            var memento = new Memento<DeathCommandSaveData>(new DeathCommandSaveData());
             base.PopulateSaveState(memento.State);
             memento.State.SourceId = Source.ID;
             memento.State.KilledByMessage = KilledByMessage;

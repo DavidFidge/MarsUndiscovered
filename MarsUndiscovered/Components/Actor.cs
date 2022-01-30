@@ -25,11 +25,11 @@ namespace MarsUndiscovered.Components
 
         protected void PopulateSaveState(ActorSaveData actorSaveData)
         {
+            base.PopulateSaveState(actorSaveData);
+
             actorSaveData.MaxHealth = MaxHealth;
             actorSaveData.Health = Health;
             actorSaveData.IsDead = IsDead;
-
-            base.PopulateSaveState(actorSaveData);
         }
 
         protected void PopulateLoadState(ActorSaveData actorSaveData)

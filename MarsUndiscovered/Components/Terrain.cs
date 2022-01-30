@@ -16,12 +16,16 @@ namespace MarsUndiscovered.Components
 
         protected void PopulateSaveState(TerrainSaveData terrainSaveData)
         {
+            base.PopulateSaveState(terrainSaveData);
+            terrainSaveData.Index = Index;
             terrainSaveData.IsDestroyed = IsDestroyed;
             terrainSaveData.IsDestroyable = IsDestroyable;
         }
 
         protected void PopulateLoadState(TerrainSaveData terrainSaveData)
         {
+            base.PopulateLoadState(terrainSaveData);
+            Index = terrainSaveData.Index;
             IsDestroyed = terrainSaveData.IsDestroyed;
             IsDestroyable = terrainSaveData.IsDestroyable;
         }

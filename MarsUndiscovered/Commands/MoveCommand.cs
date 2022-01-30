@@ -32,7 +32,7 @@ namespace MarsUndiscovered.Commands
 
         public override IMemento<MoveCommandSaveData> GetSaveState()
         {
-            var memento = new Memento<MoveCommandSaveData>();
+            var memento = new Memento<MoveCommandSaveData>(new MoveCommandSaveData());
             base.PopulateSaveState(memento.State);
             memento.State.FromTo = new Tuple<Point, Point>(FromTo.Item1, FromTo.Item2);
             memento.State.GameObjectId = GameObject.ID;

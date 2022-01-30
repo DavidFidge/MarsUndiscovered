@@ -29,7 +29,7 @@ namespace MarsUndiscovered.Commands
 
         public override IMemento<WalkCommandSaveData> GetSaveState()
         {
-            var memento = new Memento<WalkCommandSaveData>();
+            var memento = new Memento<WalkCommandSaveData>(new WalkCommandSaveData());
             base.PopulateSaveState(memento.State);
             memento.State.Direction = Direction;
             return memento;

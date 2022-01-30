@@ -22,7 +22,7 @@ namespace MarsUndiscovered.Components
 
         public IMemento<ShipSaveData> GetSaveState()
         {
-            var memento = new Memento<ShipSaveData>();
+            var memento = new Memento<ShipSaveData>(new ShipSaveData());
 
             base.PopulateSaveState(memento.State);
             memento.State.ShipPart = ShipPart;

@@ -30,7 +30,7 @@ namespace MarsUndiscovered.Components
 
         public IMemento<PlayerSaveData> GetSaveState()
         {
-            var memento = new Memento<PlayerSaveData>();
+            var memento = new Memento<PlayerSaveData>(new PlayerSaveData());
 
             base.PopulateSaveState(memento.State);
 

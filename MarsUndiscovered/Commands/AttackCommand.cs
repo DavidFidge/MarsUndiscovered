@@ -27,7 +27,7 @@ namespace MarsUndiscovered.Commands
 
         public override IMemento<AttackCommandSaveData> GetSaveState()
         {
-            var memento = new Memento<AttackCommandSaveData>();
+            var memento = new Memento<AttackCommandSaveData>(new AttackCommandSaveData());
             base.PopulateSaveState(memento.State);
 
             memento.State.SourceId = Source.ID;

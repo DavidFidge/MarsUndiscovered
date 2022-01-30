@@ -34,7 +34,7 @@ namespace MarsUndiscovered.Components
 
         public IMemento<MapCollectionSaveData> GetSaveState()
         {
-            var memento = new Memento<MapCollectionSaveData>();
+            var memento = new Memento<MapCollectionSaveData>(new MapCollectionSaveData());
             memento.State.Maps = this.Select(m => m.GetSaveState()).ToList();
             memento.State.CurrentMapId = CurrentMap.Id;
 

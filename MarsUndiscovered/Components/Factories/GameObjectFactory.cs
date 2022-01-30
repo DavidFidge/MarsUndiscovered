@@ -123,7 +123,7 @@ namespace MarsUndiscovered.Components.Factories
 
         public void SaveState(ISaveGameService saveGameService)
         {
-            var memento = new Memento<GameObjectFactorySaveData>();
+            var memento = new Memento<GameObjectFactorySaveData>(new GameObjectFactorySaveData());
             memento.State.LastId = LastId;
 
             saveGameService.SaveToStore(memento);

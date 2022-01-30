@@ -59,7 +59,7 @@ namespace MarsUndiscovered.Components
 
         public IMemento<MonsterSaveData> GetSaveState()
         {
-            var memento = new Memento<MonsterSaveData>();
+            var memento = new Memento<MonsterSaveData>(new MonsterSaveData());
 
             base.PopulateSaveState(memento.State);
 

@@ -187,13 +187,13 @@ namespace MarsUndiscovered.Components
 
         public IMemento<InventorySaveData> GetSaveState()
         {
-            var memento = new Memento<InventorySaveData>();
+            var memento = new Memento<InventorySaveData>(new InventorySaveData());
             memento.State.ItemIds = Items.Select(i => i.ID).ToList();
             memento.State.ItemKeyAssignments = ItemKeyAssignments.ToDictionary(k => k.Key, v => v.Value.Select(i => i.ID).ToList());
             memento.State.CallItem = CallItem.ToDictionary(k => k.Key.ID, v => v.Value);
             memento.State.CallItemType = CallItemType.ToDictionary(k => k.Key.Name, v => v.Value);
             memento.State.ItemTypeDiscoveries = ItemTypeDiscoveries.ToDictionary(k => k.Key.Name, v => v.Value);
-            memento.State.EquippedWeaponId = EquippedWeapon.ID;
+            memento.State.EquippedWeaponId = EquippedWeapon?.ID;
 
             return memento;
         }
@@ -214,7 +214,8 @@ namespace MarsUndiscovered.Components
             ItemTypeDiscoveries = memento.State.ItemTypeDiscoveries
                 .ToDictionary(k => ItemType.ItemTypes[k.Key], v => v.Value);
 
-            EquippedWeapon = _gameWorld.Items[memento.State.EquippedWeaponId];
+            if (memento.State.EquippedWeaponId != null)
+                EquippedWeapon = _gameWorld.Items[memento.State.EquippedWeaponId.Value];
         }
 
         public void SaveState(ISaveGameService saveGameService)

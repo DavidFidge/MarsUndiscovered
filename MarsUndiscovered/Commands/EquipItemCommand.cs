@@ -27,7 +27,7 @@ namespace MarsUndiscovered.Commands
 
         public override IMemento<EquipItemSaveData> GetSaveState()
         {
-            var memento = new Memento<EquipItemSaveData>();
+            var memento = new Memento<EquipItemSaveData>(new EquipItemSaveData());
             base.PopulateSaveState(memento.State);
             memento.State.ItemId = Item.ID;
             return memento;

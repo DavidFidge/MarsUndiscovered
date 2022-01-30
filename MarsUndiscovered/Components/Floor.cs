@@ -13,7 +13,7 @@ namespace MarsUndiscovered.Components
 
         public IMemento<FloorSaveData> GetSaveState()
         {
-            var memento = new Memento<FloorSaveData>();
+            var memento = new Memento<FloorSaveData>(new FloorSaveData());
 
             base.PopulateSaveState(memento.State);
 

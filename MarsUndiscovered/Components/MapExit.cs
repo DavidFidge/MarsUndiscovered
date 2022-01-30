@@ -38,7 +38,7 @@ namespace MarsUndiscovered.Components
 
         public IMemento<MapExitSaveData> GetSaveState()
         {
-            var memento = new Memento<MapExitSaveData>();
+            var memento = new Memento<MapExitSaveData>(new MapExitSaveData());
 
             base.PopulateSaveState(memento.State);
 
