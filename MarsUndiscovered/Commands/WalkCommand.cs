@@ -1,7 +1,5 @@
 ﻿using System;
 
-using AutoMapper;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
@@ -12,34 +10,36 @@ using MarsUndiscovered.Interfaces;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
-using SharpFont.PostScript;
-
 namespace MarsUndiscovered.Commands
 {
     public class WalkCommand : BaseMarsGameActionCommand<WalkCommandSaveData>
     {
         public Direction Direction { get; set; }
-        public Player Player => GameWorld.Player;
+        public Player Player { get; set; }
 
         public WalkCommand(IGameWorld gameWorld) : base(gameWorld)
         {
         }
 
-        public void Initialise(Direction direction)
+        public void Initialise(Player player, Direction direction)
         {
+            Player = player;
             Direction = direction;
         }
 
-        public override IMemento<WalkCommandSaveData> GetSaveState(IMapper mapper)
+        public override IMemento<WalkCommandSaveData> GetSaveState()
         {
-            return Memento<WalkCommandSaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<WalkCommandSaveData>(new WalkCommandSaveData());
+            base.PopulateSaveState(memento.State);
+            memento.State.Direction = Direction;
+            return memento;
         }
 
-        public override void SetLoadState(IMemento<WalkCommandSaveData> memento, IMapper mapper)
+        public override void SetLoadState(IMemento<WalkCommandSaveData> memento)
         {
-            base.SetLoadState(memento, mapper);
-
-            Memento<WalkCommandSaveData>.SetWithAutoMapper(this, memento, mapper);
+            base.PopulateLoadState(memento.State);
+            Direction = memento.State.Direction;
+            Player = GameWorld.Player;
         }
 
         protected override CommandResult ExecuteInternal()

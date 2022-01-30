@@ -38,7 +38,6 @@ namespace MarsUndiscovered.Installers
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            container.Install(new AutoMapperProfileInstaller());
             container.Install(new CoreInstaller());
             container.Install(new ViewInstaller());
 

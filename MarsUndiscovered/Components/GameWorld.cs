@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using AutoMapper;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
@@ -55,7 +53,6 @@ namespace MarsUndiscovered.Components
         public CommandCollection HistoricalCommands { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
         public MessageLog MessageLog { get; } = new MessageLog();
-        public IMapper Mapper { get; set; }
         public uint Seed { get; set; }
 
         public string LoadGameDetail
@@ -209,6 +206,7 @@ namespace MarsUndiscovered.Components
 
         public void AfterCreateGame()
         {
+            UpdateFieldOfView(false);
             CurrentMap.UpdateSeenTiles(CurrentMap.PlayerFOV.CurrentFOV);
 
             Mediator.Publish(new FieldOfViewChangedNotifcation(CurrentMap.PlayerFOV.CurrentFOV, CurrentMap.Positions(), CurrentMap.SeenTiles));
@@ -244,7 +242,7 @@ namespace MarsUndiscovered.Components
         public IList<CommandResult> MoveRequest(Direction direction)
         {
             var walkCommand = CommandFactory.CreateWalkCommand(this);
-            walkCommand.Initialise(direction);
+            walkCommand.Initialise(Player, direction);
 
             return ExecuteCommand(walkCommand).ToList();
         }
@@ -469,7 +467,7 @@ namespace MarsUndiscovered.Components
             Reset();
 
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
-            Memento<GameWorldSaveData>.SetWithAutoMapper(this, gameWorldSaveData, saveGameService.Mapper);
+            SetLoadState(gameWorldSaveData);
 
             GameObjectFactory.LoadState(saveGameService);
             Walls.LoadState(saveGameService);
@@ -506,7 +504,7 @@ namespace MarsUndiscovered.Components
             Inventory.SaveState(saveGameService);
             Maps.SaveState(saveGameService);
 
-            var gameWorldSaveData = Memento<GameWorldSaveData>.CreateWithAutoMapper(this, saveGameService.Mapper);
+            var gameWorldSaveData = GetSaveState();
             saveGameService.SaveToStore(gameWorldSaveData);
 
             // Not sure I like this idea, as a memento is supposed to hold state, not a reference to an object. It does make the code more straightforward for saving and loading
@@ -514,19 +512,30 @@ namespace MarsUndiscovered.Components
             saveGameService.SaveToStore(new Memento<XorShift128Generator>((XorShift128Generator)GlobalRandom.DefaultRNG));
         }
 
-        public IMemento<GameWorldSaveData> GetSaveState(IMapper mapper)
+        public IMemento<GameWorldSaveData> GetSaveState()
         {
-            return Memento<GameWorldSaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<GameWorldSaveData>(new GameWorldSaveData());
+            memento.State.Seed = Seed;
+            memento.State.LoadGameDetail = LoadGameDetail;
+            return memento;
         }
 
-        public void SetLoadState(IMemento<GameWorldSaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<GameWorldSaveData> memento)
         {
-            Memento<GameWorldSaveData>.SetWithAutoMapper(this, memento, mapper);
+            Seed = memento.State.Seed;
+            LoadGameDetail = memento.State.LoadGameDetail;
         }
 
         public PlayerStatus GetPlayerStatus()
         {
-            return Mapper.Map<PlayerStatus>(Player);
+            return new PlayerStatus
+            {
+                Health = Player.Health,
+                IsDead = Player.IsDead,
+                IsVictorious = Player.IsVictorious,
+                MaxHealth = Player.MaxHealth,
+                Name = Player.Name
+            };
         }
 
         public IList<MonsterStatus> GetStatusOfMonstersInView()
@@ -537,11 +546,15 @@ namespace MarsUndiscovered.Components
                 .Select(
                     m =>
                     {
-                        var monster = Mapper.Map<MonsterStatus>(m);
+                        var monsterStatus = new MonsterStatus
+                        {
+                            DistanceFromPlayer = CurrentMap.DistanceMeasurement.Calculate(m.Position, Player.Position),
+                            Health = m.Health,
+                            MaxHealth = m.MaxHealth,
+                            Name = m.Name
+                        };
 
-                        monster.DistanceFromPlayer = CurrentMap.DistanceMeasurement.Calculate(m.Position, Player.Position);
-
-                        return monster;
+                        return monsterStatus;
                     }
                 )
                 .ToList();

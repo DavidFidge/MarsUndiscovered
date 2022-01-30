@@ -1,9 +1,11 @@
-﻿using GoRogue.Random;
+﻿using System;
+
+using GoRogue.Random;
 using MonoGame.Extended;
 
 namespace MarsUndiscovered.Components
 {
-    public class Attack
+    public class Attack : ICloneable
     {
         public Range<int> DamageRange { get; private set; }
 
@@ -25,6 +27,14 @@ namespace MarsUndiscovered.Components
             var damageRange = new Range<int>(minDamage <= 0 ? 1 : minDamage, maxDamage <= 0 ? 1 : maxDamage);
 
             return new Attack(damageRange);
+        }
+
+        public object Clone()
+        {
+            var attack = (Attack)this.MemberwiseClone();
+            attack.DamageRange = new Range<int>(DamageRange.Min, DamageRange.Max);
+
+            return attack;
         }
     }
 }

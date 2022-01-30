@@ -21,7 +21,7 @@ namespace MarsUndiscovered.Components
         public virtual void SaveState(ISaveGameService saveGameService)
         {
             var gameObjectSaveData = this
-                .Select(go => go.GetSaveState(saveGameService.Mapper))
+                .Select(go => go.GetSaveState())
                 .ToList();
 
             saveGameService.SaveListToStore(gameObjectSaveData);
@@ -35,7 +35,7 @@ namespace MarsUndiscovered.Components
             {
                 var command = Create();
 
-                command.SetLoadState(gameObjectSaveDataItem, saveGameService.Mapper);
+                command.SetLoadState(gameObjectSaveDataItem);
 
                 Add(command);
             }

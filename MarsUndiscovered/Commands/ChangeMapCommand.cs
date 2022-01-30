@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using AutoMapper;
-
+﻿
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
-using GoRogue.Pathing;
 
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 
 using SadRogue.Primitives;
-using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Commands
 {
@@ -37,16 +30,20 @@ namespace MarsUndiscovered.Commands
             MapExit = mapExit;
         }
 
-        public override IMemento<ChangeMapSaveData> GetSaveState(IMapper mapper)
+        public override IMemento<ChangeMapSaveData> GetSaveState()
         {
-            return Memento<ChangeMapSaveData>.CreateWithAutoMapper(this, mapper);
+            var memento = new Memento<ChangeMapSaveData>(new ChangeMapSaveData());
+            base.PopulateSaveState(memento.State);
+            memento.State.GameObjectId = GameObject.ID;
+            memento.State.MapExitId = MapExit.ID;
+
+            return memento;
         }
 
-        public override void SetLoadState(IMemento<ChangeMapSaveData> memento, IMapper mapper)
+        public override void SetLoadState(IMemento<ChangeMapSaveData> memento)
         {
-            base.SetLoadState(memento, mapper);
+            base.PopulateLoadState(memento.State);
 
-            Memento<ChangeMapSaveData>.SetWithAutoMapper(this, memento, mapper);
             GameObject = GameWorld.GameObjects[memento.State.GameObjectId];
             MapExit = (MapExit)GameWorld.GameObjects[memento.State.MapExitId];
         }

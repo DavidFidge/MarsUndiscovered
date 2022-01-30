@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-
+﻿
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
 
@@ -36,14 +36,26 @@ namespace MarsUndiscovered.Components
             return this;
         }
 
-        public IMemento<MapExitSaveData> GetSaveState(IMapper mapper)
+        public IMemento<MapExitSaveData> GetSaveState()
         {
-            return CreateWithAutoMapper<MapExitSaveData>(mapper);
+            var memento = new Memento<MapExitSaveData>(new MapExitSaveData());
+
+            base.PopulateSaveState(memento.State);
+
+            memento.State.DestinationId = Destination.ID;
+            memento.State.LandingPosition = LandingPosition;
+            memento.State.Direction = Direction;
+
+            return memento;
         }
 
-        public void SetLoadState(IMemento<MapExitSaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<MapExitSaveData> memento)
         {
-            SetWithAutoMapper<MapExitSaveData>(memento, mapper);
+            base.PopulateLoadState(memento.State);
+
+            LandingPosition = memento.State.LandingPosition;
+            Direction = memento.State.Direction;
+            //// Destination needs to be populated in MapExitCollection after all map exits are loaded
         }
     }
 }

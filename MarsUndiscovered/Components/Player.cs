@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-
+﻿
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
+using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
 
@@ -28,25 +28,33 @@ namespace MarsUndiscovered.Components
             Health = MaxHealth;
         }
 
-        public IMemento<PlayerSaveData> GetSaveState(IMapper mapper)
+        public IMemento<PlayerSaveData> GetSaveState()
         {
-            return CreateWithAutoMapper<PlayerSaveData>(mapper);
+            var memento = new Memento<PlayerSaveData>(new PlayerSaveData());
+
+            base.PopulateSaveState(memento.State);
+
+            memento.State.IsVictorious = IsVictorious;
+
+            return memento;
         }
 
-        public void SetLoadState(IMemento<PlayerSaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<PlayerSaveData> memento)
         {
-            SetWithAutoMapper(memento, mapper);
+            base.PopulateLoadState(memento.State);
+
+            IsVictorious = memento.State.IsVictorious;
         }
 
         public void SaveState(ISaveGameService saveGameService)
         {
-            saveGameService.SaveToStore(GetSaveState(saveGameService.Mapper));
+            saveGameService.SaveToStore(GetSaveState());
         }
 
         public void LoadState(ISaveGameService saveGameService)
         {
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
-            SetLoadState(playerSaveData, saveGameService.Mapper);
+            SetLoadState(playerSaveData);
         }
     }
 }

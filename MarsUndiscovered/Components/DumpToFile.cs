@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 
 using GoRogue.FOV;
-using GoRogue.GameFramework;
 using GoRogue.Pathing;
-
-using MarsUndiscovered.Components;
 
 using SadRogue.Primitives;
 
