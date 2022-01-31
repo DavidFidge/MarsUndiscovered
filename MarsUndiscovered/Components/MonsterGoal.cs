@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Assimp.Unmanaged;
-
-using AutoMapper;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 
@@ -17,8 +13,6 @@ using MarsUndiscovered.Interfaces;
 
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-
-using SharpDX.MediaFoundation;
 
 namespace MarsUndiscovered.Components
 {
@@ -104,12 +98,12 @@ namespace MarsUndiscovered.Components
             }
         }
 
-        public IMemento<MonsterGoalSaveData> GetSaveState(IMapper mapper)
+        public IMemento<MonsterGoalSaveData> GetSaveState()
         {
             throw new System.NotImplementedException();
         }
 
-        public void SetLoadState(IMemento<MonsterGoalSaveData> memento, IMapper mapper)
+        public void SetLoadState(IMemento<MonsterGoalSaveData> memento)
         {
             throw new System.NotImplementedException();
         }
