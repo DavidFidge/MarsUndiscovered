@@ -38,17 +38,7 @@ namespace MarsUndiscovered.Components
             Id = Guid.NewGuid();
             Level = 1;
             _gameWorld = gameWorld;
-
-            ResetSeenTiles();
-        }
-
-        private void ResetSeenTiles()
-        {
-            var seenTiles = this.Positions()
-                .Select(p => new SeenTile(p))
-                .ToArray();
-
-            SeenTiles = new ArrayView<SeenTile>(seenTiles, MapWidth);
+            SeenTiles = SeenTile.CreateArrayViewFromMap(this);
         }
 
         public void ApplyTerrainOverlay(IEnumerable<Wall> walls, IEnumerable<Floor> floors)
@@ -94,7 +84,7 @@ namespace MarsUndiscovered.Components
         public void ResetFieldOfView()
         {
             PlayerFOV.Reset();
-            ResetSeenTiles();
+            SeenTile.ResetSeenTiles(SeenTiles);
         }
 
         public void UpdateFieldOfView(Point position)

@@ -33,15 +33,27 @@ namespace MarsUndiscovered.Components
         public MonsterGoal(Monster monster)
         {
             _monster = monster;
-            _fieldOfView = new RecursiveShadowcastingFOV(Map.TransparencyView);
-            _seenTiles = new ArrayView<SeenTile>(Map.Width, Map.Height);
             _wanderState = new WanderState();
             _huntPlayerState = new HuntPlayerState();
             _currentState = _wanderState;
         }
 
-        public void ChangeState(State<MonsterGoal> newState)
+        public void Initialise()
         {
+            _fieldOfView = new RecursiveShadowcastingFOV(Map.TransparencyView);
+            _seenTiles = SeenTile.CreateArrayViewFromMap(Map);
+        }
+
+        public void ChangeStateToHunt()
+        {
+            ChangeState(_huntPlayerState);
+        }
+
+        private void ChangeState(State<MonsterGoal> newState)
+        {
+            if (_currentState == newState)
+                return;
+
             _currentState?.Exit(this);
             _currentState = newState;
             _currentState.Enter(this);

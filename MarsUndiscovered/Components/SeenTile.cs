@@ -9,6 +9,7 @@ using GoRogue.GameFramework;
 using MarsUndiscovered.Components.SaveData;
 
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Components
 {
@@ -22,6 +23,12 @@ namespace MarsUndiscovered.Components
         public SeenTile(Point point)
         {
             Point = point;
+        }
+
+        public void Reset()
+        {
+            HasBeenSeen = false;
+            LastSeenGameObjects.Clear();
         }
 
         public IMemento<SeenTileSaveData> GetSaveState()
@@ -49,6 +56,23 @@ namespace MarsUndiscovered.Components
             LastSeenGameObjects = memento.State.LastSeenGameObjectIds
                 .Select(o => gameObjects[o])
                 .ToList();
+        }
+
+        public static ArrayView<SeenTile> CreateArrayViewFromMap(MarsMap map)
+        {
+            var seenTiles = map.Positions()
+                .Select(p => new SeenTile(p))
+                .ToArray();
+
+            var seenTilesArrayView = new ArrayView<SeenTile>(seenTiles, map.Width);
+
+            return seenTilesArrayView;
+        }
+
+        public static void ResetSeenTiles(ArrayView<SeenTile> seenTiles)
+        {
+            foreach(var tile in seenTiles.ToArray())
+                tile.Reset();
         }
     }
 }

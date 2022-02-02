@@ -4,6 +4,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Extensions;
 
 namespace MarsUndiscovered.Components
 {
@@ -54,6 +55,14 @@ namespace MarsUndiscovered.Components
             return this;
         }
 
+        public Monster AddToMap(MarsMap marsMap)
+        {
+            MarsGameObjectFluentExtensions.AddToMap(this, marsMap);
+            MonsterGoal.Initialise();
+
+            return this;
+        }
+
         public void SetLoadState(IMemento<MonsterSaveData> memento)
         {
             base.PopulateLoadState(memento.State);
@@ -67,7 +76,7 @@ namespace MarsUndiscovered.Components
             base.PopulateSaveState(memento.State);
 
             memento.State.BreedName = Breed.Name;
-            memento.State.MonsterGoalSaveData = MonsterGoal.GetSaveState(mapper);
+            memento.State.MonsterGoalSaveData = MonsterGoal.GetSaveState();
 
             return memento;
         }
