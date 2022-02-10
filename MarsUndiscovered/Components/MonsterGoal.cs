@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Security.Cryptography;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
-
+using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.FOV;
+using GoRogue.GameFramework;
 using GoRogue.Pathing;
 
 using MarsUndiscovered.Components.SaveData;
@@ -64,9 +65,6 @@ namespace MarsUndiscovered.Components
             _fieldOfView.Reset();
             _fieldOfView.Calculate(Position);
 
-            _fieldOfView = new RecursiveShadowcastingFOV(Map.TransparencyView);
-            _fieldOfView.Calculate(Position);
-
             foreach (var item in _seenTiles.ToArray())
                 item.HasBeenSeen = false;
 
@@ -112,12 +110,35 @@ namespace MarsUndiscovered.Components
 
         public IMemento<MonsterGoalSaveData> GetSaveState()
         {
-            throw new System.NotImplementedException();
+            var memento = new Memento<MonsterGoalSaveData>();
+            memento.State.CurrentState = CurrentState.GetType();
+            memento.State.MonsterId = _monster.ID;
+
+            memento.State.SeenTiles = _seenTiles.ToArray()
+                .Select(s => s.GetSaveState())
+                .ToList();
+
+            return memento;
         }
 
         public void SetLoadState(IMemento<MonsterGoalSaveData> memento)
         {
-            throw new System.NotImplementedException();
+            var seenTiles = memento.State.SeenTiles
+                .Select(s =>
+                    {
+                        var seenTiles = new SeenTile(s.State.Point);
+
+                        // Monster goals currently don't care about last seen game objects
+                        // so we can pass in a new dictionary
+                        seenTiles.SetLoadState(s, new Dictionary<uint, IGameObject>());
+                        return seenTiles;
+                    }
+                )
+                .ToArray();
+
+            _seenTiles = new ArrayView<SeenTile>(seenTiles, MarsMap.MapWidth);
+
+            if (memento.State.)
         }
 
         public class WanderState : State<MonsterGoal>

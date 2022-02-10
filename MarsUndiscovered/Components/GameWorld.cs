@@ -470,9 +470,9 @@ namespace MarsUndiscovered.Components
             Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
             Player.LoadState(saveGameService);
             HistoricalCommands.LoadState(saveGameService);
-            Maps.LoadState(saveGameService);
             Inventory = new Inventory(this);
             Inventory.LoadState(saveGameService);
+            Maps.LoadState(saveGameService);
 
             GlobalRandom.DefaultRNG = saveGameService.GetFromStore<XorShift128Generator>().State;
         }

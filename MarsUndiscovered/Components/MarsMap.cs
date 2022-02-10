@@ -207,6 +207,7 @@ namespace MarsUndiscovered.Components
 
             var gameObjectsOnMap = memento.State.GameObjectIds
                 .Select(g => _gameWorld.GameObjects[g])
+                .OfType<MarsGameObject>()
                 .ToList();
 
             var terrain = gameObjectsOnMap.OfType<Terrain>().ToList();
@@ -218,6 +219,11 @@ namespace MarsUndiscovered.Components
             foreach (var nonTerrainObject in nonTerrainObjects)
             {
                 AddEntity(nonTerrainObject);
+            }
+
+            foreach (var gameObject in gameObjectsOnMap)
+            {
+                gameObject.AfterMapLoaded();
             }
         }
 

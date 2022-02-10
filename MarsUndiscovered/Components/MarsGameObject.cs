@@ -42,5 +42,9 @@ namespace MarsUndiscovered.Components
             IsWalkable = gameObjectSaveData.IsWalkable;
             IsTransparent = gameObjectSaveData.IsTransparent;
         }
+
+        public virtual void AfterMapLoaded()
+        {
+        }
     }
 }

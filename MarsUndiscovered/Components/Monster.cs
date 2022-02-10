@@ -67,6 +67,7 @@ namespace MarsUndiscovered.Components
         {
             base.PopulateLoadState(memento.State);
             MonsterGoal = new MonsterGoal(this);
+            MonsterGoal.SetLoadState(memento.State.MonsterGoalSaveData);
         }
 
         public IMemento<MonsterSaveData> GetSaveState()
@@ -79,6 +80,13 @@ namespace MarsUndiscovered.Components
             memento.State.MonsterGoalSaveData = MonsterGoal.GetSaveState();
 
             return memento;
+        }
+
+        public override void AfterMapLoaded()
+        {
+            base.AfterMapLoaded();
+
+            MonsterGoal.Initialise();
         }
     }
 }
