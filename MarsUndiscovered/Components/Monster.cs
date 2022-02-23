@@ -5,6 +5,7 @@ using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
 using MarsUndiscovered.Extensions;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
@@ -41,7 +42,7 @@ namespace MarsUndiscovered.Components
             return stringBuilder.ToString();
         }
 
-        public Monster(uint id) : base(id)
+        public Monster(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
             MonsterGoal = new MonsterGoal(this);
         }

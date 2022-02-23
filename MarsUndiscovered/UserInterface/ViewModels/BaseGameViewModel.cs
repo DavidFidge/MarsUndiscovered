@@ -32,8 +32,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         INotificationHandler<MapChangedNotification>
         where T : BaseGameData, new()
     {
-        public IGameWorldProvider GameWorldProvider { get; set; }
-        public IGameWorld GameWorld => GameWorldProvider.GameWorld;
+        public IGameWorldEndpoint GameWorldEndpoint { get; set; }
+        public IGameWorld GameWorld => GameWorldEndpoint.GameWorld;
         public ISceneGraph SceneGraph => MapViewModel.SceneGraph;
         public MapViewModel MapViewModel { get; set; }
 

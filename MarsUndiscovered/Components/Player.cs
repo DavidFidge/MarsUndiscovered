@@ -4,6 +4,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 using MonoGame.Extended;
 
@@ -22,7 +23,7 @@ namespace MarsUndiscovered.Components
 
         public override Attack BasicAttack { get; } = new Attack(new Range<int>(5, 10));
 
-        public Player(uint id) : base(id)
+        public Player(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
             MaxHealth = BaseHealth;
             Health = MaxHealth;

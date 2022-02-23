@@ -14,11 +14,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         where T : BaseInventoryData, new()
     {
         protected List<InventoryItem> _inventoryItems;
-        public IGameWorldProvider GameWorldProvider { get; set; }
+        public IGameWorldEndpoint GameWorldEndpoint { get; set; }
 
         public List<InventoryItem> GetInventoryItems()
         {
-            _inventoryItems = GameWorldProvider.GameWorld
+            _inventoryItems = GameWorldEndpoint.GameWorld
                 .GetInventoryItems()
                 .OrderBy(i => i.Key)
                 .ToList();

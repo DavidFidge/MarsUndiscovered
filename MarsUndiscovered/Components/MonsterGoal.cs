@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
+
+using BehaviourTree;
+using BehaviourTree.FluentBuilder;
+
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
@@ -23,41 +26,80 @@ namespace MarsUndiscovered.Components
         private IFOV _fieldOfView;
         private ArrayView<SeenTile> _seenTiles;
 
-        private State<MonsterGoal> _currentState;
-        private WanderState _wanderState;
-        private HuntPlayerState _huntPlayerState;
         private Monster _monster;
         private MarsMap Map => (MarsMap)_monster.CurrentMap;
+        private IGameWorld GameWorld => _monster.GameWorld;
         private Point Position => _monster.Position;
-        public State<MonsterGoal> CurrentState => _currentState;
+
+        private ArrayView<GoalState> _goalStates;
+        private GoalMap _chebyshevGoalState;
+        private GoalMap _manhattanGoalState;
+        private WeightedGoalMap _goalMap;
+        private IBehaviour<MonsterGoal> _behaviourTree;
 
         public MonsterGoal(Monster monster)
         {
             _monster = monster;
-            _wanderState = new WanderState();
-            _huntPlayerState = new HuntPlayerState();
-            _currentState = _wanderState;
+
+            _goalStates = new ArrayView<GoalState>(MarsMap.MapWidth, MarsMap.MapHeight);
+            _chebyshevGoalState = new GoalMap(_goalStates, Distance.Chebyshev);
+            _manhattanGoalState = new GoalMap(_goalStates, Distance.Manhattan);
+            _goalMap = new WeightedGoalMap(new[] { _chebyshevGoalState, _manhattanGoalState });
         }
 
         public void Initialise()
         {
             _fieldOfView = new RecursiveShadowcastingFOV(Map.TransparencyView);
             _seenTiles = SeenTile.CreateArrayViewFromMap(Map);
-        }
+            
+            var fluentBuilder = FluentBuilder.Create<MonsterGoal>();
 
-        public void ChangeStateToHunt()
-        {
-            ChangeState(_huntPlayerState);
-        }
+            _behaviourTree = fluentBuilder
+                .Sequence("root")
+                    .Selector("move selector")
+                        .Sequence("hunt")
+                            .Condition("on same map as player", monsterGoal => Map.Equals(GameWorld.Player.CurrentMap))
+                            .Condition("player in field of view", monsterGoal => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
+                            .Do("move towards player",
+                            monsterGoal =>
+                                {
+                                    _nextDirection = Hunt();
+                                    return BehaviourStatus.Succeeded;
+                                })
+                            .End()
+                        .Selector("wander")
+                            .Do("move to next unexplored square",
+                            monsterGoal =>
+                            {
+                                _nextDirection = Wander();
 
-        private void ChangeState(State<MonsterGoal> newState)
-        {
-            if (_currentState == newState)
-                return;
+                                if (_nextDirection == Direction.None)
+                                    return BehaviourStatus.Failed;
 
-            _currentState?.Exit(this);
-            _currentState = newState;
-            _currentState.Enter(this);
+                                return BehaviourStatus.Succeeded;
+                            })
+                           .Sequence("rebuild field of view sequence")
+                               .Condition("is blocked",
+                                monsterGoal =>
+                                {
+                                    foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
+                                    {
+                                        if (Map.GameObjectCanMove(_monster, Position + direction))
+                                            return false;
+                                    }
+
+                                    return true;
+                                })
+                                .Do("Rebuild fieldOfView", monsterGoal =>
+                                {
+                                    ResetFieldOfViewAndSeenTiles();
+                                    return BehaviourStatus.Succeeded;
+                                })
+                            .End()
+                        .End()
+                    .End()
+                .End()
+                .Build();
         }
 
         public void ResetFieldOfViewAndSeenTiles()
@@ -73,27 +115,11 @@ namespace MarsUndiscovered.Components
 
         public Direction GetNextMove(IGameWorld gameWorld)
         {
-            _currentState.Execute(this);
+            _behaviourTree.Tick(this);
 
             _fieldOfView.Calculate(Position);
 
             UpdateSeenTiles(_fieldOfView.NewlySeen);
-
-            var seenPlayer = false;
-
-            foreach (var point in _fieldOfView.NewlySeen)
-            {
-                if (gameWorld.Player.Position.Equals(point))
-                {
-                    ChangeState(_huntPlayerState);
-                    seenPlayer = true;
-                }
-            }
-
-            if (!seenPlayer)
-            {
-                ChangeState(_wanderState);
-            }
 
             return _nextDirection;
         }
@@ -111,9 +137,8 @@ namespace MarsUndiscovered.Components
         public IMemento<MonsterGoalSaveData> GetSaveState()
         {
             var memento = new Memento<MonsterGoalSaveData>();
-            memento.State.CurrentState = CurrentState.GetType();
-            memento.State.MonsterId = _monster.ID;
 
+            memento.State.MonsterId = _monster.ID;
             memento.State.SeenTiles = _seenTiles.ToArray()
                 .Select(s => s.GetSaveState())
                 .ToList();
@@ -138,167 +163,104 @@ namespace MarsUndiscovered.Components
 
             _seenTiles = new ArrayView<SeenTile>(seenTiles, MarsMap.MapWidth);
 
-            if (memento.State.)
+            _fieldOfView.Calculate(Position);
         }
 
-        public class WanderState : State<MonsterGoal>
+        public Direction Hunt()
         {
-            private readonly ArrayView<GoalState> _goalStates;
-            private readonly GoalMap _goalMap;
+            _goalStates.Clear();
 
-            public WanderState()
+            for (var x = 0; x < Map.Width; x++)
             {
-                _goalStates = new ArrayView<GoalState>(MarsMap.MapWidth, MarsMap.MapHeight);
-                _goalMap = new GoalMap(_goalStates, Distance.Chebyshev);
-            }
-
-            public override void Enter(MonsterGoal monsterGoal)
-            {
-            }
-
-            public override void Execute(MonsterGoal monsterGoal)
-            {
-                _goalStates.Clear();
-
-                for (var x = 0; x < MarsMap.MapWidth; x++)
+                for (var y = 0; y < Map.Height; y++)
                 {
-                    for (var y = 0; y < MarsMap.MapHeight; y++)
+                    var gameObjects = Map
+                        .GetObjectsAt(x, y)
+                        .ToList();
+
+                    _goalStates[x, y] = GoalState.Clear;
+
+                    foreach (var gameObject in gameObjects)
                     {
-                        if (!monsterGoal._seenTiles[x, y].HasBeenSeen)
+                        if (gameObject is Player _)
                         {
                             _goalStates[x, y] = GoalState.Goal;
-                            continue;
+                            break;
                         }
-
-                        var gameObjects = monsterGoal.Map
-                            .GetObjectsAt(x, y)
-                            .ToList();
-
-                        _goalStates[x, y] = GoalState.Clear;
-
-                        foreach (var gameObject in gameObjects)
+                        if (gameObject is Monster _)
                         {
-                            if (gameObject is Monster _)
-                            {
-                                _goalStates[x, y] = GoalState.Obstacle;
-                                break;
-                            }
-
-                            if (gameObject is Indestructible _)
-                            {
-                                _goalStates[x, y] = GoalState.Obstacle;
-                                break;
-                            }
-
-                            if (gameObject is Wall _)
-                            {
-                                _goalStates[x, y] = GoalState.Obstacle;
-                                break;
-                            }
+                            _goalStates[x, y] = GoalState.Obstacle;
+                            break;
                         }
+                        if (gameObject is Indestructible _)
+                        {
+                            _goalStates[x, y] = GoalState.Obstacle;
+                            break;
+                        }
+                        if (gameObject is Wall _)
+                        {
+                            _goalStates[x, y] = GoalState.Obstacle;
+                            break;
+                        }
+
+                        // We can reach here if the object type was an item or a floor, if so keep on looking.
                     }
                 }
-
-                _goalMap.Update();
-
-
-                monsterGoal._nextDirection = _goalMap.GetDirectionOfMinValue(monsterGoal.Position, AdjacencyRule.EightWay, false);
-
-                if (monsterGoal._nextDirection == Direction.None)
-                {
-                    // Monster cannot move for some reason. See if it is blocked by other monsters. If not, it is likely the
-                    // monster has completely explored the map. Reset its seen tiles and field of view so that it will 
-                    // start exploring again.
-                    var actors = monsterGoal.Map.GetObjectsAround<Actor>(monsterGoal.Position, AdjacencyRule.EightWay);
-
-                    if (!actors.Any())
-                        monsterGoal.ResetFieldOfViewAndSeenTiles();
-                }
             }
 
-            public override void Exit(MonsterGoal monsterGoal)
-            {
-            }
+            _chebyshevGoalState.Update();
+            _manhattanGoalState.Update();
 
-            public override void Reset(MonsterGoal monsterGoal)
-            {
-            }
+            return _goalMap.GetDirectionOfMinValue(Position, AdjacencyRule.EightWay, false);
         }
 
-        public class HuntPlayerState : State<MonsterGoal>
+        public Direction Wander()
         {
-            private readonly ArrayView<GoalState> _goalStates;
-            private readonly GoalMap _chebyshevGoalState;
-            private readonly GoalMap _manhattanGoalState;
-            private readonly WeightedGoalMap _goalMap;
+            _goalStates.Clear();
 
-            public HuntPlayerState()
+            for (var x = 0; x < MarsMap.MapWidth; x++)
             {
-                _goalStates = new ArrayView<GoalState>(MarsMap.MapWidth, MarsMap.MapHeight);
-                _chebyshevGoalState = new GoalMap(_goalStates, Distance.Chebyshev);
-                _manhattanGoalState = new GoalMap(_goalStates, Distance.Manhattan);
-                _goalMap = new WeightedGoalMap(new[] { _chebyshevGoalState, _manhattanGoalState });
-            }
-
-            public override void Enter(MonsterGoal monsterGoal)
-            {
-            }
-
-            public override void Execute(MonsterGoal monsterGoal)
-            {
-                _goalStates.Clear();
-
-                for (var x = 0; x < monsterGoal.Map.Width; x++)
+                for (var y = 0; y < MarsMap.MapHeight; y++)
                 {
-                    for (var y = 0; y < monsterGoal.Map.Height; y++)
+                    if (!_seenTiles[x, y].HasBeenSeen)
                     {
-                        var gameObjects = monsterGoal.Map
-                            .GetObjectsAt(x, y)
-                            .ToList();
+                        _goalStates[x, y] = GoalState.Goal;
+                        continue;
+                    }
 
-                        _goalStates[x, y] = GoalState.Clear;
+                    var gameObjects = Map
+                        .GetObjectsAt(x, y)
+                        .ToList();
 
-                        foreach (var gameObject in gameObjects)
+                    _goalStates[x, y] = GoalState.Clear;
+
+                    foreach (var gameObject in gameObjects)
+                    {
+                        if (gameObject is Monster _)
                         {
-                            if (gameObject is Player _)
-                            {
-                                _goalStates[x, y] = GoalState.Goal;
-                                break;
-                            }
-                            if (gameObject is Monster _)
-                            {
-                                _goalStates[x, y] = GoalState.Obstacle;
-                                break;
-                            }
-                            if (gameObject is Indestructible _)
-                            {
-                                _goalStates[x, y] = GoalState.Obstacle;
-                                break;
-                            }
-                            if (gameObject is Wall _)
-                            {
-                                _goalStates[x, y] = GoalState.Obstacle;
-                                break;
-                            }
+                            _goalStates[x, y] = GoalState.Obstacle;
+                            break;
+                        }
 
-                            // We can reach here if the object type was an item or a floor, if so keep on looking.
+                        if (gameObject is Indestructible _)
+                        {
+                            _goalStates[x, y] = GoalState.Obstacle;
+                            break;
+                        }
+
+                        if (gameObject is Wall _)
+                        {
+                            _goalStates[x, y] = GoalState.Obstacle;
+                            break;
                         }
                     }
                 }
-
-                _chebyshevGoalState.Update();
-                _manhattanGoalState.Update();
-
-                monsterGoal._nextDirection = _goalMap.GetDirectionOfMinValue(monsterGoal.Position, AdjacencyRule.EightWay, false);
             }
 
-            public override void Exit(MonsterGoal monsterGoal)
-            {
-            }
+            _chebyshevGoalState.Update();
+            _manhattanGoalState.Update();
 
-            public override void Reset(MonsterGoal monsterGoal)
-            {
-            }
+            return _goalMap.GetDirectionOfMinValue(Position, AdjacencyRule.EightWay, false);
         }
     }
 }

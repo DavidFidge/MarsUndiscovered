@@ -8,6 +8,5 @@ namespace MarsUndiscovered.Components.SaveData
     {
         public IList<IMemento<SeenTileSaveData>> SeenTiles { get; set; }
         public uint MonsterId { get; set; }
-        public Type CurrentState { get; set; }
     }
 }

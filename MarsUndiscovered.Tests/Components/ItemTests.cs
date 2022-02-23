@@ -1,8 +1,11 @@
 ﻿using FrigidRogue.TestInfrastructure;
 
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Interfaces;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using NSubstitute;
 
 namespace MarsUndiscovered.Tests.Components
 {
@@ -13,7 +16,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Create_MagnesiumPipe()
         {
             // Act
-            var item = new Item(1)
+            var item = new Item(Substitute.For<IGameWorld>(), 1)
                 .WithItemType(ItemType.MagnesiumPipe);
 
             // Assert
@@ -31,7 +34,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Create_ShieldGenerator()
         {
             // Act
-            var item = new Item(1)
+            var item = new Item(Substitute.For<IGameWorld>(), 1)
                 .WithItemType(ItemType.ShieldGenerator);
 
             // Assert
@@ -48,7 +51,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Create_HealingBots()
         {
             // Act
-            var item = new Item(1)
+            var item = new Item(Substitute.For<IGameWorld>(), 1)
                 .WithItemType(ItemType.HealingBots);
 
             // Assert
@@ -64,10 +67,10 @@ namespace MarsUndiscovered.Tests.Components
         public void CanGroupWith_Should_Return_If_Items_Can_Group()
         {
             // Act
-            var item1 = new Item(1).WithItemType(ItemType.HealingBots);
-            var item2 = new Item(2).WithItemType(ItemType.HealingBots);
-            var item3 = new Item(3).WithItemType(ItemType.MagnesiumPipe);
-            var item4 = new Item(4).WithItemType(ItemType.MagnesiumPipe);
+            var item1 = new Item(Substitute.For<IGameWorld>(), 1).WithItemType(ItemType.HealingBots);
+            var item2 = new Item(Substitute.For<IGameWorld>(), 2).WithItemType(ItemType.HealingBots);
+            var item3 = new Item(Substitute.For<IGameWorld>(), 3).WithItemType(ItemType.MagnesiumPipe);
+            var item4 = new Item(Substitute.For<IGameWorld>(), 4).WithItemType(ItemType.MagnesiumPipe);
 
             // Assert
             Assert.IsTrue(item1.CanGroupWith(item2));
@@ -82,7 +85,7 @@ namespace MarsUndiscovered.Tests.Components
         [DataRow(2, true, "2 NanoFlasks of Healing Bots")]
         public void Should_Get_HealingBots_Description(int quantity, bool isDiscovered, string expectedResult)
         {
-            var item = new Item(1)
+            var item = new Item(Substitute.For<IGameWorld>(), 1)
                 .WithItemType(ItemType.HealingBots);
 
             // Act
@@ -100,7 +103,7 @@ namespace MarsUndiscovered.Tests.Components
         [DataRow(-1, true, true, "A -1 Shield Generator Gadget")]
         public void Should_Get_ShieldGenerator_Description(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
         {
-            var item = new Item(1)
+            var item = new Item(Substitute.For<IGameWorld>(), 1)
                 .WithItemType(ItemType.ShieldGenerator)
                 .WithEnchantmentLevel(enchantmentLevel);
 
@@ -121,7 +124,7 @@ namespace MarsUndiscovered.Tests.Components
         [DataRow(-1, true, true, "A -1 Magnesium Pipe")]
         public void Should_Get_MagnesiumPipe_Description(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
         {
-            var item = new Item(1)
+            var item = new Item(Substitute.For<IGameWorld>(), 1)
                 .WithItemType(ItemType.MagnesiumPipe)
                 .WithEnchantmentLevel(enchantmentLevel);
 

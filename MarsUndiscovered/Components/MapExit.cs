@@ -3,6 +3,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 using SadRogue.Primitives;
 
@@ -14,7 +15,7 @@ namespace MarsUndiscovered.Components
         public Point LandingPosition { get; set; }
         public Direction Direction { get; set; }
 
-        public MapExit(uint id) : base(id)
+        public MapExit(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
         }
 

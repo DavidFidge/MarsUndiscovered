@@ -9,12 +9,21 @@ using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.GameFramework;
 
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components.Factories
 {
     public class GameObjectFactory : IGameObjectFactory
     {
         private readonly IWindsorContainer _container;
+        private IGameWorld _gameWorld;
+
+        public void Initialise(IGameWorld gameWorld)
+        {
+            LastId = 0;
+            GameObjects.Clear();
+            _gameWorld = gameWorld;
+        }
 
         public uint LastId { get; private set; } = 0;
         public IDictionary<uint, IGameObject> GameObjects { get; } = new Dictionary<uint, IGameObject>();
@@ -27,12 +36,6 @@ namespace MarsUndiscovered.Components.Factories
         public GameObjectFactory(IWindsorContainer container)
         {
             _container = container;
-        }
-
-        public void Reset()
-        {
-            LastId = 0;
-            GameObjects.Clear();
         }
 
         public Player CreatePlayer()
@@ -107,7 +110,7 @@ namespace MarsUndiscovered.Components.Factories
 
         private T ResolveWithNextId<T>() where T : IGameObject
         {
-            var gameObject = _container.Resolve<T>(new Arguments { { "id", GetNextId() } });
+            var gameObject = _container.Resolve<T>(new Arguments { { "gameWorld", _gameWorld }, { "id", GetNextId() } });
             GameObjects.Add(gameObject.ID, gameObject);
 
             return gameObject;
@@ -115,7 +118,7 @@ namespace MarsUndiscovered.Components.Factories
 
         private T ResolveWithGivenId<T>(uint id) where T : IGameObject
         {
-            var gameObject = _container.Resolve<T>(new Arguments { { "id", id } });
+            var gameObject = _container.Resolve<T>(new Arguments { { "gameWorld", _gameWorld }, { "id", id } });
             GameObjects.Add(gameObject.ID, gameObject);
 
             return gameObject;

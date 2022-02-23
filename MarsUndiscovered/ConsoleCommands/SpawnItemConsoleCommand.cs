@@ -12,7 +12,7 @@ namespace MarsUndiscovered.ConsoleCommands
     [ConsoleCommand(Name = "SpawnItem", Parameter1 = "ItemType")]
     public class SpawnItemConsoleCommand : BaseConsoleCommand
     {
-        public IGameWorldProvider GameWorldProvider { get; set; }
+        public IGameWorldEndpoint GameWorldEndpoint { get; set; }
 
         public SpawnItemConsoleCommand()
         {
@@ -30,7 +30,7 @@ namespace MarsUndiscovered.ConsoleCommands
                     return;
                 }
 
-                GameWorldProvider.GameWorld.SpawnItem(new SpawnItemParams().WithItemType(itemType));
+                GameWorldEndpoint.GameWorld.SpawnItem(new SpawnItemParams().WithItemType(itemType));
 
                 consoleCommand.Result = $"Spawned item {itemType}";
 

@@ -3,6 +3,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
@@ -10,7 +11,7 @@ namespace MarsUndiscovered.Components
     {
         public char ShipPart { get; set; }
 
-        public Ship(uint id) : base(id)
+        public Ship(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
         }
 
