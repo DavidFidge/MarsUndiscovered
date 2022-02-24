@@ -228,6 +228,45 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
 
         [TestMethod]
+        public void Monsters_Should_Update_Field_Of_View_Before_Calculating_Goals()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItems();
+
+            _gameWorld.Player.Position = new Point(10, 10);
+
+            var wallPosition1 = new Point(3, 0);
+            var wallPosition2 = new Point(3, 1);
+            var wallPosition3 = new Point(2, 1);
+            var wallPosition4 = new Point(1, 1);
+            var wallPosition5 = new Point(1, 2);
+            var wallPosition6 = new Point(0, 2);
+            _gameWorld.CreateWall(wallPosition1);
+            _gameWorld.CreateWall(wallPosition2);
+            _gameWorld.CreateWall(wallPosition3);
+            _gameWorld.CreateWall(wallPosition4);
+            _gameWorld.CreateWall(wallPosition5);
+            _gameWorld.CreateWall(wallPosition6);
+
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(2, 0)));
+
+            // Act
+            var result1 = _gameWorld.MoveRequest(Direction.Down);
+            var result2 = _gameWorld.MoveRequest(Direction.Down);
+            var result3= _gameWorld.MoveRequest(Direction.Down);
+
+            // Assert
+            var moveCommand = result3[2].Command as MoveCommand;
+            Assert.IsNotNull(moveCommand);
+
+            Assert.AreEqual(moveCommand.GameObject, _gameWorld.Monsters.Values.First());
+            Assert.AreEqual(moveCommand.FromTo.Item1, new Point(0, 1));
+
+            // Current AI logic will cycle the monster between two squares. The monster is stuck in a wall and it has fully explored the area it is in.
+            Assert.AreEqual(moveCommand.FromTo.Item2, new Point(0, 0));
+        }
+
+        [TestMethod]
         public void HasBeenSeen_Should_Be_False_For_Unseen_Tiles()
         {
             // Arrange

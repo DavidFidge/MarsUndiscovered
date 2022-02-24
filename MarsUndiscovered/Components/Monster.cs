@@ -59,14 +59,16 @@ namespace MarsUndiscovered.Components
         public Monster AddToMap(MarsMap marsMap)
         {
             MarsGameObjectFluentExtensions.AddToMap(this, marsMap);
-            MonsterGoal.Initialise();
+            MonsterGoal.ChangeMap();
 
             return this;
         }
 
         public void SetLoadState(IMemento<MonsterSaveData> memento)
         {
-            base.PopulateLoadState(memento.State);
+            PopulateLoadState(memento.State);
+            Breed = Breed.Breeds[memento.State.BreedName];
+
             MonsterGoal = new MonsterGoal(this);
             MonsterGoal.SetLoadState(memento.State.MonsterGoalSaveData);
         }
@@ -87,7 +89,7 @@ namespace MarsUndiscovered.Components
         {
             base.AfterMapLoaded();
 
-            MonsterGoal.Initialise();
+            MonsterGoal.AfterMapLoaded();
         }
     }
 }

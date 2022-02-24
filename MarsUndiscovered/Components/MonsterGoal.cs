@@ -5,9 +5,9 @@ using System.Linq;
 using BehaviourTree;
 using BehaviourTree.FluentBuilder;
 
-using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
+
 using GoRogue.FOV;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
@@ -45,59 +45,77 @@ namespace MarsUndiscovered.Components
             _chebyshevGoalState = new GoalMap(_goalStates, Distance.Chebyshev);
             _manhattanGoalState = new GoalMap(_goalStates, Distance.Manhattan);
             _goalMap = new WeightedGoalMap(new[] { _chebyshevGoalState, _manhattanGoalState });
+            CreateBehaviourTree();
         }
 
-        public void Initialise()
+        public void ChangeMap()
         {
             _fieldOfView = new RecursiveShadowcastingFOV(Map.TransparencyView);
             _seenTiles = SeenTile.CreateArrayViewFromMap(Map);
-            
+        }
+
+        public void AfterMapLoaded()
+        {
+            _fieldOfView = new RecursiveShadowcastingFOV(Map.TransparencyView);
+        }
+
+        private void CreateBehaviourTree()
+        {
             var fluentBuilder = FluentBuilder.Create<MonsterGoal>();
 
             _behaviourTree = fluentBuilder
                 .Sequence("root")
-                    .Selector("move selector")
-                        .Sequence("hunt")
-                            .Condition("on same map as player", monsterGoal => Map.Equals(GameWorld.Player.CurrentMap))
-                            .Condition("player in field of view", monsterGoal => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
-                            .Do("move towards player",
-                            monsterGoal =>
-                                {
-                                    _nextDirection = Hunt();
-                                    return BehaviourStatus.Succeeded;
-                                })
-                            .End()
-                        .Selector("wander")
-                            .Do("move to next unexplored square",
-                            monsterGoal =>
-                            {
-                                _nextDirection = Wander();
+                .Selector("move selector")
+                .Sequence("hunt")
+                .Condition("on same map as player", monsterGoal => Map.Equals(GameWorld.Player.CurrentMap))
+                .Condition("player in field of view", monsterGoal => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
+                .Do(
+                    "move towards player",
+                    monsterGoal =>
+                    {
+                        _nextDirection = Hunt();
+                        return BehaviourStatus.Succeeded;
+                    }
+                )
+                .End()
+                .Selector("wander")
+                .Do(
+                    "move to next unexplored square",
+                    monsterGoal =>
+                    {
+                        _nextDirection = Wander();
 
-                                if (_nextDirection == Direction.None)
-                                    return BehaviourStatus.Failed;
+                        if (_nextDirection == Direction.None)
+                            return BehaviourStatus.Failed;
 
-                                return BehaviourStatus.Succeeded;
-                            })
-                           .Sequence("rebuild field of view sequence")
-                               .Condition("is blocked",
-                                monsterGoal =>
-                                {
-                                    foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
-                                    {
-                                        if (Map.GameObjectCanMove(_monster, Position + direction))
-                                            return false;
-                                    }
+                        return BehaviourStatus.Succeeded;
+                    }
+                )
+                .Sequence("rebuild field of view sequence")
+                .Condition(
+                    "is blocked",
+                    monsterGoal =>
+                    {
+                        foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
+                        {
+                            if (Map.GameObjectCanMove(_monster, Position + direction))
+                                return false;
+                        }
 
-                                    return true;
-                                })
-                                .Do("Rebuild fieldOfView", monsterGoal =>
-                                {
-                                    ResetFieldOfViewAndSeenTiles();
-                                    return BehaviourStatus.Succeeded;
-                                })
-                            .End()
-                        .End()
-                    .End()
+                        return true;
+                    }
+                )
+                .Do(
+                    "Rebuild fieldOfView",
+                    monsterGoal =>
+                    {
+                        ResetFieldOfViewAndSeenTiles();
+                        return BehaviourStatus.Succeeded;
+                    }
+                )
+                .End()
+                .End()
+                .End()
                 .End()
                 .Build();
         }
@@ -105,21 +123,17 @@ namespace MarsUndiscovered.Components
         public void ResetFieldOfViewAndSeenTiles()
         {
             _fieldOfView.Reset();
-            _fieldOfView.Calculate(Position);
 
             foreach (var item in _seenTiles.ToArray())
                 item.HasBeenSeen = false;
-
-            UpdateSeenTiles(_fieldOfView.CurrentFOV);
         }
 
         public Direction GetNextMove(IGameWorld gameWorld)
         {
-            _behaviourTree.Tick(this);
-
             _fieldOfView.Calculate(Position);
-
             UpdateSeenTiles(_fieldOfView.NewlySeen);
+
+            _behaviourTree.Tick(this);
 
             return _nextDirection;
         }
@@ -136,7 +150,7 @@ namespace MarsUndiscovered.Components
 
         public IMemento<MonsterGoalSaveData> GetSaveState()
         {
-            var memento = new Memento<MonsterGoalSaveData>();
+            var memento = new Memento<MonsterGoalSaveData>(new MonsterGoalSaveData());
 
             memento.State.MonsterId = _monster.ID;
             memento.State.SeenTiles = _seenTiles.ToArray()
@@ -162,8 +176,6 @@ namespace MarsUndiscovered.Components
                 .ToArray();
 
             _seenTiles = new ArrayView<SeenTile>(seenTiles, MarsMap.MapWidth);
-
-            _fieldOfView.Calculate(Position);
         }
 
         public Direction Hunt()

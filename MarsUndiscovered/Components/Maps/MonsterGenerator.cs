@@ -15,7 +15,7 @@ namespace MarsUndiscovered.Components.Maps
                 .PositionedAt(GetPosition(spawnMonsterParams, map))
                 .AddToMap(map);
 
-            monster.MonsterGoal.Initialise();
+            monster.MonsterGoal.ChangeMap();
 
             monsterCollection.Add(monster.ID, monster);
 

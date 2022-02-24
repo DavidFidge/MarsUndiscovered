@@ -226,6 +226,7 @@ namespace MarsUndiscovered.Components
             if (walkDirection != Direction.None)
                 MoveRequest(walkDirection);
 
+            // Rebuild the goal map to calculate the path for the next auto explore movement for display on the front end
             _autoExploreGoalMap.Rebuild(this, fallbackToMapExit);
 
             return new AutoExploreResult(_autoExploreGoalMap.GoalMap, this);

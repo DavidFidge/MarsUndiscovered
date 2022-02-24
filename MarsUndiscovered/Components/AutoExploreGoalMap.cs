@@ -105,6 +105,8 @@ namespace MarsUndiscovered.Components
                 }
             }
 
+            _goalMap.Update();
+
             if (fallbackToMapExit)
             {
                 var tryNextMove = _goalMap.GetDirectionOfMinValue(gameWorld.Player.Position, false);
@@ -119,11 +121,10 @@ namespace MarsUndiscovered.Components
                     if (mapExitDown.Any())
                     {
                         _goalStates[mapExitDown.First().Position] = GoalState.Goal;
+                        _goalMap.Update();
                     }
                 }
             }
-
-            _goalMap.Update();
         }
     }
 }
