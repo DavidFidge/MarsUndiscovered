@@ -30,6 +30,7 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BehaviourTree\src\BehaviourTree\BehaviourTree.csproj" />
     <ProjectReference Include="..\..\FrigidRogue\FrigidRogue.Monogame.Core.View\FrigidRogue.Monogame.Core.View.csproj" />
     <ProjectReference Include="..\..\FrigidRogue\FrigidRogue.MonoGame.Core\FrigidRogue.MonoGame.Core.csproj" />
     <ProjectReference Include="..\..\GeonBit.UI\GeonBit.UI\GeonBit.UI.csproj" />

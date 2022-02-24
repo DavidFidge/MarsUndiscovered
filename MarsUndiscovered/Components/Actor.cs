@@ -1,4 +1,5 @@
 ﻿using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
@@ -19,7 +20,7 @@ namespace MarsUndiscovered.Components
 
         public abstract Attack BasicAttack { get; }
 
-        public Actor(uint id) : base(Constants.ActorLayer, false, true, () => id)
+        public Actor(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.ActorLayer, false, true, () => id)
         {
         }
 

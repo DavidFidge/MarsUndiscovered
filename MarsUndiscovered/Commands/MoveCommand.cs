@@ -64,8 +64,6 @@ namespace MarsUndiscovered.Commands
                 }
             }
 
-            GameWorld.RebuildGoalMaps();
-
             Mediator.Publish(new MapTileChangedNotification(FromTo.Item1));
             Mediator.Publish(new MapTileChangedNotification(FromTo.Item2));
 

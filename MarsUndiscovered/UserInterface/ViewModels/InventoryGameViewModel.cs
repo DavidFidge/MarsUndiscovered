@@ -15,7 +15,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             if (item != null)
             {
-                GameWorldProvider.GameWorld.EquipItemRequest(requestKey);
+                GameWorldEndpoint.GameWorld.EquipItemRequest(requestKey);
                 Mediator.Send(new CloseGameInventoryRequest());
                 Mediator.Publish(new RefreshViewNotification());
             }
@@ -27,7 +27,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             if (item != null)
             {
-                GameWorldProvider.GameWorld.UnequipItemRequest(requestKey);
+                GameWorldEndpoint.GameWorld.UnequipItemRequest(requestKey);
                 Mediator.Send(new CloseGameInventoryRequest());
                 Mediator.Publish(new RefreshViewNotification());
             }
@@ -39,7 +39,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             if (item != null)
             {
-                GameWorldProvider.GameWorld.DropItemRequest(requestKey);
+                GameWorldEndpoint.GameWorld.DropItemRequest(requestKey);
                 Mediator.Send(new CloseGameInventoryRequest());
                 Mediator.Publish(new RefreshViewNotification());
             }

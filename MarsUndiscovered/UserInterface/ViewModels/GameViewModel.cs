@@ -17,18 +17,18 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void NewGame(uint? seed = null)
         {
             IsActive = true;
-            GameWorldProvider.NewGame(seed);
+            GameWorldEndpoint.NewGame(seed);
             SetUpViewModels();
-            GameWorldProvider.AfterCreateGame();
+            GameWorldEndpoint.AfterCreateGame();
             Mediator.Publish(new RefreshViewNotification());
         }
 
         public void LoadGame(string filename)
         {
             IsActive = true;
-            GameWorldProvider.LoadGame(filename);
+            GameWorldEndpoint.LoadGame(filename);
             SetUpViewModels();
-            GameWorldProvider.AfterCreateGame();
+            GameWorldEndpoint.AfterCreateGame();
             Mediator.Publish(new RefreshViewNotification());
         }
 

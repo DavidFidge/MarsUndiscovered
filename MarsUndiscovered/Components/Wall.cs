@@ -2,12 +2,13 @@
 using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
     public class Wall : Terrain, IMementoState<WallSaveData>
     {
-        public Wall(uint id) : base(id, false, false)
+        public Wall(IGameWorld gameWorld, uint id) : base(gameWorld, id, false, false)
         {
         }
 

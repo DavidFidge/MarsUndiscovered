@@ -6,13 +6,13 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
-    public class GameWorldProvider : IGameWorldProvider
+    public class GameWorldEndpoint : IGameWorldEndpoint
     {
         private readonly IFactory<IGameWorld> _gameWorldFactory;
 
         public IGameWorld GameWorld { get; private set; }
 
-        public GameWorldProvider(IFactory<IGameWorld> gameWorldFactory)
+        public GameWorldEndpoint(IFactory<IGameWorld> gameWorldFactory)
         {
             _gameWorldFactory = gameWorldFactory;
         }

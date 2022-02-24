@@ -4,6 +4,8 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Extensions;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
@@ -13,6 +15,8 @@ namespace MarsUndiscovered.Components
         public override string Name => Breed.Name;
         public override string Description => Breed.Description;
         public override Attack BasicAttack => Breed.BasicAttack;
+
+        public MonsterGoal MonsterGoal { get; set; }
 
         public string GetInformation(Player player)
         {
@@ -38,8 +42,9 @@ namespace MarsUndiscovered.Components
             return stringBuilder.ToString();
         }
 
-        public Monster(uint id) : base(id)
+        public Monster(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
+            MonsterGoal = new MonsterGoal(this);
         }
 
         public Monster WithBreed(Breed breed)
@@ -51,10 +56,21 @@ namespace MarsUndiscovered.Components
             return this;
         }
 
+        public Monster AddToMap(MarsMap marsMap)
+        {
+            MarsGameObjectFluentExtensions.AddToMap(this, marsMap);
+            MonsterGoal.ChangeMap();
+
+            return this;
+        }
+
         public void SetLoadState(IMemento<MonsterSaveData> memento)
         {
-            base.PopulateLoadState(memento.State);
-            Breed = Breed.GetBreed(memento.State.BreedName);
+            PopulateLoadState(memento.State);
+            Breed = Breed.Breeds[memento.State.BreedName];
+
+            MonsterGoal = new MonsterGoal(this);
+            MonsterGoal.SetLoadState(memento.State.MonsterGoalSaveData);
         }
 
         public IMemento<MonsterSaveData> GetSaveState()
@@ -64,8 +80,16 @@ namespace MarsUndiscovered.Components
             base.PopulateSaveState(memento.State);
 
             memento.State.BreedName = Breed.Name;
+            memento.State.MonsterGoalSaveData = MonsterGoal.GetSaveState();
 
             return memento;
+        }
+
+        public override void AfterMapLoaded()
+        {
+            base.AfterMapLoaded();
+
+            MonsterGoal.AfterMapLoaded();
         }
     }
 }

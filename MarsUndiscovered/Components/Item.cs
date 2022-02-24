@@ -3,6 +3,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
@@ -22,7 +23,7 @@ namespace MarsUndiscovered.Components
         public bool HasBeenDropped { get; set; }
         public ItemDiscovery ItemDiscovery { get; set; } = new ItemDiscovery();
 
-        public Item(uint id) : base(Constants.ItemLayer, true, true, () => id)
+        public Item(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.ItemLayer, true, true, () => id)
         {
         }
 

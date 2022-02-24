@@ -294,7 +294,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var monsterPosition = new Point(1, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(monsterPosition));
             _gameWorld.ResetFieldOfView();
-            _gameWorld.RebuildGoalMaps();
 
             // Act
             var result = _gameWorld.AutoExploreRequest();

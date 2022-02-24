@@ -82,7 +82,6 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
             var monster = _gameWorld.Monsters.Values.First();
             var healthBefore = monster.Health;
-            _gameWorld.RebuildGoalMaps();
 
             // Act
             _gameWorld.MoveRequest(Direction.Down);
@@ -120,7 +119,6 @@ namespace MarsUndiscovered.Tests.Commands
             var monster = _gameWorld.Monsters.Values.First();
             var player = _gameWorld.Player;
             var healthBefore = player.Health;
-            _gameWorld.RebuildGoalMaps();
 
             // Act
             var commandResults = _gameWorld.MoveRequest(Direction.None);
@@ -247,7 +245,6 @@ namespace MarsUndiscovered.Tests.Commands
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
-            _gameWorld.RebuildGoalMaps();
 
             var monster = _gameWorld.Monsters.Values.First();
             var healthBefore = monster.Health;
@@ -287,7 +284,7 @@ namespace MarsUndiscovered.Tests.Commands
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 3)));
-            _gameWorld.RebuildGoalMaps();
+
             var monster = _gameWorld.Monsters.Values.First();
 
             var path = _gameWorld.GetPathToPlayer(new Point(0, 3));

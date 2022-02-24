@@ -10,7 +10,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void LoadReplay(string filename)
         {
             IsActive = true;
-            GameWorldProvider.LoadReplay(filename);
+            GameWorldEndpoint.LoadReplay(filename);
             SetupNewReplay();
             Mediator.Publish(new RefreshViewNotification());
         }
@@ -18,7 +18,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private void SetupNewReplay()
         {
             SetUpViewModels();
-            GameWorldProvider.AfterCreateGame();
+            GameWorldEndpoint.AfterCreateGame();
             TurnNumber = 1;
         }
 

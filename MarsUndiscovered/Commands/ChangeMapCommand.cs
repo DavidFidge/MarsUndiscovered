@@ -69,8 +69,6 @@ namespace MarsUndiscovered.Commands
             }
             else
             {
-                GameWorld.RebuildGoalMaps();
-
                 Mediator.Publish(new MapTileChangedNotification(GameObject.Position));
                 return Result(CommandResult.Success(this));
             }
@@ -88,8 +86,6 @@ namespace MarsUndiscovered.Commands
             }
             else
             {
-                GameWorld.RebuildGoalMaps();
-
                 Mediator.Publish(new MapTileChangedNotification(_oldPosition));
             }
         }

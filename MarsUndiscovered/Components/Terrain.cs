@@ -1,4 +1,5 @@
 ﻿using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
@@ -7,7 +8,7 @@ namespace MarsUndiscovered.Components
         public bool IsDestroyed { get; set; }
         public bool IsDestroyable { get; set; }
 
-        public Terrain(uint id, bool isWalkable = true, bool isTransparent = true) : base(Constants.TerrainLayer, isWalkable, isTransparent, idGenerator: () => id)
+        public Terrain(IGameWorld gameWorld, uint id, bool isWalkable = true, bool isTransparent = true) : base(gameWorld, Constants.TerrainLayer, isWalkable, isTransparent, idGenerator: () => id)
         {
             IsDestroyable = true;
         }

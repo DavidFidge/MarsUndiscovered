@@ -38,17 +38,7 @@ namespace MarsUndiscovered.Components
             Id = Guid.NewGuid();
             Level = 1;
             _gameWorld = gameWorld;
-
-            ResetSeenTiles();
-        }
-
-        private void ResetSeenTiles()
-        {
-            var seenTiles = this.Positions()
-                .Select(p => new SeenTile(p))
-                .ToArray();
-
-            SeenTiles = new ArrayView<SeenTile>(seenTiles, MapWidth);
+            SeenTiles = SeenTile.CreateArrayViewFromMap(this);
         }
 
         public void ApplyTerrainOverlay(IEnumerable<Wall> walls, IEnumerable<Floor> floors)
@@ -94,7 +84,7 @@ namespace MarsUndiscovered.Components
         public void ResetFieldOfView()
         {
             PlayerFOV.Reset();
-            ResetSeenTiles();
+            SeenTile.ResetSeenTiles(SeenTiles);
         }
 
         public void UpdateFieldOfView(Point position)
@@ -217,6 +207,7 @@ namespace MarsUndiscovered.Components
 
             var gameObjectsOnMap = memento.State.GameObjectIds
                 .Select(g => _gameWorld.GameObjects[g])
+                .OfType<MarsGameObject>()
                 .ToList();
 
             var terrain = gameObjectsOnMap.OfType<Terrain>().ToList();
@@ -228,6 +219,11 @@ namespace MarsUndiscovered.Components
             foreach (var nonTerrainObject in nonTerrainObjects)
             {
                 AddEntity(nonTerrainObject);
+            }
+
+            foreach (var gameObject in gameObjectsOnMap)
+            {
+                gameObject.AfterMapLoaded();
             }
         }
 
