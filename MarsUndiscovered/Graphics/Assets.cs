@@ -27,6 +27,7 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad MapExitDown { get; set; }
         public MapTileQuad MapExitUp { get; set; }
         public MapTileQuad Roach { get; set; }
+        public MapTileQuad TeslaCoil { get; set; }
         public MapTileQuad Weapon { get; set; }
         public MapTileQuad Gadget { get; set; }
         public MapTileQuad NanoFlask { get; set; }
@@ -122,6 +123,17 @@ namespace MarsUndiscovered.Graphics
                 TextureMaterialEffect,
                 'r',
                 Color.SaddleBrown
+            );
+
+            TeslaCoil = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '§',
+                Color.SteelBlue,
+                Color.White
             );
 
             MapExitDown = new MapTileQuad(

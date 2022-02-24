@@ -90,6 +90,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 case Roach _:
                     MapTileQuad = Assets.Roach;
                     break;
+
+                case TeslaCoil _:
+                    MapTileQuad = Assets.TeslaCoil;
+                    break;
             }
 
             IsVisible = true;

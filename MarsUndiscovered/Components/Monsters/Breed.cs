@@ -12,7 +12,8 @@ namespace MarsUndiscovered.Components
 
         public static Dictionary<string, Breed> Breeds;
         public static Roach Roach = new Roach();
-        public abstract Attack BasicAttack { get; }
+        public Attack BasicAttack { get; protected set; } = null;
+        public LightningAttack LightningAttack { get; protected set; } = null;
 
         static Breed()
         {

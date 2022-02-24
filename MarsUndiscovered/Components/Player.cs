@@ -22,6 +22,7 @@ namespace MarsUndiscovered.Components
         public bool IsVictorious { get; set; }
 
         public override Attack BasicAttack { get; } = new Attack(new Range<int>(5, 10));
+        public override LightningAttack LightningAttack { get; } = null;
 
         public Player(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {

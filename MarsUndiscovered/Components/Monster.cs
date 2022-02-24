@@ -15,6 +15,7 @@ namespace MarsUndiscovered.Components
         public override string Name => Breed.Name;
         public override string Description => Breed.Description;
         public override Attack BasicAttack => Breed.BasicAttack;
+        public override LightningAttack LightningAttack => Breed.LightningAttack;
 
         public MonsterGoal MonsterGoal { get; set; }
 
