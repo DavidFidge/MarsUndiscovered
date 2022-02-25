@@ -42,7 +42,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .WidthOfButton(TextInput.DefaultStyle.GetStyleProperty("DefaultSize").asVector.Y)
                 .AddTo(_customGameSeedPanel);
 
-            _customSeed.Validators.Add(new TextValidatorNumbersOnly(false, 0, uint.MaxValue));
+            _customSeed.Validators.Add(new TextValidatorULongNumbersOnly());
             _customSeed.Validators.Add(new SlugValidator(false));
 
             _startGameButton = new Button("Start Game")
@@ -51,7 +51,7 @@ namespace MarsUndiscovered.UserInterface.Views
                     request =>
                     {
                         if (_customSeed.Value.Length > 0)
-                            request.Seed = uint.Parse(_customSeed.Value);
+                            request.Seed = ulong.Parse(_customSeed.Value);
 
                     }, Mediator)
                 .AddTo(_customGameSeedPanel);

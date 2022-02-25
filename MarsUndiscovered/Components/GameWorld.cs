@@ -24,8 +24,7 @@ using Microsoft.Xna.Framework.Input;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
-using Troschuetz.Random;
-using Troschuetz.Random.Generators;
+using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Components
 {
@@ -52,7 +51,7 @@ namespace MarsUndiscovered.Components
         public CommandCollection HistoricalCommands { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
         public MessageLog MessageLog { get; } = new MessageLog();
-        public uint Seed { get; set; }
+        public ulong Seed { get; set; }
 
         public string LoadGameDetail
         {
@@ -69,19 +68,27 @@ namespace MarsUndiscovered.Components
 
         public GameWorld()
         {
-            GlobalRandom.DefaultRNG = new XorShift128Generator();
+            GlobalRandom.DefaultRNG = new MizuchiRandom();
         }
 
-        public void NewGame(uint? seed = null)
+        private ulong MakeSeed()
+        {
+            unchecked
+            {
+                var seedingRandom = new System.Random();
+                return (ulong)seedingRandom.Next() ^ (ulong)seedingRandom.Next() << 21 ^ (ulong)seedingRandom.Next() << 42;
+            }
+        }
+
+        public void NewGame(ulong? seed = null)
         {
             Reset();
 
-            if (seed == null)
-                seed = TMath.Seed();
+            seed ??= MakeSeed();
 
             Seed = seed.Value;
 
-            GlobalRandom.DefaultRNG = new XorShift128Generator(seed.Value);
+            GlobalRandom.DefaultRNG = new MizuchiRandom(seed.Value);
 
             Logger.Debug("Generating game world");
 
@@ -475,7 +482,8 @@ namespace MarsUndiscovered.Components
             Inventory.LoadState(saveGameService);
             Maps.LoadState(saveGameService);
 
-            GlobalRandom.DefaultRNG = saveGameService.GetFromStore<XorShift128Generator>().State;
+            var randomNumberState = saveGameService.GetFromStore<MizuchiRandom>().State;
+            GlobalRandom.DefaultRNG = new MizuchiRandom(randomNumberState.StateA, randomNumberState.StateB);
         }
 
         public void SaveState(ISaveGameService saveGameService)
@@ -496,9 +504,8 @@ namespace MarsUndiscovered.Components
             var gameWorldSaveData = GetSaveState();
             saveGameService.SaveToStore(gameWorldSaveData);
 
-            // Not sure I like this idea, as a memento is supposed to hold state, not a reference to an object. It does make the code more straightforward for saving and loading
-            // though.
-            saveGameService.SaveToStore(new Memento<XorShift128Generator>((XorShift128Generator)GlobalRandom.DefaultRNG));
+            var copiedRandomNumberState = new MizuchiRandom(((MizuchiRandom)GlobalRandom.DefaultRNG).StateA, ((MizuchiRandom)GlobalRandom.DefaultRNG).StateB);
+            saveGameService.SaveToStore(new Memento<MizuchiRandom>(copiedRandomNumberState));
         }
 
         public IMemento<GameWorldSaveData> GetSaveState()

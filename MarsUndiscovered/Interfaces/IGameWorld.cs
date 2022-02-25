@@ -18,14 +18,14 @@ namespace MarsUndiscovered.Interfaces
     public interface IGameWorld : ILoadGameDetail, IBaseComponent
     {
         Player Player { get; }
-        void NewGame(uint? seed = null);
+        void NewGame(ulong? seed = null);
         MarsMap CurrentMap { get; }
         IList<CommandResult> MoveRequest(Direction direction);
         IList<CommandResult> MoveRequest(Path path);
         IList<string> GetMessagesSince(int currentCount);
         SaveGameResult SaveGame(string saveGameName, bool overwrite);
         LoadGameResult LoadGame(string saveGameName);
-        uint Seed { get; }
+        ulong Seed { get; }
         WallCollection Walls { get; }
         FloorCollection Floors { get; }
         MonsterCollection Monsters { get; }

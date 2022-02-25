@@ -16,7 +16,7 @@ namespace MarsUndiscovered.Components
 
         public int Roll()
         {
-            return GlobalRandom.DefaultRNG.Next(DamageRange.Min, DamageRange.Max);
+            return GlobalRandom.DefaultRNG.NextInt(DamageRange.Min, DamageRange.Max);
         }
 
         public Attack Create(int powerLevel)

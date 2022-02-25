@@ -10,7 +10,7 @@ namespace MarsUndiscovered.Interfaces
         void CanSaveGame(string saveGameName);
         public void LoadGame(string filename);
         public void LoadReplay(string filename);
-        void NewGame(uint? seed = null);
+        void NewGame(ulong? seed = null);
         void AfterCreateGame();
     }
 }

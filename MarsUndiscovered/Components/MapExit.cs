@@ -56,7 +56,7 @@ namespace MarsUndiscovered.Components
 
             LandingPosition = memento.State.LandingPosition;
             Direction = memento.State.Direction;
-            //// Destination needs to be populated in MapExitCollection after all map exits are loaded
+            // Destination needs to be populated in MapExitCollection after all map exits are loaded
         }
     }
 }

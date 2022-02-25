@@ -9,6 +9,6 @@ namespace MarsUndiscovered.Messages
     [ActionMap(Name = "New Game", DefaultKey = Keys.N)]
     public class NewGameRequest : IRequest
     {
-        public uint? Seed { get; set; } = null;
+        public ulong? Seed { get; set; } = null;
     }
 }

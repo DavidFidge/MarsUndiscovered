@@ -100,11 +100,11 @@ namespace MarsUndiscovered.Components
 
             var unusedFlaskNames = new List<string>(RandomFlaskNames);
 
-            var index = GlobalRandom.DefaultRNG.Next(0, unusedFlaskNames.Count - 1);
+            var index = GlobalRandom.DefaultRNG.NextInt(0, unusedFlaskNames.Count - 1);
             ItemTypeDiscoveries.Add(ItemType.HealingBots, new ItemTypeDiscovery(unusedFlaskNames[index]));
 
             var unusedGadgetNames = new List<string>(RandomGadgetNames);
-            index = GlobalRandom.DefaultRNG.Next(0, unusedGadgetNames.Count - 1);
+            index = GlobalRandom.DefaultRNG.NextInt(0, unusedGadgetNames.Count - 1);
             ItemTypeDiscoveries.Add(ItemType.ShieldGenerator, new ItemTypeDiscovery(unusedGadgetNames[index]));
         }
 

@@ -4,7 +4,7 @@ namespace MarsUndiscovered.Components.SaveData
 {
     public class GameWorldSaveData : ILoadGameDetail
     {
-        public uint Seed { get; set; }
+        public ulong Seed { get; set; }
         public string LoadGameDetail { get; set; }
     }
 }

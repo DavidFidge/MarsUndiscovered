@@ -5,14 +5,15 @@ using GoRogue.MapGeneration.Steps;
 using GoRogue.MapGeneration.TunnelCreators;
 using GoRogue.Random;
 using SadRogue.Primitives;
-using Troschuetz.Random;
+
+using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Components.GenerationSteps
 {
     public static class GeneratorAlgorithms
     {
         public static IEnumerable<GenerationStep> OutdoorGeneneration(
-            IGenerator rng = null,
+            IEnhancedRandom rng = null,
             ushort fillProbability = 60,
             int totalIterations = 7,
             int cutoffBigAreaFill = 2,

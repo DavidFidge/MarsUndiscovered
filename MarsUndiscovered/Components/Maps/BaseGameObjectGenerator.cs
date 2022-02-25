@@ -2,9 +2,11 @@
 using FrigidRogue.MonoGame.Core.Extensions;
 
 using GoRogue.GameFramework;
+using GoRogue.Random;
 
 using SadRogue.Primitives;
-using SadRogue.Primitives.GridViews;
+
+using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Components.Maps
 {
@@ -22,7 +24,7 @@ namespace MarsUndiscovered.Components.Maps
                     MapHelpers.EmptyPointOnFloor
                 );
 
-            return map.RandomPosition(MapHelpers.EmptyPointOnFloor);
+            return GlobalRandom.DefaultRNG.RandomPosition(map, MapHelpers.EmptyPointOnFloor);
         }
     }
 }

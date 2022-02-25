@@ -13,6 +13,8 @@ using MarsUndiscovered.Messages;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
+using ShaiRandom.Generators;
+
 namespace MarsUndiscovered.Components.Maps
 {
     public class MapExitGenerator : BaseGameObjectGenerator, IMapExitGenerator
@@ -81,7 +83,7 @@ namespace MarsUndiscovered.Components.Maps
             if (!candidateWallPositions.Any())
             {
                 // This would mean the whole map is a wall or there's no walls at all. Pick any empty point on the floor.
-                candidateWallPositions.Add(map.RandomPosition(MapHelpers.EmptyPointOnFloor));
+                candidateWallPositions.Add(GlobalRandom.DefaultRNG.RandomPosition(map, MapHelpers.EmptyPointOnFloor));
             }
 
             var otherMapExitPoints = mapExitCollection
@@ -99,7 +101,7 @@ namespace MarsUndiscovered.Components.Maps
                     : splitPositionsByMagnitude.Item1.ToList();
             }
 
-            var position = candidateWallPositions[GlobalRandom.DefaultRNG.Next(0, candidateWallPositions.Count - 1)];
+            var position = candidateWallPositions[GlobalRandom.DefaultRNG.NextInt(0, candidateWallPositions.Count - 1)];
             return position;
         }
     }

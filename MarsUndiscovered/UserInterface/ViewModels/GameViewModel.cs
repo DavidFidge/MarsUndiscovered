@@ -14,7 +14,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class GameViewModel : BaseGameViewModel<GameData>
     {
-        public void NewGame(uint? seed = null)
+        public void NewGame(ulong? seed = null)
         {
             IsActive = true;
             GameWorldEndpoint.NewGame(seed);

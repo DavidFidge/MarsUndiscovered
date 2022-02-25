@@ -83,7 +83,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _stopwatchProvider.Start();
         }
 
-        public void NewGame(uint? seed = null)
+        public void NewGame(ulong? seed = null)
         {
             ResetViews();
             _viewModel.NewGame(seed);
