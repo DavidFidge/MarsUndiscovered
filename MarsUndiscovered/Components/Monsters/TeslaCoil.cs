@@ -13,6 +13,7 @@ namespace MarsUndiscovered.Components
             HealthModifier = 0.5m;
 
             LightningAttack = new LightningAttack(10);
+            IsWallTurret = true;
         }
     }
 }

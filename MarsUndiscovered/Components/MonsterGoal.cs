@@ -65,59 +65,94 @@ namespace MarsUndiscovered.Components
 
             _behaviourTree = fluentBuilder
                 .Sequence("root")
-                .Selector("move selector")
-                .Sequence("hunt")
-                .Condition("on same map as player", monsterGoal => Map.Equals(GameWorld.Player.CurrentMap))
-                .Condition("player in field of view", monsterGoal => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
-                .Do(
-                    "move towards player",
-                    monsterGoal =>
-                    {
-                        _nextDirection = Hunt();
-                        return BehaviourStatus.Succeeded;
-                    }
-                )
-                .End()
-                .Selector("wander")
-                .Do(
-                    "move to next unexplored square",
-                    monsterGoal =>
-                    {
-                        _nextDirection = Wander();
-
-                        if (_nextDirection == Direction.None)
-                            return BehaviourStatus.Failed;
-
-                        return BehaviourStatus.Succeeded;
-                    }
-                )
-                .Sequence("rebuild field of view sequence")
-                .Condition(
-                    "is blocked",
-                    monsterGoal =>
-                    {
-                        foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
-                        {
-                            if (Map.GameObjectCanMove(_monster, Position + direction))
-                                return false;
-                        }
-
-                        return true;
-                    }
-                )
-                .Do(
-                    "Rebuild fieldOfView",
-                    monsterGoal =>
-                    {
-                        ResetFieldOfViewAndSeenTiles();
-                        return BehaviourStatus.Succeeded;
-                    }
-                )
-                .End()
-                .End()
-                .End()
+                .Subtree(MoveBehavior())
                 .End()
                 .Build();
+        }
+
+        private IBehaviour<MonsterGoal> MoveBehavior()
+        {
+            var behaviour = FluentBuilder.Create<MonsterGoal>()
+                .Sequence("move sequence")
+                    .Do("set next direction to none", monsterGoal =>
+                    {
+                        _nextDirection = Direction.None;
+                        return BehaviourStatus.Succeeded;
+                    })
+                    .Condition("is not a turret", monsterGoal => !_monster.IsWallTurret)
+                    .Condition("on same map as player", monsterGoal => Map.Equals(GameWorld.Player.CurrentMap))
+                    .Selector("move selector")
+                        .Subtree(HuntBehaviour())
+                        .Subtree(WanderBehavior())
+                    .End()
+                .End()
+                .Build();
+
+            return behaviour;
+        }
+
+        private IBehaviour<MonsterGoal> WanderBehavior()
+        {
+            var behaviour = FluentBuilder.Create<MonsterGoal>()
+                .Selector("wander")
+                    .Do(
+                        "move to next unexplored square",
+                        monsterGoal =>
+                        {
+                            _nextDirection = Wander();
+
+                            if (_nextDirection == Direction.None)
+                                return BehaviourStatus.Failed;
+
+                            return BehaviourStatus.Succeeded;
+                        }
+                    )
+                    .Sequence("rebuild field of view sequence")
+                    .Condition(
+                        "is blocked",
+                        monsterGoal =>
+                        {
+                            foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
+                            {
+                                if (Map.GameObjectCanMove(_monster, Position + direction))
+                                    return false;
+                            }
+
+                            return true;
+                        }
+                    )
+                    .Do(
+                        "Rebuild fieldOfView",
+                        monsterGoal =>
+                        {
+                            ResetFieldOfViewAndSeenTiles();
+                            return BehaviourStatus.Succeeded;
+                        }
+                    )
+                    .End()
+                .End()
+                .Build();
+
+            return behaviour;
+        }
+
+        private IBehaviour<MonsterGoal> HuntBehaviour()
+        {
+            var behaviour = FluentBuilder.Create<MonsterGoal>()
+                .Sequence("hunt")
+                    .Condition("player in field of view", monsterGoal => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
+                    .Do(
+                        "move towards player",
+                        monsterGoal =>
+                        {
+                            _nextDirection = Hunt();
+                            return BehaviourStatus.Succeeded;
+                        }
+                    )
+                .End()
+                .Build();
+
+            return behaviour;
         }
 
         public void ResetFieldOfViewAndSeenTiles()

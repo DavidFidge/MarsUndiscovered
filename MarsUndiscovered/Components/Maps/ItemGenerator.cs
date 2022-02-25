@@ -7,7 +7,7 @@ namespace MarsUndiscovered.Components.Maps
 {
     public class ItemGenerator : BaseGameObjectGenerator, IItemGenerator
     {
-        public Item SpawnItem(SpawnItemParams spawnItemParams, IGameObjectFactory gameObjectFactory, Map map, ItemCollection itemCollection)
+        public Item SpawnItem(SpawnItemParams spawnItemParams, IGameObjectFactory gameObjectFactory, MarsMap map, ItemCollection itemCollection)
         {
             if (spawnItemParams.ItemType == null)
                 return null;

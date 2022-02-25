@@ -16,6 +16,7 @@ namespace MarsUndiscovered.Components
         public override string Description => Breed.Description;
         public override Attack BasicAttack => Breed.BasicAttack;
         public override LightningAttack LightningAttack => Breed.LightningAttack;
+        public override bool IsWallTurret => Breed.IsWallTurret;
 
         public MonsterGoal MonsterGoal { get; set; }
 
@@ -59,7 +60,13 @@ namespace MarsUndiscovered.Components
 
         public Monster AddToMap(MarsMap marsMap)
         {
+            // Normally actors are not walkable as they can't be on the same square, but if an actor is on a wall it has to be walkable so that
+            // it can be on the same square as a (non-walkable) wall.
+            if (IsWallTurret)
+                IsWalkable = true; 
+
             MarsGameObjectFluentExtensions.AddToMap(this, marsMap);
+
             MonsterGoal.ChangeMap();
 
             return this;

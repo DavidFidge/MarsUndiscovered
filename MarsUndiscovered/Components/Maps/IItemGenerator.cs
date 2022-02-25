@@ -6,6 +6,6 @@ namespace MarsUndiscovered.Components.Maps
 {
     public interface IItemGenerator
     {
-        Item SpawnItem(SpawnItemParams spawnItemParams, IGameObjectFactory gameObjectFactory, Map map, ItemCollection itemCollection);
+        Item SpawnItem(SpawnItemParams spawnItemParams, IGameObjectFactory gameObjectFactory, MarsMap map, ItemCollection itemCollection);
     }
 }

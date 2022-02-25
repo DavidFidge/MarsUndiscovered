@@ -18,7 +18,7 @@ namespace MarsUndiscovered.Tests.Components
         public Item SpawnItem(
             SpawnItemParams spawnItemParams,
             IGameObjectFactory gameObjectFactory,
-            Map map,
+            MarsMap map,
             ItemCollection itemCollection
         )
         {

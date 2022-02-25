@@ -11,9 +11,14 @@ namespace MarsUndiscovered.Components.Maps
         {
             var monster = gameObjectFactory
                 .CreateMonster()
-                .WithBreed(spawnMonsterParams.Breed)
-                .PositionedAt(GetPosition(spawnMonsterParams, map))
-                .AddToMap(map);
+                .WithBreed(spawnMonsterParams.Breed);
+
+            if (monster.IsWallTurret)
+                monster.PositionedAt(GetWallPositionAdjacentToFloor(spawnMonsterParams, map));
+            else
+                monster.PositionedAt(GetPosition(spawnMonsterParams, map));
+
+            monster.AddToMap(map);
 
             monster.MonsterGoal.ChangeMap();
 

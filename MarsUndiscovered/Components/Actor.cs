@@ -20,6 +20,7 @@ namespace MarsUndiscovered.Components
 
         public abstract Attack BasicAttack { get; }
         public abstract LightningAttack LightningAttack { get; }
+        public abstract bool IsWallTurret { get; }
 
         public Actor(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.ActorLayer, false, true, () => id)
         {
