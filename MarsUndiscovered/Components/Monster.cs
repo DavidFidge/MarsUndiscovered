@@ -1,11 +1,17 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
+using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
+using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.SaveData;
 using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Interfaces;
+
+using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Components
 {
@@ -98,6 +104,35 @@ namespace MarsUndiscovered.Components
             base.AfterMapLoaded();
 
             MonsterGoal.AfterMapLoaded();
+        }
+
+        public IEnumerable<BaseGameActionCommand> NextTurn(ICommandFactory commandFactory)
+        {
+            var direction = MonsterGoal.GetNextMove(GameWorld);
+
+            if (direction != Direction.None)
+            {
+                var positionBefore = Position;
+
+                var positionAfter = Position.Add(direction);
+
+                var player = CurrentMap.GetObjectAt<Player>(positionAfter);
+
+                if (player != null)
+                {
+                    var attackCommand = commandFactory.CreateAttackCommand(GameWorld);
+                    attackCommand.Initialise(this, player);
+
+                    yield return attackCommand;
+                }
+                else
+                {
+                    var moveCommand = commandFactory.CreateMoveCommand(GameWorld);
+                    moveCommand.Initialise(this, new Tuple<Point, Point>(positionBefore, positionAfter));
+
+                    yield return moveCommand;
+                }
+            }
         }
     }
 }

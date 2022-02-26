@@ -295,32 +295,10 @@ namespace MarsUndiscovered.Components
                 if (Player.IsDead)
                     yield break;
 
-                var direction = monster.MonsterGoal.GetNextMove(this);
-
-                if (direction != Direction.None)
+                foreach (var command in monster.NextTurn(CommandFactory))
                 {
-                    var positionBefore = monster.Position;
-
-                    var positionAfter = monster.Position.Add(direction);
-
-                    var player = CurrentMap.GetObjectAt<Player>(positionAfter);
-
-                    if (player != null)
-                    {
-                        var attackCommand = CommandFactory.CreateAttackCommand(this);
-                        attackCommand.Initialise(monster, player);
-
-                        foreach (var result in ExecuteCommand(attackCommand, false))
-                            yield return result;
-                    }
-                    else
-                    {
-                        var moveCommand = CommandFactory.CreateMoveCommand(this);
-                        moveCommand.Initialise(monster, new Tuple<Point, Point>(positionBefore, positionAfter));
-
-                        foreach (var result in ExecuteCommand(moveCommand, false))
-                            yield return result;
-                    }
+                    foreach (var result in ExecuteCommand(command, false))
+                        yield return result;
                 }
             }
         }
