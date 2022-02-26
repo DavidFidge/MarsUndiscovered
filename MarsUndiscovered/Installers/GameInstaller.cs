@@ -89,8 +89,6 @@ namespace MarsUndiscovered.Installers
 
                 Component.For<ScreenCollection>(),
 
-                Component.For<MonsterGoal>(),
-
                 Component.For<IHeightMapGenerator>()
                     .ImplementedBy<HeightMapGenerator>(),
                 

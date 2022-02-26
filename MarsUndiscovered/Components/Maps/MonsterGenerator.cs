@@ -20,8 +20,6 @@ namespace MarsUndiscovered.Components.Maps
 
             monster.AddToMap(map);
 
-            monster.MonsterGoal.ChangeMap();
-
             monsterCollection.Add(monster.ID, monster);
 
             Mediator.Publish(new MapTileChangedNotification(monster.Position));

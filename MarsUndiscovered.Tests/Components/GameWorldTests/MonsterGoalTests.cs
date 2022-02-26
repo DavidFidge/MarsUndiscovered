@@ -7,6 +7,8 @@ using MarsUndiscovered.Components;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using NGenerics.Extensions;
+
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
@@ -39,13 +41,16 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var monster = _gameWorld.Monsters.Values.First();
 
             _gameWorld.ResetFieldOfView();
-            monster.MonsterGoal.ResetFieldOfViewAndSeenTiles();
+            monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result = monster.MonsterGoal.GetNextMove(_gameWorld);
+            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
 
             // Assert
-            Assert.AreEqual(new Point(1, 4), monster.Position + result);
+            var moveCommand = result[0] as MoveCommand;
+            Assert.IsNotNull(moveCommand);
+            Assert.AreEqual(monster.Position, moveCommand.FromTo.Item1);
+            Assert.AreEqual(new Point(1, 4), moveCommand.FromTo.Item2);
         }
 
         [TestMethod]
@@ -67,17 +72,20 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var monster = _gameWorld.Monsters.Values.First();
 
             _gameWorld.ResetFieldOfView();
-            monster.MonsterGoal.ResetFieldOfViewAndSeenTiles();
+            monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result = monster.MonsterGoal.GetNextMove(_gameWorld);
+            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
 
             // Assert
-            Assert.AreEqual(new Point(2, 3), monster.Position + result);
+            var moveCommand = result[0] as MoveCommand;
+            Assert.IsNotNull(moveCommand);
+            Assert.AreEqual(monster.Position, moveCommand.FromTo.Item1);
+            Assert.AreEqual(new Point(2, 3), moveCommand.FromTo.Item2);
         }
 
         [TestMethod]
-        public void Should_Move_Towards_Player_When_Adjacent_To_Player()
+        public void Should_Attack_Player_When_Adjacent_To_Player()
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItemsNoExits();
@@ -89,13 +97,16 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var monster = _gameWorld.Monsters.Values.First();
 
             _gameWorld.ResetFieldOfView();
-            monster.MonsterGoal.ResetFieldOfViewAndSeenTiles();
+            monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result = monster.MonsterGoal.GetNextMove(_gameWorld);
+            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
 
             // Assert
-            Assert.AreEqual(new Point(1, 1), monster.Position + result);
+            var attackCommand = result[0] as AttackCommand;
+            Assert.IsNotNull(attackCommand);
+            Assert.AreSame(_gameWorld.Player, attackCommand.Target);
+            Assert.AreSame(monster, attackCommand.Source);
         }
 
         [TestMethod]
@@ -171,20 +182,22 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             _gameWorld.Player.Position = new Point(3, 3);
             var wallPosition1 = new Point(1, 1);
+            var wallPosition2 = new Point(2, 2);
 
             _gameWorld.CreateWall(wallPosition1);
+            _gameWorld.CreateWall(wallPosition2);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.TeslaCoil).AtPosition(wallPosition1));
 
             var monster = _gameWorld.Monsters.Values.First();
 
             _gameWorld.ResetFieldOfView();
-            monster.MonsterGoal.ResetFieldOfViewAndSeenTiles();
+            monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result = monster.MonsterGoal.GetNextMove(_gameWorld);
+            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
 
             // Assert
-            Assert.AreEqual(Direction.None, result);
+            Assert.IsTrue(result.IsEmpty());
         }
 
         [TestMethod]
@@ -202,18 +215,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var monster = _gameWorld.Monsters.Values.First();
 
             _gameWorld.ResetFieldOfView();
-            monster.MonsterGoal.ResetFieldOfViewAndSeenTiles();
+            monster.ResetFieldOfViewAndSeenTiles();
             var playerHealth = _gameWorld.Player.Health;
 
             // Act
-            var result = _gameWorld.NextTurn().ToList();
+            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
 
             // Assert
-            Assert.AreEqual(CommandResultEnum.Success, result[0].Result);
-
-            var lightningAttackCommand = result[0].Command as LightningAttackCommand;
-
-            Assert.IsNotNull(lightningAttackCommand);
+            var attackCommand = result[0] as LightningAttackCommand;
+            Assert.IsNotNull(attackCommand);
+            Assert.AreSame(_gameWorld.Player, attackCommand.Target);
+            Assert.AreSame(monster, attackCommand.Source);
             Assert.AreEqual(playerHealth - monster.LightningAttack.Damage, _gameWorld.Player.Health);
         }
     }
