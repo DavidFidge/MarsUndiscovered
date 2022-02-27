@@ -62,13 +62,6 @@ namespace MarsUndiscovered.Commands
                     return Result(CommandResult.Success(this, command));
                 }
 
-                var terrainAtDestination = map.GetTerrainAt(newPlayerPosition);
-
-                if (terrainAtDestination is Wall)
-                {
-                    return Result(CommandResult.NoMove(this, "The unrelenting red rock is cold and dry"));
-                }
-
                 // Maps get created with the setting where there cannot be multiple objects in the same layer.
                 // Thus if player cannot move to the new position then a monster should be there.
                 var actorAt = map.GetObjectAt<Actor>(newPlayerPosition);
@@ -83,6 +76,13 @@ namespace MarsUndiscovered.Commands
 
                 if (actorAt != null)
                     return Result(CommandResult.Exception(this, $"You bump into a {actorAt.Name}"));
+
+                var terrainAtDestination = map.GetTerrainAt(newPlayerPosition);
+
+                if (terrainAtDestination is Wall)
+                {
+                    return Result(CommandResult.NoMove(this, "The unrelenting red rock is cold and dry"));
+                }
 
                 var mapExitAt = map.GetObjectAt<MapExit>(newPlayerPosition);
 

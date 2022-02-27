@@ -227,31 +227,6 @@ namespace MarsUndiscovered.Components
             }
         }
 
-        public IList<T> GetTerrainAround<T>(Point position, AdjacencyRule adjacencyRule) where T : Terrain
-        {
-            return adjacencyRule.Neighbors(position)
-                .Where(p => this.Bounds().Contains(p))
-                .Select(GetTerrainAt<T>)
-                .Where(s => s != null)
-                .ToList();
-        }
-
-        public IList<T> GetObjectsAround<T>(Point position, AdjacencyRule adjacencyRule) where T : class, IGameObject
-        {
-            return adjacencyRule.Neighbors(position)
-                .Where(p => this.Bounds().Contains(p))
-                .SelectMany(p => GetObjectsAt<T>(p))
-                .ToList();
-        }
-
-        public IList<IGameObject> GetObjectsAround(Point position, AdjacencyRule adjacencyRule)
-        {
-            return adjacencyRule.Neighbors(position)
-                .Where(p => this.Bounds().Contains(p))
-                .SelectMany(p => GetObjectsAt(p))
-                .ToList();
-        }
-
         public Point FindClosestFreeFloor(Point startPoint, bool contiguousFromStartingPoint = true)
         {
             var queue = new Queue<Point>();

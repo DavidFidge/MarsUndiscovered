@@ -109,6 +109,46 @@ namespace MarsUndiscovered.Tests.Commands
         }
 
         [TestMethod]
+        public void WalkCommand_Player_Into_Monster_On_Wall_Should_Attack()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItems();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            var wallPosition = new Point(0, 1);
+            _gameWorld.CreateWall(wallPosition);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.TeslaCoil).AtPosition(wallPosition));
+
+            var monster = _gameWorld.Monsters.Values.First();
+            var healthBefore = monster.Health;
+
+            // Act
+            _gameWorld.MoveRequest(Direction.Down);
+
+            // Assert
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.Count());
+            Assert.AreEqual(0, _gameWorld.HistoricalCommands.MoveCommands.Count);
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands.Count);
+            Assert.AreEqual(0, _gameWorld.HistoricalCommands.AttackCommands.Count);
+            Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
+
+            var walkCommand = _gameWorld.HistoricalCommands.WalkCommands[0];
+
+            Assert.AreEqual(CommandResultEnum.Success, walkCommand.CommandResult.Result);
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+
+            var attackCommand =
+                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as AttackCommand;
+
+            Assert.IsNotNull(attackCommand);
+            Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
+
+            Assert.IsTrue(monster.Health < healthBefore);
+            Assert.AreEqual("You hit the tesla coil", attackCommand.CommandResult.Messages[0]);
+        }
+
+        [TestMethod]
         public void WalkCommand_With_NoDirection_With_Monster_Adjacent_Should_Result_In_Monster_Attacking_Player()
         {
             // Arrange

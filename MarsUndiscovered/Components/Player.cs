@@ -27,7 +27,7 @@ namespace MarsUndiscovered.Components
 
         public Player(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
-            MaxHealth = BaseHealth;
+            MaxHealth = 10000;
             Health = MaxHealth;
         }
 

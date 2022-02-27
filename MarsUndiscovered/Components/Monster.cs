@@ -11,6 +11,7 @@ using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
+using GoRogue;
 using GoRogue.FOV;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
@@ -35,6 +36,8 @@ namespace MarsUndiscovered.Components
         public override LightningAttack LightningAttack => Breed.LightningAttack;
         public override bool IsWallTurret => Breed.IsWallTurret;
 
+        public bool FriendlyFireAllies => Breed.FriendlyFireAllies;
+
         private IFOV _fieldOfView;
         private ArrayView<SeenTile> _seenTiles;
         private ArrayView<GoalState> _goalStates;
@@ -54,9 +57,24 @@ namespace MarsUndiscovered.Components
             stringBuilder.AppendLine(Description);
             stringBuilder.AppendLine();
 
-            var percentMaxDamage = Breed.BasicAttack.DamageRange.Max * 100 / player.MaxHealth;
-            var percentMinDamage = Breed.BasicAttack.DamageRange.Min * 100 / player.MaxHealth;
-            var defeatTurns = player.Health / Breed.BasicAttack.DamageRange.Max;
+            var percentMaxDamage = 0;
+            var percentMinDamage = 0;
+            var maxDamage = 0;
+
+            if (BasicAttack != null)
+            {
+                maxDamage = BasicAttack.DamageRange.Max;
+                percentMaxDamage = BasicAttack.DamageRange.Max * 100 / player.MaxHealth;
+                percentMinDamage = BasicAttack.DamageRange.Min * 100 / player.MaxHealth;
+            }
+            else if (LightningAttack != null)
+            {
+                maxDamage = LightningAttack.Damage;
+                percentMaxDamage = LightningAttack.Damage * 100 / player.MaxHealth;
+                percentMinDamage = LightningAttack.Damage * 100 / player.MaxHealth;
+            }
+
+            var defeatTurns = maxDamage > 0 ? player.Health / maxDamage : 999;
 
             var percentText = percentMinDamage != percentMaxDamage
                 ? $"between {percentMinDamage}-{percentMaxDamage}%"
@@ -76,7 +94,6 @@ namespace MarsUndiscovered.Components
             _manhattanGoalState = new GoalMap(_goalStates, Distance.Manhattan);
             _goalMap = new WeightedGoalMap(new[] { _chebyshevGoalState, _manhattanGoalState });
             _nextCommands = new List<BaseGameActionCommand>();
-            CreateBehaviourTree();
         }
 
         public Monster WithBreed(Breed breed)
@@ -84,6 +101,7 @@ namespace MarsUndiscovered.Components
             Breed = breed;
             MaxHealth = (int)(BaseHealth * Breed.HealthModifier);
             Health = MaxHealth;
+            CreateBehaviourTree();
 
             return this;
         }
@@ -187,9 +205,10 @@ namespace MarsUndiscovered.Components
 
             _behaviourTree = fluentBuilder
                 .Sequence("root")
-                .Condition("on same map as player", monsterGoal => CurrentMap.Equals(GameWorld.Player.CurrentMap))
+                .Condition("on same map as player", monster => CurrentMap.Equals(GameWorld.Player.CurrentMap))
                 .Selector("action selector")
                     .Subtree(BasicAttackBehaviour())
+                    .Subtree(LightningAttackBehaviour())
                     .Subtree(MoveBehavior())
                     .End()
                 .End()
@@ -200,7 +219,7 @@ namespace MarsUndiscovered.Components
         {
             var behaviour = FluentBuilder.Create<Monster>()
                 .Sequence("move sequence")
-                    .Condition("is not a turret", monsterGoal => !IsWallTurret)
+                    .Condition("is not a turret", monster => !IsWallTurret)
                     .Selector("move selector")
                         .Subtree(HuntBehaviour())
                         .Subtree(WanderBehavior())
@@ -215,11 +234,11 @@ namespace MarsUndiscovered.Components
         {
             var behaviour = FluentBuilder.Create<Monster>()
                 .Sequence("melee attack")
-                .Condition("has basic attack", monsterGoal => BasicAttack != null)
-                .Condition("player is adjacent", monsterGoal => Position.IsNextTo(GameWorld.Player.Position, AdjacencyRule.EightWay))
+                .Condition("has basic attack", monster => BasicAttack != null)
+                .Condition("player is adjacent", monster => Position.IsNextTo(GameWorld.Player.Position, AdjacencyRule.EightWay))
                 .Do(
                     "attack player",
-                    monsterGoal =>
+                    monster =>
                     {
                         var attackCommand = _commandFactory.CreateAttackCommand(GameWorld);
                         attackCommand.Initialise(this, GameWorld.Player);
@@ -234,13 +253,45 @@ namespace MarsUndiscovered.Components
             return behaviour;
         }
 
+        private IBehaviour<Monster> LightningAttackBehaviour()
+        {
+            var behaviour = FluentBuilder.Create<Monster>()
+                .Sequence("lightning attack")
+                .Condition("has lightning attack", monster => LightningAttack != null)
+                .Condition("player is in field of view", monster => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
+                .Do("lightning attack player", monster => ExecuteLightningAttack(monster, GameWorld.Player)
+                )
+                .End()
+                .Build();
+
+            return behaviour;
+        }
+
+        private BehaviourStatus ExecuteLightningAttack(Actor source, Actor target)
+        {
+            var lightningAttackCommand = _commandFactory.CreateLightningAttackCommand(GameWorld);
+            lightningAttackCommand.Initialise(source, target.Position);
+
+            if (!FriendlyFireAllies)
+            {
+                var anyAlliesAlongPath = lightningAttackCommand.Targets.Any(t => t is Monster);
+
+                if (anyAlliesAlongPath)
+                    return BehaviourStatus.Failed;
+            }
+
+            _nextCommands.Add(lightningAttackCommand);
+
+            return BehaviourStatus.Succeeded;
+        }
+
         private IBehaviour<Monster> WanderBehavior()
         {
             var behaviour = FluentBuilder.Create<Monster>()
                 .Selector("wander")
                     .Do(
                         "move to next unexplored square",
-                        monsterGoal =>
+                        monster =>
                         {
                             var nextDirection = Wander();
 
@@ -256,7 +307,7 @@ namespace MarsUndiscovered.Components
                     .Sequence("rebuild field of view sequence")
                     .Condition(
                         "is blocked",
-                        monsterGoal =>
+                        monster =>
                         {
                             foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
                             {
@@ -269,7 +320,7 @@ namespace MarsUndiscovered.Components
                     )
                     .Do(
                         "Rebuild fieldOfView",
-                        monsterGoal =>
+                        monster =>
                         {
                             ResetFieldOfViewAndSeenTiles();
                             return BehaviourStatus.Succeeded;
@@ -286,10 +337,10 @@ namespace MarsUndiscovered.Components
         {
             var behaviour = FluentBuilder.Create<Monster>()
                 .Sequence("hunt")
-                    .Condition("player in field of view", monsterGoal => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
+                    .Condition("player in field of view", monster => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
                     .Do(
                         "move towards player",
-                        monsterGoal =>
+                        monster =>
                         {
                             var nextDirection = Hunt();
 

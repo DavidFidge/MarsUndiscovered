@@ -108,8 +108,11 @@ namespace MarsUndiscovered.Components
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
 
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.TeslaCoil));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.TeslaCoil));
+
             SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed(Breed.TeslaCoil));
 
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));

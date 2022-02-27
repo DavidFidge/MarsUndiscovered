@@ -8,6 +8,7 @@ using GoRogue.GameFramework;
 using GoRogue.Random;
 
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 
 using ShaiRandom.Generators;
 
@@ -36,9 +37,9 @@ namespace MarsUndiscovered.Components.Maps
                 return spawnGameObjectParams.Position.Value;
 
             var validValues = map.Walls
-                .Where(w => AdjacencyRule.EightWay.Neighbors(w.Position).Any(n => map.GetTerrainAt<Floor>(n) != null))
+                .Where(w => AdjacencyRule.EightWay.Neighbors(w.Position).Any(n => map.Contains(n) && map.GetTerrainAt<Floor>(n) != null))
                 .Where(w => map.GetObjectsAt(w.Position).Count() == 1)
-                .ToHashSet();
+                .ToList();
 
             if (validValues.IsEmpty())
                 throw new Exception("No valid empty wall positions that are adjacent to a floor tile were found.");
@@ -46,11 +47,11 @@ namespace MarsUndiscovered.Components.Maps
             if (spawnGameObjectParams.AvoidPosition != null)
             {
                 validValues = validValues
-                    .Where(w => MapExtensions.MinSeparationFrom(spawnGameObjectParams.AvoidPosition.Value, w.Position, spawnGameObjectParams.AvoidPositionRange))
-                    .ToHashSet();
+                    .Where(w => FrigidRogue.MonoGame.Core.Extensions.MapExtensions.MinSeparationFrom(spawnGameObjectParams.AvoidPosition.Value, w.Position, spawnGameObjectParams.AvoidPositionRange))
+                    .ToList();
             }
 
-            return GlobalRandom.DefaultRNG.RandomPosition(map, validValues);
+            return validValues.RandomItem().Position;
         }
     }
 }

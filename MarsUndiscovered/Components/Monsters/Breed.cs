@@ -11,6 +11,7 @@ namespace MarsUndiscovered.Components
         public decimal HealthModifier { get; set; }
 
         public bool IsWallTurret { get; set; }
+        public bool FriendlyFireAllies { get; set; } = true;
 
         public static Dictionary<string, Breed> Breeds;
         public static Roach Roach = new Roach();

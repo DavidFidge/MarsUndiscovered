@@ -219,14 +219,19 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var playerHealth = _gameWorld.Player.Health;
 
             // Act
-            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result = _gameWorld.NextTurn().ToList();
 
             // Assert
-            var attackCommand = result[0] as LightningAttackCommand;
-            Assert.IsNotNull(attackCommand);
-            Assert.AreSame(_gameWorld.Player, attackCommand.Target);
-            Assert.AreSame(monster, attackCommand.Source);
+            var lightningAttackCommand = result[0].Command as LightningAttackCommand;
+            Assert.IsNotNull(lightningAttackCommand);
+            Assert.AreSame(_gameWorld.Player, lightningAttackCommand.Targets.Single());
+            Assert.AreSame(monster, lightningAttackCommand.Source);
             Assert.AreEqual(playerHealth - monster.LightningAttack.Damage, _gameWorld.Player.Health);
+
+            Assert.AreEqual(3, lightningAttackCommand.Path.Count);
+            Assert.AreEqual(wallPosition1, lightningAttackCommand.Path[0]);
+            Assert.AreEqual(new Point(2, 2), lightningAttackCommand.Path[1]);
+            Assert.AreEqual(_gameWorld.Player.Position, lightningAttackCommand.Path[2]);
         }
     }
 }

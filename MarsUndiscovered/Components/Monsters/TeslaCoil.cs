@@ -1,10 +1,12 @@
-﻿using MonoGame.Extended;
+﻿using FrigidRogue.MonoGame.Core.Extensions;
+
+using MonoGame.Extended;
 
 namespace MarsUndiscovered.Components
 {
     public class TeslaCoil : Breed
     {
-        public override string Name => nameof(TeslaCoil);
+        public override string Name => nameof(TeslaCoil).AddSpaces();
 
         public TeslaCoil()
         {
@@ -12,7 +14,7 @@ namespace MarsUndiscovered.Components
                 "This coil shoots lightning bolts at nearby threats.";
             HealthModifier = 0.5m;
 
-            LightningAttack = new LightningAttack(10);
+            LightningAttack = new LightningAttack(5);
             IsWallTurret = true;
         }
     }
