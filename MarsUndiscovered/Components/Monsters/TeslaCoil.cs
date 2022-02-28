@@ -1,7 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Extensions;
 
-using MonoGame.Extended;
-
 namespace MarsUndiscovered.Components
 {
     public class TeslaCoil : Breed

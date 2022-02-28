@@ -1,7 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Extensions;
+
 using GoRogue.Pathing;
+
+using MarsUndiscovered.Commands;
 
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
@@ -11,26 +16,35 @@ namespace MarsUndiscovered.Components
     public class AutoExploreResult
     {
         public Path Path { get; set; }
-        public bool HasMonsterNearby { get; set; }
+        public bool MovementInterrupted { get; set; }
 
-        public AutoExploreResult(IGridView<double?> goalMap, GameWorld gameWorld)
+        public AutoExploreResult(
+            IGridView<double?> goalMap,
+            Player player,
+            IList<CommandResult> moveRequestResults,
+            IList<Monster> lastMonstersInView,
+            IList<Monster> monstersInView)
         {
             var path = new HashSet<Point>();
-            var startPosition = gameWorld.Player.Position;
-            var endPosition = gameWorld.Player.Position;
+            var startPosition = player.Position;
+            var endPosition = player.Position;
 
             path.Add(startPosition);
-            
+
             while (goalMap.GetDirectionOfMinValue(endPosition, AdjacencyRule.EightWay, false) != Direction.None && !path.Contains(endPosition + goalMap.GetDirectionOfMinValue(endPosition, AdjacencyRule.EightWay, false)))
             {
                 endPosition += goalMap.GetDirectionOfMinValue(endPosition, AdjacencyRule.EightWay, false);
                 path.Add(endPosition);
             }
 
-            if (gameWorld.CurrentMap.GetObjectsAround<Monster>(gameWorld.Player.Position, AdjacencyRule.EightWay).Any())
-                HasMonsterNearby = true;
-
             Path = new Path(path);
+
+            if (player.CurrentMap.GetObjectsAround<Monster>(player.Position, AdjacencyRule.EightWay).Any()
+                || (moveRequestResults != null && moveRequestResults.Any(r => ((IBaseMarsGameActionCommand)r.Command).InterruptsMovement))
+                || monstersInView.Except(lastMonstersInView).Any())
+            {
+                MovementInterrupted = true;
+            }
         }
     }
 }

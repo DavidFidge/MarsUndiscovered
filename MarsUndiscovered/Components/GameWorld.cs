@@ -52,6 +52,8 @@ namespace MarsUndiscovered.Components
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
         public MessageLog MessageLog { get; } = new MessageLog();
         public ulong Seed { get; set; }
+        private IList<Monster> _monstersInView = new List<Monster>();
+        private IList<Monster> _lastMonstersInView = new List<Monster>();
 
         public string LoadGameDetail
         {
@@ -227,19 +229,23 @@ namespace MarsUndiscovered.Components
             UpdateFieldOfView(false);
         }
 
-        public AutoExploreResult AutoExploreRequest(bool fallbackToMapExit = false)
+        public AutoExploreResult AutoExploreRequest(bool fallbackToMapExit = true)
         {
             _autoExploreGoalMap.Rebuild(this, fallbackToMapExit);
 
             var walkDirection = _autoExploreGoalMap.GoalMap.GetDirectionOfMinValue(Player.Position, AdjacencyRule.EightWay, false);
 
+            IList<CommandResult> moveRequestResults = null;
+
             if (walkDirection != Direction.None)
-                MoveRequest(walkDirection);
+            {
+                moveRequestResults = MoveRequest(walkDirection);
+            }
 
             // Rebuild the goal map to calculate the path for the next auto explore movement for display on the front end
             _autoExploreGoalMap.Rebuild(this, fallbackToMapExit);
 
-            return new AutoExploreResult(_autoExploreGoalMap.GoalMap, this);
+            return new AutoExploreResult(_autoExploreGoalMap.GoalMap, Player, moveRequestResults, _lastMonstersInView, _monstersInView);
         }
 
         public IList<CommandResult> MoveRequest(Direction direction)
@@ -286,13 +292,15 @@ namespace MarsUndiscovered.Components
                     return commandResults;
             }
 
-            var result = MoveRequest(Direction.GetDirection(Player.Position, nextPoint));
+            var result = MoveRequest(Direction.GetDirection(Player.Position, nextPoint)).ToList();
 
             return result;
         }
 
         public IEnumerable<CommandResult> NextTurn()
         {
+            _lastMonstersInView = _monstersInView;
+
             foreach (var monster in Monsters.LiveMonsters.Where(m => m.CurrentMap.Equals(CurrentMap)))
             {
                 if (Player.IsDead)
@@ -304,6 +312,11 @@ namespace MarsUndiscovered.Components
                         yield return result;
                 }
             }
+
+            _monstersInView = Monsters.LiveMonsters
+                .Where(m => m.CurrentMap.Equals(CurrentMap))
+                .Where(m => CurrentMap.PlayerFOV.BooleanResultView[m.Position])
+                .ToList();
         }
 
         private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command, bool isPlayerAction = true)
@@ -443,9 +456,6 @@ namespace MarsUndiscovered.Components
         {
             Reset();
 
-            var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
-            SetLoadState(gameWorldSaveData);
-
             GameObjectFactory.LoadState(saveGameService);
             Walls.LoadState(saveGameService);
             Floors.LoadState(saveGameService);
@@ -463,8 +473,8 @@ namespace MarsUndiscovered.Components
             Inventory.LoadState(saveGameService);
             Maps.LoadState(saveGameService);
 
-            var randomNumberState = saveGameService.GetFromStore<MizuchiRandom>().State;
-            GlobalRandom.DefaultRNG = new MizuchiRandom(randomNumberState.StateA, randomNumberState.StateB);
+            var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
+            SetLoadState(gameWorldSaveData);
         }
 
         public void SaveState(ISaveGameService saveGameService)
@@ -484,9 +494,6 @@ namespace MarsUndiscovered.Components
 
             var gameWorldSaveData = GetSaveState();
             saveGameService.SaveToStore(gameWorldSaveData);
-
-            var copiedRandomNumberState = new MizuchiRandom(((MizuchiRandom)GlobalRandom.DefaultRNG).StateA, ((MizuchiRandom)GlobalRandom.DefaultRNG).StateB);
-            saveGameService.SaveToStore(new Memento<MizuchiRandom>(copiedRandomNumberState));
         }
 
         public IMemento<GameWorldSaveData> GetSaveState()
@@ -494,6 +501,9 @@ namespace MarsUndiscovered.Components
             var memento = new Memento<GameWorldSaveData>(new GameWorldSaveData());
             memento.State.Seed = Seed;
             memento.State.LoadGameDetail = LoadGameDetail;
+            memento.State.RandomNumberGenerator = new MizuchiRandom(((MizuchiRandom)GlobalRandom.DefaultRNG).StateA, ((MizuchiRandom)GlobalRandom.DefaultRNG).StateB); ;
+            memento.State.MonstersInView = _monstersInView.Select(m => m.ID).ToList();
+            memento.State.LastMonstersInView = _lastMonstersInView.Select(m => m.ID).ToList();
             return memento;
         }
 
@@ -501,6 +511,9 @@ namespace MarsUndiscovered.Components
         {
             Seed = memento.State.Seed;
             LoadGameDetail = memento.State.LoadGameDetail;
+            _lastMonstersInView = memento.State.LastMonstersInView.Select(m => Monsters[m]).ToList();
+            _monstersInView = memento.State.MonstersInView.Select(m => Monsters[m]).ToList();
+            GlobalRandom.DefaultRNG = new MizuchiRandom(memento.State.RandomNumberGenerator.StateA, memento.State.RandomNumberGenerator.StateB);
         }
 
         public PlayerStatus GetPlayerStatus()
@@ -517,14 +530,13 @@ namespace MarsUndiscovered.Components
 
         public IList<MonsterStatus> GetStatusOfMonstersInView()
         {
-            var status = Monsters.LiveMonsters
-                .Where(m => m.CurrentMap.Equals(CurrentMap))
-                .Where(m => CurrentMap.PlayerFOV.BooleanResultView[m.Position])
+            var status = _monstersInView
                 .Select(
                     m =>
                     {
                         var monsterStatus = new MonsterStatus
                         {
+                            ID = m.ID,
                             DistanceFromPlayer = CurrentMap.DistanceMeasurement.Calculate(m.Position, Player.Position),
                             Health = m.Health,
                             MaxHealth = m.MaxHealth,

@@ -16,7 +16,6 @@ namespace MarsUndiscovered.Tests.Components
         public IMapGenerator OriginalMapGenerator { get; private set; }
 
         private readonly IGameObjectFactory _gameObjectFactory;
-        private readonly Func<IGameObject> _fillWith;
 
         public HalfWallsGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator)
         {

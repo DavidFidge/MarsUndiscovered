@@ -11,7 +11,6 @@ using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
-using GoRogue;
 using GoRogue.FOV;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;

@@ -292,7 +292,7 @@ namespace MarsUndiscovered.UserInterface.Views
                     _lastMoveTime = _stopwatchProvider.Elapsed.TotalMilliseconds;
                     var autoExploreResult = _viewModel.AutoExplore();
 
-                    if (autoExploreResult.HasMonsterNearby || autoExploreResult.Path.Length == 0)
+                    if (autoExploreResult.MovementInterrupted || autoExploreResult.Path.Length == 0)
                         _isAutoExploring = false;
                 }
             }

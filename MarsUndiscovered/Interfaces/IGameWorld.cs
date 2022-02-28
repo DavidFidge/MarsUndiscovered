@@ -48,6 +48,6 @@ namespace MarsUndiscovered.Interfaces
         void UpdateFieldOfView(bool partialUpdate = true);
         void AfterCreateGame();
         void ChangeMap(MarsMap map);
-        AutoExploreResult AutoExploreRequest(bool fallbackToMapExit = false);
+        AutoExploreResult AutoExploreRequest(bool fallbackToMapExit = true);
     }
 }

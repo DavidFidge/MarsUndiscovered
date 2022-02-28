@@ -7,13 +7,15 @@ using Newtonsoft.Json;
 
 namespace MarsUndiscovered.Commands
 {
-    public abstract class BaseMarsGameActionCommand<T> : BaseStatefulGameActionCommand<T>
+    public abstract class BaseMarsGameActionCommand<T> : BaseStatefulGameActionCommand<T>, IBaseMarsGameActionCommand
     {
         [JsonIgnore]
         public IGameWorld GameWorld { get; private set; }
 
         [JsonIgnore]
         public ICommandFactory CommandFactory { get; set; }
+
+        public virtual bool InterruptsMovement => false;
 
         public BaseMarsGameActionCommand(IGameWorld gameWorld)
         {

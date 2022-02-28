@@ -16,7 +16,7 @@ using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Commands
 {
-    public class LightningAttackCommand : BaseMarsGameActionCommand<LightningAttackCommandSaveData>
+    public class LightningAttackCommand : BaseAttackCommand<LightningAttackCommandSaveData>
     {
         public Actor Source { get; private set; }
         public IList<Actor> Targets { get; private set; }

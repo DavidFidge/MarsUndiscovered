@@ -1,5 +1,4 @@
-﻿using GoRogue.GameFramework;
-using MarsUndiscovered.Components.Factories;
+﻿using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Messages;
 
