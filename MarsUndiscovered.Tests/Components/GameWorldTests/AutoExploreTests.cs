@@ -28,7 +28,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition2);
             _gameWorld.CreateWall(wallPosition3);
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.AutoExploreRequest();
@@ -61,7 +61,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition3);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(itemPosition));
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result1 = _gameWorld.AutoExploreRequest();
@@ -92,7 +92,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(itemPosition));
             _gameWorld.Items.Values.First().HasBeenDropped = true;
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result1 = _gameWorld.AutoExploreRequest();
@@ -122,7 +122,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition2);
             _gameWorld.CreateWall(wallPosition3);
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result1 = _gameWorld.AutoExploreRequest(true);
@@ -160,7 +160,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition2);
             _gameWorld.CreateWall(wallPosition3);
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result1 = _gameWorld.AutoExploreRequest(false);
@@ -193,7 +193,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 }
             }
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.AutoExploreRequest();
@@ -220,7 +220,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 }
             }
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result1 = _gameWorld.AutoExploreRequest();
@@ -267,7 +267,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition3);
             _gameWorld.CreateWall(wallPosition4);
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.AutoExploreRequest();
@@ -299,7 +299,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var monsterPosition = new Point(1, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(monsterPosition));
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.AutoExploreRequest();
@@ -326,7 +326,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.TeslaCoil).AtPosition(wallPosition));
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.AutoExploreRequest();
@@ -354,7 +354,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(monsterPosition));
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.AutoExploreRequest();
@@ -379,7 +379,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(monsterPosition));
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result1 = _gameWorld.AutoExploreRequest();
@@ -405,7 +405,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(monsterPosition));
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result1 = _gameWorld.AutoExploreRequest();

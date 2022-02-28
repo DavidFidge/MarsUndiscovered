@@ -40,7 +40,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var monster = _gameWorld.Monsters.Values.First();
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
@@ -71,7 +71,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var monster = _gameWorld.Monsters.Values.First();
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
@@ -96,7 +96,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var monster = _gameWorld.Monsters.Values.First();
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
@@ -190,7 +190,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var monster = _gameWorld.Monsters.Values.First();
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
@@ -214,12 +214,12 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var monster = _gameWorld.Monsters.Values.First();
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
             var playerHealth = _gameWorld.Player.Health;
 
             // Act
-            var result = _gameWorld.NextTurn().ToList();
+            var result = _gameWorld.TestNextTurn().ToList();
 
             // Assert
             var lightningAttackCommand = result[0].Command as LightningAttackCommand;

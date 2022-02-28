@@ -96,7 +96,7 @@ namespace MarsUndiscovered.Installers
                     .BasedOn<IGameCamera>()
                     .WithServiceDefaultInterfaces(),
 
-                Component.For<IGameWorldEndpoint>()
+                Component.For<IGameWorldEndpoint, IGameWorldConsoleCommandEndpoint>()
                     .ImplementedBy<GameWorldEndpoint>(),
 
                 Component.For<IGameWorld>()

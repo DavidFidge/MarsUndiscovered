@@ -18,7 +18,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public List<InventoryItem> GetInventoryItems()
         {
-            _inventoryItems = GameWorldEndpoint.GameWorld
+            _inventoryItems = GameWorldEndpoint
                 .GetInventoryItems()
                 .OrderBy(i => i.Key)
                 .ToList();

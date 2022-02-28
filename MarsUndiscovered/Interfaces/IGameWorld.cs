@@ -30,7 +30,6 @@ namespace MarsUndiscovered.Interfaces
         FloorCollection Floors { get; }
         MonsterCollection Monsters { get; }
         ItemCollection Items { get; }
-        MapCollection Maps { get; }
         Inventory Inventory { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
@@ -49,5 +48,8 @@ namespace MarsUndiscovered.Interfaces
         void AfterCreateGame();
         void ChangeMap(MarsMap map);
         AutoExploreResult AutoExploreRequest(bool fallbackToMapExit = true);
+        IList<IGameObject> GetLastSeenGameObjectsAtPosition(Point point);
+        IList<IGameObject> GetObjectsAt(Point point);
+        Point GetPlayerPosition();
     }
 }

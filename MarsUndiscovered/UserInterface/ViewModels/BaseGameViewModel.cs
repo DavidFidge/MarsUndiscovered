@@ -33,7 +33,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         where T : BaseGameData, new()
     {
         public IGameWorldEndpoint GameWorldEndpoint { get; set; }
-        public IGameWorld GameWorld => GameWorldEndpoint.GameWorld;
         public ISceneGraph SceneGraph => MapViewModel.SceneGraph;
         public MapViewModel MapViewModel { get; set; }
 
@@ -48,7 +47,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         protected void SetUpViewModels()
         {
-            MapViewModel.SetupNewMap(GameWorld);
+            MapViewModel.SetupNewMap(GameWorldEndpoint);
             MessageLogCount = 0;
         }
 
@@ -86,10 +85,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private void RefreshView()
         {
-            MonsterStatusInView = GameWorld.GetStatusOfMonstersInView();
-            PlayerStatus = GameWorld.GetPlayerStatus();
+            MonsterStatusInView = GameWorldEndpoint.GetStatusOfMonstersInView();
+            PlayerStatus = GameWorldEndpoint.GetPlayerStatus();
 
-            Messages = GameWorld.GetMessagesSince(MessageLogCount);
+            Messages = GameWorldEndpoint.GetMessagesSince(MessageLogCount);
             MessageLogCount += Messages.Count;
 
             Notify();
@@ -102,7 +101,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (point == null)
                 return null;
 
-            var tooltip = GameWorld.GetGameObjectInformationAt(point.Value);
+            var tooltip = GameWorldEndpoint.GetGameObjectInformationAt(point.Value);
 
             return tooltip;
         }
@@ -114,7 +113,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (point == null)
                 return Direction.None;
 
-            var centrePoint = new Point(GameWorld.CurrentMap.Width / 2, GameWorld.CurrentMap.Height / 2);
+            var mapDimensions = GameWorldEndpoint.GetCurrentMapDimensions();
+
+            var centrePoint = new Point(mapDimensions.Width / 2, mapDimensions.Height / 2);
 
             return Direction.GetDirection(centrePoint, point.Value);
         }

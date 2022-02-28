@@ -12,7 +12,7 @@ namespace MarsUndiscovered.ConsoleCommands
     [ConsoleCommand(Name = "SpawnMonster", Parameter1 = "Breed")]
     public class SpawnMonsterConsoleCommand : BaseConsoleCommand
     {
-        public IGameWorldEndpoint GameWorldEndpoint { get; set; }
+        public IGameWorldConsoleCommandEndpoint GameWorldConsoleCommandEndpoint { get; set; }
 
         public SpawnMonsterConsoleCommand()
         {
@@ -31,7 +31,7 @@ namespace MarsUndiscovered.ConsoleCommands
 
                 }
 
-                GameWorldEndpoint.GameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(breed));
+                GameWorldConsoleCommandEndpoint.SpawnMonster(new SpawnMonsterParams().WithBreed(breed));
                 consoleCommand.Result = $"Spawned monster {breed}";
                 return;
             }

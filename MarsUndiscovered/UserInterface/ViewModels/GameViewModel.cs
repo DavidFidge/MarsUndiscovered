@@ -34,13 +34,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void Move(Direction direction)
         {
-            GameWorld.MoveRequest(direction);
+            GameWorldEndpoint.MoveRequest(direction);
             Mediator.Publish(new RefreshViewNotification());
         }
 
         public AutoExploreResult AutoExplore()
         {
-            var result = GameWorld.AutoExploreRequest();
+            var result = GameWorldEndpoint.AutoExploreRequest();
             Mediator.Publish(new RefreshViewNotification());
             return result;
         }
@@ -52,15 +52,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (point == null)
                 return null;
 
-            return GameWorld.GetPathToPlayer(point.Value);
+            return GameWorldEndpoint.GetPathToPlayer(point.Value);
         }
 
         public bool Move(Path path)
         {
-            if (GameWorld.Player.Position == path.End)
+            if (GameWorldEndpoint.GetPlayerPosition().Equals(path.End))
                 return true;
 
-            var result = GameWorld.MoveRequest(path);
+            var result = GameWorldEndpoint.MoveRequest(path);
 
             if (result.IsEmpty())
                 return true;

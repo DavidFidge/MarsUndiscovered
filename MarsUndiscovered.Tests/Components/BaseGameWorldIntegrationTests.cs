@@ -1,4 +1,9 @@
-﻿using MarsUndiscovered.Components;
+﻿using System.Linq;
+
+using Castle.MicroKernel.Registration;
+
+using GoRogue.GameFramework;
+
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Interfaces;
 
@@ -9,14 +14,21 @@ namespace MarsUndiscovered.Tests.Components
     [TestClass]
     public abstract class BaseGameWorldIntegrationTests : BaseIntegrationTest
     {
-        protected GameWorld _gameWorld;
+        protected TestGameWorld _gameWorld;
 
         [TestInitialize]
         public override void Setup()
         {
             base.Setup();
 
-            _gameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            Container.Register(
+                Component.For<IGameWorld>()
+                    .ImplementedBy<TestGameWorld>()
+                    .LifestyleTransient()
+                    .IsDefault()
+                );
+
+            _gameWorld = (TestGameWorld)Container.Resolve<IGameWorld>();
         }
 
         protected void NewGameWithCustomMap(IMapGenerator mapGenerator = null)

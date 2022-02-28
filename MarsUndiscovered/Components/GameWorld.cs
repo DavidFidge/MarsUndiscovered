@@ -30,8 +30,6 @@ namespace MarsUndiscovered.Components
 {
     public class GameWorld : BaseComponent, IGameWorld, ISaveable, IMementoState<GameWorldSaveData>
     {
-        public MapCollection Maps { get; private set; }
-        public MarsMap CurrentMap => Maps.CurrentMap;
         public Player Player { get; private set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public ICommandFactory CommandFactory { get; set; }
@@ -50,10 +48,14 @@ namespace MarsUndiscovered.Components
         public ShipCollection Ships { get; private set; }
         public CommandCollection HistoricalCommands { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
-        public MessageLog MessageLog { get; } = new MessageLog();
+
+        public MapCollection Maps { get; private set; }
+        public MarsMap CurrentMap => Maps.CurrentMap;
+
+        private readonly MessageLog _messageLog = new MessageLog();
         public ulong Seed { get; set; }
-        private IList<Monster> _monstersInView = new List<Monster>();
-        private IList<Monster> _lastMonstersInView = new List<Monster>();
+        protected IList<Monster> MonstersInView = new List<Monster>();
+        protected IList<Monster> LastMonstersInView = new List<Monster>();
 
         public string LoadGameDetail
         {
@@ -146,6 +148,14 @@ namespace MarsUndiscovered.Components
             ResetFieldOfView();
         }
 
+        protected void ResetFieldOfView()
+        {
+            CurrentMap.ResetFieldOfView();
+            UpdateFieldOfView(false);
+            UpdateMonstersInView();
+            LastMonstersInView = MonstersInView;
+        }
+
         private MarsMap CreateMap()
         {
             var map = MapGenerator.CreateMap(this, GameObjectFactory, Components.Maps.MapGenerator.CreateOutdoorWallsFloors);
@@ -180,12 +190,6 @@ namespace MarsUndiscovered.Components
             _autoExploreGoalMap = new AutoExploreGoalMap();
 
             GameObjectFactory.Initialise(this);
-        }
-
-        public void ResetFieldOfView()
-        {
-            CurrentMap.ResetFieldOfView();
-            UpdateFieldOfView(false);
         }
 
         public void UpdateFieldOfView(bool partialUpdate = true)
@@ -245,7 +249,22 @@ namespace MarsUndiscovered.Components
             // Rebuild the goal map to calculate the path for the next auto explore movement for display on the front end
             _autoExploreGoalMap.Rebuild(this, fallbackToMapExit);
 
-            return new AutoExploreResult(_autoExploreGoalMap.GoalMap, Player, moveRequestResults, _lastMonstersInView, _monstersInView);
+            return new AutoExploreResult(_autoExploreGoalMap.GoalMap, Player, moveRequestResults, LastMonstersInView, MonstersInView);
+        }
+
+        public IList<IGameObject> GetLastSeenGameObjectsAtPosition(Point point)
+        {
+            return CurrentMap.LastSeenGameObjectsAtPosition(point).ToList();
+        }
+
+        public IList<IGameObject> GetObjectsAt(Point point)
+        {
+            return CurrentMap.GetObjectsAt(point).ToList();
+        }
+
+        public Point GetPlayerPosition()
+        {
+            return Player.Position;
         }
 
         public IList<CommandResult> MoveRequest(Direction direction)
@@ -297,9 +316,9 @@ namespace MarsUndiscovered.Components
             return result;
         }
 
-        public IEnumerable<CommandResult> NextTurn()
+        protected IEnumerable<CommandResult> NextTurn()
         {
-            _lastMonstersInView = _monstersInView;
+            LastMonstersInView = MonstersInView;
 
             foreach (var monster in Monsters.LiveMonsters.Where(m => m.CurrentMap.Equals(CurrentMap)))
             {
@@ -313,7 +332,12 @@ namespace MarsUndiscovered.Components
                 }
             }
 
-            _monstersInView = Monsters.LiveMonsters
+            UpdateMonstersInView();
+        }
+
+        protected void UpdateMonstersInView()
+        {
+            MonstersInView = Monsters.LiveMonsters
                 .Where(m => m.CurrentMap.Equals(CurrentMap))
                 .Where(m => CurrentMap.PlayerFOV.BooleanResultView[m.Position])
                 .ToList();
@@ -322,7 +346,7 @@ namespace MarsUndiscovered.Components
         private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command, bool isPlayerAction = true)
         {
             var result = command.Execute();
-            MessageLog.AddMessages(result.Messages);
+            _messageLog.AddMessages(result.Messages);
 
             if (isPlayerAction)
                 HistoricalCommands.AddCommand(command);
@@ -348,10 +372,10 @@ namespace MarsUndiscovered.Components
 
         public IList<string> GetMessagesSince(int currentCount)
         {
-            if (currentCount == MessageLog.Count)
+            if (currentCount == _messageLog.Count)
                 return Array.Empty<string>();
 
-            return MessageLog
+            return _messageLog
                 .Skip(currentCount)
                 .Select(s => s.Message)
                 .ToList();
@@ -439,6 +463,11 @@ namespace MarsUndiscovered.Components
             return loadGameResult;
         }
 
+        bool IGameWorld.ExecuteNextReplayCommand()
+        {
+            return ExecuteNextReplayCommand();
+        }
+
         public bool ExecuteNextReplayCommand()
         {
             if (_replayHistoricalCommandIndex < _replayHistoricalCommands.Length)
@@ -463,7 +492,7 @@ namespace MarsUndiscovered.Components
             Items.LoadState(saveGameService);
             MapExits.LoadState(saveGameService);
             Ships.LoadState(saveGameService);
-            MessageLog.LoadState(saveGameService);
+            _messageLog.LoadState(saveGameService);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
             Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
@@ -486,7 +515,7 @@ namespace MarsUndiscovered.Components
             Items.SaveState(saveGameService);
             MapExits.SaveState(saveGameService);
             Ships.SaveState(saveGameService);
-            MessageLog.SaveState(saveGameService);
+            _messageLog.SaveState(saveGameService);
             Player.SaveState(saveGameService);
             HistoricalCommands.SaveState(saveGameService);
             Inventory.SaveState(saveGameService);
@@ -502,8 +531,8 @@ namespace MarsUndiscovered.Components
             memento.State.Seed = Seed;
             memento.State.LoadGameDetail = LoadGameDetail;
             memento.State.RandomNumberGenerator = new MizuchiRandom(((MizuchiRandom)GlobalRandom.DefaultRNG).StateA, ((MizuchiRandom)GlobalRandom.DefaultRNG).StateB); ;
-            memento.State.MonstersInView = _monstersInView.Select(m => m.ID).ToList();
-            memento.State.LastMonstersInView = _lastMonstersInView.Select(m => m.ID).ToList();
+            memento.State.MonstersInView = MonstersInView.Select(m => m.ID).ToList();
+            memento.State.LastMonstersInView = LastMonstersInView.Select(m => m.ID).ToList();
             return memento;
         }
 
@@ -511,8 +540,8 @@ namespace MarsUndiscovered.Components
         {
             Seed = memento.State.Seed;
             LoadGameDetail = memento.State.LoadGameDetail;
-            _lastMonstersInView = memento.State.LastMonstersInView.Select(m => Monsters[m]).ToList();
-            _monstersInView = memento.State.MonstersInView.Select(m => Monsters[m]).ToList();
+            LastMonstersInView = memento.State.LastMonstersInView.Select(m => Monsters[m]).ToList();
+            MonstersInView = memento.State.MonstersInView.Select(m => Monsters[m]).ToList();
             GlobalRandom.DefaultRNG = new MizuchiRandom(memento.State.RandomNumberGenerator.StateA, memento.State.RandomNumberGenerator.StateB);
         }
 
@@ -530,7 +559,7 @@ namespace MarsUndiscovered.Components
 
         public IList<MonsterStatus> GetStatusOfMonstersInView()
         {
-            var status = _monstersInView
+            var status = MonstersInView
                 .Select(
                     m =>
                     {

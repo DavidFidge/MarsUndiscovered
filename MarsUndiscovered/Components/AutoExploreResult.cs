@@ -2,7 +2,6 @@
 using System.Linq;
 
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Extensions;
 
 using GoRogue.Pathing;
 

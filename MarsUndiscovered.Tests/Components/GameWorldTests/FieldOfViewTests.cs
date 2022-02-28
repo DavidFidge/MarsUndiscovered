@@ -20,7 +20,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 2)));
-            _gameWorld.UpdateFieldOfView(false);
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.GetStatusOfMonstersInView();
@@ -41,7 +41,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(2, 2)));
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 2)));
 
-            _gameWorld.UpdateFieldOfView(false);
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.GetStatusOfMonstersInView();
@@ -60,7 +60,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition);
 
             // Act
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Assert
             Assert.IsFalse(_gameWorld.CurrentMap.SeenTiles[new Point(2, 2)].HasBeenSeen);

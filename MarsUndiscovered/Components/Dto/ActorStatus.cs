@@ -1,6 +1,4 @@
-﻿using System.Xml;
-
-namespace MarsUndiscovered.Components
+﻿namespace MarsUndiscovered.Components
 {
     public abstract class ActorStatus
     {
