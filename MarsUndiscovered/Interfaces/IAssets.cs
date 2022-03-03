@@ -21,6 +21,7 @@ namespace MarsUndiscovered.Interfaces
         MapTileQuad Weapon { get; set; }
         MapTileQuad Gadget { get; set; }
         MapTileQuad NanoFlask { get; set; }
+        MapTileQuad Lightning { get; set; }
         MapTileQuad FieldOfViewUnrevealedQuad { get; set; }
         MapTileQuad FieldOfViewHasBeenSeenQuad { get; set; }
         IDictionary<char, MapTileQuad> ShipParts { get; set; }

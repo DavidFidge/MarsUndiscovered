@@ -32,6 +32,7 @@ namespace MarsUndiscovered.Components
     {
         public Player Player { get; private set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
+        public IGameTimeService GameTimeService { get; set; }
         public ICommandFactory CommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
         public ISaveGameService SaveGameService { get; set; }
@@ -146,6 +147,7 @@ namespace MarsUndiscovered.Components
             }
 
             ResetFieldOfView();
+            GameTimeService.Start();
         }
 
         protected void ResetFieldOfView()
@@ -179,6 +181,7 @@ namespace MarsUndiscovered.Components
 
         private void Reset()
         {
+            GameTimeService.Reset();
             Walls = new WallCollection(GameObjectFactory);
             Floors = new FloorCollection(GameObjectFactory);
             Monsters = new MonsterCollection(GameObjectFactory);
@@ -501,13 +504,16 @@ namespace MarsUndiscovered.Components
             Inventory = new Inventory(this);
             Inventory.LoadState(saveGameService);
             Maps.LoadState(saveGameService);
+            GameTimeService.LoadState(saveGameService);
 
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
             SetLoadState(gameWorldSaveData);
+            GameTimeService.Start();
         }
 
         public void SaveState(ISaveGameService saveGameService)
         {
+            GameTimeService.Stop();
             GameObjectFactory.SaveState(saveGameService);
             Walls.SaveState(saveGameService);
             Floors.SaveState(saveGameService);
@@ -520,6 +526,7 @@ namespace MarsUndiscovered.Components
             HistoricalCommands.SaveState(saveGameService);
             Inventory.SaveState(saveGameService);
             Maps.SaveState(saveGameService);
+            GameTimeService.SaveState(saveGameService);
 
             var gameWorldSaveData = GetSaveState();
             saveGameService.SaveToStore(gameWorldSaveData);

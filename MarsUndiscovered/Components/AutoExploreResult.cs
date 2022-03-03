@@ -17,6 +17,8 @@ namespace MarsUndiscovered.Components
         public Path Path { get; set; }
         public bool MovementInterrupted { get; set; }
 
+        public IList<CommandResult> CommandResults { get; set; }
+
         public AutoExploreResult(
             IGridView<double?> goalMap,
             Player player,
@@ -24,6 +26,8 @@ namespace MarsUndiscovered.Components
             IList<Monster> lastMonstersInView,
             IList<Monster> monstersInView)
         {
+            CommandResults = moveRequestResults.ToList();
+
             var path = new HashSet<Point>();
             var startPosition = player.Position;
             var endPosition = player.Position;

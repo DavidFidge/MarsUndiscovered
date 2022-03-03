@@ -274,6 +274,11 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             base.Update();
 
+            _viewModel.UpdateAnimation();
+
+            if (_viewModel.IsAnimating)
+                return;
+
             if (_currentMovePath != null)
             {
                 if (_stopwatchProvider.Elapsed.TotalMilliseconds - _lastMoveTime > _delayBetweenMove)

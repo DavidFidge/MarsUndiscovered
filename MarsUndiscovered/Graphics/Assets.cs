@@ -31,6 +31,7 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad Weapon { get; set; }
         public MapTileQuad Gadget { get; set; }
         public MapTileQuad NanoFlask { get; set; }
+        public MapTileQuad Lightning { get; set; }
         public MapTileQuad ShipRepairParts { get; set; }
         public MapTileQuad FieldOfViewUnrevealedQuad { get; set; }
         public MapTileQuad FieldOfViewHasBeenSeenQuad { get; set; }
@@ -215,6 +216,13 @@ namespace MarsUndiscovered.Graphics
                 TileQuadWidth,
                 TileQuadHeight,
                 new Color(Color.LightYellow, 0.3f)
+            );
+
+            Lightning = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                new Color(Color.White, 1f)
             );
         }
     }

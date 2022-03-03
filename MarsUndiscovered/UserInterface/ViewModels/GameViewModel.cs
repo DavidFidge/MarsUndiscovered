@@ -1,4 +1,6 @@
-﻿using FrigidRogue.MonoGame.Core.Extensions;
+﻿using System.Linq;
+
+using FrigidRogue.MonoGame.Core.Extensions;
 
 using GoRogue.Pathing;
 
@@ -34,13 +36,18 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void Move(Direction direction)
         {
-            GameWorldEndpoint.MoveRequest(direction);
+            if (Animations.Any())
+                return;
+
+            var commandResult = GameWorldEndpoint.MoveRequest(direction);
+            QueueAnimations(commandResult);
             Mediator.Publish(new RefreshViewNotification());
         }
 
         public AutoExploreResult AutoExplore()
         {
             var result = GameWorldEndpoint.AutoExploreRequest();
+            QueueAnimations(result.CommandResults);
             Mediator.Publish(new RefreshViewNotification());
             return result;
         }
@@ -60,7 +67,12 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (GameWorldEndpoint.GetPlayerPosition().Equals(path.End))
                 return true;
 
+            if (Animations.Any())
+                return false;
+
             var result = GameWorldEndpoint.MoveRequest(path);
+
+            QueueAnimations(result);
 
             if (result.IsEmpty())
                 return true;

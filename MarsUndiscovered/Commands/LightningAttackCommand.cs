@@ -88,6 +88,10 @@ namespace MarsUndiscovered.Commands
         {
             var lightningAttackPath = Lines.Get(source.Position, targetPoint, Lines.Algorithm.BresenhamOrdered).ToList();
 
+            lightningAttackPath = lightningAttackPath
+                .TakeWhile(p => p == source.Position || (source.CurrentMap.GetObjectAt<Wall>(p) == null && source.CurrentMap.GetObjectAt<Indestructible>(p) == null))
+                .ToList();
+
             Source = source;
 
             Path = lightningAttackPath;

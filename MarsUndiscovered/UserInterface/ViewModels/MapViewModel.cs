@@ -33,6 +33,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private bool _showGoalMap;
         private bool _showEntireMap;
         private ArrayView<MapTileRootEntity> _mapTileRootEntities;
+        private ArrayView<MapTileEntity> _animationTiles;
         private ArrayView<MapTileEntity> _terrainTiles;
         private ArrayView<MapTileEntity> _actorTiles;
         private ArrayView<MapTileEntity> _itemTiles;
@@ -66,6 +67,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             var currentMapDimensions = _gameWorldEndpoint.GetCurrentMapDimensions();
 
+            _animationTiles = new ArrayView<MapTileEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
             _terrainTiles = new ArrayView<MapTileEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
             _actorTiles = new ArrayView<MapTileEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
             _itemTiles = new ArrayView<MapTileEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
@@ -93,6 +95,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (_mapEntity == null)
                 return;
 
+            _animationTiles[point].IsVisible = false;
             _terrainTiles[point].IsVisible = false;
             _actorTiles[point].IsVisible = false;
             _itemTiles[point].IsVisible = false;
@@ -177,6 +180,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private void CreateTileGraph(Point position, MapTileRootEntity mapTileRootEntity)
         {
+            var animationTileEntity = _mapTileEntityFactory.Create(position);
+            _animationTiles[position] = animationTileEntity;
+
             var terrainTileEntity = _mapTileEntityFactory.Create(position);
             _terrainTiles[position] = terrainTileEntity;
 
@@ -210,6 +216,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _sceneGraph.Add(actorTileEntity, mapTileRootEntity);
             _sceneGraph.Add(indestructibleTile, mapTileRootEntity);
             _sceneGraph.Add(mouseHoverEntity, mapTileRootEntity);
+            _sceneGraph.Add(animationTileEntity, mapTileRootEntity);
 
             // Field of view needs to come last to ensure it will block any tiles
             _sceneGraph.Add(fieldOfViewTileEntity, mapTileRootEntity);
@@ -227,6 +234,28 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     UpdateTile(new Point(x, y));
                 }
             }
+        }
+
+        public void ClearAnimationTile(Point point)
+        {
+            ClearAnimationTiles(new[] { point });
+        }
+
+        public void ClearAnimationTiles(IEnumerable<Point> points)
+        {
+            foreach (var point in points)
+            {
+                _animationTiles[point].IsVisible = false;
+            }
+        }
+
+        public void AnimateTile(Point point, Action<MapTileEntity> action)
+        {
+            var animationTile = _animationTiles[point];
+
+            animationTile.IsVisible = true;
+
+            action(animationTile);
         }
 
         private void UpdateTileGameObjects(Point point, IList<IGameObject> gameObjects)
