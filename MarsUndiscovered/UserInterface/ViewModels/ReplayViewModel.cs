@@ -24,7 +24,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public bool ExecuteNextReplayCommand()
         {
-            var wasCommandExecuted = GameWorld.ExecuteNextReplayCommand();
+            var wasCommandExecuted = GameWorldEndpoint.ExecuteNextReplayCommand();
 
             if (!wasCommandExecuted)
                 return false;

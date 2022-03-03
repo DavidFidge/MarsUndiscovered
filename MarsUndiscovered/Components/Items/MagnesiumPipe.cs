@@ -14,7 +14,8 @@ namespace MarsUndiscovered.Components
         {
             base.ApplyProperties(item);
 
-            item.MeleeAttack = _meleeAttack.Create(item.EnchantmentLevel);
+            item.MeleeAttack = (Attack)_meleeAttack.Clone();
+            item.MeleeAttack.SetPowerLevel(item.EnchantmentLevel);
         }
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity)

@@ -86,7 +86,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             base.Show();
 
-            _saveGameName.Value = _gameWorldEndpoint.GameWorld.Seed.ToString();
+            _saveGameName.Value = _gameWorldEndpoint.GetSeed();
         }
 
         public Task<Unit> Handle(SaveGameRequest request, CancellationToken cancellationToken)
@@ -97,7 +97,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             if (_saveGameName.Value != null)
             {
-                var result = _gameWorldEndpoint.GameWorld.SaveGame(_saveGameName.Value, request.Overwrite);
+                var result = _gameWorldEndpoint.SaveGame(_saveGameName.Value, request.Overwrite);
 
                 Reset();
 

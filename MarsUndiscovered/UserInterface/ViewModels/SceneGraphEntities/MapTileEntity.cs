@@ -19,6 +19,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public Point Position { get; set; }
         public MapTileQuad MapTileQuad { get; set; }
         public bool IsVisible { get; set; }
+        public float BackgroundOpacity = -1f;
 
         public MapTileEntity(Point position)
         {
@@ -90,6 +91,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 case Roach _:
                     MapTileQuad = Assets.Roach;
                     break;
+
+                case TeslaCoil _:
+                    MapTileQuad = Assets.TeslaCoil;
+                    break;
             }
 
             IsVisible = true;
@@ -103,8 +108,20 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void Draw(Matrix view, Matrix projection, Matrix world)
         {
-            if (IsVisible)
+            if (!IsVisible)
+                return;
+
+            if (BackgroundOpacity >= 0f)
+                MapTileQuad.Draw(view, projection, world, BackgroundOpacity);
+            else
                 MapTileQuad.Draw(view, projection, world);
+        }
+
+        public void SetLightning(float opacity)
+        {
+            IsVisible = true;
+            MapTileQuad = Assets.Lightning;
+            BackgroundOpacity = opacity;
         }
     }
 }

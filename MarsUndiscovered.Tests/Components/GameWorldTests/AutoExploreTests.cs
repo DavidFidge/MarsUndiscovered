@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 
+using Castle.Core.Internal;
+
 using MarsUndiscovered.Components;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,7 +28,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition2);
             _gameWorld.CreateWall(wallPosition3);
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.AutoExploreRequest();
@@ -39,6 +41,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(new Point(0, 2), result.Path.GetStepWithStart(1));
             Assert.AreEqual(new Point(1, 3), result.Path.GetStepWithStart(2));
             Assert.AreEqual(new Point(2, 3), result.Path.GetStepWithStart(3));
+            Assert.IsFalse(result.MovementInterrupted);
         }
 
         [TestMethod]
@@ -58,7 +61,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition3);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(itemPosition));
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result1 = _gameWorld.AutoExploreRequest();
@@ -89,7 +92,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(itemPosition));
             _gameWorld.Items.Values.First().HasBeenDropped = true;
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result1 = _gameWorld.AutoExploreRequest();
@@ -119,7 +122,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition2);
             _gameWorld.CreateWall(wallPosition3);
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result1 = _gameWorld.AutoExploreRequest(true);
@@ -138,6 +141,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(new Point(2, 3), result4.Path.GetStepWithStart(1));
             Assert.AreEqual(new Point(1, 4), result4.Path.GetStepWithStart(2));
             Assert.AreEqual(mapExitPosition, result4.Path.GetStepWithStart(3));
+            Assert.IsFalse(result4.MovementInterrupted);
         }
 
         [TestMethod]
@@ -156,15 +160,15 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition2);
             _gameWorld.CreateWall(wallPosition3);
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
-            var result1 = _gameWorld.AutoExploreRequest();
-            var result2 = _gameWorld.AutoExploreRequest();
-            var result3 = _gameWorld.AutoExploreRequest();
-            var result4 = _gameWorld.AutoExploreRequest();
-            var result5 = _gameWorld.AutoExploreRequest();
-            var result6 = _gameWorld.AutoExploreRequest();
+            var result1 = _gameWorld.AutoExploreRequest(false);
+            var result2 = _gameWorld.AutoExploreRequest(false);
+            var result3 = _gameWorld.AutoExploreRequest(false);
+            var result4 = _gameWorld.AutoExploreRequest(false);
+            var result5 = _gameWorld.AutoExploreRequest(false);
+            var result6 = _gameWorld.AutoExploreRequest(false);
 
             // Assert
             Assert.AreEqual(new Point(2, 2), _gameWorld.Player.Position);
@@ -189,7 +193,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 }
             }
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.AutoExploreRequest();
@@ -197,6 +201,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
             Assert.AreEqual(0, _gameWorld.HistoricalCommands.Count());
+            Assert.IsFalse(result.MovementInterrupted);
         }
 
         [TestMethod]
@@ -215,7 +220,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 }
             }
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result1 = _gameWorld.AutoExploreRequest();
@@ -262,7 +267,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition3);
             _gameWorld.CreateWall(wallPosition4);
 
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.AutoExploreRequest();
@@ -272,6 +277,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(0, _gameWorld.HistoricalCommands.Count());
             Assert.AreEqual(1, result.Path.LengthWithStart);
             Assert.AreEqual(playerPosition, result.Path.Start);
+            Assert.IsFalse(result.MovementInterrupted);
         }
 
         [TestMethod]
@@ -293,7 +299,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var monsterPosition = new Point(1, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(monsterPosition));
-            _gameWorld.ResetFieldOfView();
+            _gameWorld.TestResetFieldOfView();
 
             // Act
             var result = _gameWorld.AutoExploreRequest();
@@ -302,6 +308,115 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(2, result.Path.LengthWithStart);
             Assert.AreEqual(playerPosition, result.Path.Start);
             Assert.AreEqual(monsterPosition, result.Path.End);
+            Assert.IsTrue(result.MovementInterrupted);
+        }
+
+        [TestMethod]
+        public void AutoExplore_Should_Stop_Movement_If_Attacked_By_Lightning()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItemsNoExits();
+
+            var playerPosition = new Point(3, 3);
+            _gameWorld.Player.Position = playerPosition;
+
+            var wallPosition = new Point(0, 0);
+            var mapExitPosition = new Point(5, 5);
+
+            _gameWorld.CreateWall(wallPosition);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.TeslaCoil).AtPosition(wallPosition));
+            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
+            _gameWorld.TestResetFieldOfView();
+
+            // Act
+            var result = _gameWorld.AutoExploreRequest();
+
+            // Assert
+            Assert.AreEqual(2, result.Path.LengthWithStart);
+            Assert.AreEqual(new Point(4, 4), result.Path.Start);
+            Assert.AreEqual(mapExitPosition, result.Path.End);
+            Assert.IsTrue(result.MovementInterrupted);
+        }
+
+        [TestMethod]
+        public void AutoExplore_Should_Stop_Movement_When_New_Monsters_Come_Into_View()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItemsNoExits();
+
+            var playerPosition = new Point(0, 10);
+            _gameWorld.Player.Position = playerPosition;
+
+            var monsterPosition = new Point(0, 0);
+            var wallPosition = new Point(0, 1);
+            var mapExitPosition = new Point(5, 10);
+
+            _gameWorld.CreateWall(wallPosition);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(monsterPosition));
+            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
+            _gameWorld.TestResetFieldOfView();
+
+            // Act
+            var result = _gameWorld.AutoExploreRequest();
+
+            // Assert
+            Assert.IsTrue(result.MovementInterrupted);
+        }
+
+        [TestMethod]
+        public void AutoExplore_Should_Not_Stop_Movement_When_Existing_Monsters_Are_In_View()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItemsNoExits();
+
+            var playerPosition = new Point(0, 10);
+            _gameWorld.Player.Position = playerPosition;
+
+            var monsterPosition = new Point(0, 0);
+            var wallPosition = new Point(0, 1);
+            var mapExitPosition = new Point(5, 10);
+
+            _gameWorld.CreateWall(wallPosition);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(monsterPosition));
+            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
+            _gameWorld.TestResetFieldOfView();
+
+            // Act
+            var result1 = _gameWorld.AutoExploreRequest();
+            var result2 = _gameWorld.AutoExploreRequest();
+
+            // Assert
+            Assert.IsFalse(result2.MovementInterrupted);
+        }
+
+        [TestMethod]
+        public void AutoExplore_Should_Not_Stop_Movement_When_Existing_Monster_Goes_Out_Of_View()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItemsNoExits();
+
+            var playerPosition = new Point(0, 10);
+            _gameWorld.Player.Position = playerPosition;
+
+            var monsterPosition = new Point(0, 0);
+            var wallPosition = new Point(0, 1);
+            var mapExitPosition = new Point(5, 10);
+
+            _gameWorld.CreateWall(wallPosition);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(monsterPosition));
+            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
+            _gameWorld.TestResetFieldOfView();
+
+            // Act
+            var result1 = _gameWorld.AutoExploreRequest();
+            var result2 = _gameWorld.AutoExploreRequest();
+            
+            _gameWorld.Monsters.Values.First().IsDead = true;
+
+            var result3 = _gameWorld.AutoExploreRequest();
+
+            // Assert
+            Assert.IsFalse(result3.MovementInterrupted);
         }
     }
 }

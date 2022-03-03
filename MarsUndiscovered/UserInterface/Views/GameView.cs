@@ -274,6 +274,11 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             base.Update();
 
+            _viewModel.UpdateAnimation();
+
+            if (_viewModel.IsAnimating)
+                return;
+
             if (_currentMovePath != null)
             {
                 if (_stopwatchProvider.Elapsed.TotalMilliseconds - _lastMoveTime > _delayBetweenMove)
@@ -292,7 +297,7 @@ namespace MarsUndiscovered.UserInterface.Views
                     _lastMoveTime = _stopwatchProvider.Elapsed.TotalMilliseconds;
                     var autoExploreResult = _viewModel.AutoExplore();
 
-                    if (autoExploreResult.HasMonsterNearby || autoExploreResult.Path.Length == 0)
+                    if (autoExploreResult.MovementInterrupted || autoExploreResult.Path.Length == 0)
                         _isAutoExploring = false;
                 }
             }

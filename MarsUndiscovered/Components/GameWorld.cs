@@ -30,10 +30,9 @@ namespace MarsUndiscovered.Components
 {
     public class GameWorld : BaseComponent, IGameWorld, ISaveable, IMementoState<GameWorldSaveData>
     {
-        public MapCollection Maps { get; private set; }
-        public MarsMap CurrentMap => Maps.CurrentMap;
         public Player Player { get; private set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
+        public IGameTimeService GameTimeService { get; set; }
         public ICommandFactory CommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
         public ISaveGameService SaveGameService { get; set; }
@@ -50,8 +49,14 @@ namespace MarsUndiscovered.Components
         public ShipCollection Ships { get; private set; }
         public CommandCollection HistoricalCommands { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
-        public MessageLog MessageLog { get; } = new MessageLog();
+
+        public MapCollection Maps { get; private set; }
+        public MarsMap CurrentMap => Maps.CurrentMap;
+
+        private readonly MessageLog _messageLog = new MessageLog();
         public ulong Seed { get; set; }
+        protected IList<Monster> MonstersInView = new List<Monster>();
+        protected IList<Monster> LastMonstersInView = new List<Monster>();
 
         public string LoadGameDetail
         {
@@ -108,8 +113,11 @@ namespace MarsUndiscovered.Components
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
 
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.TeslaCoil));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.TeslaCoil));
+
             SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed(Breed.TeslaCoil));
 
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
@@ -139,6 +147,15 @@ namespace MarsUndiscovered.Components
             }
 
             ResetFieldOfView();
+            GameTimeService.Start();
+        }
+
+        protected void ResetFieldOfView()
+        {
+            CurrentMap.ResetFieldOfView();
+            UpdateFieldOfView(false);
+            UpdateMonstersInView();
+            LastMonstersInView = MonstersInView;
         }
 
         private MarsMap CreateMap()
@@ -164,6 +181,7 @@ namespace MarsUndiscovered.Components
 
         private void Reset()
         {
+            GameTimeService.Reset();
             Walls = new WallCollection(GameObjectFactory);
             Floors = new FloorCollection(GameObjectFactory);
             Monsters = new MonsterCollection(GameObjectFactory);
@@ -175,12 +193,6 @@ namespace MarsUndiscovered.Components
             _autoExploreGoalMap = new AutoExploreGoalMap();
 
             GameObjectFactory.Initialise(this);
-        }
-
-        public void ResetFieldOfView()
-        {
-            CurrentMap.ResetFieldOfView();
-            UpdateFieldOfView(false);
         }
 
         public void UpdateFieldOfView(bool partialUpdate = true)
@@ -224,19 +236,38 @@ namespace MarsUndiscovered.Components
             UpdateFieldOfView(false);
         }
 
-        public AutoExploreResult AutoExploreRequest(bool fallbackToMapExit = false)
+        public AutoExploreResult AutoExploreRequest(bool fallbackToMapExit = true)
         {
             _autoExploreGoalMap.Rebuild(this, fallbackToMapExit);
 
             var walkDirection = _autoExploreGoalMap.GoalMap.GetDirectionOfMinValue(Player.Position, AdjacencyRule.EightWay, false);
 
+            IList<CommandResult> moveRequestResults = null;
+
             if (walkDirection != Direction.None)
-                MoveRequest(walkDirection);
+            {
+                moveRequestResults = MoveRequest(walkDirection);
+            }
 
             // Rebuild the goal map to calculate the path for the next auto explore movement for display on the front end
             _autoExploreGoalMap.Rebuild(this, fallbackToMapExit);
 
-            return new AutoExploreResult(_autoExploreGoalMap.GoalMap, this);
+            return new AutoExploreResult(_autoExploreGoalMap.GoalMap, Player, moveRequestResults, LastMonstersInView, MonstersInView);
+        }
+
+        public IList<IGameObject> GetLastSeenGameObjectsAtPosition(Point point)
+        {
+            return CurrentMap.LastSeenGameObjectsAtPosition(point).ToList();
+        }
+
+        public IList<IGameObject> GetObjectsAt(Point point)
+        {
+            return CurrentMap.GetObjectsAt(point).ToList();
+        }
+
+        public Point GetPlayerPosition()
+        {
+            return Player.Position;
         }
 
         public IList<CommandResult> MoveRequest(Direction direction)
@@ -283,52 +314,42 @@ namespace MarsUndiscovered.Components
                     return commandResults;
             }
 
-            var result = MoveRequest(Direction.GetDirection(Player.Position, nextPoint));
+            var result = MoveRequest(Direction.GetDirection(Player.Position, nextPoint)).ToList();
 
             return result;
         }
 
-        public IEnumerable<CommandResult> NextTurn()
+        protected IEnumerable<CommandResult> NextTurn()
         {
+            LastMonstersInView = MonstersInView;
+
             foreach (var monster in Monsters.LiveMonsters.Where(m => m.CurrentMap.Equals(CurrentMap)))
             {
                 if (Player.IsDead)
                     yield break;
 
-                var direction = monster.MonsterGoal.GetNextMove(this);
-
-                if (direction != Direction.None)
+                foreach (var command in monster.NextTurn(CommandFactory))
                 {
-                    var positionBefore = monster.Position;
-
-                    var positionAfter = monster.Position.Add(direction);
-
-                    var player = CurrentMap.GetObjectAt<Player>(positionAfter);
-
-                    if (player != null)
-                    {
-                        var attackCommand = CommandFactory.CreateAttackCommand(this);
-                        attackCommand.Initialise(monster, player);
-
-                        foreach (var result in ExecuteCommand(attackCommand, false))
-                            yield return result;
-                    }
-                    else
-                    {
-                        var moveCommand = CommandFactory.CreateMoveCommand(this);
-                        moveCommand.Initialise(monster, new Tuple<Point, Point>(positionBefore, positionAfter));
-
-                        foreach (var result in ExecuteCommand(moveCommand, false))
-                            yield return result;
-                    }
+                    foreach (var result in ExecuteCommand(command, false))
+                        yield return result;
                 }
             }
+
+            UpdateMonstersInView();
+        }
+
+        protected void UpdateMonstersInView()
+        {
+            MonstersInView = Monsters.LiveMonsters
+                .Where(m => m.CurrentMap.Equals(CurrentMap))
+                .Where(m => CurrentMap.PlayerFOV.BooleanResultView[m.Position])
+                .ToList();
         }
 
         private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command, bool isPlayerAction = true)
         {
             var result = command.Execute();
-            MessageLog.AddMessages(result.Messages);
+            _messageLog.AddMessages(result.Messages);
 
             if (isPlayerAction)
                 HistoricalCommands.AddCommand(command);
@@ -354,10 +375,10 @@ namespace MarsUndiscovered.Components
 
         public IList<string> GetMessagesSince(int currentCount)
         {
-            if (currentCount == MessageLog.Count)
+            if (currentCount == _messageLog.Count)
                 return Array.Empty<string>();
 
-            return MessageLog
+            return _messageLog
                 .Skip(currentCount)
                 .Select(s => s.Message)
                 .ToList();
@@ -445,6 +466,11 @@ namespace MarsUndiscovered.Components
             return loadGameResult;
         }
 
+        bool IGameWorld.ExecuteNextReplayCommand()
+        {
+            return ExecuteNextReplayCommand();
+        }
+
         public bool ExecuteNextReplayCommand()
         {
             if (_replayHistoricalCommandIndex < _replayHistoricalCommands.Length)
@@ -462,9 +488,6 @@ namespace MarsUndiscovered.Components
         {
             Reset();
 
-            var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
-            SetLoadState(gameWorldSaveData);
-
             GameObjectFactory.LoadState(saveGameService);
             Walls.LoadState(saveGameService);
             Floors.LoadState(saveGameService);
@@ -472,7 +495,7 @@ namespace MarsUndiscovered.Components
             Items.LoadState(saveGameService);
             MapExits.LoadState(saveGameService);
             Ships.LoadState(saveGameService);
-            MessageLog.LoadState(saveGameService);
+            _messageLog.LoadState(saveGameService);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
             Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
@@ -481,13 +504,16 @@ namespace MarsUndiscovered.Components
             Inventory = new Inventory(this);
             Inventory.LoadState(saveGameService);
             Maps.LoadState(saveGameService);
+            GameTimeService.LoadState(saveGameService);
 
-            var randomNumberState = saveGameService.GetFromStore<MizuchiRandom>().State;
-            GlobalRandom.DefaultRNG = new MizuchiRandom(randomNumberState.StateA, randomNumberState.StateB);
+            var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
+            SetLoadState(gameWorldSaveData);
+            GameTimeService.Start();
         }
 
         public void SaveState(ISaveGameService saveGameService)
         {
+            GameTimeService.Stop();
             GameObjectFactory.SaveState(saveGameService);
             Walls.SaveState(saveGameService);
             Floors.SaveState(saveGameService);
@@ -495,17 +521,15 @@ namespace MarsUndiscovered.Components
             Items.SaveState(saveGameService);
             MapExits.SaveState(saveGameService);
             Ships.SaveState(saveGameService);
-            MessageLog.SaveState(saveGameService);
+            _messageLog.SaveState(saveGameService);
             Player.SaveState(saveGameService);
             HistoricalCommands.SaveState(saveGameService);
             Inventory.SaveState(saveGameService);
             Maps.SaveState(saveGameService);
+            GameTimeService.SaveState(saveGameService);
 
             var gameWorldSaveData = GetSaveState();
             saveGameService.SaveToStore(gameWorldSaveData);
-
-            var copiedRandomNumberState = new MizuchiRandom(((MizuchiRandom)GlobalRandom.DefaultRNG).StateA, ((MizuchiRandom)GlobalRandom.DefaultRNG).StateB);
-            saveGameService.SaveToStore(new Memento<MizuchiRandom>(copiedRandomNumberState));
         }
 
         public IMemento<GameWorldSaveData> GetSaveState()
@@ -513,6 +537,9 @@ namespace MarsUndiscovered.Components
             var memento = new Memento<GameWorldSaveData>(new GameWorldSaveData());
             memento.State.Seed = Seed;
             memento.State.LoadGameDetail = LoadGameDetail;
+            memento.State.RandomNumberGenerator = new MizuchiRandom(((MizuchiRandom)GlobalRandom.DefaultRNG).StateA, ((MizuchiRandom)GlobalRandom.DefaultRNG).StateB); ;
+            memento.State.MonstersInView = MonstersInView.Select(m => m.ID).ToList();
+            memento.State.LastMonstersInView = LastMonstersInView.Select(m => m.ID).ToList();
             return memento;
         }
 
@@ -520,6 +547,9 @@ namespace MarsUndiscovered.Components
         {
             Seed = memento.State.Seed;
             LoadGameDetail = memento.State.LoadGameDetail;
+            LastMonstersInView = memento.State.LastMonstersInView.Select(m => Monsters[m]).ToList();
+            MonstersInView = memento.State.MonstersInView.Select(m => Monsters[m]).ToList();
+            GlobalRandom.DefaultRNG = new MizuchiRandom(memento.State.RandomNumberGenerator.StateA, memento.State.RandomNumberGenerator.StateB);
         }
 
         public PlayerStatus GetPlayerStatus()
@@ -536,14 +566,13 @@ namespace MarsUndiscovered.Components
 
         public IList<MonsterStatus> GetStatusOfMonstersInView()
         {
-            var status = Monsters.LiveMonsters
-                .Where(m => m.CurrentMap.Equals(CurrentMap))
-                .Where(m => CurrentMap.PlayerFOV.BooleanResultView[m.Position])
+            var status = MonstersInView
                 .Select(
                     m =>
                     {
                         var monsterStatus = new MonsterStatus
                         {
+                            ID = m.ID,
                             DistanceFromPlayer = CurrentMap.DistanceMeasurement.Calculate(m.Position, Player.Position),
                             Health = m.Health,
                             MaxHealth = m.MaxHealth,

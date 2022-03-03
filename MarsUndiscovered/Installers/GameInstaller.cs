@@ -89,8 +89,6 @@ namespace MarsUndiscovered.Installers
 
                 Component.For<ScreenCollection>(),
 
-                Component.For<MonsterGoal>(),
-
                 Component.For<IHeightMapGenerator>()
                     .ImplementedBy<HeightMapGenerator>(),
                 
@@ -98,7 +96,7 @@ namespace MarsUndiscovered.Installers
                     .BasedOn<IGameCamera>()
                     .WithServiceDefaultInterfaces(),
 
-                Component.For<IGameWorldEndpoint>()
+                Component.For<IGameWorldEndpoint, IGameWorldConsoleCommandEndpoint>()
                     .ImplementedBy<GameWorldEndpoint>(),
 
                 Component.For<IGameWorld>()
@@ -176,6 +174,9 @@ namespace MarsUndiscovered.Installers
                     .AsFactory(),
 
                 Component.For<ICommandFactory<AttackCommand>>()
+                    .AsFactory(),
+
+                Component.For<ICommandFactory<LightningAttackCommand>>()
                     .AsFactory(),
 
                 Component.For<ICommandFactory<DeathCommand>>()

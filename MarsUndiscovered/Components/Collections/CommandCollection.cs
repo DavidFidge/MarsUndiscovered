@@ -20,6 +20,7 @@ namespace MarsUndiscovered.Components
         public CommandCollection(ICommandFactory commandFactory, IGameWorld gameWorld)
         {
             AttackCommands = new AttackCommandCollection(commandFactory, gameWorld);
+            LightningAttackCommands = new LightningAttackCommandCollection(commandFactory, gameWorld);
             WalkCommands = new WalkCommandCollection(commandFactory, gameWorld);
             MoveCommands = new MoveCommandCollection(commandFactory, gameWorld);
             DeathCommands = new DeathCommandCollection(commandFactory, gameWorld); 
@@ -41,6 +42,7 @@ namespace MarsUndiscovered.Components
         }
 
         public AttackCommandCollection AttackCommands { get; set; }
+        public LightningAttackCommandCollection LightningAttackCommands { get; set; }
         public WalkCommandCollection WalkCommands { get; set; }
         public MoveCommandCollection MoveCommands { get; set; }
         public DeathCommandCollection DeathCommands { get; set; }

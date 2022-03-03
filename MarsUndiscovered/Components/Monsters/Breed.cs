@@ -10,15 +10,21 @@ namespace MarsUndiscovered.Components
         public string Description { get; set; }
         public decimal HealthModifier { get; set; }
 
+        public bool IsWallTurret { get; set; }
+        public bool FriendlyFireAllies { get; set; } = true;
+
         public static Dictionary<string, Breed> Breeds;
         public static Roach Roach = new Roach();
-        public abstract Attack BasicAttack { get; }
+        public static TeslaCoil TeslaCoil = new TeslaCoil();
+        public Attack BasicAttack { get; protected set; } = null;
+        public LightningAttack LightningAttack { get; protected set; } = null;
 
         static Breed()
         {
             Breeds = new Dictionary<string, Breed>();
 
             Breeds.Add(Roach.Name, Roach);
+            Breeds.Add(TeslaCoil.Name, TeslaCoil);
         }
 
         public static Breed GetBreed(string breed)

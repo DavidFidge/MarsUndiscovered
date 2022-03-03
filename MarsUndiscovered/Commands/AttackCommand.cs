@@ -8,7 +8,7 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Commands
 {
-    public class AttackCommand : BaseMarsGameActionCommand<AttackCommandSaveData>
+    public class AttackCommand : BaseAttackCommand<AttackCommandSaveData>
     {
         public Actor Source { get; private set; }
         public Actor Target { get; private set; }

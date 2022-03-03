@@ -1,23 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Assimp;
+
+using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
+using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
 
+using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Animation;
 using MarsUndiscovered.UserInterface.Data;
 
 using MediatR;
 
-using Microsoft.Xna.Framework;
-
 using SadRogue.Primitives;
 
 using Point = SadRogue.Primitives.Point;
+using Ray = Microsoft.Xna.Framework.Ray;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -32,8 +39,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         INotificationHandler<MapChangedNotification>
         where T : BaseGameData, new()
     {
+        public Queue<TileAnimation> Animations { get; set; } = new Queue<TileAnimation>();
         public IGameWorldEndpoint GameWorldEndpoint { get; set; }
-        public IGameWorld GameWorld => GameWorldEndpoint.GameWorld;
+        public IGameTimeService GameTimeService { get; set; }
         public ISceneGraph SceneGraph => MapViewModel.SceneGraph;
         public MapViewModel MapViewModel { get; set; }
 
@@ -48,9 +56,41 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         protected void SetUpViewModels()
         {
-            MapViewModel.SetupNewMap(GameWorld);
+            MapViewModel.SetupNewMap(GameWorldEndpoint);
             MessageLogCount = 0;
         }
+
+        public void QueueAnimations(IList<CommandResult> commandResults)
+        {
+            foreach (var commandResult in commandResults)
+            {
+                if (commandResult.Command is LightningAttackCommand)
+                {
+                    var lightningAttackCommand = commandResult.Command as LightningAttackCommand;
+
+                    var lightningAttackAnimation = new LightningAnimation(new Lightning(lightningAttackCommand.Path));
+                    Animations.Enqueue(lightningAttackAnimation);
+                }
+            }
+        }
+
+        public void UpdateAnimation()
+        {
+            if (!IsAnimating)
+                return;
+
+            var animation = Animations.Peek();
+
+            animation.Update(GameTimeService, MapViewModel);
+
+            if (animation.IsComplete)
+            {
+                Animations.Dequeue();
+                animation.Finish(MapViewModel);
+            }
+        }
+
+        public bool IsAnimating => Animations.Any();
 
         public Task Handle(EntityTransformChangedNotification notification, CancellationToken cancellationToken)
         {
@@ -86,10 +126,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private void RefreshView()
         {
-            MonsterStatusInView = GameWorld.GetStatusOfMonstersInView();
-            PlayerStatus = GameWorld.GetPlayerStatus();
+            MonsterStatusInView = GameWorldEndpoint.GetStatusOfMonstersInView();
+            PlayerStatus = GameWorldEndpoint.GetPlayerStatus();
 
-            Messages = GameWorld.GetMessagesSince(MessageLogCount);
+            Messages = GameWorldEndpoint.GetMessagesSince(MessageLogCount);
             MessageLogCount += Messages.Count;
 
             Notify();
@@ -102,7 +142,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (point == null)
                 return null;
 
-            var tooltip = GameWorld.GetGameObjectInformationAt(point.Value);
+            var tooltip = GameWorldEndpoint.GetGameObjectInformationAt(point.Value);
 
             return tooltip;
         }
@@ -114,7 +154,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (point == null)
                 return Direction.None;
 
-            var centrePoint = new Point(GameWorld.CurrentMap.Width / 2, GameWorld.CurrentMap.Height / 2);
+            var mapDimensions = GameWorldEndpoint.GetCurrentMapDimensions();
+
+            var centrePoint = new Point(mapDimensions.Width / 2, mapDimensions.Height / 2);
 
             return Direction.GetDirection(centrePoint, point.Value);
         }

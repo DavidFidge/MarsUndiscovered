@@ -7,11 +7,13 @@ namespace MarsUndiscovered.Components
 {
     public class Attack : ICloneable
     {
-        public Range<int> DamageRange { get; private set; }
+        public Range<int> DamageRangeBase { get; set; }
+        public Range<int> DamageRange { get; set; }
 
-        public Attack(Range<int> damageRange)
+        public Attack(Range<int> damageRangeBase)
         {
-            DamageRange = damageRange;
+            DamageRangeBase = damageRangeBase;
+            DamageRange = damageRangeBase;
         }
 
         public int Roll()
@@ -19,20 +21,17 @@ namespace MarsUndiscovered.Components
             return GlobalRandom.DefaultRNG.NextInt(DamageRange.Min, DamageRange.Max);
         }
 
-        public Attack Create(int powerLevel)
+        public void SetPowerLevel(int powerLevel)
         {
-            var minDamage = DamageRange.Min + powerLevel;
-            var maxDamage = DamageRange.Max + powerLevel;
+            var minDamage = DamageRangeBase.Min + powerLevel;
+            var maxDamage = DamageRangeBase.Max + powerLevel;
 
-            var damageRange = new Range<int>(minDamage <= 0 ? 1 : minDamage, maxDamage <= 0 ? 1 : maxDamage);
-
-            return new Attack(damageRange);
+            DamageRange = new Range<int>(minDamage <= 0 ? 1 : minDamage, maxDamage <= 0 ? 1 : maxDamage);
         }
 
         public object Clone()
         {
-            var attack = (Attack)this.MemberwiseClone();
-            attack.DamageRange = new Range<int>(DamageRange.Min, DamageRange.Max);
+            var attack = (Attack)MemberwiseClone();
 
             return attack;
         }

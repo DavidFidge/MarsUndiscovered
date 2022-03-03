@@ -22,10 +22,12 @@ namespace MarsUndiscovered.Components
         public bool IsVictorious { get; set; }
 
         public override Attack BasicAttack { get; } = new Attack(new Range<int>(5, 10));
+        public override LightningAttack LightningAttack { get; } = null;
+        public override bool IsWallTurret { get; } = false;
 
         public Player(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
-            MaxHealth = BaseHealth;
+            MaxHealth = 10000;
             Health = MaxHealth;
         }
 
