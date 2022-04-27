@@ -15,6 +15,7 @@ using FrigidRogue.MonoGame.Core.View.Interfaces;
 
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Input;
 using MediatR;
 
 using Microsoft.Xna.Framework;
@@ -58,7 +59,8 @@ namespace MarsUndiscovered
             ScreenCollection screenCollection,
             IGameCamera gameCamera,
             Options options,
-            IMediator mediator
+            IMediator mediator,
+            GlobalKeyboardHandler globalKeyboardHandler
         )
         {
             _logger = logger;
@@ -85,6 +87,7 @@ namespace MarsUndiscovered
             EffectCollection = new EffectCollection(_gameProvider);
 
             Window.AllowUserResizing = true;
+            _gameInputService.AddGlobalKeyboardHandler(globalKeyboardHandler);
         }
 
         /// <summary>
@@ -263,6 +266,12 @@ namespace MarsUndiscovered
         public Task<Unit> Handle(QuitToDesktopRequest request, CancellationToken cancellationToken)
         {
             _isExiting = true;
+            return Unit.Task;
+        }
+        
+        public Task<Unit> Handle(ToggleFullScreenRequest request, CancellationToken cancellationToken)
+        {
+            CustomGraphicsDeviceManager.ToggleFullScreen();
             return Unit.Task;
         }
     }
