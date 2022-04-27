@@ -26,6 +26,13 @@ namespace MarsUndiscovered.Components
             IList<Monster> lastMonstersInView,
             IList<Monster> monstersInView)
         {
+            if (moveRequestResults == null)
+            {
+                Path = new Path(new List<Point>());
+                CommandResults = new List<CommandResult>();
+                return;
+            }
+            
             CommandResults = moveRequestResults.ToList();
 
             var path = new HashSet<Point>();
