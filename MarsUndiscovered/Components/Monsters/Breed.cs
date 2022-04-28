@@ -1,22 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using CsvHelper;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
 namespace MarsUndiscovered.Components
 {
-    public abstract class Breed
+    public class Breed
     {
-        public virtual string GenericArticleLowerCase => "a";
-        public virtual string GenericArticleUpperCase => "A";
-        public abstract string Name { get; }
+        public string Name { get; set;}
         public string Description { get; set; }
-        public decimal HealthModifier { get; set; }
+        public int MaxHealth { get; set; }
+        
+        public char AsciiCharacter { get; set; }
+        public Color ForegroundColour { get; set; }
+        public Color? BackgroundColour { get; set; }
 
         public bool IsWallTurret { get; set; }
         public bool FriendlyFireAllies { get; set; } = true;
 
         public static Dictionary<string, Breed> Breeds;
-        public static Roach Roach = new Roach();
-        public static TeslaCoil TeslaCoil = new TeslaCoil();
-        public static RepairDrone RepairDrone = new RepairDrone();
         public Attack BasicAttack { get; protected set; } = null;
         public LightningAttack LightningAttack { get; protected set; } = null;
 
@@ -24,9 +30,52 @@ namespace MarsUndiscovered.Components
         {
             Breeds = new Dictionary<string, Breed>();
 
-            Breeds.Add(Roach.Name, Roach);
-            Breeds.Add(TeslaCoil.Name, TeslaCoil);
-            Breeds.Add(RepairDrone.Name, RepairDrone);
+            using var reader = new StreamReader("Content\\Breeds.csv");
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            
+            var csvBreeds = csv.GetRecords<dynamic>();
+            foreach (var csvBreed in csvBreeds)
+            {
+                var breed = new Breed();
+                
+                breed.Name = csvBreed.Name.ToString();
+                breed.Description = csvBreed.Description.ToString();
+                
+                var bytes = int.Parse(csvBreed.UnicodeCharacter.ToString(), NumberStyles.HexNumber);
+                
+                breed.AsciiCharacter = (char)bytes;
+                
+                var foregroundColour = csvBreed.ForegroundColour.ToString();
+                System.Drawing.Color sysDrawingForegroundColour = System.Drawing.ColorTranslator.FromHtml(foregroundColour);
+                breed.ForegroundColour = new Color(sysDrawingForegroundColour.R, sysDrawingForegroundColour.G, sysDrawingForegroundColour.B, sysDrawingForegroundColour.A);
+                
+                if (!string.IsNullOrEmpty(csvBreed.BackgroundColour))
+                {
+                    var backgroundColour = csvBreed.BackgroundColour.ToString();
+                    System.Drawing.Color sysDrawingBackgroundColour = System.Drawing.ColorTranslator.FromHtml(backgroundColour);
+                    breed.BackgroundColour = new Color(sysDrawingBackgroundColour.R, sysDrawingBackgroundColour.G, sysDrawingBackgroundColour.B, sysDrawingBackgroundColour.A);
+                }
+
+                breed.MaxHealth = int.Parse(csvBreed.MaxHealth.ToString());
+
+                if (!string.IsNullOrEmpty(csvBreed.BasicAttackMin))
+                {
+                    var damageRange = new Range<int>(int.Parse(csvBreed.BasicAttackMin.ToString()), int.Parse(csvBreed.BasicAttackMax.ToString()));
+                    breed.BasicAttack = new Attack(damageRange);
+                }
+                
+                if (!string.IsNullOrEmpty(csvBreed.LightningAttack))
+                {
+                    breed.LightningAttack = new LightningAttack(int.Parse(csvBreed.LightningAttack.ToString()));
+                }
+
+                if (!string.IsNullOrEmpty(csvBreed.IsWallTurret) && csvBreed.IsWallTurret.ToString().ToLower() == "true")
+                {
+                    breed.IsWallTurret = true;
+                }
+                
+                Breeds.Add(breed.Name, breed);
+            }
         }
 
         public static Breed GetBreed(string breed)

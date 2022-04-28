@@ -14,9 +14,7 @@ namespace MarsUndiscovered.Interfaces
         MapTileQuad Player { get; set; }
         MapTileQuad MapExitDown { get; set; }
         MapTileQuad MapExitUp { get; set; }
-        MapTileQuad Roach { get; set; }
-        MapTileQuad TeslaCoil { get; set; }
-        MapTileQuad RepairDrone { get; set; }
+        IDictionary<string, MapTileQuad> Monsters { get; set; }
         GoalMapQuad GoalMapQuad { get; set; }
         MapTileQuad MouseHover { get; set; }
         MapTileQuad Weapon { get; set; }

@@ -11,7 +11,7 @@ namespace MarsUndiscovered.Components
             base.ApplyProperties(item);
 
             item.HealPercentOfMax = 100;
-            item.MaxHealthIncrease = (int)(Actor.BaseHealth * 0.5);
+            item.MaxHealthIncrease = (int)(Player.BaseHealth * 0.5);
         }
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity)

@@ -98,7 +98,7 @@ namespace MarsUndiscovered.Components
         public Monster WithBreed(Breed breed)
         {
             Breed = breed;
-            MaxHealth = (int)(BaseHealth * Breed.HealthModifier);
+            MaxHealth = breed.MaxHealth;
             Health = MaxHealth;
             CreateBehaviourTree();
 

@@ -18,8 +18,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 2)));
             _gameWorld.TestResetFieldOfView();
 
             // Act
@@ -38,8 +38,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition = new Point(1, 1);
             _gameWorld.CreateWall(wallPosition);
             _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(2, 2)));
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 2)));
 
             _gameWorld.TestResetFieldOfView();
 
@@ -82,7 +82,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition = new Point(1, 1);
             _gameWorld.CreateWall(wallPosition);
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(2, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)));
             var monster = _gameWorld.Monsters.First().Value;
 
             _gameWorld.UpdateFieldOfView();

@@ -86,21 +86,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void SetMonster(Breed breed)
         {
-            switch (breed)
-            {
-                case Roach _:
-                    MapTileQuad = Assets.Roach;
-                    break;
-
-                case TeslaCoil _:
-                    MapTileQuad = Assets.TeslaCoil;
-                    break;
-                
-                case RepairDrone _:
-                    MapTileQuad = Assets.RepairDrone;
-                    break;                
-            }
-
+            MapTileQuad = Assets.Monsters[breed.Name];
+           
             IsVisible = true;
         }
 

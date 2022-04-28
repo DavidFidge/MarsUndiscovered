@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="CsvHelper" Version="27.2.1" />
     <PackageReference Include="MonoGame.Extended.Tweening" Version="3.8.0" />
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
@@ -35,5 +36,13 @@
     <ProjectReference Include="..\..\FrigidRogue\FrigidRogue.Monogame.Core.View\FrigidRogue.Monogame.Core.View.csproj" />
     <ProjectReference Include="..\..\FrigidRogue\FrigidRogue.MonoGame.Core\FrigidRogue.MonoGame.Core.csproj" />
     <ProjectReference Include="..\..\GeonBit.UI\GeonBit.UI\GeonBit.UI.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Spreadsheets\Breeds.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Breeds.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

@@ -200,13 +200,7 @@ namespace MarsUndiscovered.Components
                             c = '@';
                             break;
                         case Monster monster:
-                            switch (monster.Breed)
-                            {
-                                case Roach _:
-                                    c = 'r';
-                                    break;
-                            }
-
+                            c = monster.Breed.AsciiCharacter;
                             break;
                     }
 

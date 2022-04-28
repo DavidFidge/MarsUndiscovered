@@ -20,7 +20,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             NewGameWithNoMonstersNoItems();
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach"));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 
@@ -120,7 +120,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition = new Point(1, 1);
             _gameWorld.CreateWall(wallPosition);
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(2, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)));
             var monster = _gameWorld.Monsters.First().Value;
 
             _gameWorld.UpdateFieldOfView();
@@ -162,8 +162,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             _gameWorld.Player.Position = new Point(0, 0);
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[0].Id).WithBreed(Breed.Roach).AtPosition(new Point(2, 2)));
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[1].Id).WithBreed(Breed.Roach).AtPosition(new Point(2, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[0].Id).WithBreed("Roach").AtPosition(new Point(2, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[1].Id).WithBreed("Roach").AtPosition(new Point(2, 2)));
 
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 

@@ -79,7 +79,7 @@ namespace MarsUndiscovered.Tests.Commands
             NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
             var monster = _gameWorld.Monsters.Values.First();
             var healthBefore = monster.Health;
 
@@ -118,7 +118,7 @@ namespace MarsUndiscovered.Tests.Commands
 
             var wallPosition = new Point(0, 1);
             _gameWorld.CreateWall(wallPosition);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.TeslaCoil).AtPosition(wallPosition));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Tesla Coil").AtPosition(wallPosition));
 
             var monster = _gameWorld.Monsters.Values.First();
             var healthBefore = monster.Health;
@@ -155,7 +155,7 @@ namespace MarsUndiscovered.Tests.Commands
             NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
             var monster = _gameWorld.Monsters.Values.First();
             var player = _gameWorld.Player;
             var healthBefore = player.Health;
@@ -284,7 +284,7 @@ namespace MarsUndiscovered.Tests.Commands
             NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 1)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
 
             var monster = _gameWorld.Monsters.Values.First();
             var healthBefore = monster.Health;
@@ -323,7 +323,7 @@ namespace MarsUndiscovered.Tests.Commands
             NewGameWithCustomMapNoMonstersNoItems();
 
             _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 3)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 3)));
 
             var monster = _gameWorld.Monsters.Values.First();
 
