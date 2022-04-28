@@ -16,6 +16,7 @@ namespace MarsUndiscovered.Components
         public static Dictionary<string, Breed> Breeds;
         public static Roach Roach = new Roach();
         public static TeslaCoil TeslaCoil = new TeslaCoil();
+        public static RepairDrone RepairDrone = new RepairDrone();
         public Attack BasicAttack { get; protected set; } = null;
         public LightningAttack LightningAttack { get; protected set; } = null;
 
@@ -25,6 +26,7 @@ namespace MarsUndiscovered.Components
 
             Breeds.Add(Roach.Name, Roach);
             Breeds.Add(TeslaCoil.Name, TeslaCoil);
+            Breeds.Add(RepairDrone.Name, RepairDrone);
         }
 
         public static Breed GetBreed(string breed)

@@ -28,6 +28,7 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad MapExitUp { get; set; }
         public MapTileQuad Roach { get; set; }
         public MapTileQuad TeslaCoil { get; set; }
+        public MapTileQuad RepairDrone { get; set; }
         public MapTileQuad Weapon { get; set; }
         public MapTileQuad Gadget { get; set; }
         public MapTileQuad NanoFlask { get; set; }
@@ -136,6 +137,16 @@ namespace MarsUndiscovered.Graphics
                 Color.SteelBlue,
                 Color.White
             );
+            
+            RepairDrone = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                'd',
+                Color.Gray
+            );            
 
             MapExitDown = new MapTileQuad(
                 _gameProvider,

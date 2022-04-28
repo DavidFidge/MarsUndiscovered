@@ -16,6 +16,7 @@ namespace MarsUndiscovered.Interfaces
         MapTileQuad MapExitUp { get; set; }
         MapTileQuad Roach { get; set; }
         MapTileQuad TeslaCoil { get; set; }
+        MapTileQuad RepairDrone { get; set; }
         GoalMapQuad GoalMapQuad { get; set; }
         MapTileQuad MouseHover { get; set; }
         MapTileQuad Weapon { get; set; }

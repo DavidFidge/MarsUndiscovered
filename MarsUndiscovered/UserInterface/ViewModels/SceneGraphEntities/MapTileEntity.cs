@@ -95,6 +95,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 case TeslaCoil _:
                     MapTileQuad = Assets.TeslaCoil;
                     break;
+                
+                case RepairDrone _:
+                    MapTileQuad = Assets.RepairDrone;
+                    break;                
             }
 
             IsVisible = true;

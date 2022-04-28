@@ -9,7 +9,7 @@ namespace MarsUndiscovered.Components
         public Roach()
         {
             Description =
-                "The roach can survive days in the natural outdoors of Mars and is the master scavenger of the crooks of humans. This one is the size of a human foot.";
+                "The Mars Roach can survive days in the natural outdoors of Mars and is a master scavenger within the crooks of human dwellings. This one is the size of a human foot.";
             HealthModifier = 0.5m;
 
             BasicAttack = new Attack(new Range<int>(3, 6));
