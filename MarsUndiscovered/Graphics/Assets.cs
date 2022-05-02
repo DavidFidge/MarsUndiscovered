@@ -5,7 +5,7 @@ using FrigidRogue.MonoGame.Core.Graphics.Quads;
 using MarsUndiscovered.Interfaces;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
-
+using MarsUndiscovered.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,8 +26,7 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad Player { get; set; }
         public MapTileQuad MapExitDown { get; set; }
         public MapTileQuad MapExitUp { get; set; }
-        public MapTileQuad Roach { get; set; }
-        public MapTileQuad TeslaCoil { get; set; }
+        public IDictionary<string, MapTileQuad> Monsters { get; set; }
         public MapTileQuad Weapon { get; set; }
         public MapTileQuad Gadget { get; set; }
         public MapTileQuad NanoFlask { get; set; }
@@ -49,6 +48,8 @@ namespace MarsUndiscovered.Graphics
 
         public void LoadContent()
         {
+            Monsters = new Dictionary<string, MapTileQuad>();
+
             TextureMaterialEffect = _gameProvider.Game.Content.Load<Effect>("Effects/TextureMaterial");
 
             TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/title");
@@ -116,26 +117,21 @@ namespace MarsUndiscovered.Graphics
                 _itemColour
             );
 
-            Roach = new MapTileQuad(
-                _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                MapFont,
-                TextureMaterialEffect,
-                'r',
-                Color.SaddleBrown
-            );
+            foreach (var breed in Breed.Breeds)
+            {
+                var mapTileQuad = new MapTileQuad(
+                    _gameProvider,
+                    TileQuadWidth,
+                    TileQuadHeight,
+                    MapFont,
+                    TextureMaterialEffect,
+                    breed.Value.AsciiCharacter,
+                    breed.Value.ForegroundColour,
+                    breed.Value.BackgroundColour
+                );
 
-            TeslaCoil = new MapTileQuad(
-                _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                MapFont,
-                TextureMaterialEffect,
-                '§',
-                Color.SteelBlue,
-                Color.White
-            );
+                Monsters.Add(breed.Key, mapTileQuad);
+            }
 
             MapExitDown = new MapTileQuad(
                 _gameProvider,

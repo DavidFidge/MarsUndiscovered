@@ -88,7 +88,7 @@ namespace MarsUndiscovered.Components
         public void NewGame(ulong? seed = null)
         {
             Reset();
-
+            
             seed ??= MakeSeed();
 
             Seed = seed.Value;
@@ -110,14 +110,13 @@ namespace MarsUndiscovered.Components
 
             Inventory = new Inventory(this);
 
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Roach")));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Repair Drone")));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Tesla Coil")));
 
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.TeslaCoil));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.TeslaCoil));
-
-            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed(Breed.Roach));
-            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed(Breed.TeslaCoil));
+            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed("Roach"));
+            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed("Repair Drone"));
+            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed("Tesla Coil"));
 
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
@@ -191,7 +190,7 @@ namespace MarsUndiscovered.Components
             Maps = new MapCollection(this);
             HistoricalCommands = new CommandCollection(CommandFactory, this);
             _autoExploreGoalMap = new AutoExploreGoalMap();
-
+            
             GameObjectFactory.Initialise(this);
         }
 

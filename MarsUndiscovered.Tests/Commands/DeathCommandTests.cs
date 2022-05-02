@@ -19,7 +19,7 @@ namespace MarsUndiscovered.Tests.Commands
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItems();
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach"));
 
             var monster = _gameWorld.Monsters.Values.First();
             var oldMonsterPosition = monster.Position;

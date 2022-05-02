@@ -78,7 +78,7 @@ namespace MarsUndiscovered.Tests.Commands
             NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 1);
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.Roach).AtPosition(new Point(0, 0)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 0)));
             var monster = _gameWorld.Monsters.Values.First();
 
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(monster.Position));

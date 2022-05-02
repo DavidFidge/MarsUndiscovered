@@ -5,7 +5,6 @@ namespace MarsUndiscovered.Components
 {
     public abstract class Actor : MarsGameObject
     {
-        public static int BaseHealth = 100;
         public virtual string NameSpecificArticleLowerCase => $"the {Name.ToLower()}";
         public virtual string NameSpecificArticleUpperCase => $"The {Name.ToLower()}";
         public virtual string NameGenericArticleLowerCase => $"{GenericArticleLowerCase} {Name.ToLower()}";

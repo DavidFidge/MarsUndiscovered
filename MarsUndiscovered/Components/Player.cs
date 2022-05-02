@@ -12,6 +12,7 @@ namespace MarsUndiscovered.Components
 {
     public class Player : Actor, IMementoState<PlayerSaveData>, ISaveable
     {
+        public const int BaseHealth = 100;
         public override string Name => "You";
         public override string NameSpecificArticleLowerCase => Name.ToLower();
         public override string NameGenericArticleLowerCase => Name.ToLower();
