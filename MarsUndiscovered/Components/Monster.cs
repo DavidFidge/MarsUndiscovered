@@ -32,6 +32,7 @@ namespace MarsUndiscovered.Components
         public override string Name => Breed.Name;
         public override string Description => Breed.Description;
         public override Attack BasicAttack => Breed.BasicAttack;
+        public override Attack LineAttack => Breed.LineAttack;
         public override LightningAttack LightningAttack => Breed.LightningAttack;
         public override bool IsWallTurret => Breed.IsWallTurret;
 

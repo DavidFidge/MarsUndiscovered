@@ -22,7 +22,9 @@ namespace MarsUndiscovered.Components
         public override string ToHaveConjugation => "have";
         public bool IsVictorious { get; set; }
 
-        public override Attack BasicAttack { get; } = new Attack(new Range<int>(5, 10));
+        public Attack UnarmedAttack { get; } = new Attack(new Range<int>(5, 10));
+        public override Attack BasicAttack { get; } = null;
+        public override Attack LineAttack { get; } = null;
         public override LightningAttack LightningAttack { get; } = null;
         public override bool IsWallTurret { get; } = false;
 
@@ -30,6 +32,7 @@ namespace MarsUndiscovered.Components
         {
             MaxHealth = 10000;
             Health = MaxHealth;
+            BasicAttack = (Attack)UnarmedAttack.Clone();
         }
 
         public IMemento<PlayerSaveData> GetSaveState()

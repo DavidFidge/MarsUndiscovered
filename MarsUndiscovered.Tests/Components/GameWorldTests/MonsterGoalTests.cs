@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 
-using FrigidRogue.MonoGame.Core.Components;
-
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components;
 
@@ -201,7 +199,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
 
         [TestMethod]
-        public void Turrets_Should_Should_Shoot_At_Player_When_Player_Is_Seen()
+        public void Turrets_Should_Shoot_At_Player_When_Player_Is_Seen()
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItemsNoExits();

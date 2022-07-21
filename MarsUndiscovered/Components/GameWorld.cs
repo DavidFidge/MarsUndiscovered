@@ -499,12 +499,13 @@ namespace MarsUndiscovered.Components
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
             Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
             Player.LoadState(saveGameService);
-            HistoricalCommands.LoadState(saveGameService);
             Inventory = new Inventory(this);
             Inventory.LoadState(saveGameService);
             Maps.LoadState(saveGameService);
             GameTimeService.LoadState(saveGameService);
-
+            
+            HistoricalCommands.LoadState(saveGameService);
+            
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
             SetLoadState(gameWorldSaveData);
             GameTimeService.Start();

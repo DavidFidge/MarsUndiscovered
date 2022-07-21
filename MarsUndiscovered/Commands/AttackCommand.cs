@@ -12,7 +12,7 @@ namespace MarsUndiscovered.Commands
     {
         public Actor Source { get; private set; }
         public Actor Target { get; private set; }
-
+        
         private int _damage;
 
         public AttackCommand(IGameWorld gameWorld) : base(gameWorld)
@@ -46,6 +46,7 @@ namespace MarsUndiscovered.Commands
 
         protected override CommandResult ExecuteInternal()
         {
+            // Result does not need to be persisted as long as random number seed is the same
             _damage = Source.BasicAttack.Roll();
 
             Target.Health -= _damage;

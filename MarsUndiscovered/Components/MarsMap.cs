@@ -33,7 +33,7 @@ namespace MarsUndiscovered.Components
         public IList<Wall> Walls { get; private set; }
         public IList<Floor> Floors { get; private set; }
 
-        public MarsMap(IGameWorld gameWorld) : base(MapWidth, MapHeight, 3, Distance.Chebyshev, UInt32.MaxValue, UInt32.MaxValue, 0)
+        public MarsMap(IGameWorld gameWorld) : base(MapWidth, MapHeight, 3, Distance.Chebyshev, null, UInt32.MaxValue, UInt32.MaxValue, 0)
         {
             Id = Guid.NewGuid();
             Level = 1;
