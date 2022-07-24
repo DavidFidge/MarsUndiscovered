@@ -15,6 +15,7 @@ namespace MarsUndiscovered.Components
         public bool IsCharged { get; set; }
 
         public Attack MeleeAttack { get; set; }
+        public Attack LineAttack { get; set; }
         public int DamageShieldPercentage { get; set; }
         public int TotalRechargeDelay { get; set; }
         public int HealPercentOfMax { get; set; }
@@ -54,9 +55,12 @@ namespace MarsUndiscovered.Components
             memento.State.CurrentRechargeDelay = CurrentRechargeDelay;
             memento.State.IsCharged = IsCharged;
 
-            if (memento.State.MeleeAttack != null)
+            if (MeleeAttack != null)
                 memento.State.MeleeAttack = (Attack)MeleeAttack.Clone();
 
+            if (LineAttack != null)
+                memento.State.LineAttack = (Attack)LineAttack.Clone();
+            
             memento.State.DamageShieldPercentage = DamageShieldPercentage;
             memento.State.TotalRechargeDelay = TotalRechargeDelay;
             memento.State.HealPercentOfMax = HealPercentOfMax;
@@ -79,8 +83,11 @@ namespace MarsUndiscovered.Components
             CurrentRechargeDelay = memento.State.CurrentRechargeDelay;
             IsCharged = memento.State.IsCharged;
 
-            if (MeleeAttack != null)
+            if (memento.State.MeleeAttack != null)
                 MeleeAttack = (Attack)memento.State.MeleeAttack.Clone();
+
+            if (memento.State.LineAttack != null)
+                LineAttack = (Attack)memento.State.LineAttack.Clone();
 
             DamageShieldPercentage = memento.State.DamageShieldPercentage;
             TotalRechargeDelay = memento.State.TotalRechargeDelay;

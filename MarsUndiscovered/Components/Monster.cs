@@ -31,7 +31,7 @@ namespace MarsUndiscovered.Components
         public Breed Breed { get; set; }
         public override string Name => Breed.Name;
         public override string Description => Breed.Description;
-        public override Attack BasicAttack => Breed.BasicAttack;
+        public override Attack MeleeAttack => Breed.MeleeAttack;
         public override Attack LineAttack => Breed.LineAttack;
         public override LightningAttack LightningAttack => Breed.LightningAttack;
         public override bool IsWallTurret => Breed.IsWallTurret;
@@ -61,11 +61,11 @@ namespace MarsUndiscovered.Components
             var percentMinDamage = 0;
             var maxDamage = 0;
 
-            if (BasicAttack != null)
+            if (MeleeAttack != null)
             {
-                maxDamage = BasicAttack.DamageRange.Max;
-                percentMaxDamage = BasicAttack.DamageRange.Max * 100 / player.MaxHealth;
-                percentMinDamage = BasicAttack.DamageRange.Min * 100 / player.MaxHealth;
+                maxDamage = MeleeAttack.DamageRange.Max;
+                percentMaxDamage = MeleeAttack.DamageRange.Max * 100 / player.MaxHealth;
+                percentMinDamage = MeleeAttack.DamageRange.Min * 100 / player.MaxHealth;
             }
             else if (LightningAttack != null)
             {
@@ -207,7 +207,7 @@ namespace MarsUndiscovered.Components
                 .Sequence("root")
                 .Condition("on same map as player", monster => CurrentMap.Equals(GameWorld.Player.CurrentMap))
                 .Selector("action selector")
-                    .Subtree(BasicAttackBehaviour())
+                    .Subtree(MeleeAttackBehaviour())
                     .Subtree(LightningAttackBehaviour())
                     .Subtree(MoveBehavior())
                     .End()
@@ -230,17 +230,17 @@ namespace MarsUndiscovered.Components
             return behaviour;
         }
 
-        private IBehaviour<Monster> BasicAttackBehaviour()
+        private IBehaviour<Monster> MeleeAttackBehaviour()
         {
             var behaviour = FluentBuilder.Create<Monster>()
                 .Sequence("melee attack")
-                .Condition("has basic attack", monster => BasicAttack != null)
+                .Condition("has melee attack", monster => MeleeAttack != null)
                 .Condition("player is adjacent", monster => Position.IsNextTo(GameWorld.Player.Position, AdjacencyRule.EightWay))
                 .Do(
                     "attack player",
                     monster =>
                     {
-                        var attackCommand = _commandFactory.CreateAttackCommand(GameWorld);
+                        var attackCommand = _commandFactory.CreateMeleeAttackCommand(GameWorld);
                         attackCommand.Initialise(this, GameWorld.Player);
                         _nextCommands.Add(attackCommand);
 
@@ -252,7 +252,7 @@ namespace MarsUndiscovered.Components
 
             return behaviour;
         }
-
+        
         private IBehaviour<Monster> LightningAttackBehaviour()
         {
             var behaviour = FluentBuilder.Create<Monster>()

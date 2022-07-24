@@ -225,8 +225,8 @@ namespace MarsUndiscovered.Components
 
         public void LoadState(ISaveGameService saveGameService)
         {
-            var playerSaveData = saveGameService.GetFromStore<InventorySaveData>();
-            SetLoadState(playerSaveData);
+            var inventorySaveData = saveGameService.GetFromStore<InventorySaveData>();
+            SetLoadState(inventorySaveData);
         }
 
         public IEnumerator<Item> GetEnumerator()
@@ -296,6 +296,8 @@ namespace MarsUndiscovered.Components
                 // in case the user drops items and picks them up again.
                 ItemKeyAssignments.Remove(key);
             }
+            
+            _gameWorld.Player.RecalculateAttacks();
 
             return true;
         }
@@ -309,6 +311,8 @@ namespace MarsUndiscovered.Components
             {
                 EquippedWeapon = item;
             }
+            
+            _gameWorld.Player.RecalculateAttacks();
         }
 
         public bool CanEquip(Item item)
@@ -342,7 +346,7 @@ namespace MarsUndiscovered.Components
 
             if (item == EquippedWeapon)
                 return true;
-
+            
             return false;
         }
 
@@ -353,6 +357,8 @@ namespace MarsUndiscovered.Components
 
             if (item == EquippedWeapon)
                 EquippedWeapon = null;
+            
+            _gameWorld.Player.RecalculateAttacks();
         }
 
         public bool CanUnequip(Item item)

@@ -24,7 +24,7 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
             var monster = _gameWorld.Monsters.Values.First();
-            _gameWorld.Player.BasicAttack.DamageRange = new Range<int>(5, 5);
+            _gameWorld.Player.MeleeAttack.DamageRange = new Range<int>(5, 5);
             var healthBefore = monster.Health;
 
             // Act
@@ -37,7 +37,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
 
             var attackCommand =
-                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as AttackCommand;
+                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
             Assert.IsNotNull(attackCommand);
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
 
@@ -56,7 +56,7 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
             var monster = _gameWorld.Monsters.Values.First();
-            _gameWorld.Player.BasicAttack.DamageRange = new Range<int>(500000, 500000);
+            _gameWorld.Player.MeleeAttack.DamageRange = new Range<int>(500000, 500000);
             var healthBefore = monster.Health;
 
             // Act
@@ -69,7 +69,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
 
             var attackCommand =
-                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as AttackCommand;
+                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
             Assert.IsNotNull(attackCommand);
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
 

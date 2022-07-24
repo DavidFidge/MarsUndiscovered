@@ -74,6 +74,8 @@ namespace MarsUndiscovered.Commands
             if (!string.IsNullOrEmpty(currentItemDescription))
                 currentItemDescription = $"; you unequip {currentItemDescription}";
 
+            GameWorld.Player.RecalculateAttacks();
+
             return Result(CommandResult.Success(this, $"You equip {itemDescription}{currentItemDescription}"));
         }
 

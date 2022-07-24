@@ -21,11 +21,8 @@ namespace MarsUndiscovered.Tests.Commands
             // Arrange
             NewGameWithCustomMapNoMonstersNoItems();
             _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
-            var item = _gameWorld.Items.First().Value;
-            _gameWorld.Inventory.Add(item);
-            _gameWorld.CurrentMap.RemoveEntity(item);
-            item.Position = Point.None;
+
+            var item = SpawnItemAndAddToInventory(ItemType.MagnesiumPipe);
 
             var commandFactory = Container.Resolve<ICommandFactory>();
 
@@ -39,6 +36,31 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.AreSame(item, _gameWorld.Inventory.EquippedWeapon);
             Assert.AreEqual("You wield a Magnesium Pipe", result.Messages[0]);
+        }
+        
+        [TestMethod]
+        public void EquipItemCommand_Should_Clone_Attacks_From_Weapon()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItems();
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            var item = SpawnItemAndAddToInventory(ItemType.IronSpike);
+
+            var commandFactory = Container.Resolve<ICommandFactory>();
+
+            var equipItemCommand = commandFactory.CreateEquipItemCommand(_gameWorld);
+            equipItemCommand.Initialise(item);
+
+            // Act
+            var result = equipItemCommand.Execute();
+
+            // Assert
+            Assert.AreEqual(CommandResultEnum.Success, result.Result);
+            Assert.IsNotNull(_gameWorld.Player.LineAttack);
+            Assert.AreEqual(item.LineAttack.DamageRange.Min, _gameWorld.Player.LineAttack.DamageRange.Min);
+            Assert.AreEqual(item.LineAttack.DamageRange.Max, _gameWorld.Player.LineAttack.DamageRange.Max);
+            Assert.IsNull(_gameWorld.Player.MeleeAttack);
         }
 
         [TestMethod]

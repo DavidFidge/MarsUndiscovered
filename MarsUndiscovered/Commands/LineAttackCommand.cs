@@ -1,13 +1,11 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
-using GoRogue;
 
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
@@ -18,8 +16,8 @@ namespace MarsUndiscovered.Commands
 {
     public class LineAttackCommand : BaseAttackCommand<LineAttackCommandSaveData>
     {
-        private IList<Actor> _targets;
-        
+        private Dictionary<Monster, int> _targetDamage = new Dictionary<Monster, int>();
+
         public Actor Source { get; private set; }
         public List<Point> Path { get; private set; }
         
@@ -44,7 +42,6 @@ namespace MarsUndiscovered.Commands
 
             Source = (Actor)GameWorld.GameObjects[memento.State.SourceId];
             Path = memento.State.Path.ToList();
-            _targets = GetTargets(Source, Path);
         }
         
         protected override CommandResult ExecuteInternal()
@@ -52,13 +49,30 @@ namespace MarsUndiscovered.Commands
             if (Source.LineAttack == null)
                 throw new Exception("Object does not have a line attack");
 
-            var commandResult = CommandResult.Success(this, new List<string>(_targets.Count));
+            var targets = GetTargets(Source, Path);
 
-            foreach (var target in _targets)
+            if (targets.IsEmpty())
+                return CommandResult.Exception(this, "No targets found for LineAttack");
+
+            var commandResult = CommandResult.Success(this, new List<string>(targets.Count));
+
+            foreach (var target in targets)
             {
-                var attackCommand = CommandFactory.CreateAttackCommand(GameWorld);
-                attackCommand.Initialise(Source, target);
-                commandResult.SubsequentCommands.Add(attackCommand);
+                var damage = Source.LineAttack.Roll();
+
+                target.Health -= damage;
+
+                var message = $"{Source.NameSpecificArticleUpperCase} hit {target.NameSpecificArticleLowerCase}";
+                commandResult.Messages.Add(message);
+
+                if (target.Health <= 0)
+                {
+                    var deathCommand = CommandFactory.CreateDeathCommand(GameWorld);
+                    deathCommand.Initialise(target, Source.NameGenericArticleLowerCase);
+                    commandResult.SubsequentCommands.Add(deathCommand);
+                }
+                
+                _targetDamage.Add(target, damage);
             }
 
             return Result(commandResult);
@@ -66,28 +80,23 @@ namespace MarsUndiscovered.Commands
 
         protected override void UndoInternal()
         {
+            foreach (var monster in _targetDamage)
+            {
+                monster.Key.Health += monster.Value;
+            }
         }
 
-        public void Initialise(Actor source, Point targetPoint)
+        public void Initialise(Actor source, List<Point> path)
         {
-            var lineAttackPath = Lines.Get(source.Position, targetPoint, Lines.Algorithm.BresenhamOrdered).ToList();
-
-            lineAttackPath = lineAttackPath
-                .TakeWhile(p => p == source.Position || (source.CurrentMap.GetObjectAt<Wall>(p) == null && source.CurrentMap.GetObjectAt<Indestructible>(p) == null))
-                .ToList();
-
             Source = source;
-
-            Path = lineAttackPath;
-
-            _targets = GetTargets(source, lineAttackPath);
+            Path = path;
         }
 
-        private IList<Actor> GetTargets(Actor source, List<Point> lineAttackPath)
+        private IList<Monster> GetTargets(Actor source, List<Point> lineAttackPath)
         {
             return lineAttackPath
                 .Skip(1)
-                .Select(p => source.CurrentMap.GetObjectAt<Actor>(p))
+                .Select(p => source.CurrentMap.GetObjectAt<Monster>(p))
                 .Where(p => p != null)
                 .ToList();
         }

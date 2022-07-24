@@ -6,16 +6,16 @@ namespace MarsUndiscovered.Components
 {
     public class IronSpike : Weapon
     {
-        private Attack _meleeAttack = new Attack(new Range<int>(5, 9));
+        private Attack _lineAttack = new Attack(new Range<int>(5, 9));
 
-        public override string Name => nameof(MagnesiumPipe);
+        public override string Name => nameof(IronSpike);
 
         public override void ApplyProperties(Item item)
         {
             base.ApplyProperties(item);
 
-            item.MeleeAttack = (Attack)_meleeAttack.Clone();
-            item.MeleeAttack.SetPowerLevel(item.EnchantmentLevel);
+            item.LineAttack = (Attack)_lineAttack.Clone();
+            item.LineAttack.SetPowerLevel(item.EnchantmentLevel);
         }
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity)

@@ -1,9 +1,9 @@
 ﻿using System;
-
+using System.Linq;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
+using GoRogue;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
 
@@ -62,16 +62,39 @@ namespace MarsUndiscovered.Commands
                     return Result(CommandResult.Success(this, command));
                 }
 
-                // Maps get created with the setting where there cannot be multiple objects in the same layer.
-                // Thus if player cannot move to the new position then a monster should be there.
-                var actorAt = map.GetObjectAt<Actor>(newPlayerPosition);
+                if (Player.LineAttack != null)
+                {
+                    var targetPoint = playerPosition + Direction + Direction;
+                    var lineAttackPath = Lines.Get(playerPosition, targetPoint, Lines.Algorithm.BresenhamOrdered)
+                        .ToList();
 
+                    // Need to take while monsters or while there is no wall
+                    lineAttackPath = lineAttackPath
+                        .TakeWhile(p => p == playerPosition || (map.Contains(targetPoint) &&
+                                                                (map.GetObjectAt<Monster>(p) != null ||
+                                                                 (map.GetObjectAt<Wall>(p) == null &&
+                                                                  map.GetObjectAt<Indestructible>(p) == null))))
+                        .ToList();
+
+                    if (lineAttackPath.Any(p => map.GetObjectAt<Monster>(p) != null))
+                    {
+                        var command = CommandFactory.CreateLineAttackCommand(GameWorld);
+                        command.Initialise(Player, lineAttackPath);
+
+                        return Result(CommandResult.Success(this, command));
+                    }
+                }
+
+                var actorAt = map.GetObjectAt<Actor>(newPlayerPosition);
                 if (actorAt is Monster)
                 {
-                    var command = CommandFactory.CreateAttackCommand(GameWorld);
-                    command.Initialise(Player, actorAt);
+                    if (Player.MeleeAttack != null)
+                    {
+                        var command = CommandFactory.CreateMeleeAttackCommand(GameWorld);
+                        command.Initialise(Player, actorAt);
 
-                    return Result(CommandResult.Success(this, command));
+                        return Result(CommandResult.Success(this, command));
+                    }
                 }
 
                 if (actorAt != null)

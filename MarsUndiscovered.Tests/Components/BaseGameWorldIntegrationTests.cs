@@ -2,12 +2,12 @@
 
 using Castle.MicroKernel.Registration;
 
-using GoRogue.GameFramework;
-
+using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Interfaces;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Components
 {
@@ -121,6 +121,23 @@ namespace MarsUndiscovered.Tests.Components
             _gameWorld.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
             _gameWorld.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
             _gameWorld.MapExitGenerator = blankMapExitGenerator.OriginalMapExitGenerator;
+        }
+        
+        protected Item SpawnItemAndEquip(ItemType itemType)
+        {
+            var item = SpawnItemAndAddToInventory(itemType);
+            _gameWorld.Inventory.Equip(item);
+            return item;
+        }
+        
+        protected Item SpawnItemAndAddToInventory(ItemType itemType)
+        {
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(itemType).AtPosition(_gameWorld.Player.Position));
+            var item = _gameWorld.Items.Last().Value;
+            _gameWorld.Inventory.Add(item);
+            _gameWorld.CurrentMap.RemoveEntity(item);
+            item.Position = Point.None;
+            return item;
         }
     }
 }

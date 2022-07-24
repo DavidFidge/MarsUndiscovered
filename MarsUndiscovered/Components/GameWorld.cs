@@ -497,10 +497,14 @@ namespace MarsUndiscovered.Components
             _messageLog.LoadState(saveGameService);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
-            Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
-            Player.LoadState(saveGameService);
+            
+            // Inventory must be loaded before player as player recalculates attacks based on inventory
             Inventory = new Inventory(this);
             Inventory.LoadState(saveGameService);
+
+            Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
+            Player.LoadState(saveGameService);
+            
             Maps.LoadState(saveGameService);
             GameTimeService.LoadState(saveGameService);
             

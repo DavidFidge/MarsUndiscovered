@@ -173,7 +173,10 @@ namespace MarsUndiscovered.Installers
                 Component.For<ICommandFactory<WalkCommand>>()
                     .AsFactory(),
 
-                Component.For<ICommandFactory<AttackCommand>>()
+                Component.For<ICommandFactory<MeleeAttackCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<LineAttackCommand>>()
                     .AsFactory(),
 
                 Component.For<ICommandFactory<LightningAttackCommand>>()

@@ -1,4 +1,5 @@
 ﻿
+using System.Linq;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
@@ -22,17 +23,15 @@ namespace MarsUndiscovered.Components
         public override string ToHaveConjugation => "have";
         public bool IsVictorious { get; set; }
 
-        public Attack UnarmedAttack { get; } = new Attack(new Range<int>(5, 10));
-        public override Attack BasicAttack { get; } = null;
-        public override Attack LineAttack { get; } = null;
-        public override LightningAttack LightningAttack { get; } = null;
+        private Attack _unarmedAttack = new Attack(new Range<int>(2, 5));
+
         public override bool IsWallTurret { get; } = false;
 
         public Player(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
             MaxHealth = 10000;
             Health = MaxHealth;
-            BasicAttack = (Attack)UnarmedAttack.Clone();
+            InitialiseAttacks();
         }
 
         public IMemento<PlayerSaveData> GetSaveState()
@@ -62,6 +61,27 @@ namespace MarsUndiscovered.Components
         {
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
             SetLoadState(playerSaveData);
+            RecalculateAttacks();
+        }
+
+        public void RecalculateAttacks()
+        {
+            InitialiseAttacks();
+
+            var weapon = GameWorld.Inventory.EquippedWeapon;
+
+            if (weapon != null)
+            {
+                MeleeAttack = (Attack)weapon.MeleeAttack?.Clone();
+                LineAttack = (Attack)weapon.LineAttack?.Clone();
+            }
+        }
+
+        private void InitialiseAttacks()
+        {
+            MeleeAttack = (Attack)_unarmedAttack.Clone();
+            LineAttack = null;
+            LightningAttack = null;
         }
     }
 }

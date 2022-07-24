@@ -75,39 +75,33 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             NewGameWithNoMonstersNoItems();
-            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
-            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
-            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
-            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
-
-            var item1 = _gameWorld.Items.First().Value;
-            var item2 = _gameWorld.Items.Skip(1).First().Value;
-            var item3 = _gameWorld.Items.Skip(2).First().Value;
-            var item4 = _gameWorld.Items.Skip(3).First().Value;
-
-            _gameWorld.Inventory.Add(item1);
-            _gameWorld.Inventory.Add(item2);
-            _gameWorld.Inventory.Add(item3);
-            _gameWorld.Inventory.Add(item4);
-
+            
+            var item1 = SpawnItemAndAddToInventory(ItemType.MagnesiumPipe);
+            var item2 = SpawnItemAndAddToInventory(ItemType.MagnesiumPipe);
+            var item3 = SpawnItemAndAddToInventory(ItemType.HealingBots);
+            var item4 = SpawnItemAndAddToInventory(ItemType.HealingBots);
+            var item5 = SpawnItemAndEquip(ItemType.IronSpike);
+            
             _gameWorld.Inventory.ItemTypeDiscoveries[ItemType.HealingBots].IsItemTypeDiscovered = true;
 
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
-
+            
             // Act
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
             newGameWorld.LoadGame("TestShouldSaveThenLoad");
 
             // Assert
-            Assert.AreEqual(4, newGameWorld.Inventory.Items.Count);
+            Assert.AreEqual(5, newGameWorld.Inventory.Items.Count);
             CollectionAssert.AreEquivalent(newGameWorld.Items.Values, newGameWorld.Inventory.Items);
 
-            Assert.AreEqual(3, newGameWorld.Inventory.ItemKeyAssignments.Count);
+            Assert.AreEqual(4, newGameWorld.Inventory.ItemKeyAssignments.Count);
             CollectionAssert.AreEquivalent(newGameWorld.Items.Values, newGameWorld.Inventory.ItemKeyAssignments.SelectMany(i => i.Value).ToList());
             Assert.IsTrue(newGameWorld.Inventory.ItemTypeDiscoveries.Count > 0);
 
             var itemTypeDiscovery = newGameWorld.Inventory.ItemTypeDiscoveries[ItemType.HealingBots];
             Assert.IsTrue(itemTypeDiscovery.IsItemTypeDiscovered);
+            Assert.IsNull(newGameWorld.Player.MeleeAttack);
+            Assert.IsNotNull(newGameWorld.Player.LineAttack);
         }
 
         [TestMethod]
