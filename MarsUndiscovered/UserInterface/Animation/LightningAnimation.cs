@@ -91,13 +91,12 @@ namespace MarsUndiscovered.UserInterface.Animation
 
         private void AnimateLightningStreakTiles(MapViewModel mapViewModel)
         {
-            var i = 0;
+            var index = 0;
 
             foreach (var point in _lightningStreak.Reverse())
             {
-                var index = i;
                 mapViewModel.AnimateTile(point, (mapTileEntity) => mapTileEntity.SetLightning(_lightningOpacity[index]));
-                i++;
+                index++;
             }
         }
 

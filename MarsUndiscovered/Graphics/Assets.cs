@@ -31,6 +31,10 @@ namespace MarsUndiscovered.Graphics
         public MapTileQuad Gadget { get; set; }
         public MapTileQuad NanoFlask { get; set; }
         public MapTileQuad Lightning { get; set; }
+        public MapTileQuad LineAttackEastWest { get; set; }
+        public MapTileQuad LineAttackNorthEastSouthWest { get; set; }
+        public MapTileQuad LineAttackNorthWestSouthEast { get; set; }
+        public MapTileQuad LineAttackNorthSouth { get; set; }
         public MapTileQuad ShipRepairParts { get; set; }
         public MapTileQuad FieldOfViewUnrevealedQuad { get; set; }
         public MapTileQuad FieldOfViewHasBeenSeenQuad { get; set; }
@@ -40,6 +44,7 @@ namespace MarsUndiscovered.Graphics
         private readonly IGameProvider _gameProvider;
 
         private Color _itemColour = Color.Yellow;
+        private Color _lineAttackColour = Color.LightGray;
 
         public Assets(IGameProvider gameProvider)
         {
@@ -220,6 +225,46 @@ namespace MarsUndiscovered.Graphics
                 TileQuadHeight,
                 new Color(Color.White, 1f)
             );
+     
+            LineAttackNorthSouth = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '|',
+                _lineAttackColour
+            );
+            
+            LineAttackEastWest = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '-',
+                _lineAttackColour
+            );
+            
+            LineAttackNorthEastSouthWest = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '/',
+                _lineAttackColour
+            );
+            
+            LineAttackNorthWestSouthEast = new MapTileQuad(
+                _gameProvider,
+                TileQuadWidth,
+                TileQuadHeight,
+                MapFont,
+                TextureMaterialEffect,
+                '\\',
+                _lineAttackColour
+            );          
         }
     }
 }
