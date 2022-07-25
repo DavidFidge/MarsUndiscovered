@@ -53,15 +53,6 @@ namespace MarsUndiscovered.Commands
 
             if (map.Bounds().Contains(newPlayerPosition))
             {
-                if (map.GameObjectCanMove(Player, newPlayerPosition))
-                {
-                    var command = CommandFactory.CreateMoveCommand(GameWorld);
-
-                    command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
-
-                    return Result(CommandResult.Success(this, command));
-                }
-
                 if (Player.LineAttack != null)
                 {
                     var targetPoint = playerPosition + Direction + Direction;
@@ -83,6 +74,15 @@ namespace MarsUndiscovered.Commands
 
                         return Result(CommandResult.Success(this, command));
                     }
+                }
+                
+                if (map.GameObjectCanMove(Player, newPlayerPosition))
+                {
+                    var command = CommandFactory.CreateMoveCommand(GameWorld);
+
+                    command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
+
+                    return Result(CommandResult.Success(this, command));
                 }
 
                 var actorAt = map.GetObjectAt<Actor>(newPlayerPosition);

@@ -120,6 +120,8 @@ namespace MarsUndiscovered.Components
 
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
@@ -127,6 +129,8 @@ namespace MarsUndiscovered.Components
 
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShieldGenerator));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShieldGenerator));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
