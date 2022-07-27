@@ -10,8 +10,6 @@ namespace MarsUndiscovered
 {
     public static class Program
     {
-
-
         [STAThread]
         static void Main(string[] args)
         {

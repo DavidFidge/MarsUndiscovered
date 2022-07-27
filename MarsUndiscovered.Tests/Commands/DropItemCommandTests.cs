@@ -69,5 +69,28 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreSame(item2, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
             Assert.AreEqual("Cannot drop item - there is another item in the way", result.Messages[0]);
         }
+        
+        [TestMethod]
+        public void DropItemCommand_Should_Recalculate_Player_Attacks()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItems();
+            _gameWorld.Player.Position = new Point(0, 0);
+            var item = SpawnItemAndEquip(ItemType.IronSpike);
+            
+            var commandFactory = Container.Resolve<ICommandFactory>();
+
+            var dropItemCommand = commandFactory.CreateDropItemCommand(_gameWorld);
+            dropItemCommand.Initialise(_gameWorld.Player, item);
+            Assert.IsNull(_gameWorld.Player.MeleeAttack);
+            Assert.IsNotNull(_gameWorld.Player.LineAttack);
+
+            // Act
+            var result = dropItemCommand.Execute();
+
+            // Assert
+            Assert.IsNotNull(_gameWorld.Player.MeleeAttack);
+            Assert.IsNull(_gameWorld.Player.LineAttack);
+        }
     }
 }

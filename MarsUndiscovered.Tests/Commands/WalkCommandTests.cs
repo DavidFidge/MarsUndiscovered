@@ -99,7 +99,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
 
             var attackCommand =
-                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as AttackCommand;
+                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
 
             Assert.IsNotNull(attackCommand);
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
@@ -139,7 +139,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
 
             var attackCommand =
-                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as AttackCommand;
+                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
 
             Assert.IsNotNull(attackCommand);
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
@@ -173,7 +173,7 @@ namespace MarsUndiscovered.Tests.Commands
             var attackCommandResult = commandResults[1];
 
             Assert.IsInstanceOfType(walkCommandResult.Command, typeof(WalkCommand));
-            Assert.IsInstanceOfType(attackCommandResult.Command, typeof(AttackCommand));
+            Assert.IsInstanceOfType(attackCommandResult.Command, typeof(MeleeAttackCommand));
             Assert.AreEqual("The roach hit you", attackCommandResult.Messages[0]);
             Assert.IsTrue(player.Health < healthBefore);
         }
@@ -307,7 +307,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
 
             var attackCommand =
-                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as AttackCommand;
+                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
 
             Assert.IsNotNull(attackCommand);
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);

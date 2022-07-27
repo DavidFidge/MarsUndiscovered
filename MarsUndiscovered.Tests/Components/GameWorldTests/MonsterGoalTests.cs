@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 
-using FrigidRogue.MonoGame.Core.Components;
-
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components;
 
@@ -103,7 +101,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
 
             // Assert
-            var attackCommand = result[0] as AttackCommand;
+            var attackCommand = result[0] as MeleeAttackCommand;
             Assert.IsNotNull(attackCommand);
             Assert.AreSame(_gameWorld.Player, attackCommand.Target);
             Assert.AreSame(monster, attackCommand.Source);
@@ -126,8 +124,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             Assert.AreEqual(4, result.Count);
             Assert.IsTrue(result[0].Command is WalkCommand); // Player walks into monster
-            Assert.IsTrue(result[1].Command is AttackCommand); // Player attacks first roach
-            Assert.IsTrue(result[2].Command is AttackCommand); // A roach attacks player
+            Assert.IsTrue(result[1].Command is MeleeAttackCommand); // Player attacks first roach
+            Assert.IsTrue(result[2].Command is MeleeAttackCommand); // A roach attacks player
             Assert.IsTrue(result[3].Command is DeathCommand); // Player dies. Second roach does not act.
 
             var deathCommand = (DeathCommand)result.Last().Command;
@@ -201,7 +199,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
 
         [TestMethod]
-        public void Turrets_Should_Should_Shoot_At_Player_When_Player_Is_Seen()
+        public void Turrets_Should_Shoot_At_Player_When_Player_Is_Seen()
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItemsNoExits();

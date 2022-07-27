@@ -4,7 +4,7 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
-    public class AttackCommandCollection : BaseCommandCollection<AttackCommand, AttackCommandSaveData>
+    public class AttackCommandCollection : BaseCommandCollection<MeleeAttackCommand, MeleeAttackCommandSaveData>
     {
         private readonly ICommandFactory _commandFactory;
 
@@ -13,9 +13,9 @@ namespace MarsUndiscovered.Components
             _commandFactory = commandFactory;
         }
 
-        protected override AttackCommand Create()
+        protected override MeleeAttackCommand Create()
         {
-            return _commandFactory.CreateAttackCommand(GameWorld);
+            return _commandFactory.CreateMeleeAttackCommand(GameWorld);
         }
     }
 }

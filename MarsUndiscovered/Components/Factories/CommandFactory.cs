@@ -7,7 +7,8 @@ namespace MarsUndiscovered.Components.Factories
     {
         public ICommandFactory<MoveCommand> MoveCommandFactory { get; set; }
         public ICommandFactory<WalkCommand> WalkCommandFactory { get; set; }
-        public ICommandFactory<AttackCommand> AttackCommandFactory { get; set; }
+        public ICommandFactory<MeleeAttackCommand> MeleeAttackCommandFactory { get; set; }
+        public ICommandFactory<LineAttackCommand> LineAttackCommandFactory { get; set; }
         public ICommandFactory<LightningAttackCommand> LightningAttackCommandFactory { get; set; }
         public ICommandFactory<DeathCommand> DeathCommandFactory { get; set; }
         public ICommandFactory<PickUpItemCommand> PickUpItemCommandFactory { get; set; }
@@ -25,9 +26,14 @@ namespace MarsUndiscovered.Components.Factories
         {
             return WalkCommandFactory.Create(gameWorld);
         }
-        public AttackCommand CreateAttackCommand(IGameWorld gameWorld)
+        public MeleeAttackCommand CreateMeleeAttackCommand(IGameWorld gameWorld)
         {
-            return AttackCommandFactory.Create(gameWorld);
+            return MeleeAttackCommandFactory.Create(gameWorld);
+        }
+        
+        public LineAttackCommand CreateLineAttackCommand(IGameWorld gameWorld)
+        {
+            return LineAttackCommandFactory.Create(gameWorld);
         }
 
         public LightningAttackCommand CreateLightningAttackCommand(IGameWorld gameWorld)

@@ -1,4 +1,5 @@
-﻿using FrigidRogue.MonoGame.Core.Components;
+﻿using System;
+using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using MarsUndiscovered.Components;
@@ -113,6 +114,35 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
             MapTileQuad = Assets.Lightning;
             BackgroundOpacity = opacity;
+        }
+        
+        public void SetLineAttack(Direction direction)
+        {
+            IsVisible = true;
+
+            switch (direction.Type)
+            {
+                case Direction.Types.None:
+                    break;
+                case Direction.Types.Up:
+                case Direction.Types.Down:
+                    MapTileQuad = Assets.LineAttackNorthSouth;
+                    break;
+                case Direction.Types.UpRight:
+                case Direction.Types.DownLeft:
+                    MapTileQuad = Assets.LineAttackNorthEastSouthWest;
+                    break;
+                case Direction.Types.Right:
+                case Direction.Types.Left:
+                    MapTileQuad = Assets.LineAttackEastWest;
+                    break;
+                case Direction.Types.DownRight:
+                case Direction.Types.UpLeft:
+                    MapTileQuad = Assets.LineAttackNorthWestSouthEast;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

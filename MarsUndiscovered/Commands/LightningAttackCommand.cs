@@ -18,11 +18,13 @@ namespace MarsUndiscovered.Commands
 {
     public class LightningAttackCommand : BaseAttackCommand<LightningAttackCommandSaveData>
     {
-        public Actor Source { get; private set; }
-        public IList<Actor> Targets { get; private set; }
-
         private int _damage;
+        private IList<Actor> _targets;
+        
+        public Actor Source { get; private set; }
         public List<Point> Path { get; private set; }
+
+        public IList<Actor> Targets => _targets;
 
         public LightningAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -34,7 +36,6 @@ namespace MarsUndiscovered.Commands
             base.PopulateSaveState(memento.State);
 
             memento.State.SourceId = Source.ID;
-            memento.State.TargetIds = Targets.Select(t => t.ID).ToList();
             memento.State.Path = Path.ToList();
 
             return memento;
@@ -45,10 +46,10 @@ namespace MarsUndiscovered.Commands
             PopulateLoadState(memento.State);
 
             Source = (Actor)GameWorld.GameObjects[memento.State.SourceId];
-            Targets = memento.State.TargetIds.Select(t => (Actor)GameWorld.GameObjects[t]).ToList();
             Path = memento.State.Path.ToList();
+            _targets = GetTargets(Source, Path);
         }
-
+        
         protected override CommandResult ExecuteInternal()
         {
             if (Source.LightningAttack == null)
@@ -56,9 +57,9 @@ namespace MarsUndiscovered.Commands
 
             _damage = Source.LightningAttack.Damage;
 
-            var commandResult = CommandResult.Success(this, new List<string>(Targets.Count));
+            var commandResult = CommandResult.Success(this, new List<string>(_targets.Count));
 
-            foreach (var target in Targets)
+            foreach (var target in _targets)
             {
                 target.Health -= _damage;
 
@@ -78,7 +79,7 @@ namespace MarsUndiscovered.Commands
 
         protected override void UndoInternal()
         {
-            foreach (var target in Targets)
+            foreach (var target in _targets)
             {
                 target.Health += _damage;
             }
@@ -96,7 +97,12 @@ namespace MarsUndiscovered.Commands
 
             Path = lightningAttackPath;
 
-            Targets = lightningAttackPath
+            _targets = GetTargets(source, lightningAttackPath);
+        }
+
+        private IList<Actor> GetTargets(Actor source, List<Point> lightningAttackPath)
+        {
+            return lightningAttackPath
                 .Skip(1)
                 .Select(p => source.CurrentMap.GetObjectAt<Actor>(p))
                 .Where(p => p != null)

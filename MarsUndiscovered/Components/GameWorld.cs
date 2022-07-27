@@ -120,6 +120,8 @@ namespace MarsUndiscovered.Components
 
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
@@ -127,6 +129,8 @@ namespace MarsUndiscovered.Components
 
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShieldGenerator));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShieldGenerator));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
@@ -497,14 +501,19 @@ namespace MarsUndiscovered.Components
             _messageLog.LoadState(saveGameService);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
-            Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
-            Player.LoadState(saveGameService);
-            HistoricalCommands.LoadState(saveGameService);
+            
+            // Inventory must be loaded before player as player recalculates attacks based on inventory
             Inventory = new Inventory(this);
             Inventory.LoadState(saveGameService);
+
+            Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
+            Player.LoadState(saveGameService);
+            
             Maps.LoadState(saveGameService);
             GameTimeService.LoadState(saveGameService);
-
+            
+            HistoricalCommands.LoadState(saveGameService);
+            
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
             SetLoadState(gameWorldSaveData);
             GameTimeService.Start();

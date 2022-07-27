@@ -25,6 +25,10 @@ namespace MarsUndiscovered.Interfaces
         MapTileQuad FieldOfViewHasBeenSeenQuad { get; set; }
         IDictionary<char, MapTileQuad> ShipParts { get; set; }
         MapTileQuad ShipRepairParts { get; set; }
+        MapTileQuad LineAttackEastWest { get; set; }
+        MapTileQuad LineAttackNorthEastSouthWest { get; set; }
+        MapTileQuad LineAttackNorthWestSouthEast { get; set; }
+        MapTileQuad LineAttackNorthSouth { get; set; }
 
         void LoadContent();
     }

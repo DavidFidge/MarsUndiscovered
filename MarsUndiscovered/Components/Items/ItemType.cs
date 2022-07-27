@@ -7,6 +7,7 @@ namespace MarsUndiscovered.Components
         public static Dictionary<string, ItemType> ItemTypes;
         public static ShieldGenerator ShieldGenerator = new ShieldGenerator();
         public static MagnesiumPipe MagnesiumPipe = new MagnesiumPipe();
+        public static IronSpike IronSpike = new IronSpike();
         public static HealingBots HealingBots = new HealingBots();
         public static ShipRepairParts ShipRepairParts = new ShipRepairParts();
 
@@ -30,6 +31,7 @@ namespace MarsUndiscovered.Components
 
             ItemTypes.Add(nameof(ShieldGenerator), ShieldGenerator);
             ItemTypes.Add(nameof(MagnesiumPipe), MagnesiumPipe);
+            ItemTypes.Add(nameof(IronSpike), IronSpike);
             ItemTypes.Add(nameof(HealingBots), HealingBots);
             ItemTypes.Add(nameof(ShipRepairParts), ShipRepairParts);
         }

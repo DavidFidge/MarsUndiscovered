@@ -17,8 +17,10 @@ namespace MarsUndiscovered.Components
         public int Health { get; set; }
         public int MaxHealth { get; set; }
 
-        public abstract Attack BasicAttack { get; }
-        public abstract LightningAttack LightningAttack { get; }
+        public virtual Attack MeleeAttack { get; protected set; }
+        public virtual LightningAttack LightningAttack { get; protected set; }
+        public virtual Attack LineAttack { get; protected set; }
+
         public abstract bool IsWallTurret { get; }
 
         public Actor(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.ActorLayer, false, true, () => id)

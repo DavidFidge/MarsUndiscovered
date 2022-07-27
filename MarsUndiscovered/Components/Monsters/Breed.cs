@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using CsvHelper;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
@@ -23,7 +21,8 @@ namespace MarsUndiscovered.Components
         public bool FriendlyFireAllies { get; set; } = true;
 
         public static Dictionary<string, Breed> Breeds;
-        public Attack BasicAttack { get; protected set; } = null;
+        public Attack MeleeAttack { get; protected set; } = null;
+        public Attack LineAttack { get; protected set; } = null;
         public LightningAttack LightningAttack { get; protected set; } = null;
 
         static Breed()
@@ -61,7 +60,13 @@ namespace MarsUndiscovered.Components
                 if (!string.IsNullOrEmpty(csvBreed.BasicAttackMin))
                 {
                     var damageRange = new Range<int>(int.Parse(csvBreed.BasicAttackMin.ToString()), int.Parse(csvBreed.BasicAttackMax.ToString()));
-                    breed.BasicAttack = new Attack(damageRange);
+                    breed.MeleeAttack = new Attack(damageRange);
+                }
+                
+                if (!string.IsNullOrEmpty(csvBreed.LineAttackMin))
+                {
+                    var damageRange = new Range<int>(int.Parse(csvBreed.LineAttackMin.ToString()), int.Parse(csvBreed.LineAttackMax.ToString()));
+                    breed.LineAttack = new Attack(damageRange);
                 }
                 
                 if (!string.IsNullOrEmpty(csvBreed.LightningAttack))
