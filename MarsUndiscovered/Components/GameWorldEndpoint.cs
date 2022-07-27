@@ -45,6 +45,12 @@ namespace MarsUndiscovered.Components
             GameWorld.NewGame(seed);
         }
 
+        public void NewWorldBuilder(ulong? seed = null)
+        {
+            GameWorld = _gameWorldFactory.Create();
+            GameWorld.NewWorldBuilder(seed);
+        }
+
         public void AfterCreateGame()
         {
             GameWorld.AfterCreateGame();
@@ -143,6 +149,11 @@ namespace MarsUndiscovered.Components
         public bool ExecuteNextReplayCommand()
         {
             return GameWorld.ExecuteNextReplayCommand();
+        }
+
+        public void AfterCreateWorldBuilder()
+        {
+            GameWorld.AfterCreateWorldBuilder();
         }
 
         public void LoadReplay(string gameName)

@@ -49,9 +49,11 @@ namespace MarsUndiscovered.Installers
             RegisterVideoOptionsView(container, store);
             RegisterInGameOptionsView(container, store);
             RegisterInReplayOptionsView(container, store);
+            RegisterWorldBuilderOptionsView(container, store);
             RegisterConsoleView(container, store);
             RegisterGameView(container, store);
             RegisterReplayView(container, store);
+            RegisterWorldBuilderView(container, store);
             RegisterSaveGameView(container, store);
             RegisterInventoryGameView(container, store);
             RegisterInventoryReplayView(container, store);
@@ -321,6 +323,17 @@ namespace MarsUndiscovered.Installers
                 Component.For<ReplayViewModel>()
             );
         }
+        
+        private void RegisterWorldBuilderView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<WorldBuilderView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, WorldBuilderViewKeyboardHandler>())
+                    .DependsOn(Dependency.OnComponent<IMouseHandler, WorldBuilderViewMouseHandler>()),
+
+                Component.For<WorldBuilderViewModel>()
+            );
+        }
 
         private void RegisterInGameOptionsView(IWindsorContainer container, IConfigurationStore store)
         {
@@ -339,6 +352,16 @@ namespace MarsUndiscovered.Installers
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, InReplayOptionsKeyboardHandler>()),
 
                 Component.For<InReplayOptionsViewModel>()
+            );
+        }
+        
+        private void RegisterWorldBuilderOptionsView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<WorldBuilderOptionsView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, WorldBuilderOptionsKeyboardHandler>()),
+
+                Component.For<WorldBuilderOptionsViewModel>()
             );
         }
 

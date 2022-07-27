@@ -20,6 +20,7 @@ namespace MarsUndiscovered.Interfaces
         public void LoadGame(string filename);
         public void LoadReplay(string filename);
         void NewGame(ulong? seed = null);
+        void NewWorldBuilder(ulong? seed = null);
         void AfterCreateGame();
         List<InventoryItem> GetInventoryItems();
         void EquipItemRequest(Keys requestKey);
@@ -40,5 +41,6 @@ namespace MarsUndiscovered.Interfaces
         AutoExploreResult AutoExploreRequest();
         Point GetPlayerPosition();
         bool ExecuteNextReplayCommand();
+        void AfterCreateWorldBuilder();
     }
 }

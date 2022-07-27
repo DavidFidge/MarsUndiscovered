@@ -129,8 +129,8 @@ namespace MarsUndiscovered.Components
 
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.MagnesiumPipe));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
+            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.IronSpike));
+            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.IronSpike));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShieldGenerator));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShieldGenerator));
             SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
@@ -151,6 +151,44 @@ namespace MarsUndiscovered.Components
 
             ResetFieldOfView();
             GameTimeService.Start();
+        }
+        
+        public void NewWorldBuilder(ulong? seed)
+        {
+            Reset();
+            
+            seed ??= MakeSeed();
+
+            Seed = seed.Value;
+
+            GlobalRandom.DefaultRNG = new MizuchiRandom(seed.Value);
+
+            Logger.Debug("Generating world in world builder");
+
+            var currentMap = CreateMap();
+            Maps.CurrentMap = currentMap;
+
+            Player = GameObjectFactory
+                .CreatePlayer()
+                .PositionedAt(GlobalRandom.DefaultRNG.RandomPosition(CurrentMap, MapHelpers.EmptyPointOnFloor))
+                .AddToMap(CurrentMap);
+
+            Inventory = new Inventory(this);
+
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Roach")));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Repair Drone")));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Tesla Coil")));
+
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
+            
+            GameTimeService.Start();        
         }
 
         protected void ResetFieldOfView()
@@ -230,6 +268,20 @@ namespace MarsUndiscovered.Components
             CurrentMap.UpdateSeenTiles(CurrentMap.PlayerFOV.CurrentFOV);
 
             Mediator.Publish(new FieldOfViewChangedNotifcation(CurrentMap.PlayerFOV.CurrentFOV, CurrentMap.Positions(), CurrentMap.SeenTiles));
+        }
+        
+        public void AfterCreateWorldBuilder()
+        {
+            // Show all monsters and all of map
+            MonstersInView = Monsters.LiveMonsters.ToList();
+
+            Mediator.Publish(
+                new FieldOfViewChangedNotifcation(
+                    CurrentMap.Positions(),
+                    Array.Empty<Point>(),
+                    new ArrayView<SeenTile>(CurrentMap.Width, CurrentMap.Height)
+                )
+            );
         }
 
         public void ChangeMap(MarsMap map)

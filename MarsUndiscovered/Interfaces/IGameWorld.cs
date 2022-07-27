@@ -51,5 +51,7 @@ namespace MarsUndiscovered.Interfaces
         IList<IGameObject> GetLastSeenGameObjectsAtPosition(Point point);
         IList<IGameObject> GetObjectsAt(Point point);
         Point GetPlayerPosition();
+        void NewWorldBuilder(ulong? seed);
+        void AfterCreateWorldBuilder();
     }
 }
