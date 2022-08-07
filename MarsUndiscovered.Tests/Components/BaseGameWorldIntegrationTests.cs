@@ -33,7 +33,6 @@ namespace MarsUndiscovered.Tests.Components
 
         protected void NewGameWithCustomMap(IMapGenerator mapGenerator = null)
         {
-            // Arrange
             if (mapGenerator == null)
             {
                 mapGenerator = new BlankMapGenerator(
@@ -46,10 +45,24 @@ namespace MarsUndiscovered.Tests.Components
 
             _gameWorld.NewGame();
         }
+        
+        protected void NewWorldBuilderWithCustomMap(IMapGenerator mapGenerator = null)
+        {
+            if (mapGenerator == null)
+            {
+                mapGenerator = new BlankMapGenerator(
+                    _gameWorld.GameObjectFactory,
+                    Container.Resolve<IMapGenerator>()
+                );
+            }
+
+            _gameWorld.MapGenerator = mapGenerator;
+
+            _gameWorld.NewWorldBuilder(null);
+        }
 
         protected void NewGameWithNoMonstersNoItems()
         {
-            // Arrange
             var blankMonsterGenerator = new BlankMonsterGenerator(
                 Container.Resolve<IMonsterGenerator>()
             );
@@ -69,7 +82,6 @@ namespace MarsUndiscovered.Tests.Components
 
         protected void NewGameWithCustomMapNoMonstersNoItems(IMapGenerator mapGenerator = null)
         {
-            // Arrange
             if (mapGenerator == null)
             {
                 mapGenerator = new BlankMapGenerator(
@@ -98,7 +110,6 @@ namespace MarsUndiscovered.Tests.Components
 
         protected void NewGameWithCustomMapNoMonstersNoItemsNoExits(IMapGenerator mapGenerator = null)
         {
-            // Arrange
             if (mapGenerator == null)
             {
                 mapGenerator = new BlankMapGenerator(

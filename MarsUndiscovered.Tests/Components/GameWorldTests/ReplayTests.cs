@@ -49,13 +49,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Act
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
 
-            var blankMapGenerationNewGameWorld = new BlankMapGenerator(
-                newGameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
-
-            newGameWorld.MapGenerator = blankMapGenerationNewGameWorld;
-
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
 
@@ -75,13 +68,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SaveGame("TestReplay", true);
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-
-            var blankMapGenerationNewGameWorld = new BlankMapGenerator(
-                newGameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
-
-            newGameWorld.MapGenerator = blankMapGenerationNewGameWorld;
 
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
@@ -109,13 +95,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
 
-            var blankMapGenerationNewGameWorld = new BlankMapGenerator(
-                newGameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
-
-            newGameWorld.MapGenerator = blankMapGenerationNewGameWorld;
-
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
 
@@ -139,13 +118,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SaveGame("TestReplay", true);
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-
-            var blankMapGenerationNewGameWorld = new BlankMapGenerator(
-                newGameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
-
-            newGameWorld.MapGenerator = blankMapGenerationNewGameWorld;
 
             newGameWorld.LoadReplay("TestReplay");
 

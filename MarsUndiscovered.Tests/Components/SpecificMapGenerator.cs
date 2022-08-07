@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using GoRogue.GameFramework;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Factories;
@@ -18,6 +18,9 @@ namespace MarsUndiscovered.Tests.Components
 
         private readonly IGameObjectFactory _gameObjectFactory;
         private readonly Func<Point, IGameObject> _terrainChooser;
+		public MarsMap MarsMap { get; set; }
+        public int Steps { get; set; }
+        public bool IsComplete { get; set; }
 
         public SpecificMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator, IList<Point> wallPoints)
         {
@@ -34,23 +37,17 @@ namespace MarsUndiscovered.Tests.Components
             });
         }
 
-        public ArrayView<IGameObject> CreateOutdoorWallsFloors(IGameObjectFactory gameObjectFactory)
+        public void CreateOutdoorWallsFloorsMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
             var arrayView = new ArrayView<IGameObject>(MarsMap.MapWidth, MarsMap.MapHeight);
 
             arrayView.ApplyOverlay(_terrainChooser);
+            
+            var wallsFloors = arrayView.ToArray();
 
-            return arrayView;
-        }
-
-        public MarsMap CreateMap(IGameWorld gameWorld, IList<Wall> walls, IList<Floor> floors)
-        {
-            return OriginalMapGenerator.CreateMap(gameWorld, walls, floors);
-        }
-
-        public MarsMap CreateMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, Func<IGameObjectFactory, ArrayView<IGameObject>> wallsFloorsGenerator)
-        {
-            return OriginalMapGenerator.CreateMap(gameWorld, gameObjectFactory, CreateOutdoorWallsFloors);
+            MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
+            Steps = 1;
+            IsComplete = true;
         }
     }
 }

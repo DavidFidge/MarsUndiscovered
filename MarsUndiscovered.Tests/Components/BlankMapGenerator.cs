@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using GoRogue.GameFramework;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Factories;
@@ -14,35 +14,29 @@ namespace MarsUndiscovered.Tests.Components
     public class BlankMapGenerator : IMapGenerator
     {
         public IMapGenerator OriginalMapGenerator { get; private set; }
-
         private readonly IGameObjectFactory _gameObjectFactory;
-        private readonly Func<IGameObject> _fillWith;
 
-        public BlankMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator, Func<IGameObject> fillWith = null)
+        public BlankMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator)
         {
             _gameObjectFactory = gameObjectFactory;
             OriginalMapGenerator = originalMapGenerator;
-
-            _fillWith = fillWith ?? (() => _gameObjectFactory.CreateFloor());
         }
 
-        public ArrayView<IGameObject> CreateOutdoorWallsFloors(IGameObjectFactory gameObjectFactory)
+        public MarsMap MarsMap { get; set; }
+        public int Steps { get; set; }
+        public bool IsComplete { get; set; }
+        public void CreateOutdoorWallsFloorsMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
             var arrayView = new ArrayView<IGameObject>(MarsMap.MapWidth, MarsMap.MapHeight);
 
-            arrayView.ApplyOverlay(_ => _fillWith());
+            arrayView.ApplyOverlay(_ => _gameObjectFactory.CreateFloor());
 
-            return arrayView;
-        }
+            var wallsFloors = arrayView.ToArray();
 
-        public MarsMap CreateMap(IGameWorld gameWorld, IList<Wall> walls, IList<Floor> floors)
-        {
-            return OriginalMapGenerator.CreateMap(gameWorld, walls, floors);
-        }
+            MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
 
-        public MarsMap CreateMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, Func<IGameObjectFactory, ArrayView<IGameObject>> wallsFloorsGenerator)
-        {
-            return OriginalMapGenerator.CreateMap(gameWorld, gameObjectFactory, CreateOutdoorWallsFloors);
+            Steps = 1;
+            IsComplete = true;
         }
     }
 }
