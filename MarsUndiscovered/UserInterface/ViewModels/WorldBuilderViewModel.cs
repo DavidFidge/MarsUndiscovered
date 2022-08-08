@@ -3,18 +3,22 @@ using MarsUndiscovered.UserInterface.Data;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
-    public class WorldBuilderViewModel : BaseGameViewModel<WorldBuilderData>
+    public class WorldBuilderViewModel : BaseGameCoreViewModel<WorldBuilderData>
     {
         public bool BuildWorld()
         {
             IsActive = true;
             GameWorldEndpoint.NewWorldBuilder();
-            SetUpViewModels();
+            SetUpGameCoreViewModels();
             GameWorldEndpoint.AfterCreateWorldBuilder();
 
             Mediator.Publish(new RefreshViewNotification());
 
             return true;
+        }
+
+        protected override void RefreshView()
+        {
         }
     }
 }

@@ -16,12 +16,14 @@ using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class WorldBuilderView : BaseGameView<WorldBuilderViewModel, WorldBuilderData>,
+    public class WorldBuilderView : BaseGameCoreView<WorldBuilderViewModel, WorldBuilderData>,
         IRequestHandler<BuildWorldRequest>,
         IRequestHandler<OpenWorldBuilderOptionsRequest>,
         IRequestHandler<CloseWorldBuilderOptionsRequest>
     {
         private readonly WorldBuilderOptionsView _worldBuilderOptionsView;
+        
+        protected Panel LeftPanel;
 
         public WorldBuilderView(
             WorldBuilderViewModel worldBuilderViewModel,
@@ -37,10 +39,19 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             CreateLayoutPanels();
             SetupWorldBuilderOptionsButton(LeftPanel);
-            CreatePlayerPanel();
-            CreateMessageLog();
-            CreateStatusPanel();
             SetupChildPanel(_worldBuilderOptionsView);
+        }
+
+        protected void CreateLayoutPanels()
+        {
+            LeftPanel = new Panel()
+                .Anchor(Anchor.TopLeft)
+                .Width(0.19f)
+                .NoSkin()
+                .NoPadding()
+                .Height(0.999f);
+            
+            RootPanel.AddChild(LeftPanel);
         }
 
         private void SetupWorldBuilderOptionsButton(Panel leftPanel)
@@ -59,13 +70,11 @@ namespace MarsUndiscovered.UserInterface.Views
         
         public void LoadWorldBuilder()
         {
-            ResetViews();
             _viewModel.BuildWorld();
         }
 
         public Task<Unit> Handle(BuildWorldRequest request, CancellationToken cancellationToken)
         {
-            ResetViews();
             _viewModel.BuildWorld();
 
             return Unit.Task;
@@ -81,11 +90,6 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _worldBuilderOptionsView.Hide();
             return Unit.Task;
-        }
-
-        protected override void ViewModelChanged()
-        {
-            base.ViewModelChanged();
         }
     }
 }

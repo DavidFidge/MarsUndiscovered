@@ -261,6 +261,9 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public override Task Handle(MouseHoverViewNotification notification, CancellationToken cancellationToken)
         {
+            if (!IsVisible)
+                return Unit.Task;
+            
             base.Handle(notification, cancellationToken);
 
             var ray = _gameCamera.GetPointerRay(notification.X, notification.Y);
@@ -305,6 +308,9 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(OpenGameInventoryRequest request, CancellationToken cancellationToken)
         {
+            if (!IsVisible)
+                return Unit.Task;
+            
             StopAutoMovement();
             _inventoryGameView.SetInventoryMode(request.InventoryMode);
             _inventoryGameView.Show();
@@ -313,12 +319,18 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(CloseGameInventoryRequest request, CancellationToken cancellationToken)
         {
+            if (!IsVisible)
+                return Unit.Task;
+            
             _inventoryGameView.Hide();
             return Unit.Task;
         }
 
         public Task<Unit> Handle(AutoExploreRequest request, CancellationToken cancellationToken)
         {
+            if (!IsVisible)
+                return Unit.Task;
+            
             _isAutoExploring = true;
             return Unit.Task;
         }
