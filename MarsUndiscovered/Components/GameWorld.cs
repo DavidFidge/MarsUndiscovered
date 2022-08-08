@@ -97,11 +97,15 @@ namespace MarsUndiscovered.Components
 
             Logger.Debug("Generating game world");
 
-            var currentMap = CreateMap();
-            Maps.CurrentMap = currentMap;
-            var map2 = CreateMap();
+            MapGenerator.CreateOutdoorWallsFloorsMap(this, GameObjectFactory);
+            AddMapToGame(MapGenerator.MarsMap);
+            Maps.CurrentMap = MapGenerator.MarsMap;
 
-            ShipGenerator.CreateShip(GameObjectFactory, currentMap, Ships);
+            MapGenerator.CreateOutdoorWallsFloorsMap(this, GameObjectFactory);
+            AddMapToGame(MapGenerator.MarsMap);
+            var map2 = MapGenerator.MarsMap;
+
+            ShipGenerator.CreateShip(GameObjectFactory, Maps.CurrentMap, Ships);
 
             Player = GameObjectFactory
                 .CreatePlayer()
@@ -166,6 +170,7 @@ namespace MarsUndiscovered.Components
             Logger.Debug("Generating world in world builder");
             
             MapGenerator.CreateOutdoorWallsFloorsMap(this, GameObjectFactory, step);
+            AddMapToGame(MapGenerator.MarsMap);
 
             Maps.CurrentMap = MapGenerator.MarsMap;
 
@@ -196,9 +201,8 @@ namespace MarsUndiscovered.Components
             LastMonstersInView = MonstersInView;
         }
 
-        private MarsMap CreateMap()
+        private MarsMap AddMapToGame(MarsMap marsMap)
         {
-            MapGenerator.CreateOutdoorWallsFloorsMap(this, GameObjectFactory);
 
             var terrain = GameObjects
                 .Values
