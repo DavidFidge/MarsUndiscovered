@@ -157,7 +157,7 @@ namespace MarsUndiscovered.Components
             GameTimeService.Start();
         }
 
-        public void ProgressiveWorldGeneration(ulong? seed, int step)
+        public ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step)
         {
             Reset();
             
@@ -175,7 +175,7 @@ namespace MarsUndiscovered.Components
             Maps.CurrentMap = MapGenerator.MarsMap;
 
             if (!MapGenerator.IsComplete || step <= MapGenerator.Steps)
-                return;
+                return new ProgressiveWorldGenerationResult { Seed = Seed, IsFinalStep = false};
 
             Player = GameObjectFactory
                 .CreatePlayer()
@@ -186,13 +186,10 @@ namespace MarsUndiscovered.Components
 
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Roach")));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            
+            return new ProgressiveWorldGenerationResult { Seed = Seed, IsFinalStep = true };
         }
         
-        public void NewWorldBuilder(ulong? seed)
-        {
-            ProgressiveWorldGeneration(seed, 1);
-        }
-
         protected void ResetFieldOfView()
         {
             CurrentMap.ResetFieldOfView();
@@ -271,10 +268,11 @@ namespace MarsUndiscovered.Components
             Mediator.Publish(new FieldOfViewChangedNotifcation(CurrentMap.PlayerFOV.CurrentFOV, CurrentMap.Positions(), CurrentMap.SeenTiles));
         }
         
-        public void AfterCreateWorldBuilder()
+        public void AfterProgressiveWorldGeneration()
         {
             // Show all monsters and all of map
             MonstersInView = Monsters.LiveMonsters.ToList();
+            Mediator.Publish(new MapChangedNotification());
 
             Mediator.Publish(
                 new FieldOfViewChangedNotifcation(

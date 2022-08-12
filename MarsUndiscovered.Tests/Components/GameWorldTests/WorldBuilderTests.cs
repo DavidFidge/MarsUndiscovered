@@ -9,13 +9,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
     public class WorldBuilderTests : BaseGameWorldIntegrationTests
     {
         [TestMethod]
-        public void NewWorldBuilder_Should_Perform_First_Step_Of_Map_Creation_And_Leave_Map_Unpopulated()
+        public void ProgressiveWorldGeneration_Should_Perform_First_Step_Of_Map_Creation_And_Leave_Map_Unpopulated()
         {
             // Arrange
             var mapGenerator = new HalfWallsToBlankMapGenerator(_gameWorld.GameObjectFactory, Container.Resolve<IMapGenerator>());
 
             // Act
-            NewWorldBuilderWithCustomMap(mapGenerator);
+            ProgressiveWorldGenerationWithCustomMap(mapGenerator);
 
             // Assert
             Assert.AreEqual(1, mapGenerator.Steps);
@@ -38,7 +38,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Arrange
             var mapGenerator = new HalfWallsToBlankMapGenerator(_gameWorld.GameObjectFactory, Container.Resolve<IMapGenerator>());
 
-            NewWorldBuilderWithCustomMap(mapGenerator);
+            ProgressiveWorldGenerationWithCustomMap(mapGenerator);
             
             var seed = _gameWorld.Seed;
 
@@ -66,7 +66,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Arrange
             var mapGenerator = new HalfWallsToBlankMapGenerator(_gameWorld.GameObjectFactory, Container.Resolve<IMapGenerator>());
 
-            NewWorldBuilderWithCustomMap(mapGenerator);
+            ProgressiveWorldGenerationWithCustomMap(mapGenerator);
             
             var seed = _gameWorld.Seed;
 

@@ -2,7 +2,7 @@
 using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
 
 using InputHandlers.Keyboard;
-
+using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input
@@ -22,6 +22,12 @@ namespace MarsUndiscovered.UserInterface.Input
 
             if (ActionMap.ActionIs<BuildWorldRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new BuildWorldRequest());
+            
+            if (ActionMap.ActionIs<NextWorldBuilderStepRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new NextWorldBuilderStepRequest());
+            
+            if (ActionMap.ActionIs<PreviousWorldBuilderStepRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new PreviousWorldBuilderStepRequest());
         }
     }
 }

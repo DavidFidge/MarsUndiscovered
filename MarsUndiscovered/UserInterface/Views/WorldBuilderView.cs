@@ -12,14 +12,14 @@ using GeonBit.UI.Entities;
 
 using MediatR;
 
-using Microsoft.Xna.Framework;
-
 namespace MarsUndiscovered.UserInterface.Views
 {
     public class WorldBuilderView : BaseGameCoreView<WorldBuilderViewModel, WorldBuilderData>,
         IRequestHandler<BuildWorldRequest>,
         IRequestHandler<OpenWorldBuilderOptionsRequest>,
-        IRequestHandler<CloseWorldBuilderOptionsRequest>
+        IRequestHandler<CloseWorldBuilderOptionsRequest>,
+        IRequestHandler<NextWorldBuilderStepRequest>,
+        IRequestHandler<PreviousWorldBuilderStepRequest>
     {
         private readonly WorldBuilderOptionsView _worldBuilderOptionsView;
         
@@ -38,7 +38,6 @@ namespace MarsUndiscovered.UserInterface.Views
         protected override void InitializeInternal()
         {
             CreateLayoutPanels();
-            SetupWorldBuilderOptionsButton(LeftPanel);
             SetupChildPanel(_worldBuilderOptionsView);
         }
 
@@ -51,23 +50,25 @@ namespace MarsUndiscovered.UserInterface.Views
                 .NoPadding()
                 .Height(0.999f);
             
+            new Button("Menu")
+                .SendOnClick<OpenWorldBuilderOptionsRequest>(Mediator)
+                .AddTo(LeftPanel);
+
+            new Button("Build New World")
+                .SendOnClick<BuildWorldRequest>(Mediator)
+                .AddTo(LeftPanel);
+     
+            new Button("Next Step")
+                .SendOnClick<NextWorldBuilderStepRequest>(Mediator)
+                .AddTo(LeftPanel);
+            
+            new Button("Previous Step")
+                .SendOnClick<PreviousWorldBuilderStepRequest>(Mediator)
+                .AddTo(LeftPanel);
+            
             RootPanel.AddChild(LeftPanel);
         }
 
-        private void SetupWorldBuilderOptionsButton(Panel leftPanel)
-        {
-            var menuButton = new Button(
-                    "-",
-                    ButtonSkin.Default,
-                    Anchor.AutoInline,
-                    new Vector2(50, 50)
-                )
-                .SendOnClick<OpenWorldBuilderOptionsRequest>(Mediator)
-                .NoPadding();
-
-            leftPanel.AddChild(menuButton);
-        }
-        
         public void LoadWorldBuilder()
         {
             _viewModel.BuildWorld();
@@ -89,6 +90,18 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(CloseWorldBuilderOptionsRequest request, CancellationToken cancellationToken)
         {
             _worldBuilderOptionsView.Hide();
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(NextWorldBuilderStepRequest request, CancellationToken cancellationToken)
+        {
+            _viewModel.NextStep();
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(PreviousWorldBuilderStepRequest request, CancellationToken cancellationToken)
+        {
+            _viewModel.PreviousStep();
             return Unit.Task;
         }
     }

@@ -46,7 +46,7 @@ namespace MarsUndiscovered.Tests.Components
             _gameWorld.NewGame();
         }
         
-        protected void NewWorldBuilderWithCustomMap(IMapGenerator mapGenerator = null)
+        protected void ProgressiveWorldGenerationWithCustomMap(IMapGenerator mapGenerator = null)
         {
             if (mapGenerator == null)
             {
@@ -58,7 +58,7 @@ namespace MarsUndiscovered.Tests.Components
 
             _gameWorld.MapGenerator = mapGenerator;
 
-            _gameWorld.NewWorldBuilder(null);
+            _gameWorld.ProgressiveWorldGeneration(null, 1);
         }
 
         protected void NewGameWithNoMonstersNoItems()

@@ -45,10 +45,10 @@ namespace MarsUndiscovered.Components
             GameWorld.NewGame(seed);
         }
 
-        public void NewWorldBuilder(ulong? seed = null)
+        public ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step)
         {
             GameWorld = _gameWorldFactory.Create();
-            GameWorld.NewWorldBuilder(seed);
+            return GameWorld.ProgressiveWorldGeneration(seed, step);
         }
 
         public void AfterCreateGame()
@@ -151,9 +151,9 @@ namespace MarsUndiscovered.Components
             return GameWorld.ExecuteNextReplayCommand();
         }
 
-        public void AfterCreateWorldBuilder()
+        public void AfterProgressiveWorldGeneration()
         {
-            GameWorld.AfterCreateWorldBuilder();
+            GameWorld.AfterProgressiveWorldGeneration();
         }
 
         public void LoadReplay(string gameName)
