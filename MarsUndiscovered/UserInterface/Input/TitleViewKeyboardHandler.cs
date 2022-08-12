@@ -21,6 +21,9 @@ namespace MarsUndiscovered.UserInterface.Input
 
             if (ActionMap.ActionIs<CustomGameSeedRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new CustomGameSeedRequest());
+            
+            if (ActionMap.ActionIs<WorldBuilderRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new WorldBuilderRequest());
         }
     }
 }

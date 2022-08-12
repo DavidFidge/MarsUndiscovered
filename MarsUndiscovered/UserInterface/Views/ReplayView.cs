@@ -28,12 +28,12 @@ namespace MarsUndiscovered.UserInterface.Views
         private Label _turnLabel;
 
         public ReplayView(
-            ReplayViewModel gameViewModel,
+            ReplayViewModel replayViewModel,
             InReplayOptionsView inReplayOptionsView,
             InventoryReplayView inventoryReplayView,
             IGameCamera gameCamera
         )
-            : base(gameCamera, gameViewModel)
+            : base(gameCamera, replayViewModel)
         {
             _inReplayOptionsView = inReplayOptionsView;
             _inventoryReplayView = inventoryReplayView;

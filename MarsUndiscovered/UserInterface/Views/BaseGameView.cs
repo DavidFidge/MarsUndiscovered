@@ -16,19 +16,16 @@ using MarsUndiscovered.UserInterface.ViewModels;
 using MediatR;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public abstract class BaseGameView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>,
+    public abstract class BaseGameView<TViewModel, TData> : BaseGameCoreView<TViewModel, TData>,
         INotificationHandler<MouseHoverViewNotification>
         where TViewModel : BaseGameViewModel<TData>
         where TData : BaseGameData, new()
     {
-        protected readonly IGameCamera _gameCamera;
-        public bool IsMouseInGameView => RootPanel?.IsMouseInRootPanelEmptySpace ?? true;
         private SelectList _messageLog;
         protected Panel LeftPanel;
         protected Panel BottomPanel;
@@ -42,9 +39,8 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel HoverPanelLeft { get; set; }
         protected Panel HoverPanelRight { get; set; }
 
-        protected BaseGameView(IGameCamera gameCamera, TViewModel viewModel) : base(viewModel)
+        protected BaseGameView(IGameCamera gameCamera, TViewModel viewModel) : base(gameCamera, viewModel)
         {
-            _gameCamera = gameCamera;
         }
 
         protected void CreateLayoutPanels()
@@ -150,25 +146,6 @@ namespace MarsUndiscovered.UserInterface.Views
             PlayerPanel.AddAsChildTo(LeftPanel);
         }
 
-        public override void Draw()
-        {
-            var oldDepthStencilState = Game.GraphicsDevice.DepthStencilState;
-            Game.GraphicsDevice.DepthStencilState = DepthStencilState.None;
-
-            _viewModel.SceneGraph.Draw(_gameCamera.View, _gameCamera.Projection);
-
-            Game.GraphicsDevice.DepthStencilState = oldDepthStencilState;
-
-            base.Draw();
-        }
-
-        public override void Update()
-        {
-            _gameCamera.Update();
-
-            base.Update();
-        }
-
         protected virtual void ResetViews()
         {
             _messageLog.ClearItems();
@@ -260,12 +237,6 @@ namespace MarsUndiscovered.UserInterface.Views
             }
 
             return Unit.Task;
-        }
-
-        public override void Hide()
-        {
-            base.Hide();
-            _viewModel.IsActive = false;
         }
     }
 }

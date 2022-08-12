@@ -92,6 +92,10 @@ namespace MarsUndiscovered.UserInterface.Views
             new Button("Exit")
                 .SendOnClick<QuitToDesktopRequest>(Mediator)
                 .AddTo(_titleMenuPanel);
+            
+            new Button("World Builder")
+                .SendOnClick<WorldBuilderRequest>(Mediator)
+                .AddTo(_titleMenuPanel);
 
             _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
         }
