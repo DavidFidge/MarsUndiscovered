@@ -9,7 +9,7 @@ using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using GeonBit.UI.Entities;
-
+using MarsUndiscovered.Components;
 using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Views
@@ -54,8 +54,12 @@ namespace MarsUndiscovered.UserInterface.Views
                 .SendOnClick<OpenWorldBuilderOptionsRequest>(Mediator)
                 .AddTo(LeftPanel);
 
-            new Button("Build New World")
-                .SendOnClick<BuildWorldRequest>(Mediator)
+            new Button("Build New Outdoor World")
+                .SendOnClick(Mediator, new BuildWorldRequest { WorldGenerationTypeParams = new WorldGenerationTypeParams(MapType.Outdoor)})
+                .AddTo(LeftPanel);
+            
+            new Button("Build New Mine World")
+                .SendOnClick(Mediator, new BuildWorldRequest { WorldGenerationTypeParams = new WorldGenerationTypeParams(MapType.Mine)})
                 .AddTo(LeftPanel);
      
             new Button("Next Step")
@@ -71,12 +75,12 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public void LoadWorldBuilder()
         {
-            _viewModel.BuildWorld();
+            _viewModel.BuildWorld(new WorldGenerationTypeParams(MapType.Outdoor));
         }
 
         public Task<Unit> Handle(BuildWorldRequest request, CancellationToken cancellationToken)
         {
-            _viewModel.BuildWorld();
+            _viewModel.BuildWorld(request.WorldGenerationTypeParams);
 
             return Unit.Task;
         }

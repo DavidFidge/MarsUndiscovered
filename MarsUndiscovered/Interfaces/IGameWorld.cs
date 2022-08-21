@@ -51,7 +51,7 @@ namespace MarsUndiscovered.Interfaces
         IList<IGameObject> GetLastSeenGameObjectsAtPosition(Point point);
         IList<IGameObject> GetObjectsAt(Point point);
         Point GetPlayerPosition();
-        ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step);
+        ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step, WorldGenerationTypeParams worldGenerationTypeParams);
         void AfterProgressiveWorldGeneration();
     }
 }

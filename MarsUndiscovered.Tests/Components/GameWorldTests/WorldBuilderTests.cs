@@ -43,7 +43,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var seed = _gameWorld.Seed;
 
             // Act
-            _gameWorld.ProgressiveWorldGeneration(seed, 2);
+            _gameWorld.ProgressiveWorldGeneration(seed, 2, new WorldGenerationTypeParams(MapType.Outdoor));
 
             // Assert
             Assert.AreEqual(2, mapGenerator.Steps);
@@ -71,7 +71,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var seed = _gameWorld.Seed;
 
             // Act
-            _gameWorld.ProgressiveWorldGeneration(seed, Int32.MaxValue);
+            _gameWorld.ProgressiveWorldGeneration(seed, Int32.MaxValue, new WorldGenerationTypeParams(MapType.Outdoor));
 
             // Assert
             Assert.AreEqual(2, mapGenerator.Steps);

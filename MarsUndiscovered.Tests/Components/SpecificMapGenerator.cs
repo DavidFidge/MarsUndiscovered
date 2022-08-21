@@ -37,15 +37,26 @@ namespace MarsUndiscovered.Tests.Components
             });
         }
 
-        public void CreateOutdoorWallsFloorsMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        {
+            GenerateSpecificMap(gameWorld);
+        }
+
+        public void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        {
+            GenerateSpecificMap(gameWorld);
+        }
+
+        private void GenerateSpecificMap(IGameWorld gameWorld)
         {
             var arrayView = new ArrayView<IGameObject>(MarsMap.MapWidth, MarsMap.MapHeight);
 
             arrayView.ApplyOverlay(_terrainChooser);
-            
+
             var wallsFloors = arrayView.ToArray();
 
-            MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
+            MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
+                wallsFloors.OfType<Floor>().ToList());
             Steps = 1;
             IsComplete = true;
         }

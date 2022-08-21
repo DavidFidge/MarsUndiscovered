@@ -25,7 +25,18 @@ namespace MarsUndiscovered.Tests.Components
         public MarsMap MarsMap { get; set; }
         public int Steps { get; set; }
         public bool IsComplete { get; set; }
-        public void CreateOutdoorWallsFloorsMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        
+        public void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        {
+            GenerateBlankMap(gameWorld);
+        }
+
+        public void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        {
+            GenerateBlankMap(gameWorld);
+        }
+
+        private void GenerateBlankMap(IGameWorld gameWorld)
         {
             var arrayView = new ArrayView<IGameObject>(MarsMap.MapWidth, MarsMap.MapHeight);
 
@@ -33,7 +44,8 @@ namespace MarsUndiscovered.Tests.Components
 
             var wallsFloors = arrayView.ToArray();
 
-            MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
+            MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
+                wallsFloors.OfType<Floor>().ToList());
 
             Steps = 1;
             IsComplete = true;
