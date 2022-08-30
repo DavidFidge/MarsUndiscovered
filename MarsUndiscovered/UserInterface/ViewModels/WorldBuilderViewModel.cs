@@ -1,4 +1,5 @@
-﻿using MarsUndiscovered.Messages;
+﻿using MarsUndiscovered.Components;
+using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
@@ -8,16 +9,18 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public int CurrentStep { get; private set; }
         public bool IsFinalStep { get; private set; }
         public ulong Seed { get; private set; }
+        public WorldGenerationTypeParams WorldGenerationTypeParams { get; private set; }
         
-        public void BuildWorld()
+        public void BuildWorld(WorldGenerationTypeParams worldGenerationTypeParams)
         {
             IsActive = true;
-            var result = GameWorldEndpoint.ProgressiveWorldGeneration(null, 1);
+            var result = GameWorldEndpoint.ProgressiveWorldGeneration(null, 1, worldGenerationTypeParams);
             SetUpGameCoreViewModels();
             GameWorldEndpoint.AfterProgressiveWorldGeneration();
             CurrentStep = 1;
             IsFinalStep = result.IsFinalStep;
             Seed = result.Seed;
+            WorldGenerationTypeParams = worldGenerationTypeParams;
 
             Mediator.Publish(new RefreshViewNotification());
         }
@@ -33,7 +36,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             CurrentStep++;
             
-            var result = GameWorldEndpoint.ProgressiveWorldGeneration(Seed, CurrentStep);
+            var result = GameWorldEndpoint.ProgressiveWorldGeneration(Seed, CurrentStep, WorldGenerationTypeParams);
             GameWorldEndpoint.AfterProgressiveWorldGeneration();
 
             IsFinalStep = result.IsFinalStep;
@@ -47,7 +50,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 return;
 
             CurrentStep--;
-            var result = GameWorldEndpoint.ProgressiveWorldGeneration(Seed, CurrentStep);
+            var result = GameWorldEndpoint.ProgressiveWorldGeneration(Seed, CurrentStep, WorldGenerationTypeParams);
             GameWorldEndpoint.AfterProgressiveWorldGeneration();
 
             IsFinalStep = result.IsFinalStep;

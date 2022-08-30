@@ -58,7 +58,7 @@ namespace MarsUndiscovered.Tests.Components
 
             _gameWorld.MapGenerator = mapGenerator;
 
-            _gameWorld.ProgressiveWorldGeneration(null, 1);
+            _gameWorld.ProgressiveWorldGeneration(null, 1, new WorldGenerationTypeParams(MapType.Outdoor));
         }
 
         protected void NewGameWithNoMonstersNoItems()

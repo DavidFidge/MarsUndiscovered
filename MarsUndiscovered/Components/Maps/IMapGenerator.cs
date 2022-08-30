@@ -8,6 +8,7 @@ namespace MarsUndiscovered.Components.Maps
         MarsMap MarsMap { get; set; }
         int Steps { get; set; }
         bool IsComplete { get; set; }
-        void CreateOutdoorWallsFloorsMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null);
+        void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null);
+        void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null);
     }
 }

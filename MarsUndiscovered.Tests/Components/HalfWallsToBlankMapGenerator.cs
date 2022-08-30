@@ -27,7 +27,17 @@ namespace MarsUndiscovered.Tests.Components
             OriginalMapGenerator = originalMapGenerator;
         }
 
-        public void CreateOutdoorWallsFloorsMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        {
+            GenerateHalfWallsToBlankMap(gameWorld, upToStep);
+        }
+
+        public void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        {
+            GenerateHalfWallsToBlankMap(gameWorld, upToStep);
+        }
+
+        private void GenerateHalfWallsToBlankMap(IGameWorld gameWorld, int? upToStep)
         {
             if (upToStep != null && upToStep == 1)
             {

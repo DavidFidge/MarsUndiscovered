@@ -97,11 +97,11 @@ namespace MarsUndiscovered.Components
 
             Logger.Debug("Generating game world");
 
-            MapGenerator.CreateOutdoorWallsFloorsMap(this, GameObjectFactory);
+            MapGenerator.CreateOutdoorMap(this, GameObjectFactory);
             AddMapToGame(MapGenerator.MarsMap);
             Maps.CurrentMap = MapGenerator.MarsMap;
 
-            MapGenerator.CreateOutdoorWallsFloorsMap(this, GameObjectFactory);
+            MapGenerator.CreateOutdoorMap(this, GameObjectFactory);
             AddMapToGame(MapGenerator.MarsMap);
             var map2 = MapGenerator.MarsMap;
 
@@ -157,7 +157,7 @@ namespace MarsUndiscovered.Components
             GameTimeService.Start();
         }
 
-        public ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step)
+        public ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step, WorldGenerationTypeParams worldGenerationTypeParams)
         {
             Reset();
             
@@ -168,8 +168,17 @@ namespace MarsUndiscovered.Components
             GlobalRandom.DefaultRNG = new MizuchiRandom(seed.Value);
 
             Logger.Debug("Generating world in world builder");
+
+            switch (worldGenerationTypeParams.MapType)
+            {
+                case MapType.Outdoor:
+                    MapGenerator.CreateOutdoorMap(this, GameObjectFactory, step);
+                    break;
+                case MapType.Mine:
+                    MapGenerator.CreateMineMap(this, GameObjectFactory, step);
+                    break;
+            }
             
-            MapGenerator.CreateOutdoorWallsFloorsMap(this, GameObjectFactory, step);
             AddMapToGame(MapGenerator.MarsMap);
 
             Maps.CurrentMap = MapGenerator.MarsMap;
