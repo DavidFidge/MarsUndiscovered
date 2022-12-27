@@ -1,8 +1,12 @@
 {
   "profiles": {
-    "MarsUndiscovered": {
+    "World Builder": {
       "commandName": "Project",
       "commandLineArgs": "--WorldBuilder"
+    },
+    "Mars Undiscovered": {
+      "commandName": "Project",
+      "commandLineArgs": ""
     }
   }
 }

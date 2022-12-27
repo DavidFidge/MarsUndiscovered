@@ -133,7 +133,7 @@ namespace MarsUndiscovered.Components.Maps
             int totalIterations = 7,
             int cutoffBigAreaFill = 2,
             int border = 2,
-            Distance? distanceCalculation = null,
+            Distance distanceCalculation = null,
             IConnectionPointSelector connectionPointSelector = null,
             ITunnelCreator tunnelCreationMethod = null)
         {
