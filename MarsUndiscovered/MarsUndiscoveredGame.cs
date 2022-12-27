@@ -48,6 +48,8 @@ namespace MarsUndiscovered
         { get; }
         private SpriteBatch _spriteBatch;
         private RenderTarget2D _renderTarget;
+        
+        private FpsCounter _fpsCounter = new();
 
         public MarsUndiscoveredGame(
             ILogger logger,
@@ -214,6 +216,7 @@ namespace MarsUndiscovered
             _gameTimeService.Update(gameTime);
             _gameInputService.Poll(GraphicsDevice.Viewport.Bounds);
             _userInterface.Update(gameTime);
+            _fpsCounter.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -243,6 +246,13 @@ namespace MarsUndiscovered
             DrawRenderTarget(_spriteBatch);
 
             GeonBit.UI.UserInterface.Active.DrawMainRenderTarget(_spriteBatch);
+            
+            _spriteBatch.Begin();
+
+            // Draw the fps msg
+            _fpsCounter.DrawFps(_spriteBatch, _assets.MapFont, new Vector2(1f, 1f), Color.White);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

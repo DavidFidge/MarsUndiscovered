@@ -29,6 +29,7 @@ namespace MarsUndiscovered.Interfaces
         MapTileQuad LineAttackNorthEastSouthWest { get; set; }
         MapTileQuad LineAttackNorthWestSouthEast { get; set; }
         MapTileQuad LineAttackNorthSouth { get; set; }
+        SpriteFont MapFont { get; set; }
 
         void LoadContent();
     }
