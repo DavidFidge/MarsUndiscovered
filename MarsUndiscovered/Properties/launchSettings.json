@@ -7,6 +7,10 @@
     "Mars Undiscovered": {
       "commandName": "Project",
       "commandLineArgs": ""
+    },    
+    "New Game": {
+      "commandName": "Project",
+      "commandLineArgs": "--NewGame"
     }
   }
 }
