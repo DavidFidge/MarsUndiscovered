@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 
 using MarsUndiscovered.Components;
-using MarsUndiscovered.Tests.Components.GameWorldTests;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xna.Framework.Input;
 

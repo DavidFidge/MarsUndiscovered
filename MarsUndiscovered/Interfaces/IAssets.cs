@@ -9,26 +9,26 @@ namespace MarsUndiscovered.Interfaces
     public interface IAssets
     {
         public Texture2D TitleTexture { get; set; }
-        MapTileQuad Wall { get; set; }
-        MapTileQuad Floor { get; set; }
-        MapTileQuad Player { get; set; }
-        MapTileQuad MapExitDown { get; set; }
-        MapTileQuad MapExitUp { get; set; }
-        IDictionary<string, MapTileQuad> Monsters { get; set; }
-        GoalMapQuad GoalMapQuad { get; set; }
-        MapTileQuad MouseHover { get; set; }
-        MapTileQuad Weapon { get; set; }
-        MapTileQuad Gadget { get; set; }
-        MapTileQuad NanoFlask { get; set; }
-        MapTileQuad Lightning { get; set; }
-        MapTileQuad FieldOfViewUnrevealedQuad { get; set; }
-        MapTileQuad FieldOfViewHasBeenSeenQuad { get; set; }
-        IDictionary<char, MapTileQuad> ShipParts { get; set; }
-        MapTileQuad ShipRepairParts { get; set; }
-        MapTileQuad LineAttackEastWest { get; set; }
-        MapTileQuad LineAttackNorthEastSouthWest { get; set; }
-        MapTileQuad LineAttackNorthWestSouthEast { get; set; }
-        MapTileQuad LineAttackNorthSouth { get; set; }
+        MapTileTexture Wall { get; set; }
+        MapTileTexture Floor { get; set; }
+        MapTileTexture Player { get; set; }
+        MapTileTexture MapExitDown { get; set; }
+        MapTileTexture MapExitUp { get; set; }
+        IDictionary<string, MapTileTexture> Monsters { get; set; }
+        GoalMapTileTexture GoalMapTileTexture { get; set; }
+        MapTileTexture MouseHover { get; set; }
+        MapTileTexture Weapon { get; set; }
+        MapTileTexture Gadget { get; set; }
+        MapTileTexture NanoFlask { get; set; }
+        MapTileTexture Lightning { get; set; }
+        MapTileTexture FieldOfViewUnrevealedTexture { get; set; }
+        MapTileTexture FieldOfViewHasBeenSeenTexture { get; set; }
+        IDictionary<char, MapTileTexture> ShipParts { get; set; }
+        MapTileTexture ShipRepairParts { get; set; }
+        MapTileTexture LineAttackEastWest { get; set; }
+        MapTileTexture LineAttackNorthEastSouthWest { get; set; }
+        MapTileTexture LineAttackNorthWestSouthEast { get; set; }
+        MapTileTexture LineAttackNorthSouth { get; set; }
         SpriteFont MapFont { get; set; }
 
         void LoadContent();

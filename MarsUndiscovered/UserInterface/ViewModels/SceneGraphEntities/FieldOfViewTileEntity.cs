@@ -12,14 +12,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void SetFieldOfViewUnrevealed()
         {
-            MapTileQuad = Assets.FieldOfViewUnrevealedQuad;
+            MapTileTexture = Assets.FieldOfViewUnrevealedTexture;
             IsVisible = true;
             HasBeenSeen = false;
         }
 
         public void SetFieldOfViewHasBeenSeen()
         {
-            MapTileQuad = Assets.FieldOfViewHasBeenSeenQuad;
+            MapTileTexture = Assets.FieldOfViewHasBeenSeenTexture;
             IsVisible = true;
             HasBeenSeen = true;
         }

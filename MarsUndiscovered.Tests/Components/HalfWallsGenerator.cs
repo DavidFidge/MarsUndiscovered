@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using GoRogue.GameFramework;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Factories;

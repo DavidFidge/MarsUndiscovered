@@ -237,7 +237,7 @@ namespace MarsUndiscovered
 
             _gameProvider.Game.GraphicsDevice.Clear(Color.Transparent);
 
-            _userInterface.DrawActiveScreen(_spriteBatch);
+            _userInterface.DrawActiveScreen();
 
             _gameProvider.Game.GraphicsDevice.SetRenderTarget(null);
 

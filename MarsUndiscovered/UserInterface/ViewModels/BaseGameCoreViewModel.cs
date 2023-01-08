@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
@@ -35,7 +34,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public Queue<TileAnimation> Animations { get; set; } = new Queue<TileAnimation>();
         public IGameWorldEndpoint GameWorldEndpoint { get; set; }
         public IGameTimeService GameTimeService { get; set; }
-        public ISceneGraph SceneGraph => MapViewModel.SceneGraph;
         public MapViewModel MapViewModel { get; set; }
         public bool IsActive { get; set; }
 
@@ -86,8 +84,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public Task Handle(EntityTransformChangedNotification notification, CancellationToken cancellationToken)
         {
             if (IsActive)
-                SceneGraph.HandleEntityTransformChanged(notification);
-
+                MapViewModel.HandleEntityTransformChanged(notification);
+                
             return Unit.Task;
         }
 
