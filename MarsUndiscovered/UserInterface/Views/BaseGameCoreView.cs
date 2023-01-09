@@ -61,6 +61,8 @@ namespace MarsUndiscovered.UserInterface.Views
 
             Game.GraphicsDevice.DepthStencilState = oldDepthStencilState;
             Game.GraphicsDevice.SetRenderTargets(oldRenderTargets);
+
+            _viewModel.MapViewModel.SceneGraph.Draw(_gameCamera.View, _gameCamera.Projection);
         }
 
         public override void Update()
