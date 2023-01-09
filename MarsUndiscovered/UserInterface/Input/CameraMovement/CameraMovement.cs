@@ -14,16 +14,16 @@ namespace MarsUndiscovered.UserInterface.Input.CameraMovementSpace
         {
             var cameraMovementFlags = CameraMovementType.None;
 
-            if (keysDown.Contains(Keys.A) || keysDown.Contains(Keys.Left))
+            if (keysDown.Contains(Keys.Delete))
                 cameraMovementFlags |= CameraMovementType.PanLeft;
 
-            if (keysDown.Contains(Keys.D) || keysDown.Contains(Keys.Right))
+            if (keysDown.Contains(Keys.PageDown))
                 cameraMovementFlags |= CameraMovementType.PanRight;
 
-            if (keysDown.Contains(Keys.W) || keysDown.Contains(Keys.Up))
+            if (keysDown.Contains(Keys.Home))
                 cameraMovementFlags |= CameraMovementType.PanUp;
 
-            if (keysDown.Contains(Keys.S) || keysDown.Contains(Keys.Down))
+            if (keysDown.Contains(Keys.End))
                 cameraMovementFlags |= CameraMovementType.PanDown;
 
             if (keysDown.Contains(Keys.Q))

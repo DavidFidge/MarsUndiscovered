@@ -92,6 +92,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             _sceneGraph.Initialise(_mapEntity);
 
+            _sceneGraph.LoadContent();
+
             CreateMapGraph();
         }
 

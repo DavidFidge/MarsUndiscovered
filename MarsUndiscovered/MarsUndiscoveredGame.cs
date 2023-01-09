@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using FrigidRogue.MonoGame.Core.Extensions;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
 
@@ -227,13 +227,13 @@ namespace MarsUndiscovered
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            ResetGraphicsDeviceStates();
+            _gameProvider.Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
             GeonBit.UI.UserInterface.Active.Draw(_spriteBatch);
 
             _gameProvider.Game.GraphicsDevice.SetRenderTarget(_renderTarget);
 
-            ResetGraphicsDeviceStates();
+            _gameProvider.Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
             _gameProvider.Game.GraphicsDevice.Clear(Color.Transparent);
 
@@ -241,7 +241,7 @@ namespace MarsUndiscovered
 
             _gameProvider.Game.GraphicsDevice.SetRenderTarget(null);
 
-            ResetGraphicsDeviceStates();
+            _gameProvider.Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
             DrawRenderTarget(_spriteBatch);
 
@@ -255,15 +255,6 @@ namespace MarsUndiscovered
             _spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        private void ResetGraphicsDeviceStates()
-        {
-            // Reset graphics device properties after SpriteBatch drawing
-            // https://blogs.msdn.microsoft.com/shawnhar/2010/06/18/spritebatch-and-renderstates-in-xna-game-studio-4-0/
-            _gameProvider.Game.GraphicsDevice.BlendState = BlendState.Opaque;
-            _gameProvider.Game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            _gameProvider.Game.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
         }
 
         public void DrawRenderTarget(SpriteBatch spriteBatch)

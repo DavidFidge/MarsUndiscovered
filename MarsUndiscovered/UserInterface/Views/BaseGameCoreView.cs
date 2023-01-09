@@ -1,4 +1,5 @@
-﻿using FrigidRogue.MonoGame.Core.Graphics.Camera;
+﻿using FrigidRogue.MonoGame.Core.Extensions;
+using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
@@ -41,11 +42,9 @@ namespace MarsUndiscovered.UserInterface.Views
         
         public override void Draw()
         {
-            var oldDepthStencilState = Game.GraphicsDevice.DepthStencilState;
             var oldRenderTargets = Game.GraphicsDevice.GetRenderTargets();
             
             Game.GraphicsDevice.SetRenderTarget(_renderTarget);
-            Game.GraphicsDevice.DepthStencilState = DepthStencilState.None;
             Game.GraphicsDevice.Clear(Color.Black);
             
             _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
@@ -57,9 +56,10 @@ namespace MarsUndiscovered.UserInterface.Views
             
             _spriteBatch.End();
             
+            Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
+
             _viewModel.MapViewModel.SetMapEntityTexture(_renderTarget);
 
-            Game.GraphicsDevice.DepthStencilState = oldDepthStencilState;
             Game.GraphicsDevice.SetRenderTargets(oldRenderTargets);
 
             _viewModel.MapViewModel.SceneGraph.Draw(_gameCamera.View, _gameCamera.Projection);

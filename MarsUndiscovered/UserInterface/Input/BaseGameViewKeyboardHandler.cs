@@ -17,7 +17,9 @@ namespace MarsUndiscovered.UserInterface.Input
     public class BaseGameViewKeyboardHandler : BaseKeyboardHandler
     {
         protected readonly ICameraMovement _cameraMovement;
-
+        
+        public Options GameOptions { get; set; }
+        
         public BaseGameViewKeyboardHandler(ICameraMovement cameraMovement)
         {
             _cameraMovement = cameraMovement;
@@ -33,6 +35,9 @@ namespace MarsUndiscovered.UserInterface.Input
 
             if (keyInFocus == Keys.M && keyboardModifier == KeyboardModifier.Ctrl)
                 Mediator.Publish(new ToggleShowEntireMapNotification());
+            
+            if (GameOptions.EnableCameraMovement)
+                _cameraMovement.MoveCamera(keysDown);
         }
 
         public override void HandleKeyboardKeysReleased()

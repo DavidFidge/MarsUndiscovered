@@ -17,6 +17,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public MapEntity(IGameProvider gameProvider)
         {
             _mapQuad = new TexturedQuadTemplate(gameProvider);
+            _mapQuad.AlphaEnabled = false;
         }
         
         public void Initialize(int mapUnitWidth, int mapUnitHeight, float tileWidth, float tileHeight)
