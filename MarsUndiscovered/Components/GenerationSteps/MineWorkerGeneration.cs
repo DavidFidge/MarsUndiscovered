@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FrigidRogue.MonoGame.Core.Extensions;
+﻿using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;

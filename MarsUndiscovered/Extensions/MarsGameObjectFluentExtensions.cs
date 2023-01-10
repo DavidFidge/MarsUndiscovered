@@ -1,5 +1,4 @@
-﻿using System;
-using GoRogue.GameFramework;
+﻿using GoRogue.GameFramework;
 using MarsUndiscovered.Components;
 using SadRogue.Primitives;
 

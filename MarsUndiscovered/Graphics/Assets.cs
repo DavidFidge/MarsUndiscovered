@@ -1,5 +1,3 @@
-﻿using System.Collections.Generic;
-
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using MarsUndiscovered.Interfaces;
@@ -126,7 +124,7 @@ namespace MarsUndiscovered.Graphics
                 Constants.TileWidth,
                 Constants.TileHeight,
                 MapFont,
-                '↑',
+                '?',
                 0.598f,
                 _itemColour
             );
@@ -136,7 +134,7 @@ namespace MarsUndiscovered.Graphics
                 Constants.TileWidth,
                 Constants.TileHeight,
                 MapFont,
-                '⏻',
+                '?',
                 0.597f,
                 _itemColour
             );
@@ -146,7 +144,7 @@ namespace MarsUndiscovered.Graphics
                 Constants.TileWidth,
                 Constants.TileHeight,
                 MapFont,
-                '૪',
+                '?',
                 0.596f,
                 _itemColour
             );

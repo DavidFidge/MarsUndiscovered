@@ -1,5 +1,3 @@
-﻿using System;
-
 using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
 
 using FrigidRogue.MonoGame.Core.Graphics.Camera;

@@ -1,5 +1,3 @@
-﻿using System.Collections.Generic;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Components.SaveData

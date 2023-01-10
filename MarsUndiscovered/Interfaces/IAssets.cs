@@ -1,5 +1,3 @@
-﻿using System.Collections.Generic;
-
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using Microsoft.Xna.Framework.Graphics;

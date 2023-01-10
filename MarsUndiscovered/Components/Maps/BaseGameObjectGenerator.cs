@@ -1,6 +1,3 @@
-﻿using System;
-using System.Linq;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Extensions;
 

@@ -1,5 +1,3 @@
-﻿using System;
-
 using GoRogue.Components;
 using GoRogue.GameFramework;
 

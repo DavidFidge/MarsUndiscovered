@@ -1,5 +1,4 @@
-﻿using System;
-using FrigidRogue.MonoGame.Core.Components;
+﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
