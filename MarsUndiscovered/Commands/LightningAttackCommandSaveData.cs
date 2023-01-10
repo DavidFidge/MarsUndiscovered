@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using SadRogue.Primitives;
+﻿using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Commands
 {

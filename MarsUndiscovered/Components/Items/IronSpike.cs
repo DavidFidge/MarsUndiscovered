@@ -1,5 +1,3 @@
-﻿using System;
-
 using MonoGame.Extended;
 
 namespace MarsUndiscovered.Components

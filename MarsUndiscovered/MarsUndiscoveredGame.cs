@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-
+using FrigidRogue.MonoGame.Core.Extensions;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
 
@@ -25,7 +24,7 @@ using Serilog;
 
 namespace MarsUndiscovered
 {
-    public class MarsUndiscoveredGame : Game, IGame
+    public class MarsUndiscoveredGame : Game, IGame, IRequestHandler<ToggleFpsRequest>
     {
         private readonly ILogger _logger;
         private readonly IGameProvider _gameProvider;
@@ -42,12 +41,15 @@ namespace MarsUndiscovered
         private bool _isExiting;
         private bool _startNewGameFromCommandLine = false;
         private bool _startWorldBuilderFromCommandLine = false;
+        private bool _showFps = false;
 
         public CustomGraphicsDeviceManager CustomGraphicsDeviceManager { get; }
         public EffectCollection EffectCollection
         { get; }
         private SpriteBatch _spriteBatch;
         private RenderTarget2D _renderTarget;
+        
+        private FpsCounter _fpsCounter = new();
 
         public MarsUndiscoveredGame(
             ILogger logger,
@@ -215,6 +217,9 @@ namespace MarsUndiscovered
             _gameInputService.Poll(GraphicsDevice.Viewport.Bounds);
             _userInterface.Update(gameTime);
 
+            if (_showFps)
+                _fpsCounter.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -224,36 +229,34 @@ namespace MarsUndiscovered
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            ResetGraphicsDeviceStates();
+            _gameProvider.Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
             GeonBit.UI.UserInterface.Active.Draw(_spriteBatch);
 
             _gameProvider.Game.GraphicsDevice.SetRenderTarget(_renderTarget);
 
-            ResetGraphicsDeviceStates();
+            _gameProvider.Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
             _gameProvider.Game.GraphicsDevice.Clear(Color.Transparent);
 
-            _userInterface.DrawActiveScreen(_spriteBatch);
+            _userInterface.DrawActiveScreen();
 
             _gameProvider.Game.GraphicsDevice.SetRenderTarget(null);
 
-            ResetGraphicsDeviceStates();
+            _gameProvider.Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
             DrawRenderTarget(_spriteBatch);
 
             GeonBit.UI.UserInterface.Active.DrawMainRenderTarget(_spriteBatch);
+            
+            _spriteBatch.Begin();
+
+            if (_showFps)
+                _fpsCounter.DrawFps(_spriteBatch, _assets.MapFont, new Vector2(1f, 1f), Color.White);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        private void ResetGraphicsDeviceStates()
-        {
-            // Reset graphics device properties after SpriteBatch drawing
-            // https://blogs.msdn.microsoft.com/shawnhar/2010/06/18/spritebatch-and-renderstates-in-xna-game-studio-4-0/
-            _gameProvider.Game.GraphicsDevice.BlendState = BlendState.Opaque;
-            _gameProvider.Game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            _gameProvider.Game.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
         }
 
         public void DrawRenderTarget(SpriteBatch spriteBatch)
@@ -280,6 +283,12 @@ namespace MarsUndiscovered
         public Task<Unit> Handle(ToggleFullScreenRequest request, CancellationToken cancellationToken)
         {
             CustomGraphicsDeviceManager.ToggleFullScreen();
+            return Unit.Task;
+        }
+        
+        public Task<Unit> Handle(ToggleFpsRequest request, CancellationToken cancellationToken)
+        {
+            _showFps = !_showFps;
             return Unit.Task;
         }
     }

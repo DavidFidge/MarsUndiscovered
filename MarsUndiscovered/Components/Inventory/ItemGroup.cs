@@ -1,5 +1,3 @@
-﻿using System.Collections.Generic;
-
 namespace MarsUndiscovered.Components
 {
     public class ItemGroup : List<Item>

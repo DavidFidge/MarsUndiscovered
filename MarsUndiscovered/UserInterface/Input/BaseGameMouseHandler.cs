@@ -1,5 +1,8 @@
 ﻿using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
+using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
+using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input
 {
@@ -8,6 +11,9 @@ namespace MarsUndiscovered.UserInterface.Input
         private readonly IStopwatchProvider _stopwatchProvider;
         private double _mouseMoveThrottle = 20;
         private double _lastTotalMilliseconds;
+
+        public Options GameOptions { get; set; }
+        public ICameraMovement CameraMovement { get; set; }
 
         public BaseGameMouseHandler(IStopwatchProvider stopwatchProvider)
         {
@@ -24,6 +30,14 @@ namespace MarsUndiscovered.UserInterface.Input
             }
 
             return false;
+        }
+
+        public override void HandleMouseScrollWheelMove(MouseState mouseState, int difference)
+        {
+            if (GameOptions.EnableCameraMovement)
+                CameraMovement.ZoomCamera(difference);
+            
+            base.HandleMouseScrollWheelMove(mouseState, difference);
         }
     }
 }

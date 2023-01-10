@@ -1,5 +1,4 @@
-﻿using System;
-using FrigidRogue.MonoGame.Core.View.Extensions;
+﻿using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;

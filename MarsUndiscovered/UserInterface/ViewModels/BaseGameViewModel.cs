@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MarsUndiscovered.Components;
+﻿using MarsUndiscovered.Components;
 using MarsUndiscovered.UserInterface.Data;
 
 namespace MarsUndiscovered.UserInterface.ViewModels

@@ -41,6 +41,8 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
+            base.InitializeInternal();
+
             CreateLayoutPanels();
             SetupInReplayOptionsButton(LeftPanel);
             CreateReplayView();

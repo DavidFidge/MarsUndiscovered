@@ -12,7 +12,15 @@
         public const int ActorLayer = 1;
         public const int ItemLayer = 2;
         public const int IndestructiblesLayer = 3;
-        public static int OutdoorAreaBorder = 2;
-        public static int ShipOffset = 2;
+        public const int OutdoorAreaBorder = 2;
+        public const int ShipOffset = 2;
+
+        // For rendering the map texture to a texture
+        public const int TileWidth = 64;
+        public const int TileHeight = 116;
+        
+        // Width and height of one quad when drawing all the triangles in 3D
+        public const float TileQuadHeight = 1f;
+        public const float TileQuadWidth = 0.55f;
     }
 }

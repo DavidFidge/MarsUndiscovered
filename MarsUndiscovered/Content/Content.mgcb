@@ -1621,9 +1621,3 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/Title.png
-
-#begin Effects/TextureMaterial.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/TextureMaterial.fx

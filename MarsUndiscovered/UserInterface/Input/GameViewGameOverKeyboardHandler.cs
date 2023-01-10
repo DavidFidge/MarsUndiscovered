@@ -9,10 +9,6 @@ namespace MarsUndiscovered.UserInterface.Input
 {
     public class GameViewGameOverKeyboardHandler : BaseGameViewKeyboardHandler
     {
-        public GameViewGameOverKeyboardHandler(ICameraMovement cameraMovement) : base(cameraMovement)
-        {
-        }
-
         public override void HandleKeyboardKeyDown(Keys[] keysDown, Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
             base.HandleKeyboardKeyDown(keysDown, keyInFocus, keyboardModifier);

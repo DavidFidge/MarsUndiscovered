@@ -1,5 +1,4 @@
-﻿using System;
-using MarsUndiscovered.Components;
+﻿using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Maps;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

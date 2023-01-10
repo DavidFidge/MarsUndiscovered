@@ -1,6 +1,4 @@
-﻿using GoRogue.GameFramework;
-
-using MarsUndiscovered.Components;
+﻿using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 

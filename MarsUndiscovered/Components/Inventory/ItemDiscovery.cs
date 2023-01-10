@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace MarsUndiscovered.Components
 {
     public class ItemDiscovery : ICloneable

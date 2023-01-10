@@ -1,12 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-
-using FrigidRogue.MonoGame.Core.Extensions;
+﻿using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
-
-using GoRogue;
-
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using Microsoft.Xna.Framework;

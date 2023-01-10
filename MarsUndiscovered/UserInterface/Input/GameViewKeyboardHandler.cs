@@ -13,13 +13,16 @@ namespace MarsUndiscovered.UserInterface.Input
     {
         private Keys? _ctrlArrowKey = null;
 
-        public GameViewKeyboardHandler(ICameraMovement cameraMovement) : base(cameraMovement)
+        public GameViewKeyboardHandler() : base()
         {
         }
 
         public override void HandleKeyboardKeyDown(Keys[] keysDown, Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
             base.HandleKeyboardKeyDown(keysDown, keyInFocus, keyboardModifier);
+
+            if (ActionMap.ActionIs<ToggleFpsRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new ToggleFpsRequest());
 
             if (ActionMap.ActionIs<OpenInGameOptionsRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new OpenInGameOptionsRequest());

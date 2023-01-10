@@ -1,5 +1,3 @@
-﻿using System.Linq;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Messages;
@@ -14,16 +12,16 @@ namespace MarsUndiscovered.UserInterface.Input.CameraMovementSpace
         {
             var cameraMovementFlags = CameraMovementType.None;
 
-            if (keysDown.Contains(Keys.A) || keysDown.Contains(Keys.Left))
+            if (keysDown.Contains(Keys.Delete))
                 cameraMovementFlags |= CameraMovementType.PanLeft;
 
-            if (keysDown.Contains(Keys.D) || keysDown.Contains(Keys.Right))
+            if (keysDown.Contains(Keys.PageDown))
                 cameraMovementFlags |= CameraMovementType.PanRight;
 
-            if (keysDown.Contains(Keys.W) || keysDown.Contains(Keys.Up))
+            if (keysDown.Contains(Keys.Home))
                 cameraMovementFlags |= CameraMovementType.PanUp;
 
-            if (keysDown.Contains(Keys.S) || keysDown.Contains(Keys.Down))
+            if (keysDown.Contains(Keys.End))
                 cameraMovementFlags |= CameraMovementType.PanDown;
 
             if (keysDown.Contains(Keys.Q))
@@ -43,15 +41,20 @@ namespace MarsUndiscovered.UserInterface.Input.CameraMovementSpace
 
             if (keysDown.Contains(Keys.OemOpenBrackets) || keysDown.Contains(Keys.OemCloseBrackets))
             {
-                var zoomMagnitude = 0;
+                var magnitude = 0;
 
                 if (keysDown.Contains(Keys.OemOpenBrackets))
-                    zoomMagnitude += 1;
+                    magnitude += 1;
                 else if (keysDown.Contains(Keys.OemCloseBrackets))
-                    zoomMagnitude -= 1;
+                    magnitude -= 1;
 
-                Mediator.Send(new ZoomViewRequest(zoomMagnitude));
+                ZoomCamera(magnitude);
             }
+        }
+
+        public void ZoomCamera(int magnitude)
+        {
+            Mediator.Send(new ZoomViewRequest(magnitude));
         }
     }
 }

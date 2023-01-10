@@ -1,5 +1,3 @@
-﻿using System.Linq;
-
 using GoRogue.Pathing;
 
 using SadRogue.Primitives;

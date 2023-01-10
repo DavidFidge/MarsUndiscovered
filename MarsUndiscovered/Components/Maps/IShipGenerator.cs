@@ -1,4 +1,3 @@
-﻿
 using MarsUndiscovered.Components.Factories;
 
 namespace MarsUndiscovered.Components.Maps

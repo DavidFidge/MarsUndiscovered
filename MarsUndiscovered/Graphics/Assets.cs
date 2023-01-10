@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using FrigidRogue.MonoGame.Core.Graphics.Quads;
+﻿using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using MarsUndiscovered.Interfaces;
 
@@ -13,33 +11,29 @@ namespace MarsUndiscovered.Graphics
 {
     public class Assets : IAssets
     {
-        public const float TileQuadHeight = 1f;
-        public const float TileQuadWidth = 0.55f;
-
         public Texture2D TitleTexture { get; set; }
         public SpriteFont MapFont { get; set; }
         public SpriteFont GoalMapFont { get; set; }
-        public Effect TextureMaterialEffect { get; set; }
-        public MapTileQuad MouseHover { get; set; }
-        public MapTileQuad Wall { get; set; }
-        public MapTileQuad Floor { get; set; }
-        public MapTileQuad Player { get; set; }
-        public MapTileQuad MapExitDown { get; set; }
-        public MapTileQuad MapExitUp { get; set; }
-        public IDictionary<string, MapTileQuad> Monsters { get; set; }
-        public MapTileQuad Weapon { get; set; }
-        public MapTileQuad Gadget { get; set; }
-        public MapTileQuad NanoFlask { get; set; }
-        public MapTileQuad Lightning { get; set; }
-        public MapTileQuad LineAttackEastWest { get; set; }
-        public MapTileQuad LineAttackNorthEastSouthWest { get; set; }
-        public MapTileQuad LineAttackNorthWestSouthEast { get; set; }
-        public MapTileQuad LineAttackNorthSouth { get; set; }
-        public MapTileQuad ShipRepairParts { get; set; }
-        public MapTileQuad FieldOfViewUnrevealedQuad { get; set; }
-        public MapTileQuad FieldOfViewHasBeenSeenQuad { get; set; }
-        public GoalMapQuad GoalMapQuad { get; set; }
-        public IDictionary<char, MapTileQuad> ShipParts { get; set; }
+        public MapTileTexture MouseHover { get; set; }
+        public MapTileTexture Wall { get; set; }
+        public MapTileTexture Floor { get; set; }
+        public MapTileTexture Player { get; set; }
+        public MapTileTexture MapExitDown { get; set; }
+        public MapTileTexture MapExitUp { get; set; }
+        public IDictionary<string, MapTileTexture> Monsters { get; set; }
+        public MapTileTexture Weapon { get; set; }
+        public MapTileTexture Gadget { get; set; }
+        public MapTileTexture NanoFlask { get; set; }
+        public MapTileTexture Lightning { get; set; }
+        public MapTileTexture LineAttackEastWest { get; set; }
+        public MapTileTexture LineAttackNorthEastSouthWest { get; set; }
+        public MapTileTexture LineAttackNorthWestSouthEast { get; set; }
+        public MapTileTexture LineAttackNorthSouth { get; set; }
+        public MapTileTexture ShipRepairParts { get; set; }
+        public MapTileTexture FieldOfViewUnrevealedTexture { get; set; }
+        public MapTileTexture FieldOfViewHasBeenSeenTexture { get; set; }
+        public GoalMapTileTexture GoalMapTileTexture { get; set; }
+        public IDictionary<char, MapTileTexture> ShipParts { get; set; }
 
         private readonly IGameProvider _gameProvider;
 
@@ -53,84 +47,139 @@ namespace MarsUndiscovered.Graphics
 
         public void LoadContent()
         {
-            Monsters = new Dictionary<string, MapTileQuad>();
-
-            TextureMaterialEffect = _gameProvider.Game.Content.Load<Effect>("Effects/TextureMaterial");
+            Monsters = new Dictionary<string, MapTileTexture>();
 
             TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/title");
             MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
             GoalMapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/GoalMapFont");
 
-            Wall = new MapTileQuad(
+            Wall = new MapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
+                Constants.TileWidth,
+                Constants.TileHeight,
                 MapFont,
-                TextureMaterialEffect,
                 '#',
+                0.999f,
                 Color.White,
                 new Color(0xFF244BB6)
             );
 
-            Floor = new MapTileQuad(
+            Floor = new MapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
+                Constants.TileWidth,
+                Constants.TileHeight,
                 MapFont,
-                TextureMaterialEffect,
                 '.',
+                0.998f,
                 Color.Tan
             );
-
-            Player = new MapTileQuad(
+            
+            MapExitDown = new MapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
+                Constants.TileWidth,
+                Constants.TileHeight,
                 MapFont,
-                TextureMaterialEffect,
+                
+                '>',
+                0.997f,
+                _itemColour,
+                Color.SaddleBrown
+            );
+
+            MapExitUp = new MapTileTexture(
+                _gameProvider,
+                Constants.TileWidth,
+                Constants.TileHeight,
+                MapFont,
+                '<',
+                0.996f,
+                _itemColour,
+                Color.SaddleBrown
+            );
+            
+            ShipParts = new Dictionary<char, MapTileTexture>();
+            var shipPartChars = "{_-`.+|( ";
+
+            foreach (char ch in shipPartChars)
+            {
+                var shipPartDrawDepth = ch * 0.0001f;
+                var shipPart = new MapTileTexture(
+                    _gameProvider,
+                    Constants.TileWidth,
+                    Constants.TileHeight,
+                    MapFont,
+                    ch,
+                    0.8f + shipPartDrawDepth,
+                    Color.SteelBlue,
+                    Color.Black
+                );
+
+                ShipParts.Add(ch, shipPart);
+            }
+            
+            Weapon = new MapTileTexture(
+                _gameProvider,
+                Constants.TileWidth,
+                Constants.TileHeight,
+                MapFont,
+                '↑',
+                0.598f,
+                _itemColour
+            );
+
+            Gadget = new MapTileTexture(
+                _gameProvider,
+                Constants.TileWidth,
+                Constants.TileHeight,
+                MapFont,
+                '⏻',
+                0.597f,
+                _itemColour
+            );
+
+            NanoFlask = new MapTileTexture(
+                _gameProvider,
+                Constants.TileWidth,
+                Constants.TileHeight,
+                MapFont,
+                '૪',
+                0.596f,
+                _itemColour
+            );
+            
+            ShipRepairParts = new MapTileTexture(
+                _gameProvider,
+                Constants.TileWidth,
+                Constants.TileHeight,
+                MapFont,
+                '&',
+                0.595f,
+                _itemColour
+            );
+            
+            var actorDrawDepth = 0.4999f;
+            
+            Player = new MapTileTexture(
+                _gameProvider,
+                Constants.TileWidth,
+                Constants.TileHeight,
+                MapFont,
                 '@',
+                actorDrawDepth,
                 Color.Yellow
             );
 
-            Weapon = new MapTileQuad(
-                _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                MapFont,
-                TextureMaterialEffect,
-                '↑',
-                _itemColour
-            );
-
-            Gadget = new MapTileQuad(
-                _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                MapFont,
-                TextureMaterialEffect,
-                '⏻',
-                _itemColour
-            );
-
-            NanoFlask = new MapTileQuad(
-                _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                MapFont,
-                TextureMaterialEffect,
-                '૪',
-                _itemColour
-            );
+            actorDrawDepth -= 0.0001f;
 
             foreach (var breed in Breed.Breeds)
             {
-                var mapTileQuad = new MapTileQuad(
+                var mapTileQuad = new MapTileTexture(
                     _gameProvider,
-                    TileQuadWidth,
-                    TileQuadHeight,
+                    Constants.TileWidth,
+                    Constants.TileHeight,
                     MapFont,
-                    TextureMaterialEffect,
-                    breed.Value.AsciiCharacter,
+                        breed.Value.AsciiCharacter,
+                    actorDrawDepth,
                     breed.Value.ForegroundColour,
                     breed.Value.BackgroundColour
                 );
@@ -138,131 +187,83 @@ namespace MarsUndiscovered.Graphics
                 Monsters.Add(breed.Key, mapTileQuad);
             }
 
-            MapExitDown = new MapTileQuad(
+            GoalMapTileTexture = new GoalMapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                MapFont,
-                TextureMaterialEffect,
-                '>',
-                _itemColour,
-                Color.SaddleBrown
-            );
-
-            MapExitUp = new MapTileQuad(
-                _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                MapFont,
-                TextureMaterialEffect,
-                '<',
-                _itemColour,
-                Color.SaddleBrown
-            );
-
-            ShipRepairParts = new MapTileQuad(
-                _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                MapFont,
-                TextureMaterialEffect,
-                '&',
-                _itemColour
-            );
-
-            ShipParts = new Dictionary<char, MapTileQuad>();
-            var shipPartChars = "{_-`.+|( ";
-
-            foreach (char ch in shipPartChars)
-            {
-                var shipPart = new MapTileQuad(
-                    _gameProvider,
-                    TileQuadWidth,
-                    TileQuadHeight,
-                    MapFont,
-                    TextureMaterialEffect,
-                    ch,
-                    Color.SteelBlue,
-                    Color.Black
-                );
-
-                ShipParts.Add(ch, shipPart);
-            }
-
-            GoalMapQuad = new GoalMapQuad(
-                _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
+                Constants.TileWidth,
+                Constants.TileHeight,
                 GoalMapFont,
-                TextureMaterialEffect,
                 Color.White
             );
 
-            FieldOfViewUnrevealedQuad = new MapTileQuad(
+            FieldOfViewUnrevealedTexture = new MapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                new Color(Color.Black, 1f)
+                Constants.TileWidth,
+                Constants.TileHeight,
+                new Color(Color.Black, 1f),
+                0.199f
             );
 
-            FieldOfViewHasBeenSeenQuad = new MapTileQuad(
+            FieldOfViewHasBeenSeenTexture = new MapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                new Color(Color.Black, 0.5f)
+                Constants.TileWidth,
+                Constants.TileHeight,
+                new Color(Color.Black, 0.8f),
+                0.198f
             );
 
-            MouseHover = new MapTileQuad(
+            MouseHover = new MapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                new Color(Color.LightYellow, 0.3f)
+                Constants.TileWidth,
+                Constants.TileHeight,
+                new Color(Color.LightYellow, 0.75f),
+                0.099f
             );
 
-            Lightning = new MapTileQuad(
+            Lightning = new MapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
-                new Color(Color.White, 1f)
+                Constants.TileWidth,
+                Constants.TileHeight,
+                new Color(Color.White, 1f),
+                0.299f
             );
      
-            LineAttackNorthSouth = new MapTileQuad(
+            LineAttackNorthSouth = new MapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
+                Constants.TileWidth,
+                Constants.TileHeight,
                 MapFont,
-                TextureMaterialEffect,
                 '|',
+                0.298f,
                 _lineAttackColour
             );
             
-            LineAttackEastWest = new MapTileQuad(
+            LineAttackEastWest = new MapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
+                Constants.TileWidth,
+                Constants.TileHeight,
                 MapFont,
-                TextureMaterialEffect,
                 '-',
+                0.297f,
                 _lineAttackColour
             );
             
-            LineAttackNorthEastSouthWest = new MapTileQuad(
+            LineAttackNorthEastSouthWest = new MapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
+                Constants.TileWidth,
+                Constants.TileHeight,
                 MapFont,
-                TextureMaterialEffect,
                 '/',
+                0.296f,
                 _lineAttackColour
             );
             
-            LineAttackNorthWestSouthEast = new MapTileQuad(
+            LineAttackNorthWestSouthEast = new MapTileTexture(
                 _gameProvider,
-                TileQuadWidth,
-                TileQuadHeight,
+                Constants.TileWidth,
+                Constants.TileHeight,
                 MapFont,
-                TextureMaterialEffect,
                 '\\',
+                0.295f,
                 _lineAttackColour
             );          
         }

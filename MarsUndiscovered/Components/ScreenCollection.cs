@@ -1,6 +1,3 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
 using FrigidRogue.MonoGame.Core.View.Interfaces;
 
 using MarsUndiscovered.UserInterface.Screens;

@@ -10,10 +10,6 @@ namespace MarsUndiscovered.UserInterface.Input
 {
     public class WorldBuilderViewKeyboardHandler : BaseGameViewKeyboardHandler
     {
-        public WorldBuilderViewKeyboardHandler(ICameraMovement cameraMovement) : base(cameraMovement)
-        {
-        }
-
         public override void HandleKeyboardKeyDown(Keys[] keysDown, Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
             base.HandleKeyboardKeyDown(keysDown, keyInFocus, keyboardModifier);

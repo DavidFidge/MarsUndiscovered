@@ -151,12 +151,6 @@ namespace MarsUndiscovered.Installers
                 Component.For<IFactory<MapEntity>>()
                     .AsFactory(),
 
-                Component.For<MapTileRootEntity>()
-                    .LifeStyle.Transient,
-
-                Component.For<IFactory<MapTileRootEntity>>()
-                    .AsFactory(),
-
                 Component.For<GoalMapEntity>()
                     .LifeStyle.Transient,
 

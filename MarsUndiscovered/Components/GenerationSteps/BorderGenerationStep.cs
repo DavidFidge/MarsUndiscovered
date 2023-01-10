@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FrigidRogue.MonoGame.Core.Extensions;
+﻿using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.Steps;
 

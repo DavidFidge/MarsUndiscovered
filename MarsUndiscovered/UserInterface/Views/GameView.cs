@@ -71,6 +71,8 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
+            base.InitializeInternal();
+            
             CreateLayoutPanels();
             SetupInGameOptionsButton(LeftPanel);
             CreatePlayerPanel();

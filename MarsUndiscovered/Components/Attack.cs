@@ -1,5 +1,3 @@
-﻿using System;
-
 using GoRogue.Random;
 using MonoGame.Extended;
 

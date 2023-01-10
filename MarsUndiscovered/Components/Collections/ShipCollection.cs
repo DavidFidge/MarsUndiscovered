@@ -1,4 +1,3 @@
-﻿
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.SaveData;
 

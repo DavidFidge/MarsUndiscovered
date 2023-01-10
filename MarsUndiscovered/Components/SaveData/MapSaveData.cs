@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 
 namespace MarsUndiscovered.Components.SaveData

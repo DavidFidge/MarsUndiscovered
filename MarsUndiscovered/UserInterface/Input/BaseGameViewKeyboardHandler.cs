@@ -1,5 +1,3 @@
-﻿using System;
-
 using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
 
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
@@ -16,12 +14,8 @@ namespace MarsUndiscovered.UserInterface.Input
 {
     public class BaseGameViewKeyboardHandler : BaseKeyboardHandler
     {
-        protected readonly ICameraMovement _cameraMovement;
-
-        public BaseGameViewKeyboardHandler(ICameraMovement cameraMovement)
-        {
-            _cameraMovement = cameraMovement;
-        }
+        public Options GameOptions { get; set; }
+        public ICameraMovement CameraMovement { get; set; }
 
         public override void HandleKeyboardKeyDown(Keys[] keysDown, Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
@@ -33,6 +27,9 @@ namespace MarsUndiscovered.UserInterface.Input
 
             if (keyInFocus == Keys.M && keyboardModifier == KeyboardModifier.Ctrl)
                 Mediator.Publish(new ToggleShowEntireMapNotification());
+            
+            if (GameOptions.EnableCameraMovement)
+                CameraMovement.MoveCamera(keysDown);
         }
 
         public override void HandleKeyboardKeysReleased()
