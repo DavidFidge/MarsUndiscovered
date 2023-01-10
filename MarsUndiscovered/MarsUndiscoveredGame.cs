@@ -24,7 +24,7 @@ using Serilog;
 
 namespace MarsUndiscovered
 {
-    public class MarsUndiscoveredGame : Game, IGame
+    public class MarsUndiscoveredGame : Game, IGame, IRequestHandler<ToggleFpsRequest>
     {
         private readonly ILogger _logger;
         private readonly IGameProvider _gameProvider;
@@ -41,6 +41,7 @@ namespace MarsUndiscovered
         private bool _isExiting;
         private bool _startNewGameFromCommandLine = false;
         private bool _startWorldBuilderFromCommandLine = false;
+        private bool _showFps = false;
 
         public CustomGraphicsDeviceManager CustomGraphicsDeviceManager { get; }
         public EffectCollection EffectCollection
@@ -215,7 +216,9 @@ namespace MarsUndiscovered
             _gameTimeService.Update(gameTime);
             _gameInputService.Poll(GraphicsDevice.Viewport.Bounds);
             _userInterface.Update(gameTime);
-            _fpsCounter.Update(gameTime);
+
+            if (_showFps)
+                _fpsCounter.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -248,8 +251,8 @@ namespace MarsUndiscovered
             
             _spriteBatch.Begin();
 
-            // Draw the fps msg
-            _fpsCounter.DrawFps(_spriteBatch, _assets.MapFont, new Vector2(1f, 1f), Color.White);
+            if (_showFps)
+                _fpsCounter.DrawFps(_spriteBatch, _assets.MapFont, new Vector2(1f, 1f), Color.White);
 
             _spriteBatch.End();
 
@@ -280,6 +283,12 @@ namespace MarsUndiscovered
         public Task<Unit> Handle(ToggleFullScreenRequest request, CancellationToken cancellationToken)
         {
             CustomGraphicsDeviceManager.ToggleFullScreen();
+            return Unit.Task;
+        }
+        
+        public Task<Unit> Handle(ToggleFpsRequest request, CancellationToken cancellationToken)
+        {
+            _showFps = !_showFps;
             return Unit.Task;
         }
     }

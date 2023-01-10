@@ -13,6 +13,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private TexturedQuadTemplate _mapQuad;
         private float _mapWidth;
         private float _mapHeight;
+        
+        public bool IsVisible { get; set; } = true;
+
+        public float MapWidth => _mapWidth;
+        public float HalfMapWidth => _mapWidth / 2f;
+        public float MapHeight => _mapHeight;
+        public float HalfMapHeight => _mapHeight / 2f;
 
         public MapEntity(IGameProvider gameProvider)
         {
@@ -25,19 +32,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _mapWidth = mapUnitWidth * tileWidth;
             _mapHeight = mapUnitHeight * tileHeight;
             
-            var halfTileHeight = tileHeight / 2f;
+            var translation = new Vector3(0, 0, -HalfMapHeight);
 
-            var translation = new Vector3(-_mapWidth / 2f, (_mapHeight / 2f) - halfTileHeight, (-_mapHeight / 2f));
+            var uiOffset = new Vector3(tileWidth * 10f, tileHeight * -1.7f, -3.1f);
 
-            var offsetFromCentre = new Vector3(tileWidth * 10f, tileHeight * -1.7f, -3.1f);
-
-            translation += offsetFromCentre;
+            translation += uiOffset;
 
             Transform.ChangeTranslation(translation);
         }
 
-        public bool IsVisible { get; set; } = true;
-        
         public void Draw(Matrix view, Matrix projection, Matrix world)
         {
             _mapQuad.Draw(view, projection, world);

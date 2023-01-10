@@ -21,6 +21,9 @@ namespace MarsUndiscovered.UserInterface.Input
         {
             base.HandleKeyboardKeyDown(keysDown, keyInFocus, keyboardModifier);
 
+            if (ActionMap.ActionIs<ToggleFpsRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new ToggleFpsRequest());
+
             if (ActionMap.ActionIs<OpenInGameOptionsRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new OpenInGameOptionsRequest());
 

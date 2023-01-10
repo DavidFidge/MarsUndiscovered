@@ -1,4 +1,4 @@
-using FrigidRogue.MonoGame.Core.Components;
+﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Messages;
@@ -329,7 +329,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 _goalMapTiles[point].Text = Math.Round(goalMapValue.Value, 2).ToString();
             }
         }
-
+        
         public void UpdateFieldOfView(
             IEnumerable<Point> newlyVisiblePoints,
             IEnumerable<Point> newlyHiddenPoints,
@@ -395,11 +395,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             var worldTransform = _sceneGraph.GetWorldTransform(_mapEntity);
 
+            var mapOffsetFromCentre = new Vector3(_mapEntity.HalfMapWidth, _mapEntity.HalfMapHeight, 0);
+
             var plane = new Plane(
-                new Vector3(0, 0, worldTransform.Translation.Z),
-                new Vector3(worldTransform.Translation.X, 0, worldTransform.Translation.Z),
-                new Vector3(0, worldTransform.Translation.Y, worldTransform.Translation.Z)
+                new Vector3(-mapOffsetFromCentre.X, -mapOffsetFromCentre.Y, 0),
+                new Vector3(mapOffsetFromCentre.X, -mapOffsetFromCentre.Y, 0),
+                new Vector3(-mapOffsetFromCentre.X, mapOffsetFromCentre.Y, 0)
             );
+
+            plane = Plane.Transform(plane, worldTransform);
 
             var factor = ray.Intersects(plane);
 
@@ -407,12 +411,17 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 return null;
 
             var intersectionPoint = ray.Position + factor.Value * ray.Direction;
+            intersectionPoint = Vector3.Transform(intersectionPoint, Matrix.Invert(worldTransform));
 
-            var untranslatedMapCoords = intersectionPoint - worldTransform.Translation;
+            var untranslatedMapCoords = intersectionPoint + mapOffsetFromCentre;
+
+            // Game world map's 0,0 is the top left coordinate but 3D map's 0,0 is the bottom left vertex.
+            // So the Y calculation needs to be flipped.
+            untranslatedMapCoords.Y = -(untranslatedMapCoords.Y - _mapEntity.MapHeight);
 
             var mapPosition = new Point(
-                (int)((untranslatedMapCoords.X + Constants.TileQuadWidth / 2) / Constants.TileQuadWidth),
-                (int)((-untranslatedMapCoords.Y + Constants.TileQuadHeight / 2) / Constants.TileQuadHeight)
+                (int)(untranslatedMapCoords.X / Constants.TileQuadWidth),
+                (int)(untranslatedMapCoords.Y / Constants.TileQuadHeight)
             );
 
             return mapPosition;

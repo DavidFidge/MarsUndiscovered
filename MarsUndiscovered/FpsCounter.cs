@@ -20,7 +20,8 @@ namespace MarsUndiscovered
             _elapsed = (double)(_now - _last);
             if (_elapsed > _msgFrequency)
             {
-                _msg = " Fps: " + (_frames / _elapsed) + "\n Elapsed time: " + _elapsed +  "\n Updates: " + _updates + "\n Frames: " + _frames;
+                _msg =
+                    $" Fps: {(int)(_frames / _elapsed)}\n Elapsed time: {_elapsed:F1}\n Updates: {(int)_updates}\n Frames: {(int)_frames}";
                 _elapsed = 0;
                 _frames = 0;
                 _updates = 0;

@@ -1,4 +1,4 @@
-using FrigidRogue.MonoGame.Core.Graphics.Quads;
+﻿using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using MarsUndiscovered.Interfaces;
 
@@ -11,8 +11,6 @@ namespace MarsUndiscovered.Graphics
 {
     public class Assets : IAssets
     {
-
-
         public Texture2D TitleTexture { get; set; }
         public SpriteFont MapFont { get; set; }
         public SpriteFont GoalMapFont { get; set; }
@@ -124,7 +122,7 @@ namespace MarsUndiscovered.Graphics
                 Constants.TileWidth,
                 Constants.TileHeight,
                 MapFont,
-                '?',
+                '↑',
                 0.598f,
                 _itemColour
             );
@@ -134,7 +132,7 @@ namespace MarsUndiscovered.Graphics
                 Constants.TileWidth,
                 Constants.TileHeight,
                 MapFont,
-                '?',
+                '⏻',
                 0.597f,
                 _itemColour
             );
@@ -144,7 +142,7 @@ namespace MarsUndiscovered.Graphics
                 Constants.TileWidth,
                 Constants.TileHeight,
                 MapFont,
-                '?',
+                '૪',
                 0.596f,
                 _itemColour
             );
@@ -209,7 +207,7 @@ namespace MarsUndiscovered.Graphics
                 _gameProvider,
                 Constants.TileWidth,
                 Constants.TileHeight,
-                new Color(Color.Black, 0.5f),
+                new Color(Color.Black, 0.8f),
                 0.198f
             );
 
@@ -217,7 +215,7 @@ namespace MarsUndiscovered.Graphics
                 _gameProvider,
                 Constants.TileWidth,
                 Constants.TileHeight,
-                new Color(Color.LightYellow, 0.3f),
+                new Color(Color.LightYellow, 0.75f),
                 0.099f
             );
 
