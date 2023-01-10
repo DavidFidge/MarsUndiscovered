@@ -1,5 +1,3 @@
-﻿using System.Linq;
-
 using Castle.MicroKernel.Registration;
 
 using MarsUndiscovered.Components;

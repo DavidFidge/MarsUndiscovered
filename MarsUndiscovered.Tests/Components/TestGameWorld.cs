@@ -1,5 +1,3 @@
-﻿using System.Collections.Generic;
-
 using FrigidRogue.MonoGame.Core.Components;
 
 using MarsUndiscovered.Components;
