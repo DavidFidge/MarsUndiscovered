@@ -37,6 +37,8 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
+            base.InitializeInternal();
+
             CreateLayoutPanels();
             SetupChildPanel(_worldBuilderOptionsView);
         }

@@ -13,7 +13,7 @@ namespace MarsUndiscovered.UserInterface.Input
     {
         private Keys? _ctrlArrowKey = null;
 
-        public GameViewKeyboardHandler(ICameraMovement cameraMovement) : base(cameraMovement)
+        public GameViewKeyboardHandler() : base()
         {
         }
 
