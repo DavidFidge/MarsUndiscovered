@@ -42,7 +42,7 @@ namespace MarsUndiscovered.Components
         {
             foreach (var mapSaveData in memento.State.Maps)
             {
-                var map = new MarsMap(_gameWorld);
+                var map = new MarsMap(_gameWorld, mapSaveData.State.Width, mapSaveData.State.Height);
                 map.SetLoadState(mapSaveData);
 
                 if (map.Id == memento.State.CurrentMapId)

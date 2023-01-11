@@ -55,7 +55,7 @@ namespace MarsUndiscovered.Tests.Commands
 
             // spawn a monster across first 3 columns (excluding the location of the exit).  This will block the landing position and force a new position
             // to be searched for.
-            for (var y = 0; y < MarsMap.MapHeight; y++)
+            for (var y = 0; y < destinationMap.MapHeight; y++)
             {
                 for (var x = 0; x < 3; x++)
                 {

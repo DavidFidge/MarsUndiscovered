@@ -44,6 +44,7 @@ namespace MarsUndiscovered.Components
         private IBehaviour<Monster> _behaviourTree;
         private IList<BaseGameActionCommand> _nextCommands;
         private ICommandFactory _commandFactory;
+        private SeenTile[] _seenTilesAfterLoad;
 
         public string GetInformation(Player player)
         {
@@ -86,11 +87,8 @@ namespace MarsUndiscovered.Components
 
         public Monster(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
-            _goalStates = new ArrayView<GoalState>(MarsMap.MapWidth, MarsMap.MapHeight);
-            _chebyshevGoalState = new GoalMap(_goalStates, Distance.Chebyshev);
-            _manhattanGoalState = new GoalMap(_goalStates, Distance.Manhattan);
-            _goalMap = new WeightedGoalMap(new[] { _chebyshevGoalState, _manhattanGoalState });
             _nextCommands = new List<BaseGameActionCommand>();
+            CreateBehaviourTree();
         }
 
         public Monster WithBreed(Breed breed)
@@ -98,13 +96,14 @@ namespace MarsUndiscovered.Components
             Breed = breed;
             MaxHealth = breed.MaxHealth;
             Health = MaxHealth;
-            CreateBehaviourTree();
 
             return this;
         }
 
         public Monster AddToMap(MarsMap marsMap)
         {
+            CreateGoalStates(marsMap);
+
             // Normally actors are not walkable as they can't be on the same square, but if an actor is on a wall it has to be walkable so that
             // it can be on the same square as a (non-walkable) wall.
             if (IsWallTurret)
@@ -118,12 +117,20 @@ namespace MarsUndiscovered.Components
             return this;
         }
 
+        private void CreateGoalStates(MarsMap marsMap)
+        {
+            _goalStates = new ArrayView<GoalState>(marsMap.MapWidth, marsMap.MapHeight);
+            _chebyshevGoalState = new GoalMap(_goalStates, Distance.Chebyshev);
+            _manhattanGoalState = new GoalMap(_goalStates, Distance.Manhattan);
+            _goalMap = new WeightedGoalMap(new[] { _chebyshevGoalState, _manhattanGoalState });
+        }
+
         public void SetLoadState(IMemento<MonsterSaveData> memento)
         {
             PopulateLoadState(memento.State);
             Breed = Breed.Breeds[memento.State.BreedName];
 
-            var seenTiles = memento.State.SeenTiles
+            _seenTilesAfterLoad = memento.State.SeenTiles
                 .Select(s =>
                     {
                         var seenTiles = new SeenTile(s.State.Point);
@@ -135,8 +142,6 @@ namespace MarsUndiscovered.Components
                     }
                 )
                 .ToArray();
-
-            _seenTiles = new ArrayView<SeenTile>(seenTiles, MarsMap.MapWidth);
         }
 
         public IMemento<MonsterSaveData> GetSaveState()
@@ -156,7 +161,10 @@ namespace MarsUndiscovered.Components
         public override void AfterMapLoaded()
         {
             base.AfterMapLoaded();
-
+            
+            CreateGoalStates((MarsMap)CurrentMap);
+            
+            _seenTiles = new ArrayView<SeenTile>(_seenTilesAfterLoad, CurrentMap.Width);
             _fieldOfView = new RecursiveShadowcastingFOV(CurrentMap.TransparencyView);
         }
 

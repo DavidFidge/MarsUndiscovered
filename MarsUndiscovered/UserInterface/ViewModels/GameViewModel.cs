@@ -16,8 +16,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     {
         public void NewGame(ulong? seed = null)
         {
-            IsActive = true;
+            IsActive = false;
             GameWorldEndpoint.NewGame(seed);
+            IsActive = true;
             SetUpViewModels();
             GameWorldEndpoint.AfterCreateGame();
             Mediator.Publish(new RefreshViewNotification());
@@ -25,8 +26,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void LoadGame(string filename)
         {
-            IsActive = true;
+            IsActive = false;
             GameWorldEndpoint.LoadGame(filename);
+            IsActive = true;
             SetUpViewModels();
             GameWorldEndpoint.AfterCreateGame();
             Mediator.Publish(new RefreshViewNotification());

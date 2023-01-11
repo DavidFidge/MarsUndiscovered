@@ -9,8 +9,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void LoadReplay(string filename)
         {
-            IsActive = true;
+            IsActive = false;
             GameWorldEndpoint.LoadReplay(filename);
+            IsActive = true;
             SetupNewReplay();
             Mediator.Publish(new RefreshViewNotification());
         }

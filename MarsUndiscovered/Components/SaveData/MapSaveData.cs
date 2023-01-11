@@ -8,5 +8,7 @@ namespace MarsUndiscovered.Components.SaveData
         public IList<IMemento<SeenTileSaveData>> SeenTiles { get; set; }
         public Guid Id { get; set; }
         public int Level { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
     }
 }

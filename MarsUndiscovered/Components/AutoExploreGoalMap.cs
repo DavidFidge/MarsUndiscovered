@@ -9,15 +9,11 @@ namespace MarsUndiscovered.Components
     {
         public IGridView<double?> GoalMap => _goalMap;
 
-        private readonly ArrayView<GoalState> _goalStates;
-        private readonly GoalMap _goalMap;
+        private ArrayView<GoalState> _goalStates;
+        private GoalMap _goalMap;
         private int _lastGameTurn = -1;
-
-        public AutoExploreGoalMap()
-        {
-            _goalStates = new ArrayView<GoalState>(MarsMap.MapWidth, MarsMap.MapHeight);
-            _goalMap = new GoalMap(_goalStates, Distance.Chebyshev);
-        }
+        private int _mapWidth;
+        private int _mapHeight;
 
         public void Rebuild(GameWorld gameWorld, bool fallbackToMapExit = false)
         {
@@ -25,7 +21,18 @@ namespace MarsUndiscovered.Components
             if (gameWorld.GameTurnService.TurnNumber == _lastGameTurn)
                 return;
 
-            _goalStates.Clear();
+            if (_mapWidth != gameWorld.CurrentMap.MapWidth || _mapHeight != gameWorld.CurrentMap.MapHeight)
+            {
+                _mapWidth = gameWorld.CurrentMap.MapWidth;
+                _mapHeight = gameWorld.CurrentMap.MapHeight;
+
+                _goalStates = new ArrayView<GoalState>(_mapWidth, _mapHeight);
+                _goalMap = new GoalMap(_goalStates, Distance.Chebyshev);
+            }
+            else
+            {
+                _goalStates.Clear();
+            }
 
             _lastGameTurn = gameWorld.GameTurnService.TurnNumber;
 

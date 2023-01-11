@@ -154,6 +154,7 @@ namespace MarsUndiscovered.UserInterface.Views
             UpdateMonsterStatus();
             UpdateMessageLog();
             UpdatePlayerStatus();
+            UpdateMapRenderTargetSize(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
             StatusParagraph.Text = String.Empty;
         }
 

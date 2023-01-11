@@ -8,41 +8,45 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Tests.Components
 {
-    public class HalfWallsGenerator : IMapGenerator
+    public class HalfWallsGenerator : BaseMapGenerator
     {
         public IMapGenerator OriginalMapGenerator { get; private set; }
 
         private readonly IGameObjectFactory _gameObjectFactory;
-		
-		public MarsMap MarsMap { get; set; }
-        public int Steps { get; set; }
-        public bool IsComplete { get; set; }
-
+        
         public HalfWallsGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator)
         {
             _gameObjectFactory = gameObjectFactory;
             OriginalMapGenerator = originalMapGenerator;
+            
+            MapWidthMin = 80;
+            MapWidthMax = 81;
+            MapHeightMin = 20;
+            MapHeightMax = 21;
         }
 
-        public void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
             GenerateHalfWallsMap(gameWorld);
         }
 
-        public void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
             GenerateHalfWallsMap(gameWorld);
         }
 
         private void GenerateHalfWallsMap(IGameWorld gameWorld)
         {
-            var arrayView = new ArrayView<IGameObject>(MarsMap.MapWidth, MarsMap.MapHeight);
+            var mapWidth = GetWidth();
+            var mapHeight = GetHeight();
+
+            var arrayView = new ArrayView<IGameObject>(mapWidth, mapHeight);
 
             var index = 0;
 
             arrayView.ApplyOverlay(p =>
             {
-                var terrain = p.Y > MarsMap.MapHeight - 5
+                var terrain = p.Y > mapHeight - 5
                     ? (Terrain)_gameObjectFactory.CreateWall()
                     : _gameObjectFactory.CreateFloor();
                 terrain.Index = index++;
@@ -52,7 +56,8 @@ namespace MarsUndiscovered.Tests.Components
             var wallsFloors = arrayView.ToArray();
 
             MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
-                wallsFloors.OfType<Floor>().ToList());
+                wallsFloors.OfType<Floor>().ToList(), mapWidth, mapHeight);
+            
             Steps = 1;
             IsComplete = true;
         }

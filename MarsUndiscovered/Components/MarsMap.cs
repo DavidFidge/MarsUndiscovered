@@ -19,9 +19,9 @@ namespace MarsUndiscovered.Components
 {
     public class MarsMap : Map, IEquatable<MarsMap>, IMementoState<MapSaveData>
     {
-        public static readonly int MapWidth = 84;
-        public static readonly int MapHeight = 26;
         private readonly IGameWorld _gameWorld;
+        private readonly int _mapWidth;
+        private readonly int _mapHeight;
 
         public Guid Id { get; set; }
         public int Level { get; set; }
@@ -30,11 +30,17 @@ namespace MarsUndiscovered.Components
         public IList<Wall> Walls { get; private set; }
         public IList<Floor> Floors { get; private set; }
 
-        public MarsMap(IGameWorld gameWorld) : base(MapWidth, MapHeight, 3, Distance.Chebyshev, null, UInt32.MaxValue, UInt32.MaxValue, 0)
+        public int MapWidth => _mapWidth;
+
+        public int MapHeight => _mapHeight;
+
+        public MarsMap(IGameWorld gameWorld, int mapWidth, int mapHeight) : base(mapWidth, mapHeight, 3, Distance.Chebyshev, null, UInt32.MaxValue, UInt32.MaxValue, 0)
         {
             Id = Guid.NewGuid();
             Level = 1;
             _gameWorld = gameWorld;
+            _mapWidth = mapWidth;
+            _mapHeight = mapHeight;
             SeenTiles = SeenTile.CreateArrayViewFromMap(this);
         }
 
@@ -181,6 +187,9 @@ namespace MarsUndiscovered.Components
                 .Where(g => g.CurrentMap.Equals(this))
                 .Select(s => s.ID)
                 .ToList();
+
+            memento.State.Width = Width;
+            memento.State.Height = Height;
 
             return new Memento<MapSaveData>(memento.State);
         }

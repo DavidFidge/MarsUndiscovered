@@ -27,8 +27,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(_gameWorld.GameObjects.Count > 0);
             Assert.IsTrue(_gameWorld.Walls.Count > 0); // First step of the map generator will have walls
             Assert.IsTrue(_gameWorld.Seed > 0);
-            Assert.AreEqual(MarsMap.MapWidth, _gameWorld.CurrentMap.Width);
-            Assert.AreEqual(MarsMap.MapHeight, _gameWorld.CurrentMap.Height);
+            
+            // The map height min and max are set to the same value so the random number generated is the same
+            Assert.AreEqual(_gameWorld.MapGenerator.MapWidthMin, _gameWorld.CurrentMap.Width);
+            Assert.AreEqual(_gameWorld.MapGenerator.MapHeightMin, _gameWorld.CurrentMap.Height);
         }
         
         [TestMethod]
@@ -55,8 +57,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(_gameWorld.GameObjects.Count > 0);
             Assert.AreEqual(0, _gameWorld.Walls.Count); // No walls in completed map
             Assert.IsTrue(_gameWorld.Seed > 0);
-            Assert.AreEqual(MarsMap.MapWidth, _gameWorld.CurrentMap.Width);
-            Assert.AreEqual(MarsMap.MapHeight, _gameWorld.CurrentMap.Height);
+            
+            // The map height min and max are set to the same value so the random number generated is the same
+            Assert.AreEqual(_gameWorld.MapGenerator.MapWidthMin, _gameWorld.CurrentMap.Width);
+            Assert.AreEqual(_gameWorld.MapGenerator.MapHeightMin, _gameWorld.CurrentMap.Height);
         }
         
         [TestMethod]
@@ -83,8 +87,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(_gameWorld.GameObjects.Count > 0);
             Assert.AreEqual(0, _gameWorld.Walls.Count); // No walls in completed map
             Assert.IsTrue(_gameWorld.Seed > 0);
-            Assert.AreEqual(MarsMap.MapWidth, _gameWorld.CurrentMap.Width);
-            Assert.AreEqual(MarsMap.MapHeight, _gameWorld.CurrentMap.Height);
+            
+            // The map height min and max are set to the same value so the random number generated is the same
+            Assert.AreEqual(_gameWorld.MapGenerator.MapWidthMin, _gameWorld.CurrentMap.Width);
+            Assert.AreEqual(_gameWorld.MapGenerator.MapHeightMin, _gameWorld.CurrentMap.Height);
         }
     }
 }

@@ -1,19 +1,21 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using IDrawable = FrigidRogue.MonoGame.Core.Graphics.IDrawable;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
-    public class MapEntity : Entity, IDrawable, ILoadContent
+    public class MapEntity : Entity, IDrawable, IDisposable
     {
         private TexturedQuadTemplate _mapQuad;
         private float _mapWidth;
         private float _mapHeight;
-        
+        private float _tileWidth;
+        private float _tileHeight;
+
         public bool IsVisible { get; set; } = true;
 
         public float MapWidth => _mapWidth;
@@ -27,18 +29,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _mapQuad.AlphaEnabled = false;
         }
         
-        public void Initialize(int mapUnitWidth, int mapUnitHeight, float tileWidth, float tileHeight)
+        public void Initialize(float tileWidth, float tileHeight)
         {
-            _mapWidth = mapUnitWidth * tileWidth;
-            _mapHeight = mapUnitHeight * tileHeight;
-            
-            var translation = new Vector3(0, 0, -HalfMapHeight);
-
-            var uiOffset = new Vector3(tileWidth * 10f, tileHeight * -1.7f, -3.1f);
-
-            translation += uiOffset;
-
-            Transform.ChangeTranslation(translation);
+            _tileHeight = tileHeight;
+            _tileWidth = tileWidth;
         }
 
         public void Draw(Matrix view, Matrix projection, Matrix world)
@@ -51,9 +45,25 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _mapQuad.Texture = texture;
         }
 
-        public void LoadContent()
+        public void LoadContent(int mapWidth, int mapHeight)
         {
+            _mapWidth = mapWidth * _tileWidth;
+            _mapHeight = mapHeight * _tileHeight;
+            
+            var translation = new Vector3(0, 0, -HalfMapHeight);
+
+            var uiOffset = new Vector3(_tileWidth * 10f, _tileHeight * -1.7f, -3.1f);
+
+            translation += uiOffset;
+
+            Transform.ChangeTranslation(translation);        
+            
             _mapQuad.LoadContent(_mapWidth, _mapHeight, null);
+        }
+
+        public void Dispose()
+        {
+            _mapQuad?.Dispose();
         }
     }
 }

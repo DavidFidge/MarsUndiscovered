@@ -49,20 +49,20 @@ namespace MarsUndiscovered.Components.GenerationSteps
         }
 
         /// <inheritdoc/>
-        protected override IEnumerator<object> OnPerform(GenerationContext context)
+        protected override IEnumerator<object> OnPerform(GenerationContext generationContext)
         {
-            var wallFloorContext = context.GetFirstOrNew<ISettableGridView<bool>>(
-                () => new ArrayView<bool>(context.Width, context.Height),
+            var wallFloorContext = generationContext.GetFirstOrNew<ISettableGridView<bool>>(
+                () => new ArrayView<bool>(generationContext.Width, generationContext.Height),
                 WallFloorComponentTag
             );
             
             // Get or create/add a tunnel list context component
-            var tunnelList = context.GetFirstOrNew(
+            var tunnelList = generationContext.GetFirstOrNew(
                 () => new ItemList<Area>(),
                 TunnelsComponentTag
             );
 
-            var veinPoints = GetVeinPoints();
+            var veinPoints = GetVeinPoints(generationContext);
 
             foreach (var veinPoint in veinPoints)
             {
@@ -73,7 +73,7 @@ namespace MarsUndiscovered.Components.GenerationSteps
 
             if (AllowMoreEndpointsToIncreaseMapCoverage)
             {
-                var additionalVeinPoints = GetAdditionalVeinPoints(veinPoints);
+                var additionalVeinPoints = GetAdditionalVeinPoints(veinPoints, generationContext);
 
                 foreach (var additionalVeinPoint in additionalVeinPoints)
                 {
@@ -86,7 +86,7 @@ namespace MarsUndiscovered.Components.GenerationSteps
 
             var graph = GenerateGraph(veinPoints);
             
-            DigTunnel(graph, wallFloorContext);
+            DigTunnel(graph, wallFloorContext, generationContext);
 
             foreach (var edge in graph.Edges)
             {
@@ -96,7 +96,7 @@ namespace MarsUndiscovered.Components.GenerationSteps
             yield return null;
         }
 
-        private void DigTunnel(Graph<Point> graph, ISettableGridView<bool> wallFloorContext)
+        private void DigTunnel(Graph<Point> graph, ISettableGridView<bool> wallFloorContext, GenerationContext generationContext)
         {
             foreach (var edge in graph.Edges)
             {
@@ -107,7 +107,7 @@ namespace MarsUndiscovered.Components.GenerationSteps
 
                 while (direction != Direction.None)
                 {
-                    var points = nextPoint.PointsOutwardsFrom(1, 1, MarsMap.MapWidth - 2, 1, MarsMap.MapHeight - 2);
+                    var points = nextPoint.PointsOutwardsFrom(1, 1, generationContext.Width - 2, 1, generationContext.Height - 2);
 
                     foreach (var point in points)
                     {
@@ -154,11 +154,11 @@ namespace MarsUndiscovered.Components.GenerationSteps
             return graph;
         }
 
-        private List<Point> GetAdditionalVeinPoints(List<Point> veinPoints)
+        private List<Point> GetAdditionalVeinPoints(List<Point> veinPoints, GenerationContext generationContext)
         {
             var additionalVeinPoints = new List<Point>();
 
-            var mapSegments = BreakIntoSegments(new Rectangle(1, 1, MarsMap.MapWidth - 1, MarsMap.MapHeight - 1));
+            var mapSegments = BreakIntoSegments(new Rectangle(1, 1, generationContext.Width - 1, generationContext.Height - 1));
             mapSegments = mapSegments.SelectMany(BreakIntoSegments).ToList();
 
             foreach (var segment in mapSegments)
@@ -191,7 +191,7 @@ namespace MarsUndiscovered.Components.GenerationSteps
             return mapSegments;
         }
 
-        private List<Point> GetVeinPoints()
+        private List<Point> GetVeinPoints(GenerationContext generationContext)
         {
             var numVeinEndpoints = RNG.NextInt(MinVeinRandomEndpoints, MaxVeinRandomEndpoints);
 
@@ -199,7 +199,7 @@ namespace MarsUndiscovered.Components.GenerationSteps
 
             for (var i = 0; i < numVeinEndpoints; i++)
             {
-                var newPoint = new Point(RNG.NextInt(1, MarsMap.MapWidth - 1), RNG.NextInt(1, MarsMap.MapHeight - 1));
+                var newPoint = new Point(RNG.NextInt(1, generationContext.Width - 1), RNG.NextInt(1, generationContext.Height - 1));
                 veinPoints.Add(newPoint);
             }
 

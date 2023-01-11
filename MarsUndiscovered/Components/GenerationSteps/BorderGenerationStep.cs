@@ -40,11 +40,11 @@ namespace MarsUndiscovered.Components.GenerationSteps
         }
 
         /// <inheritdoc/>
-        protected override IEnumerator<object> OnPerform(GenerationContext context)
+        protected override IEnumerator<object> OnPerform(GenerationContext generationContext)
         {
             // Get or create/add a grid view context component to fill
-            var gridViewContext = context.GetFirstOrNew<ISettableGridView<bool>>(
-                () => new ArrayView<bool>(context.Width, context.Height),
+            var gridViewContext = generationContext.GetFirstOrNew<ISettableGridView<bool>>(
+                () => new ArrayView<bool>(generationContext.Width, generationContext.Height),
                 GridViewComponentTag);
 
             foreach (var position in gridViewContext.Bounds().PerimeterBorder(Border))

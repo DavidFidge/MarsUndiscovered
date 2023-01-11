@@ -1,6 +1,4 @@
-﻿using FrigidRogue.MonoGame.Core.Components;
-
-using GoRogue.GameFramework;
+﻿using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ConnectionPointSelectors;
 using GoRogue.MapGeneration.Steps;
@@ -17,17 +15,21 @@ using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Components.Maps
 {
-    public class MapGenerator : BaseComponent, IMapGenerator
+    public class MapGenerator : BaseMapGenerator
     {
-        public MarsMap MarsMap { get; set; }
-        public int Steps { get; set; }
-        public bool IsComplete { get; set; }
-
-        public void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public MapGenerator()
+        {
+            MapWidthMin = 70;
+            MapWidthMax = 90;
+            MapHeightMin = 15;
+            MapHeightMax = 35;
+        }
+        
+        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
             Clear();
-
-            var generator = new Generator(MarsMap.MapWidth, MarsMap.MapHeight);
+            
+            var generator = new Generator(GetWidth(), GetHeight());
 
             var fillProbability = GlobalRandom.DefaultRNG.NextUInt(40, 60);
             var cutoffBigAreaFill = GlobalRandom.DefaultRNG.NextUInt(2, 6);
@@ -38,11 +40,11 @@ namespace MarsUndiscovered.Components.Maps
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
         
-        public void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
             Clear();
 
-            var generator = new Generator(MarsMap.MapWidth, MarsMap.MapHeight);
+            var generator = new Generator(GetWidth(), GetHeight());
 
             var generationSteps = MineGeneration();
 
@@ -99,7 +101,7 @@ namespace MarsUndiscovered.Components.Maps
             var walls = wallsFloors.ToArray().OfType<Wall>().ToList();
             var floors = wallsFloors.ToArray().OfType<Floor>().ToList();
 
-            MarsMap = CreateMap(gameWorld, walls, floors);
+            MarsMap = CreateMap(gameWorld, walls, floors, generator.Context.Width, generator.Context.Height);
         }
 
         private void Clear()
@@ -109,9 +111,9 @@ namespace MarsUndiscovered.Components.Maps
             Steps = 0;
         }
 
-        public static MarsMap CreateMap(IGameWorld gameWorld, IList<Wall> walls, IList<Floor> floors)
+        public static MarsMap CreateMap(IGameWorld gameWorld, IList<Wall> walls, IList<Floor> floors, int mapWidth, int mapHeight)
         {
-            var map = new MarsMap(gameWorld);
+            var map = new MarsMap(gameWorld, mapWidth, mapHeight);
 
             map.ApplyTerrainOverlay(walls, floors);
 

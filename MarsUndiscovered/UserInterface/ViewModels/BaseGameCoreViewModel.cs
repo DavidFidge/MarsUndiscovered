@@ -161,7 +161,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public Task Handle(MapChangedNotification notification, CancellationToken cancellationToken)
         {
             if (IsActive)
-                MapViewModel.UpdateAllTiles();
+            {
+                MapViewModel.SetupNewMap(GameWorldEndpoint);
+                Notify();
+            }
 
             return Unit.Task;
         }

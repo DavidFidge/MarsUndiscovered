@@ -235,7 +235,7 @@ namespace MarsUndiscovered.Components
             Maps = new MapCollection(this);
             HistoricalCommands = new CommandCollection(CommandFactory, this);
             _autoExploreGoalMap = new AutoExploreGoalMap();
-            
+
             GameObjectFactory.Initialise(this);
         }
 

@@ -13,8 +13,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         
         public void BuildWorld(WorldGenerationTypeParams worldGenerationTypeParams)
         {
-            IsActive = true;
+            IsActive = false;
             var result = GameWorldEndpoint.ProgressiveWorldGeneration(null, 1, worldGenerationTypeParams);
+            IsActive = true;
             SetUpGameCoreViewModels();
             GameWorldEndpoint.AfterProgressiveWorldGeneration();
             CurrentStep = 1;

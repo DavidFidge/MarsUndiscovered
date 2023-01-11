@@ -9,18 +9,20 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Tests.Components
 {
-    public class SpecificMapGenerator : IMapGenerator
+    public class SpecificMapGenerator : BaseMapGenerator
     {
         public IMapGenerator OriginalMapGenerator { get; private set; }
 
         private readonly IGameObjectFactory _gameObjectFactory;
         private readonly Func<Point, IGameObject> _terrainChooser;
-		public MarsMap MarsMap { get; set; }
-        public int Steps { get; set; }
-        public bool IsComplete { get; set; }
 
         public SpecificMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator, IList<Point> wallPoints)
         {
+            MapWidthMin = 80;
+            MapWidthMax = 81;
+            MapHeightMin = 20;
+            MapHeightMax = 21;
+            
             _gameObjectFactory = gameObjectFactory;
             OriginalMapGenerator = originalMapGenerator;
 
@@ -34,26 +36,30 @@ namespace MarsUndiscovered.Tests.Components
             });
         }
 
-        public void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
             GenerateSpecificMap(gameWorld);
         }
 
-        public void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
             GenerateSpecificMap(gameWorld);
         }
 
         private void GenerateSpecificMap(IGameWorld gameWorld)
         {
-            var arrayView = new ArrayView<IGameObject>(MarsMap.MapWidth, MarsMap.MapHeight);
+            var mapWidth = GetWidth();
+            var mapHeight = GetHeight();
+
+            var arrayView = new ArrayView<IGameObject>(mapWidth, mapHeight);
 
             arrayView.ApplyOverlay(_terrainChooser);
 
             var wallsFloors = arrayView.ToArray();
 
             MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
-                wallsFloors.OfType<Floor>().ToList());
+                wallsFloors.OfType<Floor>().ToList(), mapWidth, mapHeight);
+            
             Steps = 1;
             IsComplete = true;
         }

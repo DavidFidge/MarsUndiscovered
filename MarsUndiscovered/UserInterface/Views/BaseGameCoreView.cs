@@ -1,6 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
-using MarsUndiscovered.Components;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 using Microsoft.Xna.Framework;
@@ -16,6 +15,9 @@ namespace MarsUndiscovered.UserInterface.Views
         private RenderTarget2D _renderTarget;
         private SpriteBatch _spriteBatch;
         protected bool IsMouseInGameView => RootPanel?.IsMouseInRootPanelEmptySpace ?? true;
+
+        protected int _mapWidth;
+        protected int _mapHeight;
         
         protected BaseGameCoreView(IGameCamera gameCamera, TViewModel viewModel) : base(viewModel)
         {
@@ -24,20 +26,29 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void InitializeInternal()
         {
-            _renderTarget = new RenderTarget2D(
-                Game.GraphicsDevice,
-                Constants.TileWidth * MarsMap.MapWidth,
-                Constants.TileHeight * MarsMap.MapHeight,
-                false,
-                Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
-                Game.GraphicsDevice.PresentationParameters.DepthStencilFormat,
-                0,
-                RenderTargetUsage.PreserveContents
-            );
-
             _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
 
             base.InitializeInternal();
+        }
+
+        protected void UpdateMapRenderTargetSize(int width, int height)
+        {
+            if (width != _mapWidth || height != _mapHeight)
+            {
+                _mapWidth = width;
+                _mapHeight = height;
+                
+                _renderTarget = new RenderTarget2D(
+                    Game.GraphicsDevice,
+                    Constants.TileWidth * width,
+                    Constants.TileHeight * height,
+                    false,
+                    Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
+                    Game.GraphicsDevice.PresentationParameters.DepthStencilFormat,
+                    0,
+                    RenderTargetUsage.PreserveContents
+                );
+            }
         }
         
         public override void Draw()

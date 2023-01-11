@@ -37,8 +37,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private Path _mouseHoverPath;
         private IGameWorldEndpoint _gameWorldEndpoint;
         private IList<ISpriteBatchDrawable> _allTiles;
-        
+
+        private int _width;
+        private int _height;
+
         public ISceneGraph SceneGraph => _sceneGraph;
+
+        public int Width => _width;
+        public int Height => _height;
 
         public MapViewModel(
             ISceneGraph sceneGraph,
@@ -53,6 +59,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _mapEntityFactory = mapEntityFactory;
             _goalMapEntityFactory = goalMapEntityFactory;
             _fieldOfViewTileEntityFactory = fieldOfViewTileEntityFactory;
+            
+            _mapEntity = _mapEntityFactory.Create();
+
+            _mapEntity.Initialize(
+                Constants.TileQuadWidth,
+                Constants.TileQuadHeight
+            );
         }
 
         public IList<ISpriteBatchDrawable> GetVisibleDrawableTiles()
@@ -65,26 +78,21 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _gameWorldEndpoint = gameWorldEndpoint;
 
             var currentMapDimensions = _gameWorldEndpoint.GetCurrentMapDimensions();
+            _width = currentMapDimensions.Width;
+            _height = currentMapDimensions.Height;
 
-            _animationTiles = new ArrayView<MapTileEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
-            _terrainTiles = new ArrayView<MapTileEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
-            _actorTiles = new ArrayView<MapTileEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
-            _itemTiles = new ArrayView<MapTileEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
-            _indestructibleTiles = new ArrayView<MapTileEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
-            _fieldOfViewTiles = new ArrayView<FieldOfViewTileEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
-            _mouseHoverTiles = new ArrayView<MapTileEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
-            _goalMapTiles = new ArrayView<GoalMapEntity>(currentMapDimensions.Width, currentMapDimensions.Height);
+            _animationTiles = new ArrayView<MapTileEntity>(_width, _height);
+            _terrainTiles = new ArrayView<MapTileEntity>(_width, _height);
+            _actorTiles = new ArrayView<MapTileEntity>(_width, _height);
+            _itemTiles = new ArrayView<MapTileEntity>(_width, _height);
+            _indestructibleTiles = new ArrayView<MapTileEntity>(_width, _height);
+            _fieldOfViewTiles = new ArrayView<FieldOfViewTileEntity>(_width, _height);
+            _mouseHoverTiles = new ArrayView<MapTileEntity>(_width, _height);
+            _goalMapTiles = new ArrayView<GoalMapEntity>(_width, _height);
             
-            _allTiles = new List<ISpriteBatchDrawable>(currentMapDimensions.Width * currentMapDimensions.Height * 8);
-
-            _mapEntity = _mapEntityFactory.Create();
-
-            _mapEntity.Initialize(
-                currentMapDimensions.Width,
-                currentMapDimensions.Height,
-                Constants.TileQuadWidth,
-                Constants.TileQuadHeight
-            );
+            _allTiles = new List<ISpriteBatchDrawable>(_width * _height * 8);
+            
+            _mapEntity.LoadContent(_width, _height);
 
             _sceneGraph.Initialise(_mapEntity);
 
@@ -167,9 +175,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private void CreateMapGraph()
         {
-            for (var x = 0; x < MarsMap.MapWidth; x++)
+            for (var x = 0; x < _width; x++)
             {
-                for (var y = 0; y < MarsMap.MapHeight; y++)
+                for (var y = 0; y < _height; y++)
                 {
                     var point = new Point(x, y);
                     CreateTiles(point);
@@ -225,9 +233,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void UpdateAllTiles()
         {
-            for (var x = 0; x < MarsMap.MapWidth; x++)
+            for (var x = 0; x < _width; x++)
             {
-                for (var y = 0; y < MarsMap.MapHeight; y++)
+                for (var y = 0; y < _height; y++)
                 {
                     UpdateTile(new Point(x, y));
                 }
