@@ -75,6 +75,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void SetupNewMap(IGameWorldEndpoint gameWorldEndpoint)
         {
+            _mouseHoverPath = null;
             _gameWorldEndpoint = gameWorldEndpoint;
 
             var currentMapDimensions = _gameWorldEndpoint.GetCurrentMapDimensions();
