@@ -15,6 +15,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private float _mapHeight;
         private float _tileWidth;
         private float _tileHeight;
+        private Vector3 _initialMapTranslation;
 
         public bool IsVisible { get; set; } = true;
 
@@ -49,12 +50,23 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             _mapWidth = mapWidth * _tileWidth;
             _mapHeight = mapHeight * _tileHeight;
-            
-            var translation = new Vector3(0, 0, -15f);
 
-            Transform.ChangeTranslation(translation);        
+            _initialMapTranslation = new Vector3(0, 0, -20f);
+
+            Transform.ChangeTranslation(_initialMapTranslation);
+            TransformChanged();
             
             _mapQuad.LoadContent(_mapWidth, _mapHeight, null);
+        }
+
+        public void SetCentreTranslation(SadRogue.Primitives.Point targetTile)
+        {
+            var xTranslation = (-targetTile.X * _tileWidth) + HalfMapWidth;
+            var yTranslation = (targetTile.Y * _tileHeight) - HalfMapHeight;
+
+            Transform.ChangeTranslation(_initialMapTranslation);
+            Transform.ChangeTranslationRelative(new Vector3(xTranslation, yTranslation, 0));
+            TransformChanged();
         }
 
         public void Dispose()

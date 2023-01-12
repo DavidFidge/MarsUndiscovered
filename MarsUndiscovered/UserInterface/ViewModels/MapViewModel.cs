@@ -440,5 +440,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             _sceneGraph.HandleEntityTransformChanged(notification);
         }
+
+        public void RecentreMap()
+        {
+            _mapEntity.SetCentreTranslation(_gameWorldEndpoint.GetPlayerPosition());
+        }
     }
 }

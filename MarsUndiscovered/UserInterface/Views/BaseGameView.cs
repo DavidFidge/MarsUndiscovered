@@ -145,6 +145,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected virtual void ResetViews()
         {
+            _gameCamera.Reset();
             _messageLog.ClearItems();
         }
 

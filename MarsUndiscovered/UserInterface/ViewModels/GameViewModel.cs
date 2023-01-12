@@ -21,6 +21,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsActive = true;
             SetUpViewModels();
             GameWorldEndpoint.AfterCreateGame();
+            MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
         }
 
@@ -31,6 +32,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsActive = true;
             SetUpViewModels();
             GameWorldEndpoint.AfterCreateGame();
+            MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
         }
 
@@ -41,6 +43,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             var commandResult = GameWorldEndpoint.MoveRequest(direction);
             QueueAnimations(commandResult);
+            MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
         }
 
@@ -48,6 +51,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             var result = GameWorldEndpoint.AutoExploreRequest();
             QueueAnimations(result.CommandResults);
+            MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
             return result;
         }
@@ -77,6 +81,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (result.IsEmpty())
                 return true;
 
+            MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
 
             if (path.Length == 1)
