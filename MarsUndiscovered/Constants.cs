@@ -16,9 +16,9 @@
         public const int ShipOffset = 2;
 
         // For rendering the map texture to a texture
-        public const int TileWidth = 64;
-        public const int TileHeight = 116;
-        
+        public const int TileWidth = 32;
+        public const int TileHeight = 58;
+
         // Width and height of one quad when drawing all the triangles in 3D
         public const float TileQuadHeight = 1f;
         public const float TileQuadWidth = 0.55f;

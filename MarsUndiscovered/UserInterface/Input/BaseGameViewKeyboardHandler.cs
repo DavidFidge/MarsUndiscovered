@@ -34,7 +34,7 @@ namespace MarsUndiscovered.UserInterface.Input
 
         public override void HandleKeyboardKeysReleased()
         {
-            Mediator.Send(new MoveViewRequest(CameraMovementType.None));
+            Mediator.Send(new MoveViewContinousRequest(CameraMovementType.None));
         }
     }
 }

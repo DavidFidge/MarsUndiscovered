@@ -9,7 +9,7 @@ namespace MarsUndiscovered.UserInterface.Input
 {
     public class GameViewMouseHandler : BaseGameMouseHandler
     {
-        private MouseState? _mouseStateBeforeRotation;
+        private MouseState? _mouseStateBeforeDrag;
         private int _halvedWindowX;
         private int _halvedWindowY;
 
@@ -19,9 +19,9 @@ namespace MarsUndiscovered.UserInterface.Input
 
         public override void HandleRightMouseDragging(MouseState mouseState, MouseState originalMouseState)
         {
-            if (_mouseStateBeforeRotation == null)
+            if (_mouseStateBeforeDrag == null)
             {
-                _mouseStateBeforeRotation = originalMouseState;
+                _mouseStateBeforeDrag = originalMouseState;
 
                 _halvedWindowX = Game.Window.ClientBounds.Width / 2;
                 _halvedWindowY = Game.Window.ClientBounds.Height / 2;
@@ -31,7 +31,7 @@ namespace MarsUndiscovered.UserInterface.Input
                 var xDisplacement = mouseState.X - _halvedWindowX;
                 var yDisplacement = mouseState.Y - _halvedWindowY;
 
-                Mediator.Send(new RotateViewRequest(-xDisplacement / 100f, yDisplacement / 100f));
+                Mediator.Send(new MoveViewRequest(xDisplacement * 0.05f, yDisplacement * 0.05f));
             }
 
             Mouse.SetPosition(_halvedWindowX, _halvedWindowY);
@@ -39,10 +39,10 @@ namespace MarsUndiscovered.UserInterface.Input
 
         public override void HandleRightMouseDragDone(MouseState mouseState, MouseState originalMouseState)
         {
-            if (_mouseStateBeforeRotation != null)
+            if (_mouseStateBeforeDrag != null)
                 Mouse.SetPosition(originalMouseState.X, originalMouseState.Y);
 
-            _mouseStateBeforeRotation = null;
+            _mouseStateBeforeDrag = null;
 
             base.HandleRightMouseDragDone(mouseState, originalMouseState);
         }

@@ -19,10 +19,10 @@ namespace MarsUndiscovered.Components.Maps
     {
         public MapGenerator()
         {
-            MapWidthMin = 70;
-            MapWidthMax = 90;
-            MapHeightMin = 15;
-            MapHeightMax = 35;
+            MapWidthMin = 40;
+            MapWidthMax = 50;
+            MapHeightMin = 150;
+            MapHeightMax = 200;
         }
         
         public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)

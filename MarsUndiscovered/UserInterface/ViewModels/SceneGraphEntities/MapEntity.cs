@@ -50,11 +50,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _mapWidth = mapWidth * _tileWidth;
             _mapHeight = mapHeight * _tileHeight;
             
-            var translation = new Vector3(0, 0, -HalfMapHeight);
-
-            var uiOffset = new Vector3(_tileWidth * 10f, _tileHeight * -1.7f, -3.1f);
-
-            translation += uiOffset;
+            var translation = new Vector3(0, 0, -15f);
 
             Transform.ChangeTranslation(translation);        
             
