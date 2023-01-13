@@ -30,10 +30,14 @@ namespace MarsUndiscovered.Components.Maps
                 );
 
             var fillProbability = GlobalRandom.DefaultRNG.NextUInt(40, 60);
-            var cutoffBigAreaFill = GlobalRandom.DefaultRNG.NextUInt(2, 6);
+            var cutoffBigAreaFill = 3;
 
-            var generationSteps = OutdoorGeneneration(fillProbability: (ushort)fillProbability,
-                cutoffBigAreaFill: (int)cutoffBigAreaFill, border: Constants.OutdoorAreaBorder);
+            var generationSteps = OutdoorGeneneration(
+                null,
+                (ushort)fillProbability,
+                5,
+                cutoffBigAreaFill
+                );
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
@@ -137,7 +141,6 @@ namespace MarsUndiscovered.Components.Maps
             ushort fillProbability = 60,
             int totalIterations = 7,
             int cutoffBigAreaFill = 2,
-            int border = 2,
             Distance distanceCalculation = null,
             IConnectionPointSelector connectionPointSelector = null,
             ITunnelCreator tunnelCreationMethod = null)
@@ -156,26 +159,20 @@ namespace MarsUndiscovered.Components.Maps
             };
 
             // 2. Smooth the map into areas with the cellular automata algorithm
-            yield return new CellularAutomataAreaGeneration
+            yield return new CellularAutomataOutdoorGenerator
             {
                 AreaAdjacencyRule = dist,
                 TotalIterations = totalIterations,
                 CutoffBigAreaFill = cutoffBigAreaFill,
             };
 
-            // 3. Set borders to floors
-            yield return new BorderGenerationStep
-            {
-                Border = border
-            };
-
-            // 4. Find all unique areas
+            // 3. Find all unique areas
             yield return new AreaFinder
             {
                 AdjacencyMethod = dist
             };
 
-            // 5. Connect areas by connecting each area to its closest neighbor
+            // 4. Connect areas by connecting each area to its closest neighbor
             yield return new ClosestMapAreaConnection
             {
                 ConnectionPointSelector = connectionPointSelector,
