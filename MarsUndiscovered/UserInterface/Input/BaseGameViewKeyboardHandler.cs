@@ -14,6 +14,8 @@ namespace MarsUndiscovered.UserInterface.Input
 {
     public class BaseGameViewKeyboardHandler : BaseKeyboardHandler
     {
+        public ICameraMovement CameraMovement { get; set; }
+        
         public override void HandleKeyboardKeyDown(Keys[] keysDown, Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
             if (keyInFocus == Keys.F12)
