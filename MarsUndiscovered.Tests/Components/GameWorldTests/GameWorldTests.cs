@@ -27,11 +27,14 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(_gameWorld.MapExits.Count > 0);
             Assert.IsTrue(_gameWorld.Seed > 0);
             
-            // The map height min and max are set to the same value so the random number generated is the same
-            Assert.IsTrue(_gameWorld.CurrentMap.Width >= _gameWorld.MapGenerator.MapWidthMin);
-            Assert.IsTrue(_gameWorld.CurrentMap.Width < _gameWorld.MapGenerator.MapWidthMax);
-            Assert.IsTrue(_gameWorld.CurrentMap.Height >= _gameWorld.MapGenerator.MapHeightMin);
-            Assert.IsTrue(_gameWorld.CurrentMap.Height < _gameWorld.MapGenerator.MapHeightMax);
+            // We can't get exact expected map widths and heights as each map generator is different,
+            // so just test that they are sensible values
+            Assert.IsTrue(_gameWorld.CurrentMap.Width >= 10);
+            Assert.IsTrue(_gameWorld.CurrentMap.Width < 200);
+            Assert.IsTrue(_gameWorld.CurrentMap.Height >= 10);
+            Assert.IsTrue(_gameWorld.CurrentMap.Height < 200);
+            
+            Assert.IsTrue(_gameWorld.CurrentMap.Width * _gameWorld.CurrentMap.Height < 6000);
         }
     }
 }

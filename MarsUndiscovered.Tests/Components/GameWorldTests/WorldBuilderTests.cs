@@ -29,8 +29,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(_gameWorld.Seed > 0);
             
             // The map height min and max are set to the same value so the random number generated is the same
-            Assert.AreEqual(_gameWorld.MapGenerator.MapWidthMin, _gameWorld.CurrentMap.Width);
-            Assert.AreEqual(_gameWorld.MapGenerator.MapHeightMin, _gameWorld.CurrentMap.Height);
+            Assert.AreEqual(mapGenerator.MapWidthMin, _gameWorld.CurrentMap.Width);
+            Assert.AreEqual(mapGenerator.MapHeightMin, _gameWorld.CurrentMap.Height);
         }
         
         [TestMethod]
@@ -59,8 +59,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(_gameWorld.Seed > 0);
             
             // The map height min and max are set to the same value so the random number generated is the same
-            Assert.AreEqual(_gameWorld.MapGenerator.MapWidthMin, _gameWorld.CurrentMap.Width);
-            Assert.AreEqual(_gameWorld.MapGenerator.MapHeightMin, _gameWorld.CurrentMap.Height);
+            Assert.AreEqual(mapGenerator.MapWidthMin, _gameWorld.CurrentMap.Width);
+            Assert.AreEqual(mapGenerator.MapHeightMin, _gameWorld.CurrentMap.Height);
         }
         
         [TestMethod]
@@ -89,8 +89,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(_gameWorld.Seed > 0);
             
             // The map height min and max are set to the same value so the random number generated is the same
-            Assert.AreEqual(_gameWorld.MapGenerator.MapWidthMin, _gameWorld.CurrentMap.Width);
-            Assert.AreEqual(_gameWorld.MapGenerator.MapHeightMin, _gameWorld.CurrentMap.Height);
+            Assert.AreEqual(mapGenerator.MapWidthMin, _gameWorld.CurrentMap.Width);
+            Assert.AreEqual(mapGenerator.MapHeightMin, _gameWorld.CurrentMap.Height);
         }
     }
 }

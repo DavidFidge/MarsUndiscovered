@@ -9,23 +9,12 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Tests.Components
 {
-    public class SpecificMapGenerator : BaseMapGenerator
+    public class SpecificMapGenerator : BaseTestMapGenerator
     {
-        public IMapGenerator OriginalMapGenerator { get; private set; }
-
-        private readonly IGameObjectFactory _gameObjectFactory;
         private readonly Func<Point, IGameObject> _terrainChooser;
 
-        public SpecificMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator, IList<Point> wallPoints)
+        public SpecificMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator, IList<Point> wallPoints) : base(gameObjectFactory, originalMapGenerator)
         {
-            MapWidthMin = 80;
-            MapWidthMax = 81;
-            MapHeightMin = 20;
-            MapHeightMax = 21;
-            
-            _gameObjectFactory = gameObjectFactory;
-            OriginalMapGenerator = originalMapGenerator;
-
             var index = 0;
 
             _terrainChooser = ((p) =>

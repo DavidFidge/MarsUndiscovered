@@ -11,10 +11,6 @@
     "New Game": {
       "commandName": "Project",
       "commandLineArgs": "--NewGame"
-    },
-    "New Game With Camera Movement": {
-      "commandName": "Project",
-      "commandLineArgs": "--NewGame --EnableCameraMovement"
     }
   }
 }

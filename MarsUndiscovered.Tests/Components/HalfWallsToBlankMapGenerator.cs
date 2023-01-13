@@ -8,21 +8,10 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Tests.Components
 {
-    public class HalfWallsToBlankMapGenerator : BaseMapGenerator
+    public class HalfWallsToBlankMapGenerator : BaseTestMapGenerator
     {
-        public IMapGenerator OriginalMapGenerator { get; private set; }
-
-        private readonly IGameObjectFactory _gameObjectFactory;
-        
-        public HalfWallsToBlankMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator)
+        public HalfWallsToBlankMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator) : base(gameObjectFactory, originalMapGenerator)
         {
-            MapWidthMin = 80;
-            MapWidthMax = 81;
-            MapHeightMin = 20;
-            MapHeightMax = 21;
-            
-            _gameObjectFactory = gameObjectFactory;
-            OriginalMapGenerator = originalMapGenerator;
         }
 
         public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)

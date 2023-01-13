@@ -8,15 +8,10 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Tests.Components
 {
-    public class BlankMapGenerator : BaseMapGenerator
+    public class BlankMapGenerator : BaseTestMapGenerator
     {
-        public IMapGenerator OriginalMapGenerator { get; private set; }
-        private readonly IGameObjectFactory _gameObjectFactory;
-
-        public BlankMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator)
+        public BlankMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator) : base(gameObjectFactory, originalMapGenerator)
         {
-            _gameObjectFactory = gameObjectFactory;
-            OriginalMapGenerator = originalMapGenerator;
         }
         
         public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)

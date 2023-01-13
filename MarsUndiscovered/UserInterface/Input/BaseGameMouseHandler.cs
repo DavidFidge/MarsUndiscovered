@@ -11,7 +11,6 @@ namespace MarsUndiscovered.UserInterface.Input
         private double _mouseMoveThrottle = 20;
         private double _lastTotalMilliseconds;
 
-        public Options GameOptions { get; set; }
         public ICameraMovement CameraMovement { get; set; }
 
         public BaseGameMouseHandler(IStopwatchProvider stopwatchProvider)
@@ -33,8 +32,7 @@ namespace MarsUndiscovered.UserInterface.Input
 
         public override void HandleMouseScrollWheelMove(MouseState mouseState, int difference)
         {
-            if (GameOptions.EnableCameraMovement)
-                CameraMovement.ZoomCamera(difference);
+            CameraMovement.ZoomCamera(difference);
             
             base.HandleMouseScrollWheelMove(mouseState, difference);
         }

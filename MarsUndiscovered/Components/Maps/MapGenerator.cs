@@ -17,34 +17,39 @@ namespace MarsUndiscovered.Components.Maps
 {
     public class MapGenerator : BaseMapGenerator
     {
-        public MapGenerator()
-        {
-            MapWidthMin = 40;
-            MapWidthMax = 50;
-            MapHeightMin = 150;
-            MapHeightMax = 200;
-        }
-        
         public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
             Clear();
-            
-            var generator = new Generator(GetWidth(), GetHeight());
+
+            var width = GlobalRandom.DefaultRNG.NextInt(40, 50);
+            var height = 6000 / width;
+
+            var generator = new Generator(
+                width,
+                GlobalRandom.DefaultRNG.NextInt(height - 5, height + 5)
+                );
 
             var fillProbability = GlobalRandom.DefaultRNG.NextUInt(40, 60);
             var cutoffBigAreaFill = GlobalRandom.DefaultRNG.NextUInt(2, 6);
-            
+
             var generationSteps = OutdoorGeneneration(fillProbability: (ushort)fillProbability,
                 cutoffBigAreaFill: (int)cutoffBigAreaFill, border: Constants.OutdoorAreaBorder);
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
-        
+
         public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
             Clear();
 
-            var generator = new Generator(GetWidth(), GetHeight());
+            var width = GlobalRandom.DefaultRNG.NextInt(35, 55);
+
+            var height = 2000 / width;
+
+            var generator = new Generator(
+                width,
+                GlobalRandom.DefaultRNG.NextInt(height - 5, height + 5)
+                );
 
             var generationSteps = MineGeneration();
 
