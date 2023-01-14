@@ -25,5 +25,7 @@ namespace MarsUndiscovered.Components.Factories
         MapExit CreateMapExit(uint id);
         Ship CreateShip();
         Ship CreateShip(uint id);
+        MiningFacility CreateMiningFacility();
+        MiningFacility CreateMiningFacility(uint id);
     }
 }

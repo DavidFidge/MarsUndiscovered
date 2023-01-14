@@ -105,6 +105,16 @@ namespace MarsUndiscovered.Components.Factories
         {
             return ResolveWithGivenId<Ship>(id);
         }
+        
+        public MiningFacility CreateMiningFacility()
+        {
+            return ResolveWithNextId<MiningFacility>();
+        }
+
+        public MiningFacility CreateMiningFacility(uint id)
+        {
+            return ResolveWithGivenId<MiningFacility>(id);
+        }
 
         private T ResolveWithNextId<T>() where T : IGameObject
         {

@@ -22,6 +22,7 @@ namespace MarsUndiscovered.Interfaces
         MapTileTexture FieldOfViewUnrevealedTexture { get; set; }
         MapTileTexture FieldOfViewHasBeenSeenTexture { get; set; }
         IDictionary<char, MapTileTexture> ShipParts { get; set; }
+        IDictionary<char, MapTileTexture> MiningFacilitySection { get; set; }
         MapTileTexture ShipRepairParts { get; set; }
         MapTileTexture LineAttackEastWest { get; set; }
         MapTileTexture LineAttackNorthEastSouthWest { get; set; }

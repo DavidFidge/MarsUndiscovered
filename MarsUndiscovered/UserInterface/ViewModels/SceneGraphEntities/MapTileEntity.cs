@@ -60,6 +60,12 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             MapTileTexture = Assets.ShipParts[shipPart];
             IsVisible = true;
         }
+        
+        public void SetMiningFacility(char miningFacilityPart)
+        {
+            MapTileTexture = Assets.MiningFacilitySection[miningFacilityPart];
+            IsVisible = true;
+        }
 
         public void SetItem(ItemType itemType)
         {

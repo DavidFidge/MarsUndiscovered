@@ -82,6 +82,9 @@ namespace MarsUndiscovered.Installers
 
                 Component.For<IShipGenerator>()
                     .ImplementedBy<ShipGenerator>(),
+                
+                Component.For<IMiningFacilityGenerator>()
+                    .ImplementedBy<MiningFacilityGenerator>(),
 
                 Component.For<IMapExitGenerator>()
                     .ImplementedBy<MapExitGenerator>(),

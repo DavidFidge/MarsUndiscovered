@@ -34,6 +34,7 @@ namespace MarsUndiscovered.Graphics
         public MapTileTexture FieldOfViewHasBeenSeenTexture { get; set; }
         public GoalMapTileTexture GoalMapTileTexture { get; set; }
         public IDictionary<char, MapTileTexture> ShipParts { get; set; }
+        public IDictionary<char, MapTileTexture> MiningFacilitySection { get; set; }
 
         private readonly IGameProvider _gameProvider;
 
@@ -102,7 +103,7 @@ namespace MarsUndiscovered.Graphics
 
             foreach (char ch in shipPartChars)
             {
-                var shipPartDrawDepth = ch * 0.0001f;
+                var shipPartDrawDepth = ch * 0.000001f;
                 var shipPart = new MapTileTexture(
                     _gameProvider,
                     Constants.TileWidth,
@@ -115,6 +116,26 @@ namespace MarsUndiscovered.Graphics
                 );
 
                 ShipParts.Add(ch, shipPart);
+            }
+            
+            MiningFacilitySection = new Dictionary<char, MapTileTexture>();
+            var miningFacilitySectionChars = @"_()|#-`'.+:\/= ";
+
+            foreach (char ch in miningFacilitySectionChars)
+            {
+                var miningFacilitySectionDrawDepth = ch * 0.001001f;
+                var miningFacilitySection = new MapTileTexture(
+                    _gameProvider,
+                    Constants.TileWidth,
+                    Constants.TileHeight,
+                    MapFont,
+                    ch,
+                    0.8f + miningFacilitySectionDrawDepth,
+                    Color.MediumPurple,
+                    Color.Black
+                );
+
+                MiningFacilitySection.Add(ch, miningFacilitySection);
             }
             
             Weapon = new MapTileTexture(

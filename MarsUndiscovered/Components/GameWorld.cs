@@ -36,6 +36,7 @@ namespace MarsUndiscovered.Components
         public IMonsterGenerator MonsterGenerator { get; set; }
         public IItemGenerator ItemGenerator { get; set; }
         public IShipGenerator ShipGenerator { get; set; }
+        public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
         public IMapExitGenerator MapExitGenerator { get; set; }
         public WallCollection Walls { get; private set; }
         public FloorCollection Floors { get; private set; }
@@ -43,6 +44,7 @@ namespace MarsUndiscovered.Components
         public ItemCollection Items { get; private set; }
         public MapExitCollection MapExits { get; private set; }
         public ShipCollection Ships { get; private set; }
+        public MiningFacilityCollection MiningFacilities { get; private set; }
         public CommandCollection HistoricalCommands { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
 
@@ -93,64 +95,92 @@ namespace MarsUndiscovered.Components
 
             Logger.Debug("Generating game world");
 
-            MapGenerator.CreateOutdoorMap(this, GameObjectFactory);
-            AddMapToGame(MapGenerator.MarsMap);
-            Maps.CurrentMap = MapGenerator.MarsMap;
+            var mapLevel1 = CreateLevel1();
+            Maps.CurrentMap = mapLevel1;
 
-            MapGenerator.CreateOutdoorMap(this, GameObjectFactory);
-            AddMapToGame(MapGenerator.MarsMap);
-            var map2 = MapGenerator.MarsMap;
-
-            ShipGenerator.CreateShip(GameObjectFactory, Maps.CurrentMap, Ships);
-
-            Player = GameObjectFactory
-                .CreatePlayer()
-                .PositionedAt(new Point(CurrentMap.Width / 2, CurrentMap.Height - 2 - (Constants.ShipOffset - 1))) // Start off underneath the ship, extra -1 for the current ship design as there's a blank space on the bottom line
-                .AddToMap(CurrentMap);
-
+            CreateLevel2(mapLevel1);
+            
             Inventory = new Inventory(this);
+            
+            ResetFieldOfView();
+            GameTimeService.Start();
+        }
 
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Roach")));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Repair Drone")));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Tesla Coil")));
+        private MarsMap CreateLevel2(MarsMap mapLevel1)
+        {
+            MapGenerator.CreateOutdoorMap(this, GameObjectFactory);
+            AddMapToGame(MapGenerator.MarsMap);
+            var mapLevel2 = MapGenerator.MarsMap;
 
-            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed("Roach"));
-            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed("Repair Drone"));
-            SpawnMonster(new SpawnMonsterParams().OnMap(map2.Id).WithBreed("Tesla Coil"));
+            SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("Roach"));
+            SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("Repair Drone"));
+            SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("Tesla Coil"));
 
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
+            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.MagnesiumPipe));
+            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.IronSpike));
+            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.IronSpike));
+            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.ShieldGenerator));
+            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.HealingBots));
+            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.HealingBots));
+            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.ShipRepairParts));
 
-            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.MagnesiumPipe));
-            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.MagnesiumPipe));
-            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.IronSpike));
-            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.IronSpike));
-            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShieldGenerator));
-            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShieldGenerator));
-            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
-            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.HealingBots));
-
-            SpawnItem(new SpawnItemParams().OnMap(map2.Id).WithItemType(ItemType.ShipRepairParts));
-
-            var mapExit2 = SpawnMapExit(new SpawnMapExitParams().OnMap(map2.Id).WithDirection(Direction.Up));
+            var mapExit2 = SpawnMapExit(new SpawnMapExitParams().OnMap(mapLevel2.Id).WithDirection(Direction.Up));
 
             if (mapExit2 != null)
             {
+                var miningFacilityPointsOnMap1 = MiningFacilities.Values
+                    .Where(m => ((MarsMap)m.CurrentMap).Id == mapLevel1.Id)
+                    .Select(m => m.Position)
+                    .GroupBy(m => m.Y)
+                    .MaxBy(m => m.Key)
+                    .ToList();
+                
                 var mapExit1 = SpawnMapExit(
-                    new SpawnMapExitParams().OnMap(CurrentMap.Id).ToMapExit(mapExit2.ID).WithDirection(Direction.Down)
+                    new SpawnMapExitParams()
+                        .OnMap(mapLevel1.Id)
+                        .ToMapExit(mapExit2.ID)
+                        .WithDirection(Direction.Down)
+                        .AtFreeSpotNextTo(mapLevel1, miningFacilityPointsOnMap1)
                 );
 
                 mapExit2.Destination = mapExit1;
             }
 
-            ResetFieldOfView();
-            GameTimeService.Start();
+            return mapLevel2;
+        }
+
+        private MarsMap CreateLevel1()
+        {
+            MapGenerator.CreateOutdoorMap(this, GameObjectFactory);
+            AddMapToGame(MapGenerator.MarsMap);
+            var map = MapGenerator.MarsMap;
+            
+            ShipGenerator.CreateShip(GameObjectFactory, map, Ships);
+            MiningFacilityGenerator.CreateMiningFacility(GameObjectFactory, map, MiningFacilities);
+            
+            Player = GameObjectFactory
+                .CreatePlayer()
+                .PositionedAt(new Point(map.Width / 2,
+                    map.Height - 2 -
+                    (Constants.ShipOffset -
+                     1))) // Start off underneath the ship, extra -1 for the current ship design as there's a blank space on the bottom line
+                .AddToMap(map);
+            
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Roach")).OnMap(map.Id));
+            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Repair Drone")).OnMap(map.Id));
+            
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).OnMap(map.Id));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).OnMap(map.Id));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).OnMap(map.Id));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).OnMap(map.Id));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).OnMap(map.Id));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).OnMap(map.Id));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).OnMap(map.Id));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).OnMap(map.Id));
+
+            return map;
         }
 
         public ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step, WorldGenerationTypeParams worldGenerationTypeParams)
@@ -205,7 +235,6 @@ namespace MarsUndiscovered.Components
 
         private MarsMap AddMapToGame(MarsMap marsMap)
         {
-
             var terrain = GameObjects
                 .Values
                 .OfType<Terrain>()
@@ -232,6 +261,7 @@ namespace MarsUndiscovered.Components
             Items = new ItemCollection(GameObjectFactory);
             MapExits = new MapExitCollection(GameObjectFactory);
             Ships = new ShipCollection(GameObjectFactory);
+            MiningFacilities = new MiningFacilityCollection(GameObjectFactory);
             Maps = new MapCollection(this);
             HistoricalCommands = new CommandCollection(CommandFactory, this);
             _autoExploreGoalMap = new AutoExploreGoalMap();
@@ -554,6 +584,7 @@ namespace MarsUndiscovered.Components
             Items.LoadState(saveGameService);
             MapExits.LoadState(saveGameService);
             Ships.LoadState(saveGameService);
+            MiningFacilities.LoadState(saveGameService);
             _messageLog.LoadState(saveGameService);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
@@ -585,6 +616,7 @@ namespace MarsUndiscovered.Components
             Items.SaveState(saveGameService);
             MapExits.SaveState(saveGameService);
             Ships.SaveState(saveGameService);
+            MiningFacilities.SaveState(saveGameService);
             _messageLog.SaveState(saveGameService);
             Player.SaveState(saveGameService);
             HistoricalCommands.SaveState(saveGameService);

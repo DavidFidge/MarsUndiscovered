@@ -21,7 +21,7 @@ namespace MarsUndiscovered.Components.Maps
         {
             Clear();
 
-            var width = GlobalRandom.DefaultRNG.NextInt(40, 50);
+            var width = 70;
             var height = 6000 / width;
 
             var generator = new Generator(

@@ -297,6 +297,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
                 if (indestructibleTile is Ship)
                     _indestructibleTiles[point].SetShip(((Ship)indestructibleTile).ShipPart);
+                
+                if (indestructibleTile is MiningFacility)
+                    _indestructibleTiles[point].SetMiningFacility(((MiningFacility)indestructibleTile).MiningFacilitySection);
 
                 return;
             }

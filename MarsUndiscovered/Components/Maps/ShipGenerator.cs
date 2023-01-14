@@ -14,11 +14,6 @@ namespace MarsUndiscovered.Components.Maps
         /// <param name="shipCollection"></param>
         public void CreateShip(IGameObjectFactory gameObjectFactory, MarsMap map, ShipCollection shipCollection)
         {
-            if (Constants.OutdoorAreaBorder < 1)
-            {
-                throw new Exception("CreateShip method currently assumes an outdoor border exists so that the ship is guaranteed to be accessible");
-            }
-
             var lines = new[]
             {
                 "XXXXXXXXXXXXXXXXX",
@@ -27,6 +22,7 @@ namespace MarsUndiscovered.Components.Maps
                 "X{ (|       |XXXX",
                 "XX`------.  |--.X",
                 "XXXXXXXXXX`-+--`X",
+                
             };
             // ship is in the middle of the x axis
             var shipStartX = (map.Width / 2) - lines[0].Length / 2;
