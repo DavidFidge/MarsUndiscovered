@@ -2,6 +2,7 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
@@ -20,14 +21,14 @@ namespace MarsUndiscovered.Components
             }
         }
 
-        public void SaveState(ISaveGameService saveGameService)
+        public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var messageLogSaveData = this.Select(s => s.Message).ToList();
 
             saveGameService.SaveToStore(new Memento<MessageLogSaveData>(new MessageLogSaveData { Messages = messageLogSaveData }));
         }
 
-        public void LoadState(ISaveGameService saveGameService)
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             foreach (var messageLog in saveGameService.GetFromStore<MessageLogSaveData>().State.Messages)
             {

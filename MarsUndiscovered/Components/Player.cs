@@ -51,12 +51,12 @@ namespace MarsUndiscovered.Components
             IsVictorious = memento.State.IsVictorious;
         }
 
-        public void SaveState(ISaveGameService saveGameService)
+        public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             saveGameService.SaveToStore(GetSaveState());
         }
 
-        public void LoadState(ISaveGameService saveGameService)
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
             SetLoadState(playerSaveData);

@@ -3,6 +3,7 @@
 using MarsUndiscovered.Interfaces;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using GoRogue.GameFramework;
 using MarsUndiscovered.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,6 +12,7 @@ namespace MarsUndiscovered.Graphics
 {
     public class Assets : IAssets
     {
+        public Texture2D ShipAiRadioComms { get; set; }
         public Texture2D TitleTexture { get; set; }
         public Texture2D TitleTextTexture { get; set; }
         public SpriteFont MapFont { get; set; }
@@ -289,6 +291,11 @@ namespace MarsUndiscovered.Graphics
                 0.295f,
                 _lineAttackColour
             );          
+        }
+
+        public Texture2D GetRadioCommsImage(IGameObject gameObject)
+        {
+            throw new NotImplementedException();
         }
     }
 }

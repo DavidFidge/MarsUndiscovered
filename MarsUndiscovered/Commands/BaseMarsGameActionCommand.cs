@@ -1,5 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
-
+using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Interfaces;
 
@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace MarsUndiscovered.Commands
 {
-    public abstract class BaseMarsGameActionCommand<T> : BaseStatefulGameActionCommand<T>, IBaseMarsGameActionCommand
+    public abstract class BaseMarsGameActionCommand<T> : BaseGameActionCommand, IBaseMarsGameActionCommand, IMementoState<T>
     {
         [JsonIgnore]
         public IGameWorld GameWorld { get; private set; }
@@ -33,5 +33,8 @@ namespace MarsUndiscovered.Commands
             AdvanceSequenceNumber = state.AdvanceSequenceNumber;
             TurnDetails = (TurnDetails)state.TurnDetails.Clone();
         }
+        
+        public abstract void SetLoadState(IMemento<T> memento);
+        public abstract IMemento<T> GetSaveState();
     }
 }

@@ -10,7 +10,7 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Components
 {
-    public class SeenTile : IMementoState<SeenTileSaveData>
+    public class SeenTile
     {
         public bool HasBeenSeen { get; set; }
         public Point Point { get; set; }

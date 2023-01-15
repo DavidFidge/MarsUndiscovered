@@ -1,12 +1,13 @@
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
+using MarsUndiscovered.Commands;
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
-    public abstract class BaseCommandCollection<T, TState> : List<BaseStatefulGameActionCommand<TState>>, ISaveable
-        where T : BaseStatefulGameActionCommand<TState>, IMementoState<TState>
+    public abstract class BaseCommandCollection<T, TState> : List<BaseMarsGameActionCommand<TState>>, ISaveable
+        where T : BaseMarsGameActionCommand<TState>, IMementoState<TState>
     {
         protected readonly IGameWorld GameWorld;
 
@@ -15,7 +16,7 @@ namespace MarsUndiscovered.Components
             GameWorld = gameWorld;
         }
 
-        public virtual void SaveState(ISaveGameService saveGameService)
+        public virtual void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var gameObjectSaveData = this
                 .Select(go => go.GetSaveState())
@@ -24,7 +25,7 @@ namespace MarsUndiscovered.Components
             saveGameService.SaveListToStore(gameObjectSaveData);
         }
 
-        public void LoadState(ISaveGameService saveGameService)
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var gameObjectSaveData = saveGameService.GetListFromStore<TState>();
 

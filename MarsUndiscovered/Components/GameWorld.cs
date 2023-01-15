@@ -24,7 +24,7 @@ using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Components
 {
-    public class GameWorld : BaseComponent, IGameWorld, ISaveable, IMementoState<GameWorldSaveData>
+    public class GameWorld : BaseComponent, IGameWorld, ISaveable
     {
         public Guid GameId { get; private set; }
         public Player Player { get; private set; }
@@ -53,8 +53,8 @@ namespace MarsUndiscovered.Components
         public MapCollection Maps { get; private set; }
         public MarsMap CurrentMap => Maps.CurrentMap;
 
-        private readonly MessageLog _messageLog = new MessageLog();
-        private readonly RadioComms _radioComms = new RadioComms();
+        private readonly MessageLog _messageLog = new();
+        private readonly RadioComms _radioComms = new();
         
         public ulong Seed { get; set; }
         protected IList<Monster> MonstersInView = new List<Monster>();
@@ -269,7 +269,7 @@ namespace MarsUndiscovered.Components
             MapExits = new MapExitCollection(GameObjectFactory);
             Ships = new ShipCollection(GameObjectFactory);
             MiningFacilities = new MiningFacilityCollection(GameObjectFactory);
-            Maps = new MapCollection(this);
+            Maps = new MapCollection();
             HistoricalCommands = new CommandCollection(CommandFactory, this);
             _autoExploreGoalMap = new AutoExploreGoalMap();
 
@@ -549,7 +549,7 @@ namespace MarsUndiscovered.Components
             }
 
             SaveGameService.Clear();
-            SaveState(SaveGameService);
+            SaveState(SaveGameService, this);
 
             return SaveGameService.SaveStoreToFile(saveGameName, overwrite);
         }
@@ -559,7 +559,7 @@ namespace MarsUndiscovered.Components
             var loadGameResult = SaveGameService.LoadStoreFromFile(saveGameName);
 
             if (loadGameResult.Success)
-                LoadState(SaveGameService);
+                LoadState(SaveGameService, this);
 
             return loadGameResult;
         }
@@ -576,7 +576,7 @@ namespace MarsUndiscovered.Components
 
                 var commands = new CommandCollection(CommandFactory, this);
 
-                commands.LoadState(SaveGameService);
+                commands.LoadState(SaveGameService, this);
 
                 _replayHistoricalCommands = commands
                     .OrderBy(c => c.TurnDetails.SequenceNumber)
@@ -606,56 +606,57 @@ namespace MarsUndiscovered.Components
             return false;
         }
 
-        public void LoadState(ISaveGameService saveGameService)
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             Reset();
 
-            GameObjectFactory.LoadState(saveGameService);
-            Walls.LoadState(saveGameService);
-            Floors.LoadState(saveGameService);
-            Monsters.LoadState(saveGameService);
-            Items.LoadState(saveGameService);
-            MapExits.LoadState(saveGameService);
-            Ships.LoadState(saveGameService);
-            MiningFacilities.LoadState(saveGameService);
-            _messageLog.LoadState(saveGameService);
-            _radioComms.LoadState(saveGameService);
+            GameObjectFactory.LoadState(saveGameService, gameWorld);
+            Walls.LoadState(saveGameService, gameWorld);
+            Floors.LoadState(saveGameService, gameWorld);
+            Monsters.LoadState(saveGameService, gameWorld);
+            Items.LoadState(saveGameService, gameWorld);
+            MapExits.LoadState(saveGameService, gameWorld);
+            Ships.LoadState(saveGameService, gameWorld);
+            MiningFacilities.LoadState(saveGameService, gameWorld);
+            _messageLog.LoadState(saveGameService, gameWorld);
+            _radioComms.LoadState(saveGameService, gameWorld);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
             
             // Inventory must be loaded before player as player recalculates attacks based on inventory
             Inventory = new Inventory(this);
-            Inventory.LoadState(saveGameService);
+            Inventory.LoadState(saveGameService, gameWorld);
 
             Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
-            Player.LoadState(saveGameService);
+            Player.LoadState(saveGameService, gameWorld);
             
-            Maps.LoadState(saveGameService);
+            Maps.LoadState(saveGameService, gameWorld);
             GameTimeService.LoadState(saveGameService);
             
-            HistoricalCommands.LoadState(saveGameService);
+            HistoricalCommands.LoadState(saveGameService, gameWorld);
             
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
             SetLoadState(gameWorldSaveData);
             GameTimeService.Start();
         }
 
-        public void SaveState(ISaveGameService saveGameService)
+        public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             GameTimeService.Stop();
-            GameObjectFactory.SaveState(saveGameService);
-            Walls.SaveState(saveGameService);
-            Floors.SaveState(saveGameService);
-            Monsters.SaveState(saveGameService);
-            Items.SaveState(saveGameService);
-            MapExits.SaveState(saveGameService);
-            Ships.SaveState(saveGameService);
-            MiningFacilities.SaveState(saveGameService);
-            _messageLog.SaveState(saveGameService);
-            Player.SaveState(saveGameService);
-            HistoricalCommands.SaveState(saveGameService);
-            Inventory.SaveState(saveGameService);
-            Maps.SaveState(saveGameService);
+            GameObjectFactory.SaveState(saveGameService, gameWorld);
+            Walls.SaveState(saveGameService, gameWorld);
+            Floors.SaveState(saveGameService, gameWorld);
+            Monsters.SaveState(saveGameService, gameWorld);
+            Items.SaveState(saveGameService, gameWorld);
+            MapExits.SaveState(saveGameService, gameWorld);
+            Ships.SaveState(saveGameService, gameWorld);
+            MiningFacilities.SaveState(saveGameService, gameWorld);
+            _messageLog.SaveState(saveGameService, gameWorld);
+            _radioComms.SaveState(saveGameService, gameWorld);
+            Player.SaveState(saveGameService, gameWorld);
+            HistoricalCommands.SaveState(saveGameService, gameWorld);
+            Inventory.SaveState(saveGameService, gameWorld);
+            Maps.SaveState(saveGameService, gameWorld);
             GameTimeService.SaveState(saveGameService);
 
             var gameWorldSaveData = GetSaveState();

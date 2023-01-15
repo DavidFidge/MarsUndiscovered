@@ -196,7 +196,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
                 RadioCommsParagraph.Text = lastRadioComms.Message;
                 
-                RadioCommsImage.Texture = Assets.GetRadioCommsImage(lastRadioComms.GameObjectId);
+                RadioCommsImage.Texture = Assets.GetRadioCommsImage(lastRadioComms.GameObject);
 
                 _viewModel.RadioCommsStatus.SetSeenAllItems();
             }

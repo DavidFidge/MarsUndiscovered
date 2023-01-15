@@ -1,8 +1,8 @@
-﻿using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Services;
+﻿using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.GameFramework;
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
@@ -13,15 +13,7 @@ namespace MarsUndiscovered.Components
             Add(new RadioCommsEntry(message, gameObject));
         }
 
-        public void AddRadioCommsEntry(IList<string> messages, IList<IGameObject> gameObjects)
-        {
-            for (var index = 0; index < messages.Count; index++)
-            {
-                Add(new RadioCommsEntry(messages[index], gameObjects[index]));
-            }
-        }
-
-        public void SaveState(ISaveGameService saveGameService)
+        public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var messages = new List<string>(Count);
             var gameObjectIds = new List<uint>(Count);
@@ -35,14 +27,13 @@ namespace MarsUndiscovered.Components
             saveGameService.SaveToStore(new Memento<RadioCommsSaveData>(new RadioCommsSaveData { Messages = messages, GameObjectIds = gameObjectIds}));
         }
 
-        public void LoadState(ISaveGameService saveGameService)
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var state = saveGameService.GetFromStore<RadioCommsSaveData>().State;
             
             for (var i = 0; i < state.Messages.Count; i++)
             {
-                this.;
-                AddRadioCommsEntry(state.Messages[i], state.GameObjectIds[i]);
+                AddRadioCommsEntry(state.Messages[i], gameWorld.GameObjects[(uint)i]);
             }
         }
     }

@@ -132,7 +132,7 @@ namespace MarsUndiscovered.Components.Factories
             return gameObject;
         }
 
-        public void SaveState(ISaveGameService saveGameService)
+        public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var memento = new Memento<GameObjectFactorySaveData>(new GameObjectFactorySaveData());
             memento.State.LastId = LastId;
@@ -140,7 +140,7 @@ namespace MarsUndiscovered.Components.Factories
             saveGameService.SaveToStore(memento);
         }
 
-        public void LoadState(ISaveGameService saveGameService)
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var gameObjectFactoryData = saveGameService.GetFromStore<GameObjectFactorySaveData>();
             LastId = gameObjectFactoryData.State.LastId;

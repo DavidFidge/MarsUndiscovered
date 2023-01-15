@@ -7,26 +7,20 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
-    public class MapCollection : HashSet<MarsMap>, ISaveable, IMementoState<MapCollectionSaveData>
+    public class MapCollection : HashSet<MarsMap>, ISaveable
     {
-        private readonly IGameWorld _gameWorld;
         public MarsMap CurrentMap { get; set; }
 
-        public MapCollection(IGameWorld gameWorld)
-        {
-            _gameWorld = gameWorld;
-        }
-
-        public void SaveState(ISaveGameService saveGameService)
+        public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var memento = GetSaveState();
             saveGameService.SaveToStore(memento);
         }
 
-        public void LoadState(ISaveGameService saveGameService)
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var mapCollectionSaveData = saveGameService.GetFromStore<MapCollectionSaveData>();
-            SetLoadState(mapCollectionSaveData);
+            SetLoadState(mapCollectionSaveData, gameWorld);
         }
 
         public IMemento<MapCollectionSaveData> GetSaveState()
@@ -40,9 +34,14 @@ namespace MarsUndiscovered.Components
 
         public void SetLoadState(IMemento<MapCollectionSaveData> memento)
         {
+            throw new NotImplementedException();
+        }
+
+        public void SetLoadState(IMemento<MapCollectionSaveData> memento, IGameWorld gameWorld)
+        {
             foreach (var mapSaveData in memento.State.Maps)
             {
-                var map = new MarsMap(_gameWorld, mapSaveData.State.Width, mapSaveData.State.Height);
+                var map = new MarsMap(gameWorld, mapSaveData.State.Width, mapSaveData.State.Height);
                 map.SetLoadState(mapSaveData);
 
                 if (map.Id == memento.State.CurrentMapId)
