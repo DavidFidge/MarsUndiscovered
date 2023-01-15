@@ -1,4 +1,4 @@
-﻿namespace MarsUndiscovered.Components
+﻿namespace MarsUndiscovered.Components.Dto
 {
     public abstract class ActorStatus
     {

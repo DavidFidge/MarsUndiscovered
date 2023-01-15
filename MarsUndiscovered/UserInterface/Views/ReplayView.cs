@@ -49,6 +49,7 @@ namespace MarsUndiscovered.UserInterface.Views
             CreatePlayerPanel();
             CreateMessageLog();
             CreateStatusPanel();
+            CreateRadioCommsPanel();
             SetupInventoryGame();
             SetupChildPanel(_inReplayOptionsView);
         }

@@ -1,5 +1,7 @@
 ﻿using MarsUndiscovered.Components;
+using MarsUndiscovered.Components.Dto;
 using MarsUndiscovered.UserInterface.Data;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -9,23 +11,21 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public PlayerStatus PlayerStatus { get; set; }
         public IList<MonsterStatus> MonsterStatusInView { get; set; }
 
-        public IList<string> Messages { get; set; }
-
-        protected int MessageLogCount;
-
+        public MessagesStatus MessageStatus { get; set; }
+        public RadioCommsStatus RadioCommsStatus { get; set; }
+        
         protected void SetUpViewModels()
         {
+            MessageStatus = new MessagesStatus();
             SetUpGameCoreViewModels();
-            MessageLogCount = 0;
         }
 
         protected override void RefreshView()
         {
             MonsterStatusInView = GameWorldEndpoint.GetStatusOfMonstersInView();
             PlayerStatus = GameWorldEndpoint.GetPlayerStatus();
-
-            Messages = GameWorldEndpoint.GetMessagesSince(MessageLogCount);
-            MessageLogCount += Messages.Count;
+            RadioCommsStatus.AddRadioCommsItems(GameWorldEndpoint.GetRadioCommsItemsSince(RadioCommsStatus.SeenItemsCount));
+            MessageStatus.AddMessages(GameWorldEndpoint.GetMessagesSince(MessageStatus.SeenMessageCount));
         }
     }
 }

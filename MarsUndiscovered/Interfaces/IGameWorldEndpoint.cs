@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
@@ -6,7 +5,7 @@ using GoRogue.GameFramework;
 using GoRogue.Pathing;
 
 using MarsUndiscovered.Components;
-
+using MarsUndiscovered.Components.Dto;
 using Microsoft.Xna.Framework.Input;
 
 using SadRogue.Primitives;
@@ -45,5 +44,6 @@ namespace MarsUndiscovered.Interfaces
         Task SendMorgueToWeb(Guid gameId);
         void SnapshotMorgue(string username);
         Guid GetGameId();
+        IList<RadioCommsItem> GetRadioCommsItemsSince(int seenItemsCount);
     }
 }

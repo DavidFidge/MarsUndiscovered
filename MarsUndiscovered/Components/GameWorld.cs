@@ -10,7 +10,7 @@ using MarsUndiscovered.Interfaces;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
-
+using MarsUndiscovered.Components.Dto;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Components.SaveData;
@@ -54,6 +54,8 @@ namespace MarsUndiscovered.Components
         public MarsMap CurrentMap => Maps.CurrentMap;
 
         private readonly MessageLog _messageLog = new MessageLog();
+        private readonly RadioComms _radioComms = new RadioComms();
+        
         public ulong Seed { get; set; }
         protected IList<Monster> MonstersInView = new List<Monster>();
         protected IList<Monster> LastMonstersInView = new List<Monster>();
@@ -492,6 +494,17 @@ namespace MarsUndiscovered.Components
                 .Select(s => s.Message)
                 .ToList();
         }
+        
+        public IList<RadioCommsItem> GetRadioCommsItemsSince(int seenItemsCount)
+        {
+            if (seenItemsCount == _radioComms.Count)
+                return Array.Empty<RadioCommsItem>();
+            
+            return _radioComms
+                .Skip(seenItemsCount)
+                .Select(s => new RadioCommsItem { GameObject= s.GameObject, Message = s.Message })
+                .ToList();
+        }
 
         public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
         {
@@ -606,6 +619,7 @@ namespace MarsUndiscovered.Components
             Ships.LoadState(saveGameService);
             MiningFacilities.LoadState(saveGameService);
             _messageLog.LoadState(saveGameService);
+            _radioComms.LoadState(saveGameService);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
             

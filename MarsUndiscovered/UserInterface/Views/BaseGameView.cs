@@ -29,6 +29,9 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel TopPanel;
         protected PlayerPanel PlayerPanel;
         protected IList<MonsterPanel> MonsterPanels = new List<MonsterPanel>();
+        protected Panel RadioCommsPanel;
+        protected RichParagraph RadioCommsParagraph;
+        protected Image RadioCommsImage;
         protected RichParagraph StatusParagraph;
         protected RichParagraph HoverPanelLeftTooltip;
         protected RichParagraph HoverPanelRightTooltip;
@@ -67,7 +70,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .NoSkin()
                 .NoPadding()
                 .Offset(new Vector2(20f, 0))
-                .Height(0.1f);
+                .Height(0.2f);
 
             RootPanel.AddChild(BottomPanel);
 
@@ -76,7 +79,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Width(Constants.MiddlePanelWidth)
                 .NoSkin()
                 .NoPadding()
-                .Height(0.79f)
+                .Height(0.69f)
                 .Offset(new Vector2(20f, 120f));
 
             HoverPanelLeft = new Panel()
@@ -111,11 +114,33 @@ namespace MarsUndiscovered.UserInterface.Views
         protected void CreateStatusPanel()
         {
             StatusParagraph = new RichParagraph()
-                .Anchor(Anchor.BottomCenter)
+                .Anchor(Anchor.BottomLeft)
                 .NoPadding()
                 .Height(0.1f);
 
             BottomPanel.AddChild(StatusParagraph);
+        }
+        
+        protected void CreateRadioCommsPanel()
+        {
+            RadioCommsPanel = new Panel()
+                .Anchor(Anchor.TopLeft)
+                .Skin(PanelSkin.Simple)
+                .AutoHeight();
+            
+            BottomPanel.AddChild(RadioCommsPanel);
+
+            RadioCommsImage = new Image()
+                .Anchor(Anchor.AutoInline)
+                .NoPadding();
+
+            RadioCommsPanel.AddChild(RadioCommsImage);
+
+            RadioCommsParagraph = new RichParagraph()
+                .Anchor(Anchor.AutoInline)
+                .NoPadding();
+            
+            RadioCommsPanel.AddChild(RadioCommsParagraph);
         }
 
         protected void CreateMessageLog()
@@ -155,18 +180,38 @@ namespace MarsUndiscovered.UserInterface.Views
             UpdateMonsterStatus();
             UpdateMessageLog();
             UpdatePlayerStatus();
+            UpdateRadioComms();
             UpdateMapRenderTargetSize(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
             StatusParagraph.Text = String.Empty;
         }
 
+        private void UpdateRadioComms()
+        {
+            var newRadioComms = _viewModel.RadioCommsStatus.GetUnprocessedRadioComms();
+
+            if (newRadioComms.Any())
+            {
+                // TODO - implement "next" functionality around here so that the user can see multiple radio logs that occur on the same turn
+                var lastRadioComms = newRadioComms.Last();
+
+                RadioCommsParagraph.Text = lastRadioComms.Message;
+                
+                RadioCommsImage.Texture = Assets.GetRadioCommsImage(lastRadioComms.GameObjectId);
+
+                _viewModel.RadioCommsStatus.SetSeenAllItems();
+            }
+        }
+
         private void UpdateMessageLog()
         {
-            var newMessages = _viewModel.Messages;
+            var newMessages = _viewModel.MessageStatus.GetUnprocessedMessages();
 
             if (newMessages.Any())
             {
                 foreach (var message in newMessages)
                     _messageLog.AddItem(message);
+
+                _viewModel.MessageStatus.SetSeenAllMessages();
 
                 _messageLog.scrollToEnd();
             }
