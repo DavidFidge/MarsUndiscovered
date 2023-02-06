@@ -14,33 +14,15 @@ namespace MarsUndiscovered.Tests.Components
     {
         protected readonly IGameObjectFactory _gameObjectFactory;
 
-        public int MapWidthMin { get; set; } = 80; 
-        public int MapWidthMax { get; set; } = 81; 
-
-        public int MapHeightMin { get; set; } = 20; 
-        public int MapHeightMax { get; set; } = 21;
+        public Point BasicMapDimensions { get; set; } = new Point(20, 20);
+        public Point OutdoorMapDimensions { get; set; } = new Point(70, 85);
 
         public IMapGenerator OriginalMapGenerator { get; private set; }
 
         protected BaseTestMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator)
         {
-            MapWidthMin = 80;
-            MapWidthMax = 81;
-            MapHeightMin = 20;
-            MapHeightMax = 21;
-
             _gameObjectFactory = gameObjectFactory;
             OriginalMapGenerator = originalMapGenerator;
-        }
-
-        protected int GetWidth()
-        {
-            return GlobalRandom.DefaultRNG.NextInt(MapWidthMin, MapWidthMax);
-        }
-
-        protected int GetHeight()
-        {
-            return GlobalRandom.DefaultRNG.NextInt(MapHeightMin, MapHeightMax);
         }
     }
 }

@@ -106,7 +106,7 @@ namespace MarsUndiscovered.Tests.Components
             _gameWorld.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
         }
 
-        protected void NewGameWithCustomMapNoMonstersNoItemsNoExits(IMapGenerator mapGenerator = null)
+        protected void NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(IMapGenerator mapGenerator = null)
         {
             if (mapGenerator == null)
             {
@@ -115,15 +115,20 @@ namespace MarsUndiscovered.Tests.Components
                     Container.Resolve<IMapGenerator>()
                 );
             }
-
+            
+            _gameWorld.MapGenerator = mapGenerator;
+            
             var blankMonsterGenerator = new BlankMonsterGenerator(Container.Resolve<IMonsterGenerator>());
             var blankItemGenerator = new BlankItemGenerator(Container.Resolve<IItemGenerator>());
             var blankMapExitGenerator = new BlankMapExitGenerator(Container.Resolve<IMapExitGenerator>());
+            var blankMiningFacilityGenerator = new BlankMiningFacilityGenerator();
+            var blankShipGenerator = new BlankShipGenerator();
 
-            _gameWorld.MapGenerator = mapGenerator;
             _gameWorld.MonsterGenerator = blankMonsterGenerator;
             _gameWorld.ItemGenerator = blankItemGenerator;
             _gameWorld.MapExitGenerator = blankMapExitGenerator;
+            _gameWorld.MiningFacilityGenerator = blankMiningFacilityGenerator;
+            _gameWorld.ShipGenerator = blankShipGenerator;
 
             _gameWorld.NewGame();
 

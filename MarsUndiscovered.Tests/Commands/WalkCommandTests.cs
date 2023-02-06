@@ -48,7 +48,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void WalkCommand_Should_Return_NoMove_Result_For_Wall()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExits();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
 
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition = new Point(1, 0);

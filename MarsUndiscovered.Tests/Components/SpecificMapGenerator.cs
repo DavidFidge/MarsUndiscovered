@@ -27,27 +27,24 @@ namespace MarsUndiscovered.Tests.Components
 
         public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
-            GenerateSpecificMap(gameWorld);
+            GenerateSpecificMap(gameWorld, OutdoorMapDimensions);
         }
 
         public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
-            GenerateSpecificMap(gameWorld);
+            GenerateSpecificMap(gameWorld, BasicMapDimensions);
         }
 
-        private void GenerateSpecificMap(IGameWorld gameWorld)
+        private void GenerateSpecificMap(IGameWorld gameWorld, Point mapDimensions)
         {
-            var mapWidth = GetWidth();
-            var mapHeight = GetHeight();
-
-            var arrayView = new ArrayView<IGameObject>(mapWidth, mapHeight);
+            var arrayView = new ArrayView<IGameObject>(mapDimensions.X, mapDimensions.Y);
 
             arrayView.ApplyOverlay(_terrainChooser);
 
             var wallsFloors = arrayView.ToArray();
 
             MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
-                wallsFloors.OfType<Floor>().ToList(), mapWidth, mapHeight);
+                wallsFloors.OfType<Floor>().ToList(), mapDimensions.X, mapDimensions.Y);
             
             Steps = 1;
             IsComplete = true;

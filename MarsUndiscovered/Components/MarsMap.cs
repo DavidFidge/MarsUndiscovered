@@ -34,7 +34,8 @@ namespace MarsUndiscovered.Components
 
         public int MapHeight => _mapHeight;
 
-        public MarsMap(IGameWorld gameWorld, int mapWidth, int mapHeight) : base(mapWidth, mapHeight, 3, Distance.Chebyshev, null, UInt32.MaxValue, UInt32.MaxValue, 0)
+        public MarsMap(IGameWorld gameWorld, int mapWidth, int mapHeight)
+            : base(mapWidth, mapHeight, 3, Distance.Chebyshev, null, UInt32.MaxValue, UInt32.MaxValue, 0)
         {
             Id = Guid.NewGuid();
             Level = 1;

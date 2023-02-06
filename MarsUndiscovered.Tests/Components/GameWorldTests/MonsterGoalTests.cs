@@ -16,7 +16,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Move_Towards_Closest_Unexplored_Region()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExits();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
 
             _gameWorld.Player.Position = new Point(2, 0);
             var wallPosition1 = new Point(1, 1);
@@ -53,7 +53,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Move_Towards_Player_When_Player_Is_Seen()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExits();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
 
             _gameWorld.Player.Position = new Point(2, 0);
             var wallPosition1 = new Point(1, 5);
@@ -84,7 +84,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Attack_Player_When_Adjacent_To_Player()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExits();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
 
             _gameWorld.Player.Position = new Point(1, 1);
 
@@ -135,7 +135,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Monsters_Should_Update_Field_Of_View_Before_Calculating_Goals()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
 
             _gameWorld.Player.Position = new Point(10, 10);
 
@@ -174,7 +174,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Turrets_Should_Not_Move()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExits();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
 
             _gameWorld.Player.Position = new Point(3, 3);
             var wallPosition1 = new Point(1, 1);
@@ -200,7 +200,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Turrets_Should_Shoot_At_Player_When_Player_Is_Seen()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExits();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
 
             _gameWorld.Player.Position = new Point(3, 3);
             var wallPosition1 = new Point(1, 1);

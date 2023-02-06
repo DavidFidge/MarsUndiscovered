@@ -33,8 +33,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(_gameWorld.CurrentMap.Width < 200);
             Assert.IsTrue(_gameWorld.CurrentMap.Height >= 10);
             Assert.IsTrue(_gameWorld.CurrentMap.Height < 200);
-            
-            Assert.IsTrue(_gameWorld.CurrentMap.Width * _gameWorld.CurrentMap.Height < 6000);
         }
     }
 }

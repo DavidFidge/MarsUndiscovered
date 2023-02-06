@@ -3,7 +3,7 @@ using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Interfaces;
-
+using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Tests.Components
@@ -16,26 +16,23 @@ namespace MarsUndiscovered.Tests.Components
 
         public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
-            GenerateHalfWallsMap(gameWorld);
+            GenerateHalfWallsMap(gameWorld, OutdoorMapDimensions);
         }
 
         public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
-            GenerateHalfWallsMap(gameWorld);
+            GenerateHalfWallsMap(gameWorld, BasicMapDimensions);
         }
 
-        private void GenerateHalfWallsMap(IGameWorld gameWorld)
+        private void GenerateHalfWallsMap(IGameWorld gameWorld, Point mapDimensions)
         {
-            var mapWidth = GetWidth();
-            var mapHeight = GetHeight();
-
-            var arrayView = new ArrayView<IGameObject>(mapWidth, mapHeight);
+            var arrayView = new ArrayView<IGameObject>(mapDimensions.X, mapDimensions.Y);
 
             var index = 0;
 
             arrayView.ApplyOverlay(p =>
             {
-                var terrain = p.Y > mapHeight - 5
+                var terrain = p.Y > mapDimensions.Y - 5
                     ? (Terrain)_gameObjectFactory.CreateWall()
                     : _gameObjectFactory.CreateFloor();
                 terrain.Index = index++;
@@ -45,7 +42,7 @@ namespace MarsUndiscovered.Tests.Components
             var wallsFloors = arrayView.ToArray();
 
             MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
-                wallsFloors.OfType<Floor>().ToList(), mapWidth, mapHeight);
+                wallsFloors.OfType<Floor>().ToList(), mapDimensions.X, mapDimensions.Y);
             
             Steps = 1;
             IsComplete = true;
