@@ -1,1 +1,0 @@
-dotnet publish .\MarsUndiscovered\MarsUndiscovered.csproj /p:UseAppHost=true /p:TieredCompilation=false /p:DebugType=None /p:DebugSymbols=false --self-contained --configuration Release --runtime win-x64 --output Publish --framework net6.0-windows
