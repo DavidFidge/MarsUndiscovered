@@ -66,5 +66,5 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: windows-x86_64
+        name: MarsUndiscovered-windows-x86_64
         path: MarsUndiscovered-windows-x86_64.zip
