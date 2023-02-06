@@ -1,4 +1,4 @@
-name: .NET Core Desktop
+name: Run Tests
 
 on:
   push:
@@ -20,7 +20,34 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0
+        repository: DavidFidge/MarsUndiscovered
+        path: MarsUndiscovered
+        
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        repository: DavidFidge/FrigidRogue
+        path: FrigidRogue
+        
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        repository: DavidFidge/GoRogue
+        ref: FrigidRogue
+        path: GoRogue
+
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        repository: DavidFidge/GeonBit.UI
+        ref: FrigidRogue
+        path: GeonBit.UI
+        
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        repository: DavidFidge/BehaviourTree
+        path: BehaviourTree
 
     # Install the .NET Core workload
     - name: Install .NET Core
