@@ -57,11 +57,11 @@ jobs:
 
     - name: Build and Publish
       run: |
-        .\MarsUndiscovered\publish.cmd
+        dotnet publish .\MarsUndiscovered\MarsUndiscovered\MarsUndiscovered.csproj /p:UseAppHost=true /p:TieredCompilation=false /p:DebugType=None /p:DebugSymbols=false --self-contained --configuration Release --runtime win-x64 --output Publish --framework net6.0-windows
       
     - name: Create Artifact
       run: |
-        7z a .\MarsUndiscovered-windows-x86_64.zip .\MarsUndiscovered\Publish\*
+        7z a .\MarsUndiscovered-windows-x86_64.zip .\Publish\*
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
