@@ -29,7 +29,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected override void InitializeInternal()
         {
             _loadGamePanel = new Panel()
-                .WidthOfScreen()
+                .WidthOfContainer()
                 .SolidOpacity();
 
             _loadGamePanel.Size = new Vector2(_loadGamePanel.Size.X, 0.8f);
@@ -41,7 +41,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .AddTo(_loadGamePanel);
 
             _fileNameList = new SelectList()
-                .WidthOfScreen()
+                .WidthOfContainer()
                 .Centred()
                 .AddTo(_loadGamePanel);
 

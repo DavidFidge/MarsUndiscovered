@@ -25,7 +25,7 @@ namespace MarsUndiscovered.UserInterface.Views
             var consolePanel = new Panel()
                 .Padding(Vector2.Zero)
                 .Anchor(Anchor.BottomCenter)
-                .WidthOfScreen()
+                .WidthOfContainer()
                 .Height(0.5f)
                 .OpacityPercent(70);
 

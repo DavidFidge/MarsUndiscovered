@@ -47,6 +47,7 @@ namespace MarsUndiscovered.Installers
             RegisterLoadReplayView(container, store);
             RegisterOptionsView(container, store);
             RegisterVideoOptionsView(container, store);
+            RegisterGameOptionsView(container, store);
             RegisterInGameOptionsView(container, store);
             RegisterInReplayOptionsView(container, store);
             RegisterWorldBuilderOptionsView(container, store);
@@ -296,6 +297,18 @@ namespace MarsUndiscovered.Installers
 
                 Component.For<VideoOptionsView>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, VideoOptionsKeyboardHandler>())
+            );
+        }
+        
+        private void RegisterGameOptionsView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+
+                Component.For<GameOptionsViewModel>()
+                    .ImplementedBy<GameOptionsViewModel>(),
+
+                Component.For<GameOptionsView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, GameOptionsKeyboardHandler>())
             );
         }
 

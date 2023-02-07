@@ -17,7 +17,7 @@ namespace MarsUndiscovered.UserInterface.Views
             Panel = new Panel()
                 .NoSkin()
                 .NoPadding()
-                .WidthOfScreen()
+                .WidthOfContainer()
                 .AutoHeight()
                 .Anchor(Anchor.Auto);
 
@@ -25,7 +25,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             Name = new Label()
                 .NoPadding()
-                .WidthOfScreen()
+                .WidthOfContainer()
                 .Anchor(Anchor.Auto);
 
             Panel.AddChild(Name);
