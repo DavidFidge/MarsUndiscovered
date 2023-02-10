@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
@@ -152,6 +153,21 @@ namespace MarsUndiscovered.Components
         public void AfterProgressiveWorldGeneration()
         {
             GameWorld.AfterProgressiveWorldGeneration();
+        }
+
+        public async Task WriteMorgueToFile()
+        {
+            await GameWorld.WriteMorgueToFile();
+        }
+        
+        public async Task SendMorgueToWeb()
+        {
+            await GameWorld.SendMorgueToWeb();
+        }
+
+        public void SnapshotMorgue(string username)
+        {
+            GameWorld.SnapshotMorgue(username);
         }
 
         public void LoadReplay(string gameName)

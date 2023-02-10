@@ -49,6 +49,7 @@ namespace MarsUndiscovered.Commands
         {
             var message = $"{Source.NameSpecificArticleUpperCase} {Source.ToHaveConjugation} died!";
             Source.IsDead = true;
+            Source.IsDeadMessage = KilledByMessage;
 
             if (!(Source is Player))
             {
@@ -58,6 +59,12 @@ namespace MarsUndiscovered.Commands
                 Source.Position = Point.None;
                 Mediator.Publish(new MapTileChangedNotification(_oldPosition));
             }
+            else
+            {
+                GameWorld.Morgue.GameEnded();
+            }
+            
+            GameWorld.Morgue.LogActorDeath(Source);
 
             return Result(CommandResult.Success(this, message));
         }
@@ -65,6 +72,7 @@ namespace MarsUndiscovered.Commands
         protected override void UndoInternal()
         {
             Source.IsDead = false;
+            Source.IsDeadMessage = null;
             Source.Position = _oldPosition;
             _sourceMap.AddEntity(Source);
         }

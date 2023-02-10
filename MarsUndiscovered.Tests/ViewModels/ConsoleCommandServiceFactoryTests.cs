@@ -48,7 +48,6 @@ namespace MarsUndiscovered.Tests.ViewModels
         {
             public void Execute(ConsoleCommand consoleCommand)
             {
-                throw new System.NotImplementedException();
             }
         }
     }

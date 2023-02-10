@@ -15,5 +15,8 @@
             UndiscoveredNamePrefix = undiscoveredName.Split(' ')[0];
             UndiscoveredName = undiscoveredName.Split(' ')[1];
         }
+
+        public static ItemTypeDiscovery ItemTypeDiscoveryDiscovered =
+            new ItemTypeDiscovery { IsItemTypeDiscovered = true };
     }
 }

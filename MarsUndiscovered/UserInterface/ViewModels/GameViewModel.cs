@@ -1,5 +1,6 @@
+using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Extensions;
-
+using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using GoRogue.Pathing;
 
 using MarsUndiscovered.Components;
@@ -14,6 +15,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class GameViewModel : BaseGameViewModel<GameData>
     {
+        private readonly IGameOptionsStore _gameOptionsStore;
+
+        public GameViewModel(IGameOptionsStore gameOptionsStore)
+        {
+            _gameOptionsStore = gameOptionsStore;
+        }
+        
         public void NewGame(ulong? seed = null)
         {
             IsActive = false;
@@ -88,6 +96,18 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 return true;
 
             return false;
+        }
+
+        public void WriteAndSendMorgue()
+        {
+            var gameOptionsStore = _gameOptionsStore.GetFromStore<GameOptionsData>();
+            
+            GameWorldEndpoint.SnapshotMorgue(gameOptionsStore.State.MorgueUsername ?? String.Empty);
+            
+            Task.Run(() => GameWorldEndpoint.WriteMorgueToFile());
+            
+            if (gameOptionsStore.State.UploadMorgueFiles)
+                Task.Run(() => GameWorldEndpoint.SendMorgueToWeb());
         }
     }
 }

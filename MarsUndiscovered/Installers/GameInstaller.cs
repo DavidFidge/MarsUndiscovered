@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 
 using Castle.Facilities.TypedFactory;
 
@@ -31,13 +32,32 @@ using InputHandlers.Mouse;
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
+using Microsoft.Extensions.Configuration;
 
 namespace MarsUndiscovered.Installers
 {
     public class GameInstaller : IWindsorInstaller
     {
+        
+        [Conditional("DEBUG")]
+        private void SetDebugEnvironment(ref string environment)
+        {
+            environment = "Development";
+        }
+        
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
+            var environment = "Production";
+            
+            SetDebugEnvironment(ref environment);
+            
+            var configuration =  new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile($"appsettings.{environment}.json", optional: true)
+                .Build();
+            
+            container.Register(Component.For<IConfiguration>().Instance(configuration));
+            
             container.Install(new CoreInstaller());
             container.Install(new ViewInstaller());
 
@@ -65,7 +85,10 @@ namespace MarsUndiscovered.Installers
             RegisterFactories(container);
 
             container.Register(
-
+               
+                Component.For<IHttpClient>()
+                    .ImplementedBy<HttpClientWrapper>(),
+                
                 Component.For<IAssets>()
                     .ImplementedBy<Assets>(),
 
@@ -124,7 +147,16 @@ namespace MarsUndiscovered.Installers
                     .LifestyleTransient(),
 
                 Component.For<ICameraMovement>()
-                    .ImplementedBy<CameraMovement>()
+                    .ImplementedBy<CameraMovement>(),
+                
+                Component.For<IMorgue>()
+                    .ImplementedBy<Morgue>(),
+                
+                Component.For<IMorgueWebService>()
+                    .ImplementedBy<MorgueWebService>(),
+                
+                Component.For<IMorgueFileWriter>()
+                    .ImplementedBy<MorgueFileWriter>()
             );
         }
 

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
@@ -15,6 +16,7 @@ namespace MarsUndiscovered.Interfaces
 {
     public interface IGameWorld : ILoadGameDetail, IBaseComponent
     {
+        IMorgue Morgue { get; }
         Player Player { get; }
         void NewGame(ulong? seed = null);
         MarsMap CurrentMap { get; }
@@ -30,6 +32,7 @@ namespace MarsUndiscovered.Interfaces
         ItemCollection Items { get; }
         Inventory Inventory { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
+        Guid GameId { get; }
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
         LoadGameResult LoadReplay(string saveGameName);
         bool ExecuteNextReplayCommand();
@@ -51,5 +54,8 @@ namespace MarsUndiscovered.Interfaces
         Point GetPlayerPosition();
         ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step, WorldGenerationTypeParams worldGenerationTypeParams);
         void AfterProgressiveWorldGeneration();
+        Task WriteMorgueToFile();
+        Task SendMorgueToWeb();
+        void SnapshotMorgue(string username);
     }
 }

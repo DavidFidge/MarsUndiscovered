@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
@@ -19,14 +20,15 @@ using Microsoft.Xna.Framework.Input;
 
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Components
 {
     public class GameWorld : BaseComponent, IGameWorld, ISaveable, IMementoState<GameWorldSaveData>
     {
+        public Guid GameId { get; private set; }
         public Player Player { get; private set; }
+        public IMorgue Morgue { get; set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public IGameTimeService GameTimeService { get; set; }
         public ICommandFactory CommandFactory { get; set; }
@@ -73,7 +75,7 @@ namespace MarsUndiscovered.Components
         {
             GlobalRandom.DefaultRNG = new MizuchiRandom();
         }
-
+        
         private ulong MakeSeed()
         {
             unchecked
@@ -86,6 +88,7 @@ namespace MarsUndiscovered.Components
         public void NewGame(ulong? seed = null)
         {
             Reset();
+            Morgue.GameStarted();
             
             seed ??= MakeSeed();
 
@@ -254,7 +257,9 @@ namespace MarsUndiscovered.Components
 
         private void Reset()
         {
+            GameId = Guid.NewGuid();
             GameTimeService.Reset();
+            Morgue.Reset();
             Walls = new WallCollection(GameObjectFactory);
             Floors = new FloorCollection(GameObjectFactory);
             Monsters = new MonsterCollection(GameObjectFactory);
@@ -316,6 +321,21 @@ namespace MarsUndiscovered.Components
                     new ArrayView<SeenTile>(CurrentMap.Width, CurrentMap.Height)
                 )
             );
+        }
+
+        public async Task WriteMorgueToFile()
+        {
+            await Morgue.WriteMorgueToFile();
+        }
+
+        public async Task SendMorgueToWeb()
+        { 
+            await Morgue.SendMorgueToWeb();
+        }
+
+        public void SnapshotMorgue(string username)
+        {
+            Morgue.SnapshotMorgueExportData(this, username);
         }
 
         public void ChangeMap(MarsMap map)
@@ -631,6 +651,7 @@ namespace MarsUndiscovered.Components
         public IMemento<GameWorldSaveData> GetSaveState()
         {
             var memento = new Memento<GameWorldSaveData>(new GameWorldSaveData());
+            memento.State.GameId = GameId;
             memento.State.Seed = Seed;
             memento.State.LoadGameDetail = LoadGameDetail;
             memento.State.RandomNumberGenerator = new MizuchiRandom(((MizuchiRandom)GlobalRandom.DefaultRNG).StateA, ((MizuchiRandom)GlobalRandom.DefaultRNG).StateB); ;
@@ -641,6 +662,7 @@ namespace MarsUndiscovered.Components
 
         public void SetLoadState(IMemento<GameWorldSaveData> memento)
         {
+            GameId = memento.State.GameId;
             Seed = memento.State.Seed;
             LoadGameDetail = memento.State.LoadGameDetail;
             LastMonstersInView = memento.State.LastMonstersInView.Select(m => Monsters[m]).ToList();

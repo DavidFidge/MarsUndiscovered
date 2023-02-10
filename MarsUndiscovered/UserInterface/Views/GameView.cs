@@ -249,15 +249,20 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             base.ViewModelChanged();
 
-            if (_viewModel.PlayerStatus.IsDead)
+            if (_viewModel.PlayerStatus.IsDead || _viewModel.PlayerStatus.IsVictorious)
             {
-                GameInputService?.ChangeInput(MouseHandler, _gameOverKeyboardHandler);
-                StatusParagraph.Text = DelimitWithDashes("YOU ARE DEAD. PRESS SPACE TO EXIT GAME.");
-            }
-            else if (_viewModel.PlayerStatus.IsVictorious)
-            {
-                GameInputService?.ChangeInput(MouseHandler, _gameOverKeyboardHandler);
-                StatusParagraph.Text = DelimitWithDashes("YOU ARE VICTORIOUS! PRESS SPACE TO EXIT GAME.");
+                _viewModel.WriteAndSendMorgue();
+
+                if (_viewModel.PlayerStatus.IsDead)
+                {
+                    GameInputService?.ChangeInput(MouseHandler, _gameOverKeyboardHandler);
+                    StatusParagraph.Text = DelimitWithDashes("YOU ARE DEAD. PRESS SPACE TO EXIT GAME.");
+                }
+                else if (_viewModel.PlayerStatus.IsVictorious)
+                {
+                    GameInputService?.ChangeInput(MouseHandler, _gameOverKeyboardHandler);
+                    StatusParagraph.Text = DelimitWithDashes("YOU ARE VICTORIOUS! PRESS SPACE TO EXIT GAME.");
+                }
             }
         }
 

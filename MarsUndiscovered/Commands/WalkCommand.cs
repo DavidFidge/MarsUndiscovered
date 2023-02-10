@@ -122,6 +122,7 @@ namespace MarsUndiscovered.Commands
                     if (GameWorld.Inventory.HasShipRepairParts)
                     {
                         Player.IsVictorious = true;
+                        GameWorld.Morgue.GameEnded();
                         return Result(CommandResult.NoMove(this, "You board your ship, make hasty repairs to critical parts and fire the engines! You have escaped!"));
                     }
 

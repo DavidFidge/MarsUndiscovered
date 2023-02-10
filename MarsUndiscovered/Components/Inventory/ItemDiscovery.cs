@@ -9,5 +9,11 @@ namespace MarsUndiscovered.Components
         {
             return this.MemberwiseClone();
         }
+
+        public static ItemDiscovery ItemDiscoveryDiscovered = new ItemDiscovery
+        {
+            IsEnchantLevelDiscovered = true,
+            IsItemSpecialDiscovered = true
+        };
     }
 }
