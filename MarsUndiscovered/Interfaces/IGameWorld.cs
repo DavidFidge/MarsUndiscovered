@@ -54,8 +54,8 @@ namespace MarsUndiscovered.Interfaces
         Point GetPlayerPosition();
         ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step, WorldGenerationTypeParams worldGenerationTypeParams);
         void AfterProgressiveWorldGeneration();
-        Task WriteMorgueToFile();
-        Task SendMorgueToWeb();
+        Task WriteMorgueToFile(Guid gameId);
+        Task SendMorgueToWeb(Guid gameId);
         void SnapshotMorgue(string username);
     }
 }

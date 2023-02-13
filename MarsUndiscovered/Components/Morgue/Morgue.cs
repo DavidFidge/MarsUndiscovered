@@ -15,7 +15,7 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
     private readonly IMorgueFileWriter _morgueFileWriter;
     private readonly IMorgueWebService _morgueWebService;
     private MorgueSaveData _morgueSaveData;
-    private MorgueExportData _morgueExportData;
+    private Dictionary<Guid, MorgueExportData> _morgueExportData = new();
 
     public Morgue(
         IMorgueFileWriter morgueFileWriter,
@@ -26,11 +26,11 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
         _morgueSaveData = new MorgueSaveData();
     }
 
-    public async Task WriteMorgueToFile()
+    public async Task WriteMorgueToFile(Guid gameId)
     {
-        if (_morgueExportData != null)
+        if (_morgueExportData.ContainsKey(gameId))
         {
-            var morgueExportDataClone = (MorgueExportData)_morgueExportData.Clone();
+            var morgueExportDataClone = (MorgueExportData)_morgueExportData[gameId].Clone();
 
             try
             {
@@ -48,11 +48,11 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
         }
     }
 
-    public async Task SendMorgueToWeb()
+    public async Task SendMorgueToWeb(Guid gameId)
     {
-        if (_morgueExportData != null)
+        if (_morgueExportData.ContainsKey(gameId))
         {
-            var morgueExportDataClone = (MorgueExportData)_morgueExportData.Clone();
+            var morgueExportDataClone = (MorgueExportData)_morgueExportData[gameId].Clone();
             
             try
             {
@@ -82,7 +82,7 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
             FinalInventory = gameWorld.Inventory.GetInventoryItems().Select(i => i.ItemDiscoveredDescription).ToList(),
             Health = gameWorld.Player.Health,
             MaxHealth = gameWorld.Player.MaxHealth,
-            GameEndStatus = gameWorld.Player.IsDead ? $"You were {gameWorld.Player.IsDeadMessage}" : "Retrieved ship parts",
+            GameEndStatus = gameWorld.Player.IsDead ? $"You were {gameWorld.Player.IsDeadMessage}" : "You retrieved ship parts",
             IsVictorious = gameWorld.Player.IsVictorious,
             Version = 1
         };
@@ -93,7 +93,6 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
     public void Reset()
     {
         _morgueSaveData = new MorgueSaveData();
-        _morgueExportData = null;
     }
 
     public void GameStarted()
@@ -108,17 +107,19 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
 
     public void SnapshotMorgueExportData(IGameWorld gameWorld, string username)
     {
-        _morgueExportData = null;
-
         if (!gameWorld.Player.IsGameEndState)
         {
             Logger.Warning($"Cannot snapshot morgue data - player is not dead and victory has not been achieved.");
             return;
         }
 
-        _morgueExportData = CreateMorgueExportData(gameWorld, username);
-        var morgueTextReport = BuildTextReport(_morgueExportData);
-        _morgueExportData.TextReport = morgueTextReport.ToString();
+        var morgueExportData = CreateMorgueExportData(gameWorld, username);
+        var morgueTextReport = BuildTextReport(morgueExportData);
+        
+        morgueExportData.TextReport = morgueTextReport.ToString();
+
+        if (!_morgueExportData.TryAdd(gameWorld.GameId, morgueExportData))
+            _morgueExportData[gameWorld.GameId] = morgueExportData;
     }
     
     public void SaveState(ISaveGameService saveGameService)

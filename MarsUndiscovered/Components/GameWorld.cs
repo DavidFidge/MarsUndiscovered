@@ -323,14 +323,14 @@ namespace MarsUndiscovered.Components
             );
         }
 
-        public async Task WriteMorgueToFile()
+        public async Task WriteMorgueToFile(Guid gameId)
         {
-            await Morgue.WriteMorgueToFile();
+            await Morgue.WriteMorgueToFile(gameId);
         }
 
-        public async Task SendMorgueToWeb()
+        public async Task SendMorgueToWeb(Guid gameId)
         { 
-            await Morgue.SendMorgueToWeb();
+            await Morgue.SendMorgueToWeb(gameId);
         }
 
         public void SnapshotMorgue(string username)

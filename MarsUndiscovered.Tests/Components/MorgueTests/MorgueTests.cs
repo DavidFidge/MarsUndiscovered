@@ -36,7 +36,7 @@ namespace MarsUndiscovered.Tests.Components.MorgueTests
             _morgue.SnapshotMorgueExportData(_gameWorld, "user");
             
             // Act
-            await _morgue.SendMorgueToWeb();
+            await _morgue.SendMorgueToWeb(_gameWorld.GameId);
 
             // Assert
             _morgueWebService.Received().SendMorgue(Arg.Any<MorgueExportData>());
@@ -46,7 +46,7 @@ namespace MarsUndiscovered.Tests.Components.MorgueTests
         public async Task SendMorgue_Should_Log_Warning_If_Morgue_Not_Snapshotted()
         {
             // Act
-            await _morgue.SendMorgueToWeb();
+            await _morgue.SendMorgueToWeb(_gameWorld.GameId);
 
             // Assert
             _morgueWebService.DidNotReceive().SendMorgue(Arg.Any<MorgueExportData>());
@@ -62,7 +62,7 @@ namespace MarsUndiscovered.Tests.Components.MorgueTests
             _morgue.SnapshotMorgueExportData(_gameWorld, "TestUser");
             
             // Act
-            await _morgue.WriteMorgueToFile();
+            await _morgue.WriteMorgueToFile(_gameWorld.GameId);
 
             // Assert
             _morgueFileWriter.Received().WriteMorgueTextReportToFile(Arg.Any<string>(), Arg.Any<string>(),
@@ -73,7 +73,7 @@ namespace MarsUndiscovered.Tests.Components.MorgueTests
         public async Task WriteMorgueTextReportToFile_Should_Log_Warning_If_Morgue_Not_Snapshotted()
         {
             // Act
-            await _morgue.WriteMorgueToFile();
+            await _morgue.WriteMorgueToFile(_gameWorld.GameId);
 
             // Assert
             _morgueFileWriter.DidNotReceive().WriteMorgueTextReportToFile(Arg.Any<string>(), Arg.Any<string>(),
@@ -104,7 +104,6 @@ namespace MarsUndiscovered.Tests.Components.MorgueTests
         {
             // Arrange
             _gameWorld.NewGame(9999);
-            _gameWorld.Morgue.GameStarted();
             
             _gameWorld.Player.IsVictorious = true;
 
@@ -126,7 +125,7 @@ Username: Username12345!@#$%
 Start Date: 2000-12-30 12:13:14 UTC
 End Date: 2001-01-02 01:02:03 UTC
 
-Won: Retrieved ship parts
+Won: You retrieved ship parts
 
 STATUS
 --------------------------------------------------------------------------------
@@ -144,7 +143,71 @@ No enemies were defeated
             _morgue.SnapshotMorgueExportData(_gameWorld, "Username12345!@#$%");
 
             // Act
-            await _morgue.WriteMorgueToFile();
+            await _morgue.WriteMorgueToFile(_gameWorld.GameId);
+
+            // Assert
+            var report = (string)_morgueFileWriter.ReceivedCalls().First().GetArguments()[0];
+
+            Assert.AreEqual(morgue, report);
+        }
+        
+        
+        [TestMethod]
+        public async Task WriteMorgueToFile_Should_Write_Report_To_File_With_Correct_Contents_After_Reset_And_New_Game()
+        {
+            // Arrange
+            _gameWorld.NewGame(9999);
+            
+            _gameWorld.Player.IsVictorious = true;
+
+            var fakeDateTimeProvider = Substitute.For<IDateTimeProvider>();
+
+            _morgue.DateTimeProvider = fakeDateTimeProvider;
+
+            _morgue.GameStarted();
+            _morgue.GameEnded();
+            
+            _morgue.SnapshotMorgueExportData(_gameWorld, String.Empty);
+            
+            _gameWorld.NewGame(10000);
+            
+            _gameWorld.Player.IsDead = true;
+            _gameWorld.Player.IsDeadMessage = "killed by a creature";
+
+            fakeDateTimeProvider.UtcNow.Returns(new DateTime(2000, 12, 30, 12, 13, 14));
+            _morgue.GameStarted();
+            fakeDateTimeProvider.UtcNow.Returns(new DateTime(2001, 1, 2, 1, 2, 3));
+
+            _morgue.GameEnded();
+
+            var morgue =
+                $@"Mars Undiscovered
+Game ID: {_gameWorld.GameId}
+Game Version: 0.1.1
+Seed: 10000
+Username: Username12345!@#$%
+Start Date: 2000-12-30 12:13:14 UTC
+End Date: 2001-01-02 01:02:03 UTC
+
+Died: You were killed by a creature
+
+STATUS
+--------------------------------------------------------------------------------
+Health {_gameWorld.Player.Health}/{_gameWorld.Player.MaxHealth}
+
+INVENTORY
+--------------------------------------------------------------------------------
+No items in inventory
+
+ENEMIES DEFEATED
+--------------------------------------------------------------------------------
+No enemies were defeated
+";
+            
+            _morgue.SnapshotMorgueExportData(_gameWorld, "Username12345!@#$%");
+
+            // Act
+            await _morgue.WriteMorgueToFile(_gameWorld.GameId);
 
             // Assert
             var report = (string)_morgueFileWriter.ReceivedCalls().First().GetArguments()[0];
@@ -163,7 +226,7 @@ No enemies were defeated
             _morgueWebService.SendMorgue(Arg.Any<MorgueExportData>()).Throws(new Exception("Test Exception Message"));
 
             // Act
-            await _morgue.SendMorgueToWeb();
+            await _morgue.SendMorgueToWeb(_gameWorld.GameId);
 
             // Assert
             Assert.AreEqual("Error while sending morgue file to web site",FakeLogger.LogEvents.Last().MessageTemplate.Text);
@@ -182,7 +245,7 @@ No enemies were defeated
                 Arg.Any<Guid>()).Throws(new Exception("Test Exception Message"));
             
             // Act
-            await _morgue.WriteMorgueToFile();
+            await _morgue.WriteMorgueToFile(_gameWorld.GameId);
 
             // Assert
             Assert.AreEqual("Error while writing morgue to file",FakeLogger.LogEvents.Last().MessageTemplate.Text);
