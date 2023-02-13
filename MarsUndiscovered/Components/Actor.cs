@@ -14,6 +14,7 @@ namespace MarsUndiscovered.Components
         public virtual string PossessiveName => NameSpecificArticleLowerCase.EndsWith("s") ? $"{NameSpecificArticleLowerCase}'" : $"{NameSpecificArticleLowerCase}'s";
         public virtual string ToHaveConjugation => "has";
         public bool IsDead { get; set; } = false;
+        public string IsDeadMessage { get; set; }
         public int Health { get; set; }
         public int MaxHealth { get; set; }
 

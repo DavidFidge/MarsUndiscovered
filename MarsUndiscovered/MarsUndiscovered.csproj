@@ -27,6 +27,8 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="CsvHelper" Version="27.2.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="MonoGame.Extended.Tweening" Version="3.8.0" />
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
@@ -44,12 +46,24 @@
     <Content Include="Content\Breeds.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Remove="appsettings.json" />
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="appsettings.Development.json" />
+    <Content Include="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="appsettings.Production.json" />
+    <Content Include="appsettings.Production.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <Target Name="CleanPublish" BeforeTargets="GetCopyToPublishDirectoryItems">
     <ItemGroup>
       <!-- Currently dotnet publish must be run from one directory back from where MarsUndiscovered.sln is located as this is how the github actions are set up -->
-      <BeforePublishFilesToDelete Include="..\..\Publish\*"/>
+      <BeforePublishFilesToDelete Include="..\..\Publish\*" />
     </ItemGroup>
     <Delete Files="@(BeforePublishFilesToDelete)" />
   </Target>
@@ -57,36 +71,36 @@
   <Target Name="DeleteUnusedPublishedFiles" AfterTargets="Publish">
     <ItemGroup>
       <!-- These files are dependencies pulled in from MonoGame.Framework.Content.Pipeline which we don't need at runtime -->
-      <AfterPublishFilesToDelete Include="..\..\Publish\ffmpeg.exe"/>
-      <AfterPublishFilesToDelete Include="..\..\Publish\ffprobe.exe"/>
-      <AfterPublishFilesToDelete Include="..\..\Publish\createdump.exe"/>
-      <AfterPublishFilesToDelete Include="..\..\Publish\FreeImage.dll"/>
-      <AfterPublishFilesToDelete Include="..\..\Publish\PVRTexLibWrapper.dll"/>
-      <AfterPublishFilesToDelete Include="..\..\Publish\freetype6.dll"/>
-      <AfterPublishFilesToDelete Include="..\..\Publish\libmojoshader_64.dll"/>
-      <AfterPublishFilesToDelete Include="..\..\Publish\nvtt.dll"/>
+      <AfterPublishFilesToDelete Include="..\..\Publish\ffmpeg.exe" />
+      <AfterPublishFilesToDelete Include="..\..\Publish\ffprobe.exe" />
+      <AfterPublishFilesToDelete Include="..\..\Publish\createdump.exe" />
+      <AfterPublishFilesToDelete Include="..\..\Publish\FreeImage.dll" />
+      <AfterPublishFilesToDelete Include="..\..\Publish\PVRTexLibWrapper.dll" />
+      <AfterPublishFilesToDelete Include="..\..\Publish\freetype6.dll" />
+      <AfterPublishFilesToDelete Include="..\..\Publish\libmojoshader_64.dll" />
+      <AfterPublishFilesToDelete Include="..\..\Publish\nvtt.dll" />
 
       <!-- Dependency json files get created which we don't need -->
-      <AfterPublishFilesToDelete Include="..\..\Publish\*.json"/>
+      <AfterPublishFilesToDelete Include="..\..\Publish\*.json" />
 
       <!-- 3rd party libs are creating xml documentation which we don't need -->
-      <AfterPublishFilesToDelete Include="..\..\Publish\*.xml"/>
+      <AfterPublishFilesToDelete Include="..\..\Publish\*.xml" />
     </ItemGroup>
     <ItemGroup>
       <!-- These directories are getting pulled in from somewhere during publish, we don't need them -->
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\cs"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\de"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\es"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\fr"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\it"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\ja"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\ko"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\pl"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\pt-BR"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\ru"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\tr"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\zh-Hans"/>
-      <AfterPublishDirectoriesToDelete Include="..\..\Publish\zh-Hant"/>
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\cs" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\de" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\es" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\fr" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\it" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\ja" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\ko" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\pl" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\pt-BR" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\ru" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\tr" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\zh-Hans" />
+      <AfterPublishDirectoriesToDelete Include="..\..\Publish\zh-Hant" />
     </ItemGroup>
     <Delete Files="@(AfterPublishFilesToDelete)" />
     <RemoveDir Directories="@(AfterPublishDirectoriesToDelete)" />

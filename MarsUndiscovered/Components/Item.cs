@@ -108,6 +108,11 @@ namespace MarsUndiscovered.Components
         {
             return ItemType.GetDescription(this, ItemDiscovery, itemTypeDiscovery, quantity);
         }
+        
+        public string GetDiscoveredDescription(int quantity)
+        {
+            return ItemType.GetDescription(this, ItemDiscovery.ItemDiscoveryDiscovered, ItemTypeDiscovery.ItemTypeDiscoveryDiscovered, quantity);
+        }
 
         public string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
         {

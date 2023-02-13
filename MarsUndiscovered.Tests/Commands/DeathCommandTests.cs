@@ -33,6 +33,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.IsFalse(_gameWorld.CurrentMap.GetObjectsAt(oldMonsterPosition).Any(m => m is Monster));
             Assert.IsTrue(monster.IsDead);
+            Assert.AreEqual("killed by you", monster.IsDeadMessage);
             Assert.AreEqual("The roach has died!", result.Messages[0]);
             Assert.AreEqual("killed by you", ((DeathCommand)result.Command).KilledByMessage);
         }
@@ -57,6 +58,7 @@ namespace MarsUndiscovered.Tests.Commands
             // Player is not removed
             Assert.IsTrue(_gameWorld.CurrentMap.GetObjectsAt(_gameWorld.Player.Position).Any(m => m is Player));
             Assert.IsTrue(_gameWorld.Player.IsDead);
+            Assert.AreEqual("killed by a monster", _gameWorld.Player.IsDeadMessage);
             Assert.AreEqual("You have died!", result.Messages[0]);
             Assert.AreEqual("killed by a monster", ((DeathCommand)result.Command).KilledByMessage);
         }

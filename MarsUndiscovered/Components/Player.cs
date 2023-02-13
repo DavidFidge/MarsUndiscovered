@@ -20,6 +20,7 @@ namespace MarsUndiscovered.Components
         public override string PossessiveName => $"{Name.ToLower()}r";
         public override string ToHaveConjugation => "have";
         public bool IsVictorious { get; set; }
+        public bool IsGameEndState => IsVictorious || IsDead;
 
         private Attack _unarmedAttack = new Attack(new Range<int>(2, 5));
 
@@ -27,7 +28,7 @@ namespace MarsUndiscovered.Components
 
         public Player(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
-            MaxHealth = 10000;
+            MaxHealth = 100;
             Health = MaxHealth;
             InitialiseAttacks();
         }

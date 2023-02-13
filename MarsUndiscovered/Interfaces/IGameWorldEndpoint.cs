@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
@@ -40,5 +41,9 @@ namespace MarsUndiscovered.Interfaces
         Point GetPlayerPosition();
         bool ExecuteNextReplayCommand();
         void AfterProgressiveWorldGeneration();
+        Task WriteMorgueToFile(Guid gameId);
+        Task SendMorgueToWeb(Guid gameId);
+        void SnapshotMorgue(string username);
+        Guid GetGameId();
     }
 }

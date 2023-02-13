@@ -122,6 +122,7 @@ namespace MarsUndiscovered.Components
                                 itemTypeDiscovery,
                                 ItemKeyAssignments[key].Count
                             ),
+                            ItemDiscoveredDescription = item.GetDiscoveredDescription(ItemKeyAssignments[key].Count),
                             ItemType = item.ItemType,
                             Key = key,
                             LongDescription = item.GetLongDescription(itemTypeDiscovery),

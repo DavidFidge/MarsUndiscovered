@@ -73,6 +73,9 @@ namespace MarsUndiscovered
             _gameInputService = gameInputService;
             _userInterface = userInterface;
             _gameOptionsStore = gameOptionsStore;
+
+            CreateDefaultGameOptions(gameOptionsStore);
+            
             _logger.Debug("Starting game");
 
             CustomGraphicsDeviceManager = new CustomGraphicsDeviceManager(this);
@@ -93,6 +96,22 @@ namespace MarsUndiscovered
 
             Window.AllowUserResizing = true;
             _gameInputService.AddGlobalKeyboardHandler(globalKeyboardHandler);
+        }
+
+        private void CreateDefaultGameOptions(IGameOptionsStore gameOptionsStore)
+        {
+            var existingGameOptions = gameOptionsStore.GetFromStore<GameOptionsData>();
+
+            if (existingGameOptions?.State != null)
+                return;
+
+            var gameOptionsData = new GameOptionsData
+            {
+                MorgueUsername = "Unknown Adventurer",
+                UploadMorgueFiles = true
+            };
+            
+            gameOptionsStore.SaveToStore(new Memento<GameOptionsData>(gameOptionsData));
         }
 
         /// <summary>
