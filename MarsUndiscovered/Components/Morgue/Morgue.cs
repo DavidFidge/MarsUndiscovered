@@ -34,7 +34,7 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
 
             try
             {
-                await _morgueFileWriter.WriteMorgueTextReportToFile(morgueExportDataClone.MorgueTextReport, morgueExportDataClone.Username,
+                await _morgueFileWriter.WriteMorgueTextReportToFile(morgueExportDataClone.TextReport, morgueExportDataClone.Username,
                     morgueExportDataClone.Id);
             }
             catch (Exception ex)
@@ -82,7 +82,9 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
             FinalInventory = gameWorld.Inventory.GetInventoryItems().Select(i => i.ItemDiscoveredDescription).ToList(),
             Health = gameWorld.Player.Health,
             MaxHealth = gameWorld.Player.MaxHealth,
-            GameEndStatus = gameWorld.Player.IsDead ? $"You were {gameWorld.Player.IsDeadMessage}" : "You won"
+            GameEndStatus = gameWorld.Player.IsDead ? $"You were {gameWorld.Player.IsDeadMessage}" : "Retrieved ship parts",
+            IsVictorious = gameWorld.Player.IsVictorious,
+            Version = 1
         };
         
         return morgueExportData;
@@ -115,8 +117,8 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
         }
 
         _morgueExportData = CreateMorgueExportData(gameWorld, username);
-        var morgueTextReport = BuildMorgueTextReport(_morgueExportData);
-        _morgueExportData.MorgueTextReport = morgueTextReport.ToString();
+        var morgueTextReport = BuildTextReport(_morgueExportData);
+        _morgueExportData.TextReport = morgueTextReport.ToString();
     }
     
     public void SaveState(ISaveGameService saveGameService)
@@ -141,18 +143,19 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
             _morgueSaveData.EnemiesDefeated[actor.Name]++;
     }
 
-    private StringBuilder BuildMorgueTextReport(MorgueExportData morgueExportData)
+    private StringBuilder BuildTextReport(MorgueExportData morgueExportData)
     {
         var morgueText = new StringBuilder();
 
         morgueText.AppendLine($"Mars Undiscovered");
         morgueText.AppendLine($"Game ID: {morgueExportData.Id}");
+        morgueText.AppendLine($"Game Version: {morgueExportData.GameVersion}");
         morgueText.AppendLine($"Seed: {morgueExportData.Seed}");
         morgueText.AppendLine($"Username: {morgueExportData.Username}");
         morgueText.AppendLine($"Start Date: {morgueExportData.StartDate:yyyy-MM-dd hh:mm:ss} UTC");
         morgueText.AppendLine($"End Date: {morgueExportData.EndDate:yyyy-MM-dd hh:mm:ss} UTC");
         morgueText.AppendLine();
-        morgueText.AppendLine($"{morgueExportData.GameEndStatus}");
+        morgueText.AppendLine($"{(morgueExportData.IsVictorious ? "Won" : "Died")}: {morgueExportData.GameEndStatus}");
         morgueText.AppendLine();
         AppendHeader(morgueText, "STATUS");
         morgueText.AppendLine($"Health {morgueExportData.Health}/{morgueExportData.MaxHealth}");

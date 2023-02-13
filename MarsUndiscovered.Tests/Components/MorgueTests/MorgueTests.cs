@@ -120,12 +120,13 @@ namespace MarsUndiscovered.Tests.Components.MorgueTests
             var morgue =
 $@"Mars Undiscovered
 Game ID: {_gameWorld.GameId}
+Game Version: 0.1.1
 Seed: 9999
 Username: Username12345!@#$%
 Start Date: 2000-12-30 12:13:14 UTC
 End Date: 2001-01-02 01:02:03 UTC
 
-You won
+Won: Retrieved ship parts
 
 STATUS
 --------------------------------------------------------------------------------
