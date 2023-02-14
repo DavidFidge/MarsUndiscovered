@@ -24,16 +24,73 @@ public class MorgueWebServiceTests : BaseTest
         _testHttpClient = Substitute.For<IHttpClient>();
         
         Environment.SetEnvironmentVariable("SENDMORGUE_BASEADDRESS", "localhost");
-        Environment.SetEnvironmentVariable("SENDMORGUE_PORT", "9999");
         Environment.SetEnvironmentVariable("SENDMORGUE_ENDPOINT", "api/morgue");
-        
-        _morgueWebService = new MorgueWebService(_testHttpClient);
     }
 
     [TestMethod]
     public async Task Should_SendMorgue_Successfully()
     {
         // Arrange
+        Environment.SetEnvironmentVariable("SENDMORGUE_PORT", null);
+        
+        _morgueWebService = new MorgueWebService(_testHttpClient);
+        
+        var morgueExportData = new MorgueExportData
+        {
+            Id = Guid.NewGuid()
+        };
+        
+        var expectedUri = "https://localhost/api/morgue";
+
+        _testHttpClient
+            .PostAsync(Arg.Is<Uri>(a => a.ToString().Equals(expectedUri)), Arg.Any<StringContent>())
+            .Returns(new HttpResponseMessage(HttpStatusCode.OK));
+
+        // Act
+        await _morgueWebService.SendMorgue(morgueExportData);
+
+        // Assert
+        _testHttpClient
+            .Received()
+            .PostAsync(Arg.Is<Uri>(a => a.ToString().Equals(expectedUri)), Arg.Any<StringContent>());
+    }
+    
+    [TestMethod]
+    public async Task SendMorgue_Should_Default_To_Standard_Url_If_Port_Invalid()
+    {
+        // Arrange
+        Environment.SetEnvironmentVariable("SENDMORGUE_PORT", "xx");
+        
+        _morgueWebService = new MorgueWebService(_testHttpClient);
+        
+        var morgueExportData = new MorgueExportData
+        {
+            Id = Guid.NewGuid()
+        };
+        
+        var expectedUri = "https://localhost/api/morgue";
+
+        _testHttpClient
+            .PostAsync(Arg.Is<Uri>(a => a.ToString().Equals(expectedUri)), Arg.Any<StringContent>())
+            .Returns(new HttpResponseMessage(HttpStatusCode.OK));
+
+        // Act
+        await _morgueWebService.SendMorgue(morgueExportData);
+
+        // Assert
+        _testHttpClient
+            .Received()
+            .PostAsync(Arg.Is<Uri>(a => a.ToString().Equals(expectedUri)), Arg.Any<StringContent>());
+    }
+    
+    [TestMethod]
+    public async Task Should_SendMorgue_Successfully_When_Port_Specified()
+    {
+        // Arrange
+        Environment.SetEnvironmentVariable("SENDMORGUE_PORT", "9999");
+        
+        _morgueWebService = new MorgueWebService(_testHttpClient);
+
         var morgueExportData = new MorgueExportData
         {
             Id = Guid.NewGuid()
@@ -58,12 +115,16 @@ public class MorgueWebServiceTests : BaseTest
     public async Task SendMorgue_Should_Throw_Exception_When_Returns_Unsuccessful_Result()
     {
         // Arrange
+        Environment.SetEnvironmentVariable("SENDMORGUE_PORT", null);
+        
+        _morgueWebService = new MorgueWebService(_testHttpClient);
+        
         var morgueExportData = new MorgueExportData
         {
             Id = Guid.NewGuid()
         };
         
-        var expectedUri = "https://localhost:9999/api/morgue";
+        var expectedUri = "https://localhost/api/morgue";
 
         _testHttpClient
             .PostAsync(Arg.Is<Uri>(a => a.ToString().Equals(expectedUri)), Arg.Any<StringContent>())

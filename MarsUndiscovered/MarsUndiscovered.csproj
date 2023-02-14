@@ -49,14 +49,17 @@
     <None Remove="appsettings.json" />
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </Content>
     <None Remove="appsettings.Development.json" />
     <Content Include="appsettings.Development.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
     <None Remove="appsettings.Production.json" />
-    <Content Include="appsettings.Production.json">
+    <Content Include="appsettings.Production.json" >
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
 
@@ -80,10 +83,7 @@
       <AfterPublishFilesToDelete Include="..\..\Publish\libmojoshader_64.dll" />
       <AfterPublishFilesToDelete Include="..\..\Publish\nvtt.dll" />
 
-      <!-- Dependency json files get created which we don't need -->
-      <AfterPublishFilesToDelete Include="..\..\Publish\*.json" />
-
-      <!-- 3rd party libs are creating xml documentation which we don't need -->
+      <!-- 3rd party libs create xml documentation which we don't need -->
       <AfterPublishFilesToDelete Include="..\..\Publish\*.xml" />
     </ItemGroup>
     <ItemGroup>

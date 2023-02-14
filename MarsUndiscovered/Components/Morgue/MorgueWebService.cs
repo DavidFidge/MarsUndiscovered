@@ -34,17 +34,10 @@ public class MorgueWebService : BaseComponent, IMorgueWebService
             Logger?.Warning("SENDMORGUE_BASEADDRESS is not set. Cannot send morgue files to web site.");
             return;
         }
-
-        if (String.IsNullOrEmpty(_morguePort))
-        {
-            Logger?.Warning("SENDMORGUE_PORT is not set. Cannot send morgue files to web site.");
-            return;
-        }
         
-        if (!int.TryParse(_morguePort, out _))
+        if (!String.IsNullOrEmpty(_morguePort) && !int.TryParse(_morguePort, out _))
         {
-            Logger?.Warning($"SENDMORGUE_PORT {_morguePort} is not a number. Cannot send morgue files to web site.");
-            return;
+            Logger?.Warning($"SENDMORGUE_PORT {_morguePort} is not a number. Defaulting to no port in URL.");
         }
 
         if (String.IsNullOrEmpty(_morgueEndPoint))
@@ -57,7 +50,10 @@ public class MorgueWebService : BaseComponent, IMorgueWebService
 
         uri.Scheme = Uri.UriSchemeHttps;
         uri.Host = _morgueBaseAddress;
-        uri.Port = int.Parse(_morguePort);
+        
+        if (!String.IsNullOrEmpty(_morguePort) && int.TryParse(_morguePort, out _))
+            uri.Port = int.Parse(_morguePort);
+        
         uri.Path = _morgueEndPoint;
         
         _uri = uri.Uri;
