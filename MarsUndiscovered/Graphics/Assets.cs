@@ -12,6 +12,7 @@ namespace MarsUndiscovered.Graphics
     public class Assets : IAssets
     {
         public Texture2D TitleTexture { get; set; }
+        public Texture2D TitleTextTexture { get; set; }
         public SpriteFont MapFont { get; set; }
         public SpriteFont GoalMapFont { get; set; }
         public MapTileTexture MouseHover { get; set; }
@@ -50,7 +51,8 @@ namespace MarsUndiscovered.Graphics
         {
             Monsters = new Dictionary<string, MapTileTexture>();
 
-            TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/title");
+            TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/Title");
+            TitleTextTexture = _gameProvider.Game.Content.Load<Texture2D>("images/TitleText");
             MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
             GoalMapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/GoalMapFont");
 

@@ -144,6 +144,13 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             _spriteBatch.Draw(Assets.TitleTexture, Game.GraphicsDevice.ViewportRectangle(), Color.White);
+            _spriteBatch.Draw(
+                Assets.TitleTextTexture,
+                new Vector2(
+                    Game.GraphicsDevice.ViewportRectangle().Width / 2 - Assets.TitleTextTexture.Width / 2,
+                    Game.GraphicsDevice.ViewportRectangle().Height / 10f
+                    ),
+                Color.White);
             _spriteBatch.End();
         }
     }

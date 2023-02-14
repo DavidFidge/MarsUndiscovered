@@ -7,6 +7,7 @@ namespace MarsUndiscovered.Interfaces
     public interface IAssets
     {
         public Texture2D TitleTexture { get; set; }
+        public Texture2D TitleTextTexture { get; set; }
         MapTileTexture Wall { get; set; }
         MapTileTexture Floor { get; set; }
         MapTileTexture Player { get; set; }
