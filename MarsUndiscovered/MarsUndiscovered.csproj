@@ -13,6 +13,9 @@
   <ItemGroup>
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
+    <None Update="Content\Animations\ShipAiRadioComms.sf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
@@ -57,7 +60,7 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
     <None Remove="appsettings.Production.json" />
-    <Content Include="appsettings.Production.json" >
+    <Content Include="appsettings.Production.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </Content>

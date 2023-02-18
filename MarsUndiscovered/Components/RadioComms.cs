@@ -8,7 +8,7 @@ namespace MarsUndiscovered.Components
 {
     public class RadioComms : List<RadioCommsEntry>, ISaveable
     {
-        public void AddRadioCommsEntry(string message, IGameObject gameObject)
+        public void AddRadioCommsEntry(IGameObject gameObject, string message)
         {
             Add(new RadioCommsEntry(message, gameObject));
         }
@@ -33,7 +33,7 @@ namespace MarsUndiscovered.Components
             
             for (var i = 0; i < state.Messages.Count; i++)
             {
-                AddRadioCommsEntry(state.Messages[i], gameWorld.GameObjects[(uint)i]);
+                AddRadioCommsEntry(gameWorld.GameObjects[(uint)i], state.Messages[i]);
             }
         }
     }

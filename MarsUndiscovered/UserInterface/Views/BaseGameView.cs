@@ -13,7 +13,7 @@ using MarsUndiscovered.UserInterface.ViewModels;
 using MediatR;
 
 using Microsoft.Xna.Framework;
-
+using MonoGame.Extended.Sprites;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.UserInterface.Views
@@ -32,6 +32,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel RadioCommsPanel;
         protected RichParagraph RadioCommsParagraph;
         protected Image RadioCommsImage;
+        protected AnimatedSprite RadioCommsAnimatedSprite;
         protected RichParagraph StatusParagraph;
         protected RichParagraph HoverPanelLeftTooltip;
         protected RichParagraph HoverPanelRightTooltip;
@@ -196,8 +197,13 @@ namespace MarsUndiscovered.UserInterface.Views
 
                 RadioCommsParagraph.Text = lastRadioComms.Message;
                 
-                RadioCommsImage.Texture = Assets.GetRadioCommsImage(lastRadioComms.GameObject);
-
+                var radioCommsSpriteSheet = Assets.GetRadioCommsSpriteSheet(lastRadioComms.GameObject);
+                
+                RadioCommsAnimatedSprite = new AnimatedSprite(radioCommsSpriteSheet);
+                RadioCommsAnimatedSprite.Play("talk");
+                RadioCommsImage.Texture = RadioCommsAnimatedSprite.TextureRegion.Texture;
+                // TODO - probably need to account for source rectangle i.e. TextureRegion.Bounds
+                // Rectangle bounds = RadioCommsAnimatedSprite.TextureRegion.Bounds;
                 _viewModel.RadioCommsStatus.SetSeenAllItems();
             }
         }
@@ -281,6 +287,12 @@ namespace MarsUndiscovered.UserInterface.Views
             }
 
             return Unit.Task;
+        }
+
+        public override void Update()
+        {
+            RadioCommsAnimatedSprite.Update(_viewModel.GameTimeService.GameTime);
+            base.Update();
         }
     }
 }

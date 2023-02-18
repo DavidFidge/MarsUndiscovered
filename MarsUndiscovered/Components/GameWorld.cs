@@ -106,6 +106,10 @@ namespace MarsUndiscovered.Components
             CreateLevel2(mapLevel1);
             
             Inventory = new Inventory(this);
+
+
+            _radioComms.AddRadioCommsEntry(Ships.First().Value, "Welcome to Mars captain! I apologise for the rough landing. The small matter of the explosion has ripped a hole in the hull and has crippled the primary fuel injection system. Unfortunately we have no spares on board, however the mine nearby likely has a similar controller which I can rig up as a temporary solution to get us flying again. You'll have to put on your spacesuit and walk over there.");
+            
             
             ResetFieldOfView();
             GameTimeService.Start();
@@ -502,7 +506,7 @@ namespace MarsUndiscovered.Components
             
             return _radioComms
                 .Skip(seenItemsCount)
-                .Select(s => new RadioCommsItem { GameObject= s.GameObject, Message = s.Message })
+                .Select(s => new RadioCommsItem { GameObject = s.GameObject, Message = s.Message })
                 .ToList();
         }
 
