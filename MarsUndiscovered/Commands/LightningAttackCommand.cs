@@ -82,7 +82,7 @@ namespace MarsUndiscovered.Commands
 
         public void Initialise(Actor source, Point targetPoint)
         {
-            var lightningAttackPath = Lines.Get(source.Position, targetPoint, Lines.Algorithm.BresenhamOrdered).ToList();
+            var lightningAttackPath = Lines.GetLine(source.Position, targetPoint).ToList();
 
             lightningAttackPath = lightningAttackPath
                 .TakeWhile(p => p == source.Position || (source.CurrentMap.GetObjectAt<Wall>(p) == null && source.CurrentMap.GetObjectAt<Indestructible>(p) == null))

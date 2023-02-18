@@ -54,7 +54,7 @@ namespace MarsUndiscovered.Commands
                 if (Player.LineAttack != null)
                 {
                     var targetPoint = playerPosition + Direction + Direction;
-                    var lineAttackPath = Lines.Get(playerPosition, targetPoint, Lines.Algorithm.BresenhamOrdered)
+                    var lineAttackPath = Lines.GetLine(playerPosition, targetPoint)
                         .ToList();
 
                     // Need to take while monsters or while there is no wall
