@@ -8,33 +8,35 @@ namespace MarsUndiscovered.Components
 {
     public class RadioComms : List<RadioCommsEntry>, ISaveable
     {
-        public void AddRadioCommsEntry(IGameObject gameObject, string message)
+        public static string ShipAiSource = "INCOMING MESSAGE FROM YOUR SHIP AI";
+        
+        public void AddRadioCommsEntry(IGameObject gameObject, string message, string source)
         {
-            Add(new RadioCommsEntry(message, gameObject));
+            Add(new RadioCommsEntry(message, source, gameObject));
         }
 
         public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
-            var messages = new List<string>(Count);
-            var gameObjectIds = new List<uint>(Count);
-
-            foreach (var message in this)
-            {
-                messages.Add(message.Message);
-                gameObjectIds.Add(message.GameObject.ID);
-            }
+            var saveData = this
+                .Select(r =>
+                    new RadioCommsSaveData
+                    {
+                        GameObjectId = r.GameObject.ID,
+                        Message = r.Message,
+                        Source = r.Source
+                    })
+                .ToList();
             
-            saveGameService.SaveToStore(new Memento<RadioCommsSaveData>(new RadioCommsSaveData { Messages = messages, GameObjectIds = gameObjectIds}));
+            saveGameService.SaveToStore(new Memento<List<RadioCommsSaveData>>(saveData));
         }
 
         public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
-            var state = saveGameService.GetFromStore<RadioCommsSaveData>().State;
-            
-            for (var i = 0; i < state.Messages.Count; i++)
+            var state = saveGameService.GetFromStore<List<RadioCommsSaveData>>().State;
+
+            foreach (var item in state)
             {
-                var gameObjectId = state.GameObjectIds[i];
-                AddRadioCommsEntry(gameWorld.GameObjects[gameObjectId], state.Messages[i]);
+                AddRadioCommsEntry(gameWorld.GameObjects[item.GameObjectId], item.Message, item.Source);
             }
         }
     }

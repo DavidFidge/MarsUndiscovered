@@ -2,7 +2,8 @@ namespace MarsUndiscovered.Components.SaveData
 {
     public class RadioCommsSaveData
     {
-        public List<string> Messages { get; set; }
-        public List<uint> GameObjectIds { get; set; }
+        public string Message { get; set; }
+        public string Source { get; set; }
+        public uint GameObjectId { get; set; }
     }
 }

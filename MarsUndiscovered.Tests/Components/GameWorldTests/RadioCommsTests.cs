@@ -34,9 +34,11 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.IsTrue(result.First().Message.StartsWith("Welcome to Mars captain!"));
+            Assert.AreEqual(RadioComms.ShipAiSource, result.First().Source);
             Assert.AreSame(_gameWorld.Ships.First().Value, result.First().GameObject);
             
             Assert.IsTrue(result.Skip(1).First().Message.StartsWith("There's no communications signals"));
+            Assert.AreEqual(RadioComms.ShipAiSource, result.Skip(1).First().Source);
             Assert.AreSame(_gameWorld.Ships.First().Value, result.Skip(1).First().GameObject, "Result of second item should match the FIRST ship item in the game world");
         }
     }

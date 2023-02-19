@@ -30,7 +30,8 @@ namespace MarsUndiscovered.UserInterface.Views
         protected PlayerPanel PlayerPanel;
         protected IList<MonsterPanel> MonsterPanels = new List<MonsterPanel>();
         protected Panel RadioCommsPanel;
-        protected RichParagraph RadioCommsParagraph;
+        protected RichParagraph RadioCommsMessage;
+        protected RichParagraph RadioCommsSource;
         protected Image RadioCommsImage;
         protected AnimatedSprite RadioCommsAnimatedSprite;
         protected RichParagraph StatusParagraph;
@@ -127,10 +128,16 @@ namespace MarsUndiscovered.UserInterface.Views
             RadioCommsPanel = new Panel()
                 .Anchor(Anchor.BottomCenter)
                 .Skin(PanelSkin.Simple)
-                .Height(330)
+                .Height(380)
                 .WidthOfContainer();
 
             BottomPanel.AddChild(RadioCommsPanel);
+
+            RadioCommsSource = new RichParagraph()
+                .Anchor(Anchor.AutoCenter)
+                .NoPadding();
+            
+            RadioCommsPanel.AddChild(RadioCommsSource);
 
             RadioCommsImage = new Image()
                 .Anchor(Anchor.AutoInline)
@@ -148,12 +155,12 @@ namespace MarsUndiscovered.UserInterface.Views
             
             RadioCommsPanel.AddChild(spacer);
             
-            RadioCommsParagraph = new RichParagraph()
+            RadioCommsMessage = new RichParagraph()
                 .Anchor(Anchor.AutoInlineNoBreak)
                 .Width(0.87f)
                 .NoPadding();
             
-            RadioCommsPanel.AddChild(RadioCommsParagraph);
+            RadioCommsPanel.AddChild(RadioCommsMessage);
         }
 
         protected void CreateMessageLog()
@@ -207,7 +214,10 @@ namespace MarsUndiscovered.UserInterface.Views
                 // TODO - implement "next" functionality around here so that the user can see multiple radio logs that occur on the same turn
                 var lastRadioComms = newRadioComms.Last();
 
-                RadioCommsParagraph.Text = lastRadioComms.Message;
+                StatusParagraph.Text = DelimitWithDashes("PRESS SPACE TO CONTINUE");
+
+                RadioCommsMessage.Text = lastRadioComms.Message;
+                RadioCommsSource.Text = lastRadioComms.Source;
                 
                 var radioCommsSpriteSheet = Assets.GetRadioCommsSpriteSheet(lastRadioComms.GameObject);
                 

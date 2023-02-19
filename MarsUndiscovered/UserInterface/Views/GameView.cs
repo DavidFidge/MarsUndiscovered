@@ -39,12 +39,14 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<MoveLeftRequest>,
         IRequestHandler<MoveRightRequest>,
         IRequestHandler<MoveWaitRequest>,
-        IRequestHandler<AutoExploreRequest>
+        IRequestHandler<AutoExploreRequest>,
+        IRequestHandler<EndModalRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
         private readonly InventoryGameView _inventoryGameView;
         private readonly GameViewGameOverKeyboardHandler _gameOverKeyboardHandler;
+        private readonly GameViewModalKeyboardHandler _modalKeyboardHandler;
         private readonly IStopwatchProvider _stopwatchProvider;
         private Path _currentMovePath;
         private bool _isAutoExploring;
@@ -57,6 +59,7 @@ namespace MarsUndiscovered.UserInterface.Views
             ConsoleView consoleView,
             InventoryGameView inventoryGameView,
             GameViewGameOverKeyboardHandler gameOverKeyboardHandler,
+            GameViewModalKeyboardHandler modalKeyboardHandler,
             IGameCamera gameCamera,
             IStopwatchProvider stopwatchProvider
         )
@@ -66,6 +69,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _consoleView = consoleView;
             _inventoryGameView = inventoryGameView;
             _gameOverKeyboardHandler = gameOverKeyboardHandler;
+            _modalKeyboardHandler = modalKeyboardHandler;
             _stopwatchProvider = stopwatchProvider;
         }
 
@@ -348,6 +352,11 @@ namespace MarsUndiscovered.UserInterface.Views
             base.ResetViews();
             _isAutoExploring = false;
             _currentMovePath = null;
+        }
+
+        public Task<Unit> Handle(EndModalRequest request, CancellationToken cancellationToken)
+        {
+            
         }
     }
 }
