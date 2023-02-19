@@ -96,7 +96,7 @@ namespace MarsUndiscovered.Tests.Components
                 Container.Resolve<IItemGenerator>()
             );
 
-            _gameWorld.MapGenerator = mapGenerator ?? mapGenerator;
+            _gameWorld.MapGenerator = mapGenerator;
             _gameWorld.MonsterGenerator = blankMonsterGenerator;
             _gameWorld.ItemGenerator = blankItemGenerator;
 
@@ -118,23 +118,7 @@ namespace MarsUndiscovered.Tests.Components
             
             _gameWorld.MapGenerator = mapGenerator;
             
-            var blankMonsterGenerator = new BlankMonsterGenerator(Container.Resolve<IMonsterGenerator>());
-            var blankItemGenerator = new BlankItemGenerator(Container.Resolve<IItemGenerator>());
-            var blankMapExitGenerator = new BlankMapExitGenerator(Container.Resolve<IMapExitGenerator>());
-            var blankMiningFacilityGenerator = new BlankMiningFacilityGenerator();
-            var blankShipGenerator = new BlankShipGenerator();
-
-            _gameWorld.MonsterGenerator = blankMonsterGenerator;
-            _gameWorld.ItemGenerator = blankItemGenerator;
-            _gameWorld.MapExitGenerator = blankMapExitGenerator;
-            _gameWorld.MiningFacilityGenerator = blankMiningFacilityGenerator;
-            _gameWorld.ShipGenerator = blankShipGenerator;
-
-            _gameWorld.NewGame();
-
-            _gameWorld.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
-            _gameWorld.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
-            _gameWorld.MapExitGenerator = blankMapExitGenerator.OriginalMapExitGenerator;
+            _gameWorld.NewBlankGame();
         }
         
         protected Item SpawnItemAndEquip(ItemType itemType)

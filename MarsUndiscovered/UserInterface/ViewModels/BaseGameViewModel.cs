@@ -17,6 +17,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         protected void SetUpViewModels()
         {
             MessageStatus = new MessagesStatus();
+            RadioCommsStatus = new RadioCommsStatus();
             SetUpGameCoreViewModels();
         }
 

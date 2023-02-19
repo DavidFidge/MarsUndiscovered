@@ -33,7 +33,8 @@ namespace MarsUndiscovered.Components
             
             for (var i = 0; i < state.Messages.Count; i++)
             {
-                AddRadioCommsEntry(gameWorld.GameObjects[(uint)i], state.Messages[i]);
+                var gameObjectId = state.GameObjectIds[i];
+                AddRadioCommsEntry(gameWorld.GameObjects[gameObjectId], state.Messages[i]);
             }
         }
     }

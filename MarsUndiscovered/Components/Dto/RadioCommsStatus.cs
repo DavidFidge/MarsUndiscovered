@@ -4,9 +4,9 @@ namespace MarsUndiscovered.Components.Dto
 {
     public class RadioCommsStatus
     {
-        public IList<RadioCommsItem> RadioCommsItems { get; set; }
+        public IList<RadioCommsItem> RadioCommsItems { get; } = new List<RadioCommsItem>();
         public int SeenItemsCount { get; private set; }
-        public int ProcessedItemsCount { get; set; }
+        public int ProcessedItemsCount { get; private set; }
 
         public void AddRadioCommsItems(IList<RadioCommsItem> radioCommsItems)
         {

@@ -35,6 +35,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Monster>().Count());
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Item>().Count());
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Player>().Count());
+            Assert.AreEqual(2, newGameWorld.GetRadioCommsItemsSince(0).Count);
             Assert.AreEqual(0, newGameWorld.Inventory.Items.Count);
 
             var mapEntities = newGameWorld.CurrentMap.Entities.ToList();
