@@ -125,20 +125,32 @@ namespace MarsUndiscovered.UserInterface.Views
         protected void CreateRadioCommsPanel()
         {
             RadioCommsPanel = new Panel()
-                .Anchor(Anchor.TopLeft)
+                .Anchor(Anchor.BottomCenter)
                 .Skin(PanelSkin.Simple)
-                .AutoHeight();
-            
+                .Height(330)
+                .WidthOfContainer();
+
             BottomPanel.AddChild(RadioCommsPanel);
 
             RadioCommsImage = new Image()
                 .Anchor(Anchor.AutoInline)
+                .Width(256)
+                .Height(256)
                 .NoPadding();
-
+            
             RadioCommsPanel.AddChild(RadioCommsImage);
 
-            RadioCommsParagraph = new RichParagraph()
+            var spacer = new Panel()
                 .Anchor(Anchor.AutoInline)
+                .NoPadding()
+                .NoSkin()
+                .Width(0.01f);
+            
+            RadioCommsPanel.AddChild(spacer);
+            
+            RadioCommsParagraph = new RichParagraph()
+                .Anchor(Anchor.AutoInlineNoBreak)
+                .Width(0.87f)
                 .NoPadding();
             
             RadioCommsPanel.AddChild(RadioCommsParagraph);
@@ -202,8 +214,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 RadioCommsAnimatedSprite = new AnimatedSprite(radioCommsSpriteSheet);
                 RadioCommsAnimatedSprite.Play("talk");
                 RadioCommsImage.Texture = RadioCommsAnimatedSprite.TextureRegion.Texture;
-                // TODO - probably need to account for source rectangle i.e. TextureRegion.Bounds
-                // Rectangle bounds = RadioCommsAnimatedSprite.TextureRegion.Bounds;
+                RadioCommsImage.SourceRectangle = RadioCommsAnimatedSprite.TextureRegion.Bounds;
                 _viewModel.RadioCommsStatus.SetSeenAllItems();
             }
         }
@@ -292,6 +303,7 @@ namespace MarsUndiscovered.UserInterface.Views
         public override void Update()
         {
             RadioCommsAnimatedSprite.Update(_viewModel.GameTimeService.GameTime);
+            RadioCommsImage.SourceRectangle = RadioCommsAnimatedSprite.TextureRegion.Bounds;
             base.Update();
         }
     }
