@@ -122,7 +122,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected void CreateMessageLog()
         {
             _messageLog = new SelectList()
-                .NoSkin()
+                .SimpleSkin()
                 .Anchor(Anchor.Auto)
                 .NoPadding();
 
