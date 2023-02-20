@@ -2,6 +2,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 
 using MarsUndiscovered.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Components
 {
@@ -9,7 +10,7 @@ namespace MarsUndiscovered.Components
         where T : IMarsGameObject, IMementoState<TState>
         where TState : GameObjectSaveData
     {
-        public virtual void SaveState(ISaveGameService saveGameService)
+        public virtual void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var gameObjectSaveData = Values
                 .Select(go => go.GetSaveState())
@@ -18,7 +19,7 @@ namespace MarsUndiscovered.Components
             saveGameService.SaveListToStore(gameObjectSaveData);
         }
 
-        public void LoadState(ISaveGameService saveGameService)
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var saveData = saveGameService.GetListFromStore<TState>();
 

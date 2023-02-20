@@ -67,14 +67,14 @@ namespace MarsUndiscovered.Components
             return GetEnumerator();
         }
 
-        public void SaveState(ISaveGameService saveGameService)
+        public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
-            SaveLoad(saveGameService, (s, sgs) => s.SaveState(sgs));
+            SaveLoad(saveGameService, (s, sgs) => s.SaveState(sgs, gameWorld));
         }
 
-        public void LoadState(ISaveGameService saveGameService)
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
-            SaveLoad(saveGameService, (s, sgs) => s.LoadState(sgs));
+            SaveLoad(saveGameService, (s, sgs) => s.LoadState(sgs, gameWorld));
         }
 
         private void SaveLoad(ISaveGameService saveGameService, Action<ISaveable, ISaveGameService> action)

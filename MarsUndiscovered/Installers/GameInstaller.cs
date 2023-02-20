@@ -238,7 +238,7 @@ namespace MarsUndiscovered.Installers
         {
             container.Register(
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
-                    .BasedOn<IMouseHandler>()
+                    .BasedOn<IMouseHandler>() // Only covers dependencies asking for IMouseHandler, does not cover if they ask for specific class type e.g. see RegisterGameView
                     .ConfigureFor<NullMouseHandler>(c => c.IsDefault())
                     .WithServiceDefaultInterfaces()
             );
@@ -246,16 +246,15 @@ namespace MarsUndiscovered.Installers
 
         private void RegisterKeyboardHandlers(IWindsorContainer container)
         {
+            
             container.Register(
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
-                    .BasedOn<IKeyboardHandler>()
-                    .Unless(s => typeof(GameViewGameOverKeyboardHandler).IsAssignableFrom(s))
+                    .BasedOn<IKeyboardHandler>() // Only covers dependencies asking for IKeyboardHandler, does not cover if they ask for specific class type e.g. see RegisterGameView
                     .Unless(s => typeof(GlobalKeyboardHandler).IsAssignableFrom(s))
                     .ConfigureFor<NullKeyboardHandler>(c => c.IsDefault())
                     .ConfigureFor<GameViewKeyboardHandler>(c => c.DependsOn(Dependency.OnComponent<ICameraMovement, CameraMovement>()))
                     .WithServiceDefaultInterfaces(),
 
-                Component.For<GameViewGameOverKeyboardHandler>(),
                 Component.For<GlobalKeyboardHandler>()
             );
         }
@@ -349,7 +348,10 @@ namespace MarsUndiscovered.Installers
             container.Register(
                 Component.For<GameView>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, GameViewKeyboardHandler>())
-                    .DependsOn(Dependency.OnComponent<IMouseHandler, GameViewMouseHandler>()),
+                    .DependsOn(Dependency.OnComponent<IMouseHandler, GameViewMouseHandler>())
+                    .DependsOn(Dependency.OnComponent<GameViewRadioCommsMouseHandler, GameViewRadioCommsMouseHandler>())
+                    .DependsOn(Dependency.OnComponent<GameViewRadioCommsKeyboardHandler, GameViewRadioCommsKeyboardHandler>())
+                    .DependsOn(Dependency.OnComponent<GameViewGameOverKeyboardHandler, GameViewGameOverKeyboardHandler>()),
 
                 Component.For<GameViewModel>()
             );

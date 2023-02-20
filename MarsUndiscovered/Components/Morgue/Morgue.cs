@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Extensions;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Components.SaveData;
@@ -122,14 +121,14 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
             _morgueExportData[gameWorld.GameId] = morgueExportData;
     }
     
-    public void SaveState(ISaveGameService saveGameService)
+    public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
     {
         var memento = new Memento<MorgueSaveData>();
         
         saveGameService.SaveToStore(memento);
     }
 
-    public void LoadState(ISaveGameService saveGameService)
+    public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
     {
         var memento = saveGameService.GetFromStore<MorgueSaveData>();
         _morgueSaveData = memento.State;

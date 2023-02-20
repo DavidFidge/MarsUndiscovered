@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.Components
 {
-    public class Inventory : IMementoState<InventorySaveData>, ISaveable, ICollection<Item>
+    public class Inventory : ISaveable, ICollection<Item>
     {
         private readonly IGameWorld _gameWorld;
 
@@ -184,7 +184,7 @@ namespace MarsUndiscovered.Components
             return null;
         }
 
-        public IMemento<InventorySaveData> GetSaveState()
+        public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var memento = new Memento<InventorySaveData>(new InventorySaveData());
             memento.State.ItemIds = Items.Select(i => i.ID).ToList();
@@ -193,39 +193,30 @@ namespace MarsUndiscovered.Components
             memento.State.CallItemType = CallItemType.ToDictionary(k => k.Key.Name, v => v.Value);
             memento.State.ItemTypeDiscoveries = ItemTypeDiscoveries.ToDictionary(k => k.Key.Name, v => v.Value);
             memento.State.EquippedWeaponId = EquippedWeapon?.ID;
-
-            return memento;
+            
+            saveGameService.SaveToStore(memento);
         }
 
-        public void SetLoadState(IMemento<InventorySaveData> memento)
-        {
-            Items = memento.State.ItemIds.Select(s => _gameWorld.Items[s]).ToList();
-
-            ItemKeyAssignments = memento.State.ItemKeyAssignments
-                .ToDictionary(k => k.Key, v => new ItemGroup(v.Value.Select(i => _gameWorld.Items[i]).ToList()));
-
-            CallItem = memento.State.CallItem
-                .ToDictionary(k => _gameWorld.Items[k.Key], v => v.Value);
-
-            CallItemType = memento.State.CallItemType
-                .ToDictionary(k => ItemType.ItemTypes[k.Key], v => v.Value);
-
-            ItemTypeDiscoveries = memento.State.ItemTypeDiscoveries
-                .ToDictionary(k => ItemType.ItemTypes[k.Key], v => v.Value);
-
-            if (memento.State.EquippedWeaponId != null)
-                EquippedWeapon = _gameWorld.Items[memento.State.EquippedWeaponId.Value];
-        }
-
-        public void SaveState(ISaveGameService saveGameService)
-        {
-            saveGameService.SaveToStore(GetSaveState());
-        }
-
-        public void LoadState(ISaveGameService saveGameService)
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var inventorySaveData = saveGameService.GetFromStore<InventorySaveData>();
-            SetLoadState(inventorySaveData);
+            
+            Items = inventorySaveData.State.ItemIds.Select(s => gameWorld.Items[s]).ToList();
+
+            ItemKeyAssignments = inventorySaveData.State.ItemKeyAssignments
+                .ToDictionary(k => k.Key, v => new ItemGroup(v.Value.Select(i => gameWorld.Items[i]).ToList()));
+
+            CallItem = inventorySaveData.State.CallItem
+                .ToDictionary(k => gameWorld.Items[k.Key], v => v.Value);
+
+            CallItemType = inventorySaveData.State.CallItemType
+                .ToDictionary(k => ItemType.ItemTypes[k.Key], v => v.Value);
+
+            ItemTypeDiscoveries = inventorySaveData.State.ItemTypeDiscoveries
+                .ToDictionary(k => ItemType.ItemTypes[k.Key], v => v.Value);
+
+            if (inventorySaveData.State.EquippedWeaponId != null)
+                EquippedWeapon = gameWorld.Items[inventorySaveData.State.EquippedWeaponId.Value];
         }
 
         public IEnumerator<Item> GetEnumerator()

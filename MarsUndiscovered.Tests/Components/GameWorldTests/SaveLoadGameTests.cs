@@ -35,6 +35,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Monster>().Count());
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Item>().Count());
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Player>().Count());
+            Assert.AreEqual(2, newGameWorld.GetNewRadioCommsItems().Count);
             Assert.AreEqual(0, newGameWorld.Inventory.Items.Count);
 
             var mapEntities = newGameWorld.CurrentMap.Entities.ToList();
@@ -47,6 +48,23 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(_gameWorld.Player.Position, newGameWorld.Player.Position);
             Assert.AreEqual(_gameWorld.Player.IsWalkable, newGameWorld.Player.IsWalkable);
             Assert.AreEqual(_gameWorld.Player.IsTransparent, newGameWorld.Player.IsTransparent);
+        }
+        
+        [TestMethod]
+        public void Should_Not_Reset_Seen_RadioCommsItems()
+        {
+            // Arrange
+            NewGameWithNoMonstersNoItems();
+
+            _gameWorld.GetNewRadioCommsItems();
+            _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
+
+            // Act
+            var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            newGameWorld.LoadGame("TestShouldSaveThenLoad");
+
+            // Assert
+            Assert.AreEqual(0, newGameWorld.GetNewRadioCommsItems().Count);
         }
 
         [TestMethod]

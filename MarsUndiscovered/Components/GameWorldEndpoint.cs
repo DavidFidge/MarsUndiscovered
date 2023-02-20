@@ -4,7 +4,7 @@ using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
-
+using MarsUndiscovered.Components.Dto;
 using MarsUndiscovered.Interfaces;
 
 using Microsoft.Xna.Framework.Input;
@@ -173,6 +173,11 @@ namespace MarsUndiscovered.Components
         public Guid GetGameId()
         {
             return GameWorld.GameId;
+        }
+
+        public IList<RadioCommsItem> GetNewRadioCommsItems()
+        {
+            return GameWorld.GetNewRadioCommsItems();
         }
 
         public void LoadReplay(string gameName)

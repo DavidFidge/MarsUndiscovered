@@ -5,7 +5,6 @@ using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
-
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
@@ -13,8 +12,8 @@ using MarsUndiscovered.UserInterface.ViewModels;
 using MediatR;
 
 using Microsoft.Xna.Framework;
-
 using SadRogue.Primitives;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -82,7 +81,7 @@ namespace MarsUndiscovered.UserInterface.Views
             HoverPanelLeft = new Panel()
                 .Anchor(Anchor.TopLeft)
                 .Width(0.45f)
-                .Skin(PanelSkin.Simple)
+                .Skin(PanelSkin.Alternative)
                 .AutoHeight()
                 .Hidden();
 
@@ -95,7 +94,7 @@ namespace MarsUndiscovered.UserInterface.Views
             HoverPanelRight = new Panel()
                 .Anchor(Anchor.TopRight)
                 .Width(0.45f)
-                .Skin(PanelSkin.Simple)
+                .Skin(PanelSkin.Alternative)
                 .AutoHeight()
                 .Hidden();
 
@@ -114,14 +113,16 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Anchor(Anchor.BottomCenter)
                 .NoPadding()
                 .Height(0.1f);
+            
+            StatusParagraph.BackgroundColor = Color.Black;
 
             BottomPanel.AddChild(StatusParagraph);
         }
-
+     
         protected void CreateMessageLog()
         {
             _messageLog = new SelectList()
-                .NoSkin()
+                .SimpleSkin()
                 .Anchor(Anchor.Auto)
                 .NoPadding();
 
@@ -152,16 +153,17 @@ namespace MarsUndiscovered.UserInterface.Views
         protected override void ViewModelChanged()
         {
             base.ViewModelChanged();
+            StatusParagraph.Text = String.Empty;
+
             UpdateMonsterStatus();
             UpdateMessageLog();
             UpdatePlayerStatus();
             UpdateMapRenderTargetSize(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
-            StatusParagraph.Text = String.Empty;
         }
 
         private void UpdateMessageLog()
         {
-            var newMessages = _viewModel.Messages;
+            var newMessages = _viewModel.MessageStatus.GetUnprocessedMessages();
 
             if (newMessages.Any())
             {

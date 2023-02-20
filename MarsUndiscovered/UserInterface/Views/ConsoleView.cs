@@ -44,7 +44,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Size(new Vector2(0f, Constants.TextInputMinimalHeight * consolePanel.Size.Y))
                 .Anchor(Anchor.AutoInlineNoBreak)
                 .NoPadding()
-                .Skin(PanelSkin.Simple)
+                .Skin(PanelSkin.Alternative)
                 .OpacityPercent(70);
 
             _consoleEntry.AddDisabledSpecialChar(SpecialChars.ArrowUp);

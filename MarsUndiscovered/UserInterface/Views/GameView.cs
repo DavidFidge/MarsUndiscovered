@@ -12,12 +12,13 @@ using MarsUndiscovered.UserInterface.ViewModels;
 using GeonBit.UI.Entities;
 
 using GoRogue.Pathing;
-
+using MarsUndiscovered.Components.Dto;
 using MarsUndiscovered.UserInterface.Input;
 
 using MediatR;
 
 using Microsoft.Xna.Framework;
+using MonoGame.Extended.Sprites;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -39,17 +40,28 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<MoveLeftRequest>,
         IRequestHandler<MoveRightRequest>,
         IRequestHandler<MoveWaitRequest>,
-        IRequestHandler<AutoExploreRequest>
+        IRequestHandler<AutoExploreRequest>,
+        IRequestHandler<EndRadioCommsRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
         private readonly InventoryGameView _inventoryGameView;
         private readonly GameViewGameOverKeyboardHandler _gameOverKeyboardHandler;
+        private readonly GameViewRadioCommsKeyboardHandler _radioCommsKeyboardHandler;
+        private readonly GameViewRadioCommsMouseHandler _gameViewRadioCommsMouseHandler;
         private readonly IStopwatchProvider _stopwatchProvider;
         private Path _currentMovePath;
         private bool _isAutoExploring;
         private double _lastMoveTime = 0;
         private double _delayBetweenMove = 50;
+        private Queue<RadioCommsItem> _radioCommsItems = new();
+        private bool _isWaitingForRadioComms;
+        
+        protected Panel RadioCommsPanel;
+        protected RichParagraph RadioCommsMessage;
+        protected RichParagraph RadioCommsSource;
+        protected Image RadioCommsImage;
+        protected AnimatedSprite RadioCommsAnimatedSprite;
 
         public GameView(
             GameViewModel gameViewModel,
@@ -57,6 +69,8 @@ namespace MarsUndiscovered.UserInterface.Views
             ConsoleView consoleView,
             InventoryGameView inventoryGameView,
             GameViewGameOverKeyboardHandler gameOverKeyboardHandler,
+            GameViewRadioCommsKeyboardHandler radioCommsKeyboardHandler,
+            GameViewRadioCommsMouseHandler gameViewRadioCommsMouseHandler,
             IGameCamera gameCamera,
             IStopwatchProvider stopwatchProvider
         )
@@ -66,6 +80,8 @@ namespace MarsUndiscovered.UserInterface.Views
             _consoleView = consoleView;
             _inventoryGameView = inventoryGameView;
             _gameOverKeyboardHandler = gameOverKeyboardHandler;
+            _radioCommsKeyboardHandler = radioCommsKeyboardHandler;
+            _gameViewRadioCommsMouseHandler = gameViewRadioCommsMouseHandler;
             _stopwatchProvider = stopwatchProvider;
         }
 
@@ -78,11 +94,54 @@ namespace MarsUndiscovered.UserInterface.Views
             CreatePlayerPanel();
             CreateMessageLog();
             CreateStatusPanel();
+            CreateRadioCommsPanel();
             SetupConsole();
             SetupInventoryGame();
             SetupChildPanel(_inGameOptionsView);
 
             _stopwatchProvider.Start();
+        }
+        
+        protected void CreateRadioCommsPanel()
+        {
+            RadioCommsPanel = new Panel()
+                .Anchor(Anchor.BottomCenter)
+                .Skin(PanelSkin.Alternative)
+                .Height(380)
+                .WidthOfContainer();
+
+            GameViewPanel.AddChild(RadioCommsPanel);
+
+            RadioCommsSource = new RichParagraph()
+                .Anchor(Anchor.AutoCenter)
+                .NoPadding();
+            
+            RadioCommsPanel.AddChild(RadioCommsSource);
+
+            RadioCommsImage = new Image()
+                .Anchor(Anchor.AutoInline)
+                .Width(256)
+                .Height(256)
+                .NoPadding();
+            
+            RadioCommsPanel.AddChild(RadioCommsImage);
+
+            var spacer = new Panel()
+                .Anchor(Anchor.AutoInline)
+                .NoPadding()
+                .NoSkin()
+                .Width(0.01f);
+            
+            RadioCommsPanel.AddChild(spacer);
+            
+            RadioCommsMessage = new RichParagraph()
+                .Anchor(Anchor.AutoInlineNoBreak)
+                .Width(0.87f)
+                .NoPadding();
+            
+            RadioCommsPanel.AddChild(RadioCommsMessage);
+
+            RadioCommsPanel.Hidden();
         }
 
         public void NewGame(ulong? seed = null)
@@ -264,6 +323,51 @@ namespace MarsUndiscovered.UserInterface.Views
                     StatusParagraph.Text = DelimitWithDashes("YOU ARE VICTORIOUS! PRESS SPACE TO EXIT GAME.");
                 }
             }
+            else
+            {
+                ProcessRadioComms();
+            }
+        }
+        
+        protected void ProcessRadioComms()
+        {
+            foreach (var item in _viewModel.GetNewRadioCommsItems()) 
+                _radioCommsItems.Enqueue(item);
+
+            if (_radioCommsItems.Any())
+            {
+                _isWaitingForRadioComms = true;
+                GameInputService?.ChangeInput(_gameViewRadioCommsMouseHandler, _radioCommsKeyboardHandler);
+                ProcessNextRadioComm();
+            }
+        }
+
+        private void ProcessNextRadioComm()
+        {
+            if (_radioCommsItems.Any())
+            {
+                var nextRadioComms = _radioCommsItems.Dequeue();
+
+                StatusParagraph.Text = DelimitWithDashes("PRESS SPACE TO CONTINUE");
+
+                RadioCommsMessage.Text = nextRadioComms.Message;
+                RadioCommsSource.Text = nextRadioComms.Source;
+
+                var radioCommsSpriteSheet = Assets.GetRadioCommsSpriteSheet(nextRadioComms.GameObject);
+
+                RadioCommsAnimatedSprite = new AnimatedSprite(radioCommsSpriteSheet);
+                RadioCommsAnimatedSprite.Play("talk");
+                RadioCommsImage.Texture = RadioCommsAnimatedSprite.TextureRegion.Texture;
+                RadioCommsImage.SourceRectangle = RadioCommsAnimatedSprite.TextureRegion.Bounds;
+                RadioCommsPanel.Visible();
+            }
+            else
+            {
+                StatusParagraph.Text = String.Empty;
+                GameInputService?.RevertInputUpToAndIncluding(_gameViewRadioCommsMouseHandler, _radioCommsKeyboardHandler);
+                RadioCommsPanel.Hidden();
+                _isWaitingForRadioComms = false;
+            }
         }
 
         public override Task Handle(MouseHoverViewNotification notification, CancellationToken cancellationToken)
@@ -283,6 +387,8 @@ namespace MarsUndiscovered.UserInterface.Views
         public override void Update()
         {
             base.Update();
+
+            UpdateRadioCommsAnimation();
 
             _viewModel.UpdateAnimation();
 
@@ -310,6 +416,15 @@ namespace MarsUndiscovered.UserInterface.Views
                     if (autoExploreResult.MovementInterrupted || autoExploreResult.Path.Length == 0)
                         _isAutoExploring = false;
                 }
+            }
+        }
+
+        private void UpdateRadioCommsAnimation()
+        {
+            if (_isWaitingForRadioComms)
+            {
+                RadioCommsAnimatedSprite.Update(_viewModel.GameTimeService.GameTime);
+                RadioCommsImage.SourceRectangle = RadioCommsAnimatedSprite.TextureRegion.Bounds;
             }
         }
 
@@ -347,6 +462,12 @@ namespace MarsUndiscovered.UserInterface.Views
             base.ResetViews();
             _isAutoExploring = false;
             _currentMovePath = null;
+        }
+
+        public Task<Unit> Handle(EndRadioCommsRequest request, CancellationToken cancellationToken)
+        {
+            ProcessNextRadioComm();
+            return Unit.Task;
         }
     }
 }

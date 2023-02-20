@@ -604,47 +604,6 @@
 /processor:PassThroughProcessor
 /build:GeonBit.UI/themes/mars/textures/button_default_md.xml
 
-#begin GeonBit.UI/themes/mars/textures/button_fancy.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:GeonBit.UI/themes/mars/textures/button_fancy.png
-
-#begin GeonBit.UI/themes/mars/textures/button_fancy_down.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:GeonBit.UI/themes/mars/textures/button_fancy_down.png
-
-#begin GeonBit.UI/themes/mars/textures/button_fancy_hover.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:GeonBit.UI/themes/mars/textures/button_fancy_hover.png
-
-#begin GeonBit.UI/themes/mars/textures/button_fancy_md.xml
-/importer:XmlImporter
-/processor:PassThroughProcessor
-/build:GeonBit.UI/themes/mars/textures/button_fancy_md.xml
-
 #begin GeonBit.UI/themes/mars/textures/checkbox.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1373,40 +1332,6 @@
 /processor:PassThroughProcessor
 /build:GeonBit.UI/themes/mars/textures/panel_default_md.xml
 
-#begin GeonBit.UI/themes/mars/textures/panel_fancy.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:GeonBit.UI/themes/mars/textures/panel_fancy.png
-
-#begin GeonBit.UI/themes/mars/textures/panel_fancy_md.xml
-/importer:XmlImporter
-/processor:PassThroughProcessor
-/build:GeonBit.UI/themes/mars/textures/panel_fancy_md.xml
-
-#begin GeonBit.UI/themes/mars/textures/panel_golden.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:GeonBit.UI/themes/mars/textures/panel_golden.png
-
-#begin GeonBit.UI/themes/mars/textures/panel_golden_md.xml
-/importer:XmlImporter
-/processor:PassThroughProcessor
-/build:GeonBit.UI/themes/mars/textures/panel_golden_md.xml
-
 #begin GeonBit.UI/themes/mars/textures/panel_listbackground.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1440,6 +1365,23 @@
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:GeonBit.UI/themes/mars/textures/panel_simple_md.xml
+
+#begin GeonBit.UI/themes/mars/textures/panel_alternative.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:GeonBit.UI/themes/mars/textures/panel_alternative.png
+
+#begin GeonBit.UI/themes/mars/textures/panel_alternative_md.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:GeonBit.UI/themes/mars/textures/panel_alternative_md.xml
 
 #begin GeonBit.UI/themes/mars/textures/progressbar.png
 /importer:TextureImporter
@@ -1564,35 +1506,6 @@
 /processor:PassThroughProcessor
 /build:GeonBit.UI/themes/mars/textures/slider_default_md.xml
 
-#begin GeonBit.UI/themes/mars/textures/slider_fancy.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:GeonBit.UI/themes/mars/textures/slider_fancy.png
-
-#begin GeonBit.UI/themes/mars/textures/slider_fancy_mark.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:GeonBit.UI/themes/mars/textures/slider_fancy_mark.png
-
-#begin GeonBit.UI/themes/mars/textures/slider_fancy_md.xml
-/importer:XmlImporter
-/processor:PassThroughProcessor
-/build:GeonBit.UI/themes/mars/textures/slider_fancy_md.xml
-
 #begin GeonBit.UI/themes/mars/textures/white_texture.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1621,6 +1534,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/Title.png
+
+#begin Animations/ShipAiRadioComms.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Animations/ShipAiRadioComms.png
 
 #begin Images/TitleText.png
 /importer:TextureImporter

@@ -3,14 +3,19 @@
 using MarsUndiscovered.Interfaces;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using GoRogue.GameFramework;
 using MarsUndiscovered.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Serialization;
+using MonoGame.Extended.Sprites;
+using MonoGame.Extended.Content;
 
 namespace MarsUndiscovered.Graphics
 {
     public class Assets : IAssets
     {
+        public SpriteSheet ShipAiRadioComms { get; set; }
         public Texture2D TitleTexture { get; set; }
         public Texture2D TitleTextTexture { get; set; }
         public SpriteFont MapFont { get; set; }
@@ -55,6 +60,7 @@ namespace MarsUndiscovered.Graphics
             TitleTextTexture = _gameProvider.Game.Content.Load<Texture2D>("images/TitleText");
             MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
             GoalMapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/GoalMapFont");
+            ShipAiRadioComms = _gameProvider.Game.Content.Load<SpriteSheet>("animations/ShipAiRadioComms.sf", new JsonContentLoader());
 
             Wall = new MapTileTexture(
                 _gameProvider,
@@ -289,6 +295,14 @@ namespace MarsUndiscovered.Graphics
                 0.295f,
                 _lineAttackColour
             );          
+        }
+
+        public SpriteSheet GetRadioCommsSpriteSheet(IGameObject gameObject)
+        {
+            if (gameObject is Ship)
+                return ShipAiRadioComms;
+
+            return null;
         }
     }
 }

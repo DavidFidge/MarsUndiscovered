@@ -1,6 +1,7 @@
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
-
+using GoRogue.GameFramework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Sprites;
 
 namespace MarsUndiscovered.Interfaces
 {
@@ -32,5 +33,6 @@ namespace MarsUndiscovered.Interfaces
         SpriteFont MapFont { get; set; }
 
         void LoadContent();
+        SpriteSheet GetRadioCommsSpriteSheet(IGameObject gameObject);
     }
 }

@@ -10,7 +10,7 @@ using MarsUndiscovered.Interfaces;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
-
+using MarsUndiscovered.Components.Dto;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.Maps;
 using MarsUndiscovered.Components.SaveData;
@@ -24,7 +24,7 @@ using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Components
 {
-    public class GameWorld : BaseComponent, IGameWorld, ISaveable, IMementoState<GameWorldSaveData>
+    public class GameWorld : BaseComponent, IGameWorld, ISaveable
     {
         public Guid GameId { get; private set; }
         public Player Player { get; private set; }
@@ -53,7 +53,9 @@ namespace MarsUndiscovered.Components
         public MapCollection Maps { get; private set; }
         public MarsMap CurrentMap => Maps.CurrentMap;
 
-        private readonly MessageLog _messageLog = new MessageLog();
+        private readonly MessageLog _messageLog = new();
+        private readonly RadioComms _radioComms = new();
+        
         public ulong Seed { get; set; }
         protected IList<Monster> MonstersInView = new List<Monster>();
         protected IList<Monster> LastMonstersInView = new List<Monster>();
@@ -104,7 +106,56 @@ namespace MarsUndiscovered.Components
             CreateLevel2(mapLevel1);
             
             Inventory = new Inventory(this);
+
+            _radioComms.AddRadioCommsEntry(
+                Ships.First().Value,
+                "Welcome to Mars captain! I apologise for the rough landing. The small matter of the explosion has ripped a hole in the hull and has crippled the primary fuel injection system. Unfortunately we have no spares on board, however the mine nearby likely has a similar controller which I can rig up as a temporary solution to get us flying again. You'll have to put on your spacesuit and walk over there.",
+                RadioComms.ShipAiSource,
+                _messageLog
+                );
             
+            _radioComms.AddRadioCommsEntry(
+                Ships.First().Value,
+                "There's no communications signals coming from the mine at all - not even on the encrypted channels. I'm not sure what's going on in there. Be careful, won't you? I don't want to be left forsaken on this cold, barren dust bowl. Or worse, found by scrappers and sold off to the black market. I'll keep in touch on this secure channel.",
+                RadioComms.ShipAiSource,
+                _messageLog
+                );
+
+            ResetFieldOfView();
+            GameTimeService.Start();
+        }
+        
+        // Currently used for unit tests. Level generation could be factored out to strategies in the future, then this
+        // may be able to be changed.
+        public void NewBlankGame(ulong? seed = null)
+        {
+            Reset();
+            Morgue.GameStarted();
+            
+            seed ??= MakeSeed();
+
+            Seed = seed.Value;
+
+            GlobalRandom.DefaultRNG = new MizuchiRandom(seed.Value);
+
+            Logger.Debug("Generating game world");
+            
+            MapGenerator.CreateOutdoorMap(this, GameObjectFactory);
+            AddMapToGame(MapGenerator.MarsMap);
+            var map = MapGenerator.MarsMap;
+            
+            Player = GameObjectFactory
+                .CreatePlayer()
+                .PositionedAt(new Point(map.Width / 2,
+                    map.Height - 2 -
+                    (Constants.ShipOffset -
+                     1))) // Start off underneath the ship, extra -1 for the current ship design as there's a blank space on the bottom line
+                .AddToMap(map);
+            
+            Maps.CurrentMap = map;
+            
+            Inventory = new Inventory(this);
+
             ResetFieldOfView();
             GameTimeService.Start();
         }
@@ -267,7 +318,7 @@ namespace MarsUndiscovered.Components
             MapExits = new MapExitCollection(GameObjectFactory);
             Ships = new ShipCollection(GameObjectFactory);
             MiningFacilities = new MiningFacilityCollection(GameObjectFactory);
-            Maps = new MapCollection(this);
+            Maps = new MapCollection();
             HistoricalCommands = new CommandCollection(CommandFactory, this);
             _autoExploreGoalMap = new AutoExploreGoalMap();
 
@@ -492,6 +543,14 @@ namespace MarsUndiscovered.Components
                 .Select(s => s.Message)
                 .ToList();
         }
+        
+        public IList<RadioCommsItem> GetNewRadioCommsItems()
+        {
+            return _radioComms
+                .GetNewRadioComms()
+                .Select(s => new RadioCommsItem(s))
+                .ToList();;
+        }
 
         public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
         {
@@ -536,7 +595,7 @@ namespace MarsUndiscovered.Components
             }
 
             SaveGameService.Clear();
-            SaveState(SaveGameService);
+            SaveState(SaveGameService, this);
 
             return SaveGameService.SaveStoreToFile(saveGameName, overwrite);
         }
@@ -546,7 +605,7 @@ namespace MarsUndiscovered.Components
             var loadGameResult = SaveGameService.LoadStoreFromFile(saveGameName);
 
             if (loadGameResult.Success)
-                LoadState(SaveGameService);
+                LoadState(SaveGameService, this);
 
             return loadGameResult;
         }
@@ -563,7 +622,7 @@ namespace MarsUndiscovered.Components
 
                 var commands = new CommandCollection(CommandFactory, this);
 
-                commands.LoadState(SaveGameService);
+                commands.LoadState(SaveGameService, this);
 
                 _replayHistoricalCommands = commands
                     .OrderBy(c => c.TurnDetails.SequenceNumber)
@@ -593,55 +652,57 @@ namespace MarsUndiscovered.Components
             return false;
         }
 
-        public void LoadState(ISaveGameService saveGameService)
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             Reset();
 
-            GameObjectFactory.LoadState(saveGameService);
-            Walls.LoadState(saveGameService);
-            Floors.LoadState(saveGameService);
-            Monsters.LoadState(saveGameService);
-            Items.LoadState(saveGameService);
-            MapExits.LoadState(saveGameService);
-            Ships.LoadState(saveGameService);
-            MiningFacilities.LoadState(saveGameService);
-            _messageLog.LoadState(saveGameService);
+            GameObjectFactory.LoadState(saveGameService, gameWorld);
+            Walls.LoadState(saveGameService, gameWorld);
+            Floors.LoadState(saveGameService, gameWorld);
+            Monsters.LoadState(saveGameService, gameWorld);
+            Items.LoadState(saveGameService, gameWorld);
+            MapExits.LoadState(saveGameService, gameWorld);
+            Ships.LoadState(saveGameService, gameWorld);
+            MiningFacilities.LoadState(saveGameService, gameWorld);
+            _messageLog.LoadState(saveGameService, gameWorld);
+            _radioComms.LoadState(saveGameService, gameWorld);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
             
             // Inventory must be loaded before player as player recalculates attacks based on inventory
             Inventory = new Inventory(this);
-            Inventory.LoadState(saveGameService);
+            Inventory.LoadState(saveGameService, gameWorld);
 
             Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
-            Player.LoadState(saveGameService);
+            Player.LoadState(saveGameService, gameWorld);
             
-            Maps.LoadState(saveGameService);
+            Maps.LoadState(saveGameService, gameWorld);
             GameTimeService.LoadState(saveGameService);
             
-            HistoricalCommands.LoadState(saveGameService);
+            HistoricalCommands.LoadState(saveGameService, gameWorld);
             
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
             SetLoadState(gameWorldSaveData);
             GameTimeService.Start();
         }
 
-        public void SaveState(ISaveGameService saveGameService)
+        public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             GameTimeService.Stop();
-            GameObjectFactory.SaveState(saveGameService);
-            Walls.SaveState(saveGameService);
-            Floors.SaveState(saveGameService);
-            Monsters.SaveState(saveGameService);
-            Items.SaveState(saveGameService);
-            MapExits.SaveState(saveGameService);
-            Ships.SaveState(saveGameService);
-            MiningFacilities.SaveState(saveGameService);
-            _messageLog.SaveState(saveGameService);
-            Player.SaveState(saveGameService);
-            HistoricalCommands.SaveState(saveGameService);
-            Inventory.SaveState(saveGameService);
-            Maps.SaveState(saveGameService);
+            GameObjectFactory.SaveState(saveGameService, gameWorld);
+            Walls.SaveState(saveGameService, gameWorld);
+            Floors.SaveState(saveGameService, gameWorld);
+            Monsters.SaveState(saveGameService, gameWorld);
+            Items.SaveState(saveGameService, gameWorld);
+            MapExits.SaveState(saveGameService, gameWorld);
+            Ships.SaveState(saveGameService, gameWorld);
+            MiningFacilities.SaveState(saveGameService, gameWorld);
+            _messageLog.SaveState(saveGameService, gameWorld);
+            _radioComms.SaveState(saveGameService, gameWorld);
+            Player.SaveState(saveGameService, gameWorld);
+            HistoricalCommands.SaveState(saveGameService, gameWorld);
+            Inventory.SaveState(saveGameService, gameWorld);
+            Maps.SaveState(saveGameService, gameWorld);
             GameTimeService.SaveState(saveGameService);
 
             var gameWorldSaveData = GetSaveState();
