@@ -13,6 +13,7 @@ using MediatR;
 
 using Microsoft.Xna.Framework;
 using SadRogue.Primitives;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -65,7 +66,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .NoSkin()
                 .NoPadding()
                 .Offset(new Vector2(20f, 0))
-                .Height(0.2f);
+                .Height(0.1f);
 
             RootPanel.AddChild(BottomPanel);
 
@@ -74,13 +75,13 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Width(Constants.MiddlePanelWidth)
                 .NoSkin()
                 .NoPadding()
-                .Height(0.69f)
+                .Height(0.79f)
                 .Offset(new Vector2(20f, 120f));
 
             HoverPanelLeft = new Panel()
                 .Anchor(Anchor.TopLeft)
                 .Width(0.45f)
-                .Skin(PanelSkin.Simple)
+                .Skin(PanelSkin.Alternative)
                 .AutoHeight()
                 .Hidden();
 
@@ -93,7 +94,7 @@ namespace MarsUndiscovered.UserInterface.Views
             HoverPanelRight = new Panel()
                 .Anchor(Anchor.TopRight)
                 .Width(0.45f)
-                .Skin(PanelSkin.Simple)
+                .Skin(PanelSkin.Alternative)
                 .AutoHeight()
                 .Hidden();
 
@@ -109,9 +110,11 @@ namespace MarsUndiscovered.UserInterface.Views
         protected void CreateStatusPanel()
         {
             StatusParagraph = new RichParagraph()
-                .Anchor(Anchor.BottomLeft)
+                .Anchor(Anchor.BottomCenter)
                 .NoPadding()
                 .Height(0.1f);
+            
+            StatusParagraph.BackgroundColor = Color.Black;
 
             BottomPanel.AddChild(StatusParagraph);
         }

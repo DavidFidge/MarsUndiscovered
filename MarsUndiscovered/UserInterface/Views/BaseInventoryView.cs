@@ -41,7 +41,7 @@ namespace MarsUndiscovered.UserInterface.Views
             InventoryHoverPanel = new Panel()
                 .Anchor(Anchor.TopLeft)
                 .Width(0.45f)
-                .Skin(PanelSkin.Simple)
+                .Skin(PanelSkin.Alternative)
                 .AutoHeight()
                 .Hidden();
 
@@ -50,7 +50,7 @@ namespace MarsUndiscovered.UserInterface.Views
             InventoryPanel = new Panel()
                 .Anchor(Anchor.TopRight)
                 .Width(0.45f)
-                .Skin(PanelSkin.Simple)
+                .Skin(PanelSkin.Alternative)
                 .AutoHeight();
 
             InventoryContainerPanel.AddChild(InventoryPanel);

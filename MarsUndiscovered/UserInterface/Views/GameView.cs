@@ -106,11 +106,11 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             RadioCommsPanel = new Panel()
                 .Anchor(Anchor.BottomCenter)
-                .Skin(PanelSkin.Simple)
+                .Skin(PanelSkin.Alternative)
                 .Height(380)
                 .WidthOfContainer();
 
-            BottomPanel.AddChild(RadioCommsPanel);
+            GameViewPanel.AddChild(RadioCommsPanel);
 
             RadioCommsSource = new RichParagraph()
                 .Anchor(Anchor.AutoCenter)
