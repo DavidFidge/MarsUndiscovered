@@ -12,7 +12,6 @@ using MarsUndiscovered.UserInterface.ViewModels;
 using MediatR;
 
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.Sprites;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.UserInterface.Views

@@ -48,6 +48,7 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly InventoryGameView _inventoryGameView;
         private readonly GameViewGameOverKeyboardHandler _gameOverKeyboardHandler;
         private readonly GameViewRadioCommsKeyboardHandler _radioCommsKeyboardHandler;
+        private readonly GameViewRadioCommsMouseHandler _gameViewRadioCommsMouseHandler;
         private readonly IStopwatchProvider _stopwatchProvider;
         private Path _currentMovePath;
         private bool _isAutoExploring;
@@ -69,6 +70,7 @@ namespace MarsUndiscovered.UserInterface.Views
             InventoryGameView inventoryGameView,
             GameViewGameOverKeyboardHandler gameOverKeyboardHandler,
             GameViewRadioCommsKeyboardHandler radioCommsKeyboardHandler,
+            GameViewRadioCommsMouseHandler gameViewRadioCommsMouseHandler,
             IGameCamera gameCamera,
             IStopwatchProvider stopwatchProvider
         )
@@ -79,6 +81,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _inventoryGameView = inventoryGameView;
             _gameOverKeyboardHandler = gameOverKeyboardHandler;
             _radioCommsKeyboardHandler = radioCommsKeyboardHandler;
+            _gameViewRadioCommsMouseHandler = gameViewRadioCommsMouseHandler;
             _stopwatchProvider = stopwatchProvider;
         }
 
@@ -334,7 +337,7 @@ namespace MarsUndiscovered.UserInterface.Views
             if (_radioCommsItems.Any())
             {
                 _isWaitingForRadioComms = true;
-                GameInputService?.ChangeInput(MouseHandler, _radioCommsKeyboardHandler);
+                GameInputService?.ChangeInput(_gameViewRadioCommsMouseHandler, _radioCommsKeyboardHandler);
                 ProcessNextRadioComm();
             }
         }
@@ -361,7 +364,7 @@ namespace MarsUndiscovered.UserInterface.Views
             else
             {
                 StatusParagraph.Text = String.Empty;
-                GameInputService?.RevertInputUpToAndIncluding(MouseHandler, _radioCommsKeyboardHandler);
+                GameInputService?.RevertInputUpToAndIncluding(_gameViewRadioCommsMouseHandler, _radioCommsKeyboardHandler);
                 RadioCommsPanel.Hidden();
                 _isWaitingForRadioComms = false;
             }
