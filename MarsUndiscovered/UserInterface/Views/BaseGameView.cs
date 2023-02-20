@@ -5,7 +5,6 @@ using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
-
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
@@ -29,11 +28,6 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel TopPanel;
         protected PlayerPanel PlayerPanel;
         protected IList<MonsterPanel> MonsterPanels = new List<MonsterPanel>();
-        protected Panel RadioCommsPanel;
-        protected RichParagraph RadioCommsMessage;
-        protected RichParagraph RadioCommsSource;
-        protected Image RadioCommsImage;
-        protected AnimatedSprite RadioCommsAnimatedSprite;
         protected RichParagraph StatusParagraph;
         protected RichParagraph HoverPanelLeftTooltip;
         protected RichParagraph HoverPanelRightTooltip;
@@ -122,47 +116,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             BottomPanel.AddChild(StatusParagraph);
         }
-        
-        protected void CreateRadioCommsPanel()
-        {
-            RadioCommsPanel = new Panel()
-                .Anchor(Anchor.BottomCenter)
-                .Skin(PanelSkin.Simple)
-                .Height(380)
-                .WidthOfContainer();
-
-            BottomPanel.AddChild(RadioCommsPanel);
-
-            RadioCommsSource = new RichParagraph()
-                .Anchor(Anchor.AutoCenter)
-                .NoPadding();
-            
-            RadioCommsPanel.AddChild(RadioCommsSource);
-
-            RadioCommsImage = new Image()
-                .Anchor(Anchor.AutoInline)
-                .Width(256)
-                .Height(256)
-                .NoPadding();
-            
-            RadioCommsPanel.AddChild(RadioCommsImage);
-
-            var spacer = new Panel()
-                .Anchor(Anchor.AutoInline)
-                .NoPadding()
-                .NoSkin()
-                .Width(0.01f);
-            
-            RadioCommsPanel.AddChild(spacer);
-            
-            RadioCommsMessage = new RichParagraph()
-                .Anchor(Anchor.AutoInlineNoBreak)
-                .Width(0.87f)
-                .NoPadding();
-            
-            RadioCommsPanel.AddChild(RadioCommsMessage);
-        }
-
+     
         protected void CreateMessageLog()
         {
             _messageLog = new SelectList()
@@ -197,36 +151,12 @@ namespace MarsUndiscovered.UserInterface.Views
         protected override void ViewModelChanged()
         {
             base.ViewModelChanged();
+            StatusParagraph.Text = String.Empty;
+
             UpdateMonsterStatus();
             UpdateMessageLog();
             UpdatePlayerStatus();
-            UpdateRadioComms();
             UpdateMapRenderTargetSize(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
-            StatusParagraph.Text = String.Empty;
-        }
-
-        private void UpdateRadioComms()
-        {
-            var newRadioComms = _viewModel.RadioCommsStatus.GetUnprocessedRadioComms();
-
-            if (newRadioComms.Any())
-            {
-                // TODO - implement "next" functionality around here so that the user can see multiple radio logs that occur on the same turn
-                var lastRadioComms = newRadioComms.Last();
-
-                StatusParagraph.Text = DelimitWithDashes("PRESS SPACE TO CONTINUE");
-
-                RadioCommsMessage.Text = lastRadioComms.Message;
-                RadioCommsSource.Text = lastRadioComms.Source;
-                
-                var radioCommsSpriteSheet = Assets.GetRadioCommsSpriteSheet(lastRadioComms.GameObject);
-                
-                RadioCommsAnimatedSprite = new AnimatedSprite(radioCommsSpriteSheet);
-                RadioCommsAnimatedSprite.Play("talk");
-                RadioCommsImage.Texture = RadioCommsAnimatedSprite.TextureRegion.Texture;
-                RadioCommsImage.SourceRectangle = RadioCommsAnimatedSprite.TextureRegion.Bounds;
-                _viewModel.RadioCommsStatus.SetSeenAllItems();
-            }
         }
 
         private void UpdateMessageLog()
@@ -237,8 +167,6 @@ namespace MarsUndiscovered.UserInterface.Views
             {
                 foreach (var message in newMessages)
                     _messageLog.AddItem(message);
-
-                _viewModel.MessageStatus.SetSeenAllMessages();
 
                 _messageLog.scrollToEnd();
             }
@@ -308,13 +236,6 @@ namespace MarsUndiscovered.UserInterface.Views
             }
 
             return Unit.Task;
-        }
-
-        public override void Update()
-        {
-            RadioCommsAnimatedSprite.Update(_viewModel.GameTimeService.GameTime);
-            RadioCommsImage.SourceRectangle = RadioCommsAnimatedSprite.TextureRegion.Bounds;
-            base.Update();
         }
     }
 }

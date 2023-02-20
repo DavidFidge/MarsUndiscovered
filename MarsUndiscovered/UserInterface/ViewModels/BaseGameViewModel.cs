@@ -1,23 +1,20 @@
-﻿using MarsUndiscovered.Components;
-using MarsUndiscovered.Components.Dto;
+﻿using MarsUndiscovered.Components.Dto;
 using MarsUndiscovered.UserInterface.Data;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public abstract class BaseGameViewModel<T> : BaseGameCoreViewModel<T>
         where T : BaseGameData, new()
     {
+        private List<RadioCommsItem> _radioCommsItems = new();
         public PlayerStatus PlayerStatus { get; set; }
         public IList<MonsterStatus> MonsterStatusInView { get; set; }
 
         public MessagesStatus MessageStatus { get; set; }
-        public RadioCommsStatus RadioCommsStatus { get; set; }
         
         protected void SetUpViewModels()
         {
             MessageStatus = new MessagesStatus();
-            RadioCommsStatus = new RadioCommsStatus();
             SetUpGameCoreViewModels();
         }
 
@@ -25,8 +22,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             MonsterStatusInView = GameWorldEndpoint.GetStatusOfMonstersInView();
             PlayerStatus = GameWorldEndpoint.GetPlayerStatus();
-            RadioCommsStatus.AddRadioCommsItems(GameWorldEndpoint.GetRadioCommsItemsSince(RadioCommsStatus.SeenItemsCount));
+            _radioCommsItems.AddRange(GameWorldEndpoint.GetNewRadioCommsItems());
             MessageStatus.AddMessages(GameWorldEndpoint.GetMessagesSince(MessageStatus.SeenMessageCount));
+        }
+
+        public IList<RadioCommsItem> GetNewRadioCommsItems()
+        {
+            var radioCommsItems = _radioCommsItems.ToList();
+            _radioCommsItems.Clear();
+            return radioCommsItems;
         }
     }
 }

@@ -45,6 +45,6 @@ namespace MarsUndiscovered.Interfaces
         Task SendMorgueToWeb(Guid gameId);
         void SnapshotMorgue(string username);
         Guid GetGameId();
-        IList<RadioCommsItem> GetRadioCommsItemsSince(int seenItemsCount);
+        IList<RadioCommsItem> GetNewRadioCommsItems();
     }
 }

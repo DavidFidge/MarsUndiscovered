@@ -250,14 +250,14 @@ namespace MarsUndiscovered.Installers
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<IKeyboardHandler>()
                     .Unless(s => typeof(GameViewGameOverKeyboardHandler).IsAssignableFrom(s))
-                    .Unless(s => typeof(GameViewModalKeyboardHandler).IsAssignableFrom(s))
+                    .Unless(s => typeof(GameViewRadioCommsKeyboardHandler).IsAssignableFrom(s))
                     .Unless(s => typeof(GlobalKeyboardHandler).IsAssignableFrom(s))
                     .ConfigureFor<NullKeyboardHandler>(c => c.IsDefault())
                     .ConfigureFor<GameViewKeyboardHandler>(c => c.DependsOn(Dependency.OnComponent<ICameraMovement, CameraMovement>()))
                     .WithServiceDefaultInterfaces(),
 
                 Component.For<GameViewGameOverKeyboardHandler>(),
-                Component.For<GameViewModalKeyboardHandler>(),
+                Component.For<GameViewRadioCommsKeyboardHandler>(),
                 Component.For<GlobalKeyboardHandler>()
             );
         }

@@ -4,8 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.Messages
 {
-    [ActionMap(Name = "End Modal", DefaultKey = Keys.Space)]
-    public class EndModalRequest : IRequest
+    public class EndRadioCommsRequest : IRequest
     {
     }
 }

@@ -1,25 +1,19 @@
-﻿namespace MarsUndiscovered.Components.Dto
+﻿namespace MarsUndiscovered.Components.Dto;
+
+public class MessagesStatus
 {
-    public class MessagesStatus
+    public List<string> Messages { get; } = new();
+    public int SeenMessageCount { get; private set; }
+
+    public void AddMessages(IList<string> messages)
     {
-        public List<string> Messages { get; private set; } = new List<string>();
-        public int SeenMessageCount { get; private set; }
-        public int ProcessedMessageCount { get; set; }
+        Messages.AddRange(messages);
+    }
 
-        public void AddMessages(IList<string> messages)
-        {
-            Messages.AddRange(messages);
-            SeenMessageCount += Messages.Count;
-        }
-
-        public IEnumerable<string> GetUnprocessedMessages()
-        {
-            return Messages.Skip(ProcessedMessageCount);
-        }
-
-        public void SetSeenAllMessages()
-        {
-            ProcessedMessageCount = SeenMessageCount;
-        }
+    public IList<string> GetUnprocessedMessages()
+    {
+        var unprocessedMessages = Messages.Skip(SeenMessageCount).ToList();
+        SeenMessageCount = Messages.Count;
+        return unprocessedMessages;
     }
 }

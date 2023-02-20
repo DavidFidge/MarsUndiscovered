@@ -175,9 +175,9 @@ namespace MarsUndiscovered.Components
             return GameWorld.GameId;
         }
 
-        public IList<RadioCommsItem> GetRadioCommsItemsSince(int seenItemsCount)
+        public IList<RadioCommsItem> GetNewRadioCommsItems()
         {
-            return GameWorld.GetRadioCommsItemsSince(seenItemsCount);
+            return GameWorld.GetNewRadioCommsItems();
         }
 
         public void LoadReplay(string gameName)
