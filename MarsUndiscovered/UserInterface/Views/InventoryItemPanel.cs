@@ -1,6 +1,7 @@
 ﻿using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI.Entities;
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Graphics;
 using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views;
@@ -10,14 +11,26 @@ public class InventoryItemPanel : Panel
     private Paragraph _key;
     private Paragraph _description;
     private InventoryItem _inventoryItem;
+    private ColoredRectangle _coloredRectangle;
+    private Color _backgroundColour;
 
     public InventoryItemPanel(Panel inventoryContainerPanel)
     {
         this.Anchor(Anchor.Auto)
-            .SimpleSkin()
+            .NoSkin()
             .NoPadding()
+            .WidthOfContainer()
             .Height(1);
 
+        _backgroundColour = Assets.UserInterfaceColor * (100f / 255.0f);
+        
+        _coloredRectangle = new ColoredRectangle(_backgroundColour)
+            .Anchor(Anchor.Center)
+            .NoPadding()
+            .Offset(new Vector2(0, 0));
+                
+        Background = _coloredRectangle;
+        
         _key = new Paragraph()
             .Anchor(Anchor.AutoInlineNoBreak)
             .NoPadding()
@@ -35,15 +48,35 @@ public class InventoryItemPanel : Panel
         AddChild(_description);
 
         inventoryContainerPanel.AddChild(this);
+        
+        OnMouseLeave += OnInventoryPanelMouseLeave;
+        WhileMouseHover += OnInventoryPanelMouseEnter;
+
+        _key.WhileMouseHover += OnInventoryPanelMouseEnter;
+        _key.OnMouseLeave += OnInventoryPanelMouseLeave;
+     
+        _description.WhileMouseHover += OnInventoryPanelMouseEnter;
+        _description.OnMouseLeave += OnInventoryPanelMouseLeave;
+    }
+
+    private void OnInventoryPanelMouseLeave(Entity entity)
+    {
+        _coloredRectangle.FillColor(Color.Black);
+    }
+
+    private void OnInventoryPanelMouseEnter(Entity entity)
+    {
+        _coloredRectangle.FillColor(_backgroundColour);
     }
 
     public void SetInventoryItem(InventoryItem inventoryItem, InventoryMode inventoryMode)
     {
+        _coloredRectangle.FillColor(Color.Black);
         _inventoryItem = inventoryItem;
 
         _key.Text = _inventoryItem.KeyDescription;
         _key.FillColor(Color.White);
-        _key.RecalculateWidth();
+        _key.RecalculateWidth(20);
         
         _key.CalcTextActualRectWithWrap();
         this.Height(_key.GetTextDestRect().Height);
@@ -66,6 +99,7 @@ public class InventoryItemPanel : Panel
 
     public void SetNoInventory()
     {
+        _coloredRectangle.FillColor(Color.Black);
         _key.Text = "Your pack is empty";
         _key.CalcTextActualRectWithWrap();
         this.Height(_key.GetTextDestRect().Height);
