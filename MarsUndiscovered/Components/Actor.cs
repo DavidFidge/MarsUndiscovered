@@ -17,6 +17,8 @@ namespace MarsUndiscovered.Components
         public string IsDeadMessage { get; set; }
         public int Health { get; set; }
         public int MaxHealth { get; set; }
+        public decimal RegenRate { get; set; }
+        public decimal ResidualRegen { get; set; }
 
         public virtual Attack MeleeAttack { get; protected set; }
         public virtual LightningAttack LightningAttack { get; protected set; }
@@ -34,6 +36,7 @@ namespace MarsUndiscovered.Components
 
             actorSaveData.MaxHealth = MaxHealth;
             actorSaveData.Health = Health;
+            actorSaveData.ResidualRegen = ResidualRegen;
             actorSaveData.IsDead = IsDead;
         }
 
@@ -42,7 +45,22 @@ namespace MarsUndiscovered.Components
             base.PopulateLoadState(actorSaveData);
             MaxHealth = actorSaveData.MaxHealth;
             Health = actorSaveData.Health;
+            ResidualRegen = actorSaveData.ResidualRegen;
             IsDead = actorSaveData.IsDead;
+        }
+        
+        public void Regenerate()
+        {
+            ResidualRegen += RegenRate * MaxHealth;
+            var regenAmount = (int)ResidualRegen;
+            Health += regenAmount;
+            ResidualRegen -= regenAmount;
+
+            if (Health >= MaxHealth)
+            {
+                Health = MaxHealth;
+                ResidualRegen = 0;
+            }
         }
     }
 }

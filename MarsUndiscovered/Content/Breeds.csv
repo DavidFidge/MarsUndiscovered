@@ -1,4 +1,4 @@
-Name,Description,UnicodeCharacter,ForegroundColour,BackgroundColour,MaxHealth,BasicAttackMin,BasicAttackMax,LightningAttack,IsWallTurret,LineAttackMin,LineAttackMax
-Roach,The Mars Roach can survive days in the natural outdoors of Mars and is a master scavenger within the crooks of human dwellings. This one is the size of a human foot.,0072,#8B4513,,50,3,6,,FALSE,,
-Repair Drone,The repair drone is a small robot that performs minor precision repair jobs around the mine site. This droid has malfunctioned (or has been reprogrammed?) and now seeks and destroys anything it comes across. Repair drones prefer to hunt in packs and can repair each other when damaged.,0064,#808080,,70,5,10,,FALSE,,
-Tesla Coil,This coil shoots lightning bolts at nearby threats.,00A7,#4682B4,#FFFFFF,100,,,5,TRUE,,
+Name,Description,UnicodeCharacter,ForegroundColour,BackgroundColour,MaxHealth,BasicAttackMin,BasicAttackMax,LightningAttack,IsWallTurret,LineAttackMin,LineAttackMax,RegenRate
+Roach,The Mars Roach can survive days in the natural outdoors of Mars and is a master scavenger within the crooks of human dwellings. This one is the size of a human foot.,0072,#8B4513,,20,2,4,,FALSE,,,0.005
+Repair Drone,The repair drone is a small robot that performs minor precision repair jobs around the mine site. This droid has malfunctioned (or has been reprogrammed?) and now seeks and destroys anything it comes across. Repair drones prefer to hunt in packs and can repair each other when damaged.,0064,#808080,,30,4,8,,FALSE,,,0
+Tesla Coil,This coil shoots lightning bolts at nearby threats.,00A7,#4682B4,#FFFFFF,50,,,6,TRUE,,,0

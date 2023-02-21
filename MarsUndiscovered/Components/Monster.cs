@@ -95,6 +95,7 @@ namespace MarsUndiscovered.Components
         {
             Breed = breed;
             MaxHealth = breed.MaxHealth;
+            RegenRate = breed.RegenRate;
             Health = MaxHealth;
 
             return this;

@@ -495,6 +495,8 @@ namespace MarsUndiscovered.Components
                 }
             }
 
+            Regenerate();
+
             UpdateMonstersInView();
         }
 
@@ -828,6 +830,16 @@ namespace MarsUndiscovered.Components
             unequipItemCommand.Initialise(itemGroup.First());
 
             return ExecuteCommand(unequipItemCommand).ToList();
+        }
+
+        public void Regenerate()
+        {
+            Player.Regenerate();
+            
+            foreach (var monster in Monsters.Values.Where(m => !m.IsDead))
+            {
+                monster.Regenerate();
+            }
         }
     }
 }
