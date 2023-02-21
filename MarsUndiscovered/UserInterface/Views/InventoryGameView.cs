@@ -13,7 +13,6 @@ namespace MarsUndiscovered.UserInterface.Views
     public class InventoryGameView : BaseInventoryView<InventoryGameViewModel, InventoryGameData>,
         IRequestHandler<InventoryItemSelectionRequest>
     {
-        private InventoryMode _inventoryMode;
 
         public InventoryGameView(
             InventoryGameViewModel inventoryGameViewModel
@@ -23,72 +22,42 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public void SetInventoryMode(InventoryMode inventoryMode)
         {
-            _inventoryMode = inventoryMode;
+            InventoryMode = inventoryMode;
 
             switch (inventoryMode)
             {
-                case InventoryMode.ReadOnly:
-                case InventoryMode.View:
-                    _inventoryLabel.Text = "Your Inventory:";
+                case Views.InventoryMode.ReadOnly:
+                case Views.InventoryMode.View:
+                    InventoryLabel.Text = "Your Inventory:";
                     break;
-                case InventoryMode.Equip:
-                    _inventoryLabel.Text = "Equip what?";
+                case Views.InventoryMode.Equip:
+                    InventoryLabel.Text = "Equip what?";
                     break;
-                case InventoryMode.Unequip:
-                    _inventoryLabel.Text = "Remove (unequip) what?";
+                case Views.InventoryMode.Unequip:
+                    InventoryLabel.Text = "Remove (unequip) what?";
                     break;
-                case InventoryMode.Drop:
-                    _inventoryLabel.Text = "Drop what?";
+                case Views.InventoryMode.Drop:
+                    InventoryLabel.Text = "Drop what?";
                     break;
             }
-        }
-
-        protected override string GetInventoryItemText(InventoryItem inventoryItem)
-        {
-            switch (_inventoryMode)
-            {
-                case InventoryMode.View:
-                    return base.GetInventoryItemText(inventoryItem);
-                case InventoryMode.Equip:
-                    return inventoryItem.CanEquip
-                        ? base.GetInventoryItemText(inventoryItem)
-                        : GetGrayInventoryItemText(inventoryItem);
-                case InventoryMode.Unequip:
-                    return inventoryItem.CanUnequip
-                        ? base.GetInventoryItemText(inventoryItem)
-                        : GetGrayInventoryItemText(inventoryItem);
-                case InventoryMode.Drop:
-                    return inventoryItem.CanDrop
-                        ? base.GetInventoryItemText(inventoryItem)
-                        : GetGrayInventoryItemText(inventoryItem);
-                case InventoryMode.ReadOnly:
-                    return base.GetInventoryItemText(inventoryItem);
-                default:
-                    return base.GetInventoryItemText(inventoryItem);
-            }
-        }
-
-        protected string GetGrayInventoryItemText(InventoryItem inventoryItem)
-        {
-            return $"{{{{GRAY}}}}{inventoryItem.KeyDescription} {inventoryItem.ItemDescription}{{{{DEFAULT}}}}";
         }
 
         public Task<Unit> Handle(InventoryItemSelectionRequest request, CancellationToken cancellationToken)
         {
-            switch (_inventoryMode)
+            switch (InventoryMode)
             {
-                case InventoryMode.View:
+                case Views.InventoryMode.View:
                     break;
-                case InventoryMode.Equip:
+                case Views.InventoryMode.Equip:
                     _viewModel.EquipRequest(request.Key);
                     break;
-                case InventoryMode.Unequip:
+                case Views.InventoryMode.Unequip:
                     _viewModel.UnequipRequest(request.Key);
                     break;
-                case InventoryMode.Drop:
+                case Views.InventoryMode.Drop:
                     _viewModel.DropRequest(request.Key);
                     break;
-                case InventoryMode.ReadOnly:
+                case Views.InventoryMode.ReadOnly:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
