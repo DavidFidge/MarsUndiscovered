@@ -299,10 +299,12 @@ namespace MarsUndiscovered.Graphics
 
         public SpriteSheet GetRadioCommsSpriteSheet(IGameObject gameObject)
         {
-            if (gameObject is Ship)
-                return ShipAiRadioComms;
-
-            return null;
+            return gameObject switch
+            {
+                Ship => ShipAiRadioComms,
+                Item { ItemType: Components.ShipRepairParts } => ShipAiRadioComms,
+                _ => null
+            };
         }
     }
 }

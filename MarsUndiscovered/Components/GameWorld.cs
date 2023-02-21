@@ -107,19 +107,7 @@ namespace MarsUndiscovered.Components
             
             Inventory = new Inventory(this);
 
-            _radioComms.AddRadioCommsEntry(
-                Ships.First().Value,
-                "Welcome to Mars captain! I apologise for the rough landing. The small matter of the explosion has ripped a hole in the hull and has crippled the primary fuel injection system. Unfortunately we have no spares on board, however the mine nearby likely has a similar controller which I can rig up as a temporary solution to get us flying again. You'll have to put on your spacesuit and walk over there.",
-                RadioComms.ShipAiSource,
-                _messageLog
-                );
-            
-            _radioComms.AddRadioCommsEntry(
-                Ships.First().Value,
-                "There's no communications signals coming from the mine at all - not even on the encrypted channels. I'm not sure what's going on in there. Be careful, won't you? I don't want to be left forsaken on this cold, barren dust bowl. Or worse, found by scrappers and sold off to the black market. I'll keep in touch on this secure channel.",
-                RadioComms.ShipAiSource,
-                _messageLog
-                );
+            _radioComms.CreateGameStartMessages(Ships.First().Value, _messageLog);
 
             ResetFieldOfView();
             GameTimeService.Start();
@@ -512,6 +500,7 @@ namespace MarsUndiscovered.Components
         {
             var result = command.Execute();
             _messageLog.AddMessages(result.Messages);
+            _radioComms.ProcessCommand(command, _messageLog);
 
             if (isPlayerAction)
                 HistoricalCommands.AddCommand(command);
