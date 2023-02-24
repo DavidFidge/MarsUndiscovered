@@ -1,11 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-
+using MarsUndiscovered.Components;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using MediatR;
+using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -43,9 +44,13 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(InventoryItemSelectionRequest request, CancellationToken cancellationToken)
         {
+            if (!IsVisible)
+                return Unit.Task;
+            
             switch (InventoryMode)
             {
                 case Views.InventoryMode.View:
+                    base.PerformKeyAction(request.Key);
                     break;
                 case Views.InventoryMode.Equip:
                     _viewModel.EquipRequest(request.Key);
@@ -57,12 +62,39 @@ namespace MarsUndiscovered.UserInterface.Views
                     _viewModel.DropRequest(request.Key);
                     break;
                 case Views.InventoryMode.ReadOnly:
+                    base.PerformKeyAction(request.Key);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
             return Unit.Task;
+        }
+
+        protected override void PerformContextualKeyAction(InventoryItem contextItem, Keys requestKey)
+        {
+            if (requestKey == Keys.E)
+                _viewModel.EquipRequest(contextItem.Key);
+            else if (requestKey == Keys.D)
+                _viewModel.DropRequest(contextItem.Key);
+            else if (requestKey == Keys.R)
+                _viewModel.UnequipRequest(contextItem.Key);
+        }
+        
+        protected override void PerformInventoryModeAction(InventoryItem contextItem)
+        {
+            switch (InventoryMode)
+            {
+                case Views.InventoryMode.Equip:
+                    _viewModel.EquipRequest(contextItem.Key);
+                    break;
+                case Views.InventoryMode.Unequip:
+                    _viewModel.UnequipRequest(contextItem.Key);
+                    break;
+                case Views.InventoryMode.Drop:
+                    _viewModel.DropRequest(contextItem.Key);
+                    break;
+            }
         }
     }
 }

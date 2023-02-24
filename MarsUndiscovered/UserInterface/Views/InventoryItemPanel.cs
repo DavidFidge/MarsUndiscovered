@@ -8,14 +8,21 @@ namespace MarsUndiscovered.UserInterface.Views;
 
 public class InventoryItemPanel : Panel
 {
+    private readonly IInventoryView _inventoryView;
+    public InventoryItem InventoryItem => _inventoryItem;
+    public bool HasContext => _hasContext;
+
     private Paragraph _key;
     private Paragraph _description;
     private InventoryItem _inventoryItem;
     private ColoredRectangle _coloredRectangle;
     private Color _backgroundColour;
+    private bool _hasContext = false;
 
-    public InventoryItemPanel(Panel inventoryContainerPanel)
+    public InventoryItemPanel(IInventoryView inventoryView)
     {
+        _inventoryView = inventoryView;
+        
         this.Anchor(Anchor.Auto)
             .NoSkin()
             .NoPadding()
@@ -47,26 +54,53 @@ public class InventoryItemPanel : Panel
 
         AddChild(_description);
 
-        inventoryContainerPanel.AddChild(this);
-        
-        OnMouseLeave += OnInventoryPanelMouseLeave;
-        WhileMouseHover += OnInventoryPanelMouseEnter;
+        OnMouseEnter += OnInventoryItemPanelMouseEnter;
+        OnMouseDown += OnInventoryItemPanelMouseDown;
 
-        _key.WhileMouseHover += OnInventoryPanelMouseEnter;
-        _key.OnMouseLeave += OnInventoryPanelMouseLeave;
+        _key.OnMouseEnter += OnInventoryItemPanelMouseEnter;
+        _key.OnMouseDown += OnInventoryItemPanelMouseDown;
      
-        _description.WhileMouseHover += OnInventoryPanelMouseEnter;
-        _description.OnMouseLeave += OnInventoryPanelMouseLeave;
+        _description.OnMouseEnter += OnInventoryItemPanelMouseEnter;
+        _description.OnMouseDown += OnInventoryItemPanelMouseDown;
     }
 
-    private void OnInventoryPanelMouseLeave(Entity entity)
+    private void OnInventoryItemPanelMouseDown(Entity entity)
     {
+        _inventoryView.PerformClick(_inventoryItem);
+    }
+
+    public void OnInventoryPanelEnter()
+    {
+        SetContext();
+    }
+    
+    public void OnInventoryPanelLeave()
+    {
+        ClearContext();
+    }
+    
+    private void OnInventoryItemPanelMouseEnter(Entity entity)
+    {
+        SetContext();
+    }
+
+    private void ClearContext()
+    {
+        _hasContext = false;
         _coloredRectangle.FillColor(Color.Black);
+        _inventoryView.HideDescription(_inventoryItem);
     }
 
-    private void OnInventoryPanelMouseEnter(Entity entity)
+    private void SetContext()
     {
-        _coloredRectangle.FillColor(_backgroundColour);
+        _inventoryView.ClearExistingContext();
+
+        if (_inventoryItem != null) // Omit setting context if no inventory item e.g. when slot is showing "Your pack is empty"
+        {
+            _hasContext = true;
+            _coloredRectangle.FillColor(_backgroundColour);
+            _inventoryView.ShowDescription(_inventoryItem);
+        }
     }
 
     public void SetInventoryItem(InventoryItem inventoryItem, InventoryMode inventoryMode)
@@ -99,12 +133,18 @@ public class InventoryItemPanel : Panel
 
     public void SetNoInventory()
     {
+        _hasContext = false;
         _coloredRectangle.FillColor(Color.Black);
         _key.Text = "Your pack is empty";
         _key.CalcTextActualRectWithWrap();
         this.Height(_key.GetTextDestRect().Height);
-
         _description.Text = String.Empty;
         this.Visible();
+    }
+
+    public void ClearAndHide()
+    {
+        this.Hidden();
+        _inventoryItem = null;
     }
 }

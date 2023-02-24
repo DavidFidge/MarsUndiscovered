@@ -106,6 +106,14 @@ namespace MarsUndiscovered.Components
             CreateLevel2(mapLevel1);
             
             Inventory = new Inventory(this);
+            
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).InInventory(Inventory));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).InInventory(Inventory));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).InInventory(Inventory));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).InInventory(Inventory));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).InInventory(Inventory));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).InInventory(Inventory));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).InInventory(Inventory));
 
             _radioComms.CreateGameStartMessages(Ships.First().Value, _messageLog);
 

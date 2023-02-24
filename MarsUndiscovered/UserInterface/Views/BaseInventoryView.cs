@@ -5,21 +5,31 @@ using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using GeonBit.UI.Entities;
+using MarsUndiscovered.Components;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Views;
 
-public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>
+public interface IInventoryView
+{
+    void HideDescription(InventoryItem inventoryItem);
+    void ShowDescription(InventoryItem inventoryItem);
+    void ClearExistingContext();
+    void PerformClick(InventoryItem inventoryItem);
+}
+
+public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>, IInventoryView
     where TViewModel : BaseInventoryViewModel<TData>
     where TData : BaseInventoryData, new()
 {
     protected Panel InventoryPanel;
-    protected Panel InventoryHoverPanel;
+    protected Panel InventoryItemDescriptionPanel;
     protected Panel InventoryContainerPanel;
     protected List<InventoryItemPanel> InventoryItems;
     protected Label InventoryLabel;
     protected InventoryMode InventoryMode;
-    protected RichParagraph InventoryHoverPanelText { get; set; }
+    protected RichParagraph InventoryItemDescriptionPanelText { get; set; }
 
     public BaseInventoryView(
         TViewModel inventoryViewModel
@@ -37,22 +47,22 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
             .Height(0.79f)
             .Offset(new Vector2(20f, 120f));
 
-        InventoryHoverPanel = new Panel()
+        InventoryItemDescriptionPanel = new Panel()
             .Anchor(Anchor.TopLeft)
-            .Width(0.45f)
+            .Width(0.5f)
             .Skin(PanelSkin.Alternative)
             .AutoHeight()
             .Hidden();
 
-        InventoryHoverPanelText = new RichParagraph();
+        InventoryItemDescriptionPanelText = new RichParagraph();
 
-        InventoryHoverPanel.AddChild(InventoryHoverPanelText);
+        InventoryItemDescriptionPanel.AddChild(InventoryItemDescriptionPanelText);
 
-        InventoryContainerPanel.AddChild(InventoryHoverPanel);
+        InventoryContainerPanel.AddChild(InventoryItemDescriptionPanel);
 
         InventoryPanel = new Panel()
             .Anchor(Anchor.TopRight)
-            .Width(0.45f)
+            .Width(0.5f)
             .Skin(PanelSkin.Alternative)
             .AutoHeight();
 
@@ -64,10 +74,16 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
 
         InventoryPanel.AddChild(InventoryLabel);
 
+        // Pre-create all the inventory panels which will be visible or hidden depending on items the player actually has.
+        // The player's inventory is currently limited to 26 i.e. the keys a-z.
         InventoryItems = new List<InventoryItemPanel>(26);
-        
+
         for (var i = 0; i < 26; i++)
-            InventoryItems.Add(new InventoryItemPanel(InventoryPanel));
+        {
+            var inventoryItemPanel = new InventoryItemPanel(this);
+            InventoryItems.Add(inventoryItemPanel);
+            InventoryPanel.AddChild(inventoryItemPanel);
+        }
 
         RootPanel.AddChild(InventoryContainerPanel);
     }
@@ -75,7 +91,7 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
     public override void Show()
     {
         base.Show();
-
+        
         HidePanels();
 
         var inventoryItems = _viewModel.GetInventoryItems();
@@ -91,9 +107,71 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
     
     public void HidePanels()
     {
+        InventoryItemDescriptionPanel.Hidden();
+        
         foreach (var item in InventoryItems)
         {
-            item.Hidden();
+            item.ClearAndHide();
         }
+    }
+
+    protected void PerformKeyAction(Keys requestKey)
+    {
+        var contextItem = InventoryItems.FirstOrDefault(i => i.HasContext);
+
+        if (contextItem != null)
+        {
+            PerformContextualKeyAction(contextItem.InventoryItem, requestKey);
+        }
+        else
+        {
+            var item = InventoryItems.FirstOrDefault(i => i.InventoryItem?.Key == requestKey);
+
+            if (item != null)
+            {
+                foreach (var inventoryItemPanel in InventoryItems)
+                {
+                    inventoryItemPanel.OnInventoryPanelLeave();
+                }
+
+                item.OnInventoryPanelEnter();
+            }
+        }
+    }
+
+    protected virtual void PerformContextualKeyAction(InventoryItem contextItem, Keys requestKey)
+    {
+    }
+
+    public void HideDescription(InventoryItem inventoryItem)
+    {
+        InventoryItemDescriptionPanel.Hidden();
+    }
+
+    public void ShowDescription(InventoryItem inventoryItem)
+    {
+        if (inventoryItem != null)
+        {
+            InventoryItemDescriptionPanelText.Text =
+                $"{inventoryItem.ItemDescription}\n{inventoryItem.LongDescription}";
+            InventoryItemDescriptionPanel.Visible();
+        }
+    }
+
+    public void ClearExistingContext()
+    {
+        foreach (var inventoryItemPanel in InventoryItems)
+        {
+            inventoryItemPanel.OnInventoryPanelLeave();
+        }
+    }
+
+    public void PerformClick(InventoryItem inventoryItem)
+    {
+        PerformInventoryModeAction(inventoryItem);
+    }
+
+    protected virtual void PerformInventoryModeAction(InventoryItem contextItem)
+    {
     }
 }

@@ -13,13 +13,22 @@ namespace MarsUndiscovered.Components.Maps
 
             var item = gameObjectFactory
                 .CreateItem()
-                .WithItemType(spawnItemParams.ItemType)
-                .PositionedAt(GetPosition(spawnItemParams, map))
-                .AddToMap(map);
+                .WithItemType(spawnItemParams.ItemType);
+
+            if (spawnItemParams.Inventory == null)
+            {
+                item.PositionedAt(GetPosition(spawnItemParams, map))
+                    .AddToMap(map);
+            }
+            else
+            {
+                spawnItemParams.Inventory.Add(item);
+            }
 
             itemCollection.Add(item.ID, item);
-
-            Mediator.Publish(new MapTileChangedNotification(item.Position));
+            
+            if (spawnItemParams.Inventory == null)
+                Mediator.Publish(new MapTileChangedNotification(item.Position));
 
             return item;
         }
