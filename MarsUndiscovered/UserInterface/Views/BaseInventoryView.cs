@@ -1,4 +1,6 @@
-﻿using FrigidRogue.MonoGame.Core.Extensions;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using MarsUndiscovered.UserInterface.Data;
@@ -6,6 +8,8 @@ using MarsUndiscovered.UserInterface.ViewModels;
 
 using GeonBit.UI.Entities;
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Messages;
+using MediatR;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -19,7 +23,7 @@ public interface IInventoryView
     void PerformClick(InventoryItem inventoryItem);
 }
 
-public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>, IInventoryView
+public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>, IInventoryView, IRequestHandler<CloseGameInventoryContextRequest>
     where TViewModel : BaseInventoryViewModel<TData>
     where TData : BaseInventoryData, new()
 {
@@ -173,5 +177,24 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
 
     protected virtual void PerformInventoryModeAction(InventoryItem contextItem)
     {
+    }
+
+    public Task<Unit> Handle(CloseGameInventoryContextRequest request, CancellationToken cancellationToken)
+    {
+        if (!IsVisible)
+            return Unit.Task;
+        
+        var contextItem = InventoryItems.FirstOrDefault(i => i.HasContext);
+
+        if (contextItem != null)
+        {
+            ClearExistingContext();
+        }
+        else
+        {
+            Mediator.Send(new CloseGameInventoryRequest());
+        }
+
+        return Unit.Task;
     }
 }

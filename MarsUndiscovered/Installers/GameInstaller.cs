@@ -428,7 +428,7 @@ namespace MarsUndiscovered.Installers
             container.Register(
                 Component.For<InventoryGameView>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, InventoryGameViewKeyboardHandler>())
-                    .DependsOn(Dependency.OnComponent<IMouseHandler, InventoryGameViewMouseHandler>()),
+                    .DependsOn(Dependency.OnComponent<IMouseHandler, NullMouseHandler>()),
 
                 Component.For<InventoryGameViewModel>()
             );

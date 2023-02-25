@@ -146,5 +146,6 @@ public class InventoryItemPanel : Panel
     {
         this.Hidden();
         _inventoryItem = null;
+        _hasContext = false;
     }
 }
