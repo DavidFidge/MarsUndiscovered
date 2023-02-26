@@ -38,13 +38,13 @@ namespace MarsUndiscovered.UserInterface.Input
 
                 switch (actionName)
                 {
-                    case "Equip":
+                    case OpenGameInventoryRequest.Equip:
                         inventoryMode = InventoryMode.Equip;
                         break;
-                    case "Unequip":
+                    case OpenGameInventoryRequest.Unequip:
                         inventoryMode = InventoryMode.Unequip;
                         break;
-                    case "Drop":
+                    case OpenGameInventoryRequest.Drop:
                         inventoryMode = InventoryMode.Drop;
                         break;
                 }

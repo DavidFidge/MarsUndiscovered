@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
 using GeonBit.UI.Entities;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 using MarsUndiscovered.Components;
@@ -15,15 +16,18 @@ namespace MarsUndiscovered.UserInterface.Views
     public class InventoryGameView : BaseInventoryView<InventoryGameViewModel, InventoryGameData>,
         IRequestHandler<InventoryItemSelectionRequest>
     {
+        private readonly IActionMap _actionMap;
         private Button _equipButton;
         private Button _unequipButton;
         private Button _dropButton;
         protected Panel InventoryItemButtonPanel { get; set; }
 
         public InventoryGameView(
-            InventoryGameViewModel inventoryGameViewModel
+            InventoryGameViewModel inventoryGameViewModel,
+            IActionMap actionMap
         ) : base(inventoryGameViewModel)
         {
+            _actionMap = actionMap;
         }
 
         protected override void InitializeInternal()
@@ -161,11 +165,11 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected override void PerformFocusKeyAction(InventoryItem focusItem, Keys requestKey)
         {
-            if (requestKey == Keys.E)
+            if (_actionMap.ActionIs<OpenGameInventoryRequest>(requestKey, OpenGameInventoryRequest.Equip))
                 _viewModel.EquipRequest(focusItem.Key);
-            else if (requestKey == Keys.D)
+            else if (_actionMap.ActionIs<OpenGameInventoryRequest>(requestKey, OpenGameInventoryRequest.Drop))
                 _viewModel.DropRequest(focusItem.Key);
-            else if (requestKey == Keys.R)
+            else if (_actionMap.ActionIs<OpenGameInventoryRequest>(requestKey, OpenGameInventoryRequest.Unequip))
                 _viewModel.UnequipRequest(focusItem.Key);
         }
         
