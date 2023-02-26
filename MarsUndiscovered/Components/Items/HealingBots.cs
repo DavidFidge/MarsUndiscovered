@@ -24,5 +24,11 @@ namespace MarsUndiscovered.Components
 
             return "A NanoFlask of Healing Bots";
         }
+
+        public override string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
+        {
+            return
+                "The contents of this flask must be poured onto an organic object. The nanobots inside will then slip inside under the skin of that organic and enter the blood stream. They will then repair any damaged tissue and break down any foreign object. They will also repair and improve broken DNA, making the organic even healthier than before.";
+        }
     }
 }

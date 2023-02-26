@@ -15,14 +15,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Views;
 
-public interface IInventoryView
-{
-    void ClearFocussedItem(InventoryItem inventoryItem);
-    void SetFocussedItem(InventoryItem inventoryItem);
-    void ClearFocus();
-    void OnMouseDown(InventoryItem inventoryItem);
-}
-
 public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>, IInventoryView, IRequestHandler<CloseGameInventoryContextRequest>
     where TViewModel : BaseInventoryViewModel<TData>
     where TData : BaseInventoryData, new()
@@ -160,6 +152,7 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
             InventoryItemDescriptionPanelText.Text =
                 $"{inventoryItem.ItemDescription}\n{inventoryItem.LongDescription}";
             InventoryItemDescriptionPanel.Visible();
+            InventoryItemDescriptionPanel.ForceDirty();
         }
     }
 

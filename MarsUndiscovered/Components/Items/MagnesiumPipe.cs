@@ -28,5 +28,11 @@ namespace MarsUndiscovered.Components
 
             return $"A {GetEnchantText(item)} Magnesium Pipe";
         }
+
+        public override string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
+        {
+            return
+                "Magnesium ores are abundant on Mars and thus magnesium alloys are commonly used for lightweight, strong building materials and tools. This magnesium pipe looks like it would be useful for piping fluids, but it is also very handy as a clubbing weapon.";
+        }
     }
 }

@@ -116,7 +116,7 @@ namespace MarsUndiscovered.Components
 
         public string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
         {
-            return "Placeholder for long description";
+            return ItemType.GetLongDescription(itemTypeDiscovery);
         }
     }
 }

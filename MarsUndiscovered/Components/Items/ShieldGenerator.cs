@@ -41,5 +41,11 @@ namespace MarsUndiscovered.Components
             item.IsCharged = true;
             item.CurrentRechargeDelay = item.TotalRechargeDelay;
         }
+
+        public override string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
+        {
+            return
+                "Strapped around the waist, this device emits a band of negative energy around the wearer. Any harmful object or particle enters into the space immediately surrounding the wearer, it immediately repels it, thus protecting the wearer from harm.";
+        }
     }
 }

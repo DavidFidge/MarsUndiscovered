@@ -28,5 +28,11 @@ namespace MarsUndiscovered.Components
 
             return $"A {GetEnchantText(item)} Iron Spike";
         }
+
+        public override string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
+        {
+            return
+                "This large iron spike looks like it was once drove into the ground to support some infrastructure. Now it serves as an unwieldy spear. It is able to strike two enemies at once in the direction of attack.";
+        }
     }
 }

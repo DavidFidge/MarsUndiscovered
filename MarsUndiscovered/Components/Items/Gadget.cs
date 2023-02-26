@@ -15,5 +15,10 @@
 
             return null;
         }
+
+        public override string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
+        {
+            return "A gadget";
+        }
     }
 }
