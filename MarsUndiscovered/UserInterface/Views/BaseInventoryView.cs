@@ -17,10 +17,10 @@ namespace MarsUndiscovered.UserInterface.Views;
 
 public interface IInventoryView
 {
-    void HideDescription(InventoryItem inventoryItem);
-    void ShowDescription(InventoryItem inventoryItem);
-    void ClearExistingContext();
-    void PerformClick(InventoryItem inventoryItem);
+    void ClearFocussedItem(InventoryItem inventoryItem);
+    void SetFocussedItem(InventoryItem inventoryItem);
+    void ClearFocus();
+    void OnMouseDown(InventoryItem inventoryItem);
 }
 
 public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>, IInventoryView, IRequestHandler<CloseGameInventoryContextRequest>
@@ -46,7 +46,7 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         InventoryContainerPanel = new Panel()
             .Anchor(Anchor.CenterRight)
             .Width(Constants.MiddlePanelWidth)
-            .NoSkin()
+            .SkinNone()
             .NoPadding()
             .Height(0.79f)
             .Offset(new Vector2(20f, 120f));
@@ -58,12 +58,13 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
             .AutoHeight()
             .Hidden();
 
-        InventoryItemDescriptionPanelText = new RichParagraph();
+        InventoryItemDescriptionPanelText = new RichParagraph()
+            .Anchor(Anchor.Auto);
 
         InventoryItemDescriptionPanel.AddChild(InventoryItemDescriptionPanelText);
 
         InventoryContainerPanel.AddChild(InventoryItemDescriptionPanel);
-
+        
         InventoryPanel = new Panel()
             .Anchor(Anchor.TopRight)
             .Width(0.5f)
@@ -91,7 +92,7 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
 
         RootPanel.AddChild(InventoryContainerPanel);
     }
-
+    
     public override void Show()
     {
         base.Show();
@@ -121,11 +122,11 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
 
     protected void PerformKeyAction(Keys requestKey)
     {
-        var contextItem = InventoryItems.FirstOrDefault(i => i.HasContext);
+        var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
 
-        if (contextItem != null)
+        if (focusItem != null)
         {
-            PerformContextualKeyAction(contextItem.InventoryItem, requestKey);
+            PerformFocusKeyAction(focusItem.InventoryItem, requestKey);
         }
         else
         {
@@ -143,16 +144,16 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         }
     }
 
-    protected virtual void PerformContextualKeyAction(InventoryItem contextItem, Keys requestKey)
+    protected virtual void PerformFocusKeyAction(InventoryItem focusItem, Keys requestKey)
     {
     }
 
-    public void HideDescription(InventoryItem inventoryItem)
+    public virtual void ClearFocussedItem(InventoryItem inventoryItem)
     {
         InventoryItemDescriptionPanel.Hidden();
     }
 
-    public void ShowDescription(InventoryItem inventoryItem)
+    public virtual void SetFocussedItem(InventoryItem inventoryItem)
     {
         if (inventoryItem != null)
         {
@@ -162,7 +163,7 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         }
     }
 
-    public void ClearExistingContext()
+    public void ClearFocus()
     {
         foreach (var inventoryItemPanel in InventoryItems)
         {
@@ -170,12 +171,12 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         }
     }
 
-    public void PerformClick(InventoryItem inventoryItem)
+    public void OnMouseDown(InventoryItem inventoryItem)
     {
         PerformInventoryModeAction(inventoryItem);
     }
 
-    protected virtual void PerformInventoryModeAction(InventoryItem contextItem)
+    protected virtual void PerformInventoryModeAction(InventoryItem focusItem)
     {
     }
 
@@ -184,11 +185,11 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         if (!IsVisible)
             return Unit.Task;
         
-        var contextItem = InventoryItems.FirstOrDefault(i => i.HasContext);
+        var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
 
-        if (contextItem != null)
+        if (focusItem != null)
         {
-            ClearExistingContext();
+            ClearFocus();
         }
         else
         {

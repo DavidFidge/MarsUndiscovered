@@ -129,7 +129,7 @@ namespace MarsUndiscovered.UserInterface.Views
             var spacer = new Panel()
                 .Anchor(Anchor.AutoInline)
                 .NoPadding()
-                .NoSkin()
+                .SkinNone()
                 .Width(0.01f);
             
             RadioCommsPanel.AddChild(spacer);

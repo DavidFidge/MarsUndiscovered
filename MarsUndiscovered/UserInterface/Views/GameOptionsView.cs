@@ -50,7 +50,7 @@ namespace MarsUndiscovered.UserInterface.Views
         private Panel CreateOptionsItemPanel(Panel container)
         {
             return new Panel()
-                .NoSkin()
+                .SkinNone()
                 .NoPadding()
                 .AutoHeight()
                 .WidthOfContainer()

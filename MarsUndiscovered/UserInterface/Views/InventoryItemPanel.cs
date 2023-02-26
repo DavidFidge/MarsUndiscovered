@@ -10,21 +10,21 @@ public class InventoryItemPanel : Panel
 {
     private readonly IInventoryView _inventoryView;
     public InventoryItem InventoryItem => _inventoryItem;
-    public bool HasContext => _hasContext;
+    public bool HasFocus => _hasFocus;
 
     private Paragraph _key;
     private Paragraph _description;
     private InventoryItem _inventoryItem;
     private ColoredRectangle _coloredRectangle;
     private Color _backgroundColour;
-    private bool _hasContext = false;
+    private bool _hasFocus = false;
 
     public InventoryItemPanel(IInventoryView inventoryView)
     {
         _inventoryView = inventoryView;
         
         this.Anchor(Anchor.Auto)
-            .NoSkin()
+            .SkinNone()
             .NoPadding()
             .WidthOfContainer()
             .Height(1);
@@ -66,40 +66,40 @@ public class InventoryItemPanel : Panel
 
     private void OnInventoryItemPanelMouseDown(Entity entity)
     {
-        _inventoryView.PerformClick(_inventoryItem);
+        _inventoryView.OnMouseDown(_inventoryItem);
     }
 
     public void OnInventoryPanelEnter()
     {
-        SetContext();
+        SetFocus();
     }
     
     public void OnInventoryPanelLeave()
     {
-        ClearContext();
+        ClearFocus();
     }
     
     private void OnInventoryItemPanelMouseEnter(Entity entity)
     {
-        SetContext();
+        SetFocus();
     }
 
-    private void ClearContext()
+    private void ClearFocus()
     {
-        _hasContext = false;
+        _hasFocus = false;
         _coloredRectangle.FillColor(Color.Black);
-        _inventoryView.HideDescription(_inventoryItem);
+        _inventoryView.ClearFocussedItem(_inventoryItem);
     }
 
-    private void SetContext()
+    private void SetFocus()
     {
-        _inventoryView.ClearExistingContext();
+        _inventoryView.ClearFocus();
 
-        if (_inventoryItem != null) // Omit setting context if no inventory item e.g. when slot is showing "Your pack is empty"
+        if (_inventoryItem != null) // Omit setting focus if no inventory item e.g. when slot is showing "Your pack is empty"
         {
-            _hasContext = true;
+            _hasFocus = true;
             _coloredRectangle.FillColor(_backgroundColour);
-            _inventoryView.ShowDescription(_inventoryItem);
+            _inventoryView.SetFocussedItem(_inventoryItem);
         }
     }
 
@@ -133,7 +133,7 @@ public class InventoryItemPanel : Panel
 
     public void SetNoInventory()
     {
-        _hasContext = false;
+        _hasFocus = false;
         _coloredRectangle.FillColor(Color.Black);
         _key.Text = "Your pack is empty";
         _key.CalcTextActualRectWithWrap();
@@ -146,6 +146,6 @@ public class InventoryItemPanel : Panel
     {
         this.Hidden();
         _inventoryItem = null;
-        _hasContext = false;
+        _hasFocus = false;
     }
 }

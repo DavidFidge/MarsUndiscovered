@@ -44,7 +44,7 @@ namespace MarsUndiscovered.UserInterface.Views
             LeftPanel = new Panel()
                 .Anchor(Anchor.TopLeft)
                 .Width(0.19f)
-                .NoSkin()
+                .SkinNone()
                 .NoPadding()
                 .Height(0.999f);
 
@@ -53,7 +53,7 @@ namespace MarsUndiscovered.UserInterface.Views
             TopPanel = new Panel()
                 .Anchor(Anchor.TopRight)
                 .Width(Constants.MiddlePanelWidth)
-                .NoSkin()
+                .SkinNone()
                 .NoPadding()
                 .Offset(new Vector2(20f, 0))
                 .Height(0.14f);
@@ -63,7 +63,7 @@ namespace MarsUndiscovered.UserInterface.Views
             BottomPanel = new Panel()
                 .Anchor(Anchor.BottomRight)
                 .Width(Constants.MiddlePanelWidth)
-                .NoSkin()
+                .SkinNone()
                 .NoPadding()
                 .Offset(new Vector2(20f, 0))
                 .Height(0.1f);
@@ -73,7 +73,7 @@ namespace MarsUndiscovered.UserInterface.Views
             GameViewPanel = new Panel()
                 .Anchor(Anchor.CenterRight)
                 .Width(Constants.MiddlePanelWidth)
-                .NoSkin()
+                .SkinNone()
                 .NoPadding()
                 .Height(0.79f)
                 .Offset(new Vector2(20f, 120f));
@@ -122,7 +122,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected void CreateMessageLog()
         {
             _messageLog = new SelectList()
-                .SimpleSkin()
+                .SkinSimple()
                 .Anchor(Anchor.Auto)
                 .NoPadding();
 

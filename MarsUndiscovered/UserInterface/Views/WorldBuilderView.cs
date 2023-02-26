@@ -48,7 +48,7 @@ namespace MarsUndiscovered.UserInterface.Views
             LeftPanel = new Panel()
                 .Anchor(Anchor.TopLeft)
                 .Width(0.19f)
-                .NoSkin()
+                .SkinNone()
                 .NoPadding()
                 .Height(0.999f);
             

@@ -16,7 +16,7 @@ namespace MarsUndiscovered.UserInterface.Views
         public ActorPanel()
         {
             Panel = new Panel()
-                .NoSkin()
+                .SkinNone()
                 .NoPadding()
                 .WidthOfContainer()
                 .AutoHeight()
