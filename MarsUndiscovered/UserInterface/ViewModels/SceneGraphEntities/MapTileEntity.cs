@@ -69,24 +69,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void SetItem(ItemType itemType)
         {
-            switch (itemType)
-            {
-                case Weapon _:
-                    MapTileTexture = Assets.Weapon;
-                    break;
-
-                case Gadget _:
-                    MapTileTexture = Assets.Gadget;
-                    break;
-
-                case NanoFlask _:
-                    MapTileTexture = Assets.NanoFlask;
-                    break;
-
-                case ShipRepairParts _:
-                    MapTileTexture = Assets.ShipRepairParts;
-                    break;
-            }
+            MapTileTexture = Assets.GetTextureForItemType(itemType);
 
             IsVisible = true;
         }

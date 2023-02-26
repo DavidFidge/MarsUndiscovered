@@ -1,5 +1,6 @@
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 using GoRogue.GameFramework;
+using MarsUndiscovered.Components;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Sprites;
 
@@ -34,5 +35,6 @@ namespace MarsUndiscovered.Interfaces
 
         void LoadContent();
         SpriteSheet GetRadioCommsSpriteSheet(IGameObject gameObject);
+        MapTileTexture GetTextureForItemType(ItemType itemType);
     }
 }

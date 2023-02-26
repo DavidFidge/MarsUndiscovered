@@ -85,7 +85,7 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
 
         for (var i = 0; i < 26; i++)
         {
-            var inventoryItemPanel = new InventoryItemPanel(this);
+            var inventoryItemPanel = new InventoryItemPanel(this, Assets);
             InventoryItems.Add(inventoryItemPanel);
             InventoryPanel.AddChild(inventoryItemPanel);
         }

@@ -2,6 +2,7 @@
 using GeonBit.UI.Entities;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Graphics;
+using MarsUndiscovered.Interfaces;
 using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views;
@@ -9,6 +10,7 @@ namespace MarsUndiscovered.UserInterface.Views;
 public class InventoryItemPanel : Panel
 {
     private readonly IInventoryView _inventoryView;
+    private readonly IAssets _assets;
     public InventoryItem InventoryItem => _inventoryItem;
     public bool HasFocus => _hasFocus;
 
@@ -18,11 +20,13 @@ public class InventoryItemPanel : Panel
     private ColoredRectangle _coloredRectangle;
     private Color _backgroundColour;
     private bool _hasFocus = false;
+    private Image _itemImage;
 
-    public InventoryItemPanel(IInventoryView inventoryView)
+    public InventoryItemPanel(IInventoryView inventoryView, IAssets assets)
     {
         _inventoryView = inventoryView;
-        
+        _assets = assets;
+
         this.Anchor(Anchor.Auto)
             .SkinNone()
             .NoPadding()
@@ -45,6 +49,13 @@ public class InventoryItemPanel : Panel
             .WidthOfContainer();
 
         AddChild(_key);
+        
+        _itemImage = new Image()
+            .Anchor(Anchor.AutoInlineNoBreak)
+            .Size(0, 0)
+            .NoPadding();
+        
+        AddChild(_itemImage);
         
         _description = new Paragraph()
             .Anchor(Anchor.AutoInlineNoBreak)
@@ -114,8 +125,13 @@ public class InventoryItemPanel : Panel
         
         _key.CalcTextActualRectWithWrap();
         this.Height(_key.GetTextDestRect().Height);
+        
+        _itemImage.Texture = _assets.GetTextureForItemType(_inventoryItem.ItemType).Texture2D();
+        _itemImage.Size(_itemImage.Texture.Width, _itemImage.Texture.Height);
 
         _description.Text = _inventoryItem.ItemDescription;
+        _description.Offset(_itemImage.Texture.Width, 0);
+
         _description.FillColor(Color.White);
         _description.RecalculateWidth();
 
@@ -139,6 +155,9 @@ public class InventoryItemPanel : Panel
         _key.CalcTextActualRectWithWrap();
         this.Height(_key.GetTextDestRect().Height);
         _description.Text = String.Empty;
+        _description.Offset(0, 0);
+        _itemImage.Texture = null;
+        _itemImage.Size(0, 0);
         this.Visible();
     }
 

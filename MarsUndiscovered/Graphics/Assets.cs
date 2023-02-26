@@ -310,4 +310,18 @@ public class Assets : IAssets
             _ => null
         };
     }
+    
+    public MapTileTexture GetTextureForItemType(ItemType itemType)
+    {
+        MapTileTexture mapTileTexture = itemType switch
+        {
+            Weapon _ => Weapon,
+            Gadget _ => Gadget,
+            NanoFlask _ => NanoFlask,
+            ShipRepairParts _ => ShipRepairParts,
+            _ => throw new Exception($"Unknown item type {itemType}")
+        };
+
+        return mapTileTexture;
+    }
 }
