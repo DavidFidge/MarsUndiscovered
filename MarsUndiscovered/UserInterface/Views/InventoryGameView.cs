@@ -46,7 +46,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             InventoryItemButtonPanel.AddChild(_equipButton);
         
-            _unequipButton = new Button("{{YELLOW}}u{{DEFAULT}}nequip")
+            _unequipButton = new Button("{{YELLOW}}r{{DEFAULT}}emove")
                 .Anchor(Anchor.AutoInline)
                 .WidthTextWithPadding(50)
                 .Offset(50, 0)
