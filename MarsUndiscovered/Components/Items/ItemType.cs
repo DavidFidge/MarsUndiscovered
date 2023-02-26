@@ -60,6 +60,6 @@ namespace MarsUndiscovered.Components
             return quantity.ToString();
         }
 
-        public abstract string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery);
+        public abstract string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery);
     }
 }

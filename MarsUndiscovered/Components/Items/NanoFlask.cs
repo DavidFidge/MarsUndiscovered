@@ -16,9 +16,15 @@
             return null;
         }
 
-        public override string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
+        public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)
         {
-            return "A nanoflask";
+            if (!itemTypeDiscovery.IsItemTypeDiscovered)
+            {
+                return
+                    "When you look closely into the flask you swear you can see nanobots swimming around. Who knows what the effects will be when poured on yourself or thrown at something?";
+            }
+
+            return null;
         }
     }
 }

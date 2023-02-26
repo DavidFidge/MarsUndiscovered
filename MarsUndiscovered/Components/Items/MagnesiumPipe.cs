@@ -1,3 +1,4 @@
+using System.Text;
 using MonoGame.Extended;
 
 namespace MarsUndiscovered.Components
@@ -29,10 +30,25 @@ namespace MarsUndiscovered.Components
             return $"A {GetEnchantText(item)} Magnesium Pipe";
         }
 
-        public override string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
+        public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)
         {
-            return
-                "Magnesium ores are abundant on Mars and thus magnesium alloys are commonly used for lightweight, strong building materials and tools. This magnesium pipe looks like it would be useful for piping fluids, but it is also very handy as a clubbing weapon.";
+            var stringBuilder = new StringBuilder();
+            
+            stringBuilder.AppendLine(
+                "Magnesium ores are abundant on Mars and thus magnesium alloys are commonly used for lightweight, strong building materials and tools. This magnesium pipe looks like it would be useful for piping fluids, but it is also very handy as a clubbing weapon.");
+            
+            stringBuilder.AppendLine();
+            
+            if (item.ItemDiscovery.IsEnchantLevelDiscovered)
+            {
+                stringBuilder.Append($"{item.GetEnchantmentLevelText()} this weapon will hit for {item.MeleeAttack.GetAttackText(item.MeleeAttack.DamageRange)}");
+            }
+            else
+            {
+                stringBuilder.Append($"{GetPropertiesUnknownText()} this weapon would hit for {item.MeleeAttack.GetAttackText(item.MeleeAttack.DamageRange)}.");
+            }
+
+            return stringBuilder.ToString();
         }
     }
 }

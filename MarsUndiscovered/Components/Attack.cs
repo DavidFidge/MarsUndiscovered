@@ -33,5 +33,10 @@ namespace MarsUndiscovered.Components
 
             return attack;
         }
+
+        public string GetAttackText(Range<int> range)
+        {
+            return $"{{{{L_BLUE}}}}{range.Min}-{range.Max} damage{{{{DEFAULT}}}}";
+        }
     }
 }

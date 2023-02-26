@@ -9,7 +9,7 @@
             return "Ship Repair Parts";
         }
 
-        public override string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
+        public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)
         {
             return
                 "These parts are able to repair the broken fuel injection system on the ship. Bring them back to the ship.";

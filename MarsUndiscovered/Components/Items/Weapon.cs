@@ -10,9 +10,14 @@
             return null;
         }
 
-        public override string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
+        public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)
         {
             return "A weapon";
+        }
+
+        protected string GetPropertiesUnknownText()
+        {
+            return "The properties of this weapon are unknown. If unenchanted,";
         }
     }
 }

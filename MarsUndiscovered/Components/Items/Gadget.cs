@@ -16,9 +16,19 @@
             return null;
         }
 
-        public override string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
+        public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)
         {
-            return "A gadget";
+            if (!itemTypeDiscovery.IsItemTypeDiscovered)
+            {
+                return "This contraption has buttons, levers, flashing lights and screens all over it. Who knows what the effects will be if you fiddle around with it?";
+            }
+
+            return null;
+        }
+        
+        protected string GetPropertiesUnknownText()
+        {
+            return "The properties of this gadget are unknown. While it remains undiscovered, ";
         }
     }
 }

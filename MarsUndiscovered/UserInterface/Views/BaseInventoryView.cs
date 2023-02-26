@@ -150,7 +150,7 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         if (inventoryItem != null)
         {
             InventoryItemDescriptionPanelText.Text =
-                $"{inventoryItem.ItemDescription}\n{inventoryItem.LongDescription}";
+                $"{inventoryItem.ItemDescription}\n\n{inventoryItem.LongDescription}";
             InventoryItemDescriptionPanel.Visible();
             InventoryItemDescriptionPanel.ForceDirty();
         }

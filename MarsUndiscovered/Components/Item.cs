@@ -116,7 +116,13 @@ namespace MarsUndiscovered.Components
 
         public string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
         {
-            return ItemType.GetLongDescription(itemTypeDiscovery);
+            return ItemType.GetLongDescription(this, itemTypeDiscovery);
+        }
+        
+        public string GetEnchantmentLevelText()
+        {
+            return
+                $"With the current enchantment level of {(EnchantmentLevel > 0 ? "{{L_RED}}+" : "{{L_BLUE}}-")}{EnchantmentLevel}{{{{DEFAULT}}}}";
         }
     }
 }
