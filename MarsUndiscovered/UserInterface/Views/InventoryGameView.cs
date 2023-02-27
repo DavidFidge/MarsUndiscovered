@@ -20,6 +20,7 @@ namespace MarsUndiscovered.UserInterface.Views
         private Button _equipButton;
         private Button _unequipButton;
         private Button _dropButton;
+        private Button _applyButton;
         protected Panel InventoryItemButtonPanel { get; set; }
 
         public InventoryGameView(
@@ -69,6 +70,16 @@ namespace MarsUndiscovered.UserInterface.Views
             _dropButton.OnClick += OnDrop;    
             
             InventoryItemButtonPanel.AddChild(_dropButton);
+            
+            _applyButton = new Button("{{YELLOW}}a{{DEFAULT}}pply")
+                .Anchor(Anchor.AutoInline)
+                .WidthTextWithPadding(50)
+                .Offset(50, 0)
+                .SkinAlternative();
+        
+            _applyButton.OnClick += OnApply;    
+            
+            InventoryItemButtonPanel.AddChild(_applyButton);
 
             InventoryItemDescriptionPanel.AddChild(InventoryItemButtonPanel);
         }
@@ -111,6 +122,16 @@ namespace MarsUndiscovered.UserInterface.Views
                 _viewModel.DropRequest(focusItem.InventoryItem.Key);
             }
         }
+        
+        private void OnApply(Entity entity)
+        {
+            var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
+
+            if (focusItem != null && focusItem.InventoryItem.CanApply)
+            {
+                _viewModel.ApplyRequest(focusItem.InventoryItem.Key);
+            }
+        }
 
         public void SetInventoryMode(InventoryMode inventoryMode)
         {
@@ -130,6 +151,9 @@ namespace MarsUndiscovered.UserInterface.Views
                     break;
                 case Views.InventoryMode.Drop:
                     InventoryLabel.Text = "Drop what?";
+                    break;
+                case Views.InventoryMode.Apply:
+                    InventoryLabel.Text = "Apply (use) what?";
                     break;
             }
         }
@@ -153,6 +177,9 @@ namespace MarsUndiscovered.UserInterface.Views
                 case Views.InventoryMode.Drop:
                     _viewModel.DropRequest(request.Key);
                     break;
+                case Views.InventoryMode.Apply:
+                    _viewModel.ApplyRequest(request.Key);
+                    break;
                 case Views.InventoryMode.ReadOnly:
                     base.PerformKeyAction(request.Key);
                     break;
@@ -171,6 +198,8 @@ namespace MarsUndiscovered.UserInterface.Views
                 _viewModel.DropRequest(focusItem.Key);
             else if (_actionMap.ActionIs<OpenGameInventoryRequest>(requestKey, OpenGameInventoryRequest.Unequip))
                 _viewModel.UnequipRequest(focusItem.Key);
+            else if (_actionMap.ActionIs<OpenGameInventoryRequest>(requestKey, OpenGameInventoryRequest.Apply))
+                _viewModel.ApplyRequest(focusItem.Key);
         }
         
         protected override void PerformInventoryModeAction(InventoryItem focusItem)
@@ -185,6 +214,9 @@ namespace MarsUndiscovered.UserInterface.Views
                     break;
                 case Views.InventoryMode.Drop:
                     _viewModel.DropRequest(focusItem.Key);
+                    break;
+                case Views.InventoryMode.Apply:
+                    _viewModel.ApplyRequest(focusItem.Key);
                     break;
             }
         }

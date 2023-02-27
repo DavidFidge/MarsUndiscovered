@@ -230,6 +230,15 @@ namespace MarsUndiscovered.Installers
                     .AsFactory(),
 
                 Component.For<ICommandFactory<ChangeMapCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<ApplyItemCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<ApplyShieldCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<ApplyHealingBotsCommand>>()
                     .AsFactory()
             );
         }

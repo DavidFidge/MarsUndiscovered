@@ -37,7 +37,7 @@ namespace MarsUndiscovered.Commands
 
         protected override CommandResult ExecuteInternal()
         {
-            var itemDescription = GameWorld.Inventory.GetInventoryDescriptionAsSingleItemLowerCase(Item);
+            var itemDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(Item);
 
             _isNotEquipped = !GameWorld.Inventory.IsEquipped(Item);
             if (_isNotEquipped)

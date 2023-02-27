@@ -43,7 +43,7 @@ namespace MarsUndiscovered.Tests.Components
             Assert.IsNull(item.MeleeAttack);
             Assert.IsTrue(item.IsCharged);
             Assert.AreEqual(30, item.DamageShieldPercentage);
-            Assert.AreEqual(300, item.CurrentRechargeDelay);
+            Assert.AreEqual(0, item.CurrentRechargeDelay);
             Assert.AreEqual(300, item.TotalRechargeDelay);
         }
 
@@ -60,7 +60,7 @@ namespace MarsUndiscovered.Tests.Components
             Assert.IsNull(item.MeleeAttack);
             Assert.IsFalse(item.IsCharged);
             Assert.AreEqual(100, item.HealPercentOfMax);
-            Assert.AreEqual((int)(Player.BaseHealth * 0.5), item.MaxHealthIncrease);
+            Assert.AreEqual((int)(Player.BaseHealth * 0.25), item.MaxHealthIncrease);
         }
 
         [TestMethod]

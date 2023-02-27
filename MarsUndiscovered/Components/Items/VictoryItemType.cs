@@ -6,5 +6,10 @@
         {
             return "An item that must be obtained to win the game.";
         }
+
+        public override string GetAbstractTypeDescription()
+        {
+            return "Victory Item";
+        }
     }
 }

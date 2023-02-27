@@ -55,7 +55,7 @@ namespace MarsUndiscovered.Commands
                 return Result(CommandResult.Exception(this, "Monsters currently do not pick up items"));
             }
 
-            var itemDescription = GameWorld.Inventory.GetInventoryDescriptionAsSingleItemLowerCase(Item);
+            var itemDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(Item);
 
             if (!GameWorld.Inventory.CanPickUpItem)
             {

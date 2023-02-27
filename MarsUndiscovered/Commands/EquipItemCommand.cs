@@ -39,9 +39,7 @@ namespace MarsUndiscovered.Commands
 
         protected override CommandResult ExecuteInternal()
         {
-            var itemDescription = GameWorld.Inventory.GetInventoryDescriptionAsSingleItemLowerCase(Item);
-
-            _canEquipType = GameWorld.Inventory.TypeCanBeEquipped(Item);
+            _canEquipType = GameWorld.Inventory.CanTypeBeEquipped(Item);
 
             if (!_canEquipType)
                 return Result(CommandResult.NoMove(this, $"Cannot equip this type of item"));
@@ -51,7 +49,7 @@ namespace MarsUndiscovered.Commands
             var currentItemDescription = String.Empty;
 
             if (_previousItem != null)
-                currentItemDescription = GameWorld.Inventory.GetInventoryDescriptionAsSingleItemLowerCase(_previousItem);
+                currentItemDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(_previousItem);
 
             _isAlreadyEquipped = GameWorld.Inventory.IsEquipped(Item);
 
@@ -60,6 +58,7 @@ namespace MarsUndiscovered.Commands
 
             GameWorld.Inventory.Unequip(_previousItem);
             GameWorld.Inventory.Equip(Item);
+            var itemDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(Item);
 
             if (Item.ItemType is Weapon)
             {

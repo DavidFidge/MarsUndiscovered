@@ -9,35 +9,31 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     {
         public void EquipRequest(Keys requestKey)
         {
-            var item = _inventoryItems.FirstOrDefault(i => i.Key == requestKey);
-
-            if (item != null)
-            {
-                GameWorldEndpoint.EquipItemRequest(requestKey);
-                Mediator.Send(new CloseGameInventoryRequest());
-                Mediator.Publish(new RefreshViewNotification());
-            }
+            DoRequest(requestKey, GameWorldEndpoint.EquipItemRequest);
         }
 
         public void UnequipRequest(Keys requestKey)
         {
-            var item = _inventoryItems.FirstOrDefault(i => i.Key == requestKey);
-
-            if (item != null)
-            {
-                GameWorldEndpoint.UnequipItemRequest(requestKey);
-                Mediator.Send(new CloseGameInventoryRequest());
-                Mediator.Publish(new RefreshViewNotification());
-            }
+            DoRequest(requestKey, GameWorldEndpoint.UnequipItemRequest);
         }
 
         public void DropRequest(Keys requestKey)
+        {
+            DoRequest(requestKey, GameWorldEndpoint.DropItemRequest);
+        }
+
+        public void ApplyRequest(Keys requestKey)
+        {
+            DoRequest(requestKey, GameWorldEndpoint.ApplyItemRequest);
+        }
+
+        private void DoRequest(Keys requestKey, Action<Keys> action)
         {
             var item = _inventoryItems.FirstOrDefault(i => i.Key == requestKey);
 
             if (item != null)
             {
-                GameWorldEndpoint.DropItemRequest(requestKey);
+                action(requestKey);
                 Mediator.Send(new CloseGameInventoryRequest());
                 Mediator.Publish(new RefreshViewNotification());
             }

@@ -47,6 +47,9 @@ namespace MarsUndiscovered.UserInterface.Input
                     case OpenGameInventoryRequest.Drop:
                         inventoryMode = InventoryMode.Drop;
                         break;
+                    case OpenGameInventoryRequest.Apply:
+                        inventoryMode = InventoryMode.Apply;
+                        break;
                 }
 
                 Mediator.Send(new OpenGameInventoryRequest(inventoryMode));

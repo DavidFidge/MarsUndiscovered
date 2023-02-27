@@ -7,17 +7,20 @@ namespace MarsUndiscovered.Components
         private int _damageShieldPercentage = 30;
         public override string Name => nameof(ShieldGenerator);
 
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity)
+        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true)
         {
-            var baseDescription = base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity);
-
-            if (!String.IsNullOrEmpty(baseDescription))
-                return baseDescription;
-
+            if (!itemTypeDiscovery.IsItemTypeDiscovered)
+                return base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity, includePrefix);
+            
             if (!itemDiscovery.IsEnchantLevelDiscovered)
-                return $"A Shield Generator Gadget";
+                return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}";
 
-            return $"A {GetEnchantText(item)} Shield Generator Gadget";
+            return $"{(includePrefix ? "A " : "")}{GetEnchantText(item)} {GetTypeDescription()}";
+        }
+
+        public override string GetTypeDescription()
+        {
+            return $"Shield Generator {GetAbstractTypeDescription()}";
         }
 
         protected override int RechargeDelay => 300;
@@ -41,7 +44,7 @@ namespace MarsUndiscovered.Components
             }
 
             item.IsCharged = true;
-            item.CurrentRechargeDelay = item.TotalRechargeDelay;
+            item.CurrentRechargeDelay = 0;
         }
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)

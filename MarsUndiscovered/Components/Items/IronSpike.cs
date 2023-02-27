@@ -16,18 +16,10 @@ namespace MarsUndiscovered.Components
             item.LineAttack = (Attack)_lineAttack.Clone();
             item.LineAttack.SetPowerLevel(item.EnchantmentLevel);
         }
-
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity)
+        
+        public override string GetTypeDescription()
         {
-            var baseDescription = base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity);
-
-            if (!String.IsNullOrEmpty(baseDescription))
-                return baseDescription;
-
-            if (!itemDiscovery.IsEnchantLevelDiscovered)
-                return $"An Iron Spike";
-
-            return $"A {GetEnchantText(item)} Iron Spike";
+            return "Iron Spike";
         }
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)

@@ -17,17 +17,9 @@ namespace MarsUndiscovered.Components
             item.MeleeAttack.SetPowerLevel(item.EnchantmentLevel);
         }
 
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity)
+        public override string GetTypeDescription()
         {
-            var baseDescription = base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity);
-
-            if (!String.IsNullOrEmpty(baseDescription))
-                return baseDescription;
-
-            if (!itemDiscovery.IsEnchantLevelDiscovered)
-                return $"A Magnesium Pipe";
-
-            return $"A {GetEnchantText(item)} Magnesium Pipe";
+            return "Magnesium Pipe";
         }
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)

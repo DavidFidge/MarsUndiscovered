@@ -2,9 +2,7 @@
 using System.Reflection;
 
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
-
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Interfaces;
 
@@ -26,6 +24,9 @@ namespace MarsUndiscovered.Components
             DropItemCommands = new DropItemCommandCollection(commandFactory, gameWorld);
             PickUpItemCommands = new PickUpItemCommandCollection(commandFactory, gameWorld);
             ChangeMapCommands = new ChangeMapCommandCollection(commandFactory, gameWorld);
+            ApplyItemCommands = new ApplyItemCommandCollection(commandFactory, gameWorld);
+            ApplyShieldCommands = new ApplyShieldCommandCollection(commandFactory, gameWorld);
+            ApplyHealingBotsCommands = new ApplyHealingBotsCommandCollection(commandFactory, gameWorld);
 
             _commandCollectionPropertyInfos = GetType()
                 .GetProperties()
@@ -48,6 +49,9 @@ namespace MarsUndiscovered.Components
         public DropItemCommandCollection DropItemCommands { get; set; }
         public PickUpItemCommandCollection PickUpItemCommands { get; set; }
         public ChangeMapCommandCollection ChangeMapCommands { get; set; }
+        public ApplyItemCommandCollection ApplyItemCommands { get; set; }
+        public ApplyShieldCommandCollection ApplyShieldCommands { get; set; }
+        public ApplyHealingBotsCommandCollection ApplyHealingBotsCommands { get; set; }
 
         public IEnumerator<BaseGameActionCommand> GetEnumerator()
         {

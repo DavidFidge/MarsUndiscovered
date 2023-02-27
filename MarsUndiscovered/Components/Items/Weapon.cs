@@ -2,17 +2,25 @@
 {
     public abstract class Weapon : ItemType
     {
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity)
+        public override string GetAbstractTypeDescription()
         {
-            if (itemTypeDiscovery != null && !itemTypeDiscovery.IsItemTypeDiscovered)
-                return $"An Unknown Weapon";
+            return "Weapon";
+        }
+        
+        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true)
+        {
+            if (itemTypeDiscovery is { IsItemTypeDiscovered: false })
+                return $"{(includePrefix ? "An " : "")}Unknown {GetAbstractTypeDescription()}";
+               
+            if (!itemDiscovery.IsEnchantLevelDiscovered)
+                return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}";
 
-            return null;
+            return $"{(includePrefix ? "A " : "")}{GetEnchantText(item)} {GetTypeDescription()}";
         }
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)
         {
-            return "A weapon";
+            return $"A {GetAbstractTypeDescription()}";
         }
 
         protected string GetPropertiesUnknownText()

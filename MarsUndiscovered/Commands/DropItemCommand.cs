@@ -6,7 +6,7 @@ using GoRogue.GameFramework;
 
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Interfaces;
-
+using Microsoft.Xna.Framework.Input;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Commands
@@ -18,6 +18,7 @@ namespace MarsUndiscovered.Commands
         private bool _wasInInventory;
         private bool _wasEquipped;
         private bool _oldHasBeenDropped;
+        private Keys _itemKey;
 
         public DropItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -35,6 +36,10 @@ namespace MarsUndiscovered.Commands
             base.PopulateSaveState(memento.State);
             memento.State.GameObjectId = GameObject.ID;
             memento.State.ItemId = Item.ID;
+            memento.State.WasInInventory = _wasInInventory;
+            memento.State.WasEquipped = _wasEquipped;
+            memento.State.OldHasBeenDropped = _oldHasBeenDropped;
+            memento.State.ItemKey = _itemKey;
             return memento;
         }
 
@@ -43,6 +48,10 @@ namespace MarsUndiscovered.Commands
             base.PopulateLoadState(memento.State);
             GameObject = GameWorld.GameObjects[memento.State.GameObjectId];
             Item = GameWorld.Items[memento.State.ItemId];
+            _wasInInventory = memento.State.WasInInventory;
+            _wasEquipped = memento.State.WasEquipped;
+            _oldHasBeenDropped = memento.State.OldHasBeenDropped;
+            _itemKey = memento.State.ItemKey;
         }
 
         protected override CommandResult ExecuteInternal()
@@ -56,7 +65,8 @@ namespace MarsUndiscovered.Commands
             {
                 return Result(CommandResult.NoMove(this, "Cannot drop item - there is another item in the way"));
             }
-
+            
+            _itemKey = GameWorld.Inventory.GetKeyForItem(Item);
             _wasEquipped = GameWorld.Inventory.IsEquipped(Item);
             _wasInInventory = GameWorld.Inventory.Remove(Item);
 
@@ -64,7 +74,7 @@ namespace MarsUndiscovered.Commands
 
             map.AddEntity(Item);
 
-            var itemDescription = GameWorld.Inventory.GetInventoryDescriptionAsSingleItemLowerCase(Item);
+            var itemDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(Item);
             _oldHasBeenDropped = Item.HasBeenDropped;
             Item.HasBeenDropped = true;
 
@@ -75,7 +85,7 @@ namespace MarsUndiscovered.Commands
         {
             if (_wasInInventory)
             {
-                GameWorld.Inventory.Add(Item);
+                GameWorld.Inventory.Add(Item, _itemKey);
             }
 
             if (_wasEquipped)

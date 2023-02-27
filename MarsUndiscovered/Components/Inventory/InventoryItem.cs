@@ -13,5 +13,6 @@ namespace MarsUndiscovered.Components
         public bool CanEquip { get; set; }
         public bool CanUnequip { get; set; }
         public bool CanDrop { get; set; }
+        public bool CanApply { get; set; }
     }
 }

@@ -4,16 +4,24 @@
     {
         protected abstract int RechargeDelay { get; }
 
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity)
+        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true)
         {
+            if (!includePrefix)
+                return $"{itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeDescription()}";
+            
             if (!itemTypeDiscovery.IsItemTypeDiscovered)
             {
-                var description = $"{GetQuantityText(quantity, itemTypeDiscovery)} {itemTypeDiscovery.UndiscoveredName} Gadget";
+                var description = $"{GetQuantityText(quantity, itemTypeDiscovery)} {itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeDescription()}";
 
                 return quantity > 1 ? $"{description}s" : description;
             }
 
             return null;
+        }
+
+        public override string GetAbstractTypeDescription()
+        {
+            return "Gadget";
         }
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)

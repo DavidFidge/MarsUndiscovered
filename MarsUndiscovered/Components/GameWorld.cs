@@ -828,6 +828,18 @@ namespace MarsUndiscovered.Components
 
             return ExecuteCommand(unequipItemCommand).ToList();
         }
+        
+        public IList<CommandResult> ApplyItemRequest(Keys itemKey)
+        {
+            if (!Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
+                return null;
+
+            var applyItemCommand = CommandFactory.CreateApplyItemCommand(this);
+
+            applyItemCommand.Initialise(Player, itemGroup.First());
+
+            return ExecuteCommand(applyItemCommand).ToList();
+        }
 
         public void Regenerate()
         {

@@ -1,11 +1,8 @@
 ﻿using System.Collections;
 
 using FrigidRogue.MonoGame.Core.Extensions;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
-
-using GoRogue.Random;
 
 using MarsUndiscovered.Components.SaveData;
 using MarsUndiscovered.Interfaces;
@@ -28,7 +25,7 @@ namespace MarsUndiscovered.Components
         public Dictionary<Keys, ItemGroup> ItemKeyAssignments { get; set; } = new Dictionary<Keys, ItemGroup>();
         public Dictionary<Item, string> CallItem { get; set; } = new Dictionary<Item, string>();
         public Dictionary<ItemType, string> CallItemType { get; set; } = new Dictionary<ItemType, string>();
-        public Dictionary<ItemType, ItemTypeDiscovery> ItemTypeDiscoveries { get; set; } = new Dictionary<ItemType, ItemTypeDiscovery>();
+        public ItemTypeDiscoveryCollection ItemTypeDiscoveries { get; set; } = new ItemTypeDiscoveryCollection();
         public Item EquippedWeapon { get; private set; }
 
         private static readonly Keys[] CandidateKeys = {
@@ -60,50 +57,10 @@ namespace MarsUndiscovered.Components
             Keys.Z
         };
 
-        private static string[] RandomFlaskNames =
-        {
-            "A Red",
-            "An Orange",
-            "A Yellow",
-            "A Blue",
-            "A Green",
-            "A Purple",
-            "A White",
-            "A Black",
-            "A Violet",
-            "A Magenta",
-            "An Aqua",
-            "A Turquoise"
-        };
-
-        private static string[] RandomGadgetNames =
-        {
-            "A Shiny",
-            "A Sparkling",
-            "A Smooth",
-            "A Rough",
-            "A Vibrating",
-            "A Warm",
-            "A Cold",
-            "A Dull",
-            "A Mysterious",
-            "A Complicated",
-            "An Intricate",
-            "A Fiddly"
-        };
-
         public Inventory(IGameWorld gameWorld)
         {
             _gameWorld = gameWorld;
-
-            var unusedFlaskNames = new List<string>(RandomFlaskNames);
-
-            var index = GlobalRandom.DefaultRNG.NextInt(0, unusedFlaskNames.Count - 1);
-            ItemTypeDiscoveries.Add(ItemType.HealingBots, new ItemTypeDiscovery(unusedFlaskNames[index]));
-
-            var unusedGadgetNames = new List<string>(RandomGadgetNames);
-            index = GlobalRandom.DefaultRNG.NextInt(0, unusedGadgetNames.Count - 1);
-            ItemTypeDiscoveries.Add(ItemType.ShieldGenerator, new ItemTypeDiscovery(unusedGadgetNames[index]));
+            ItemTypeDiscoveries.CreateUndiscoveredItemTypeNames();
         }
 
         public List<InventoryItem> GetInventoryItems()
@@ -134,21 +91,6 @@ namespace MarsUndiscovered.Components
                 ).ToList();
 
             return inventoryItems;
-        }
-
-        public string GetInventoryDescriptionAsSingleItem(Item item)
-        {
-            ItemTypeDiscoveries.TryGetValue(item.ItemType, out var itemTypeDiscovery);
-            return item.GetDescription(
-                itemTypeDiscovery,
-                1
-            );
-        }
-
-        public string GetInventoryDescriptionAsSingleItemLowerCase(Item item)
-        {
-            var itemDescription = GetInventoryDescriptionAsSingleItem(item);
-             return $"{itemDescription.Substring(0, 1).ToLower()}{itemDescription.Substring(1)}";
         }
 
         public Keys GetNextUnusedKey()
@@ -212,8 +154,7 @@ namespace MarsUndiscovered.Components
             CallItemType = inventorySaveData.State.CallItemType
                 .ToDictionary(k => ItemType.ItemTypes[k.Key], v => v.Value);
 
-            ItemTypeDiscoveries = inventorySaveData.State.ItemTypeDiscoveries
-                .ToDictionary(k => ItemType.ItemTypes[k.Key], v => v.Value);
+            ItemTypeDiscoveries = new ItemTypeDiscoveryCollection(inventorySaveData.State.ItemTypeDiscoveries);
 
             if (inventorySaveData.State.EquippedWeaponId != null)
                 EquippedWeapon = gameWorld.Items[inventorySaveData.State.EquippedWeaponId.Value];
@@ -228,8 +169,13 @@ namespace MarsUndiscovered.Components
         {
             return GetEnumerator();
         }
-
+        
         public void Add(Item item)
+        {
+            Add(item, Keys.None);
+        }
+
+        public void Add(Item item, Keys specificKey)
         {
             if (item == null)
                 return;
@@ -249,7 +195,10 @@ namespace MarsUndiscovered.Components
                 }
             }
 
-            ItemKeyAssignments.Add(GetNextUnusedKey(), new ItemGroup(item));
+            if (specificKey != Keys.None && !CandidateKeys.Contains(specificKey))
+                throw new Exception($"Specific key {specificKey} must be a-z");
+
+            ItemKeyAssignments.Add(specificKey == Keys.None ? GetNextUnusedKey() : specificKey, new ItemGroup(item));
         }
 
         public void Clear()
@@ -316,12 +265,33 @@ namespace MarsUndiscovered.Components
             if (IsEquipped(item))
                 return false;
 
-            return TypeCanBeEquipped(item);
+            return CanTypeBeEquipped(item);
         }
 
-        public bool TypeCanBeEquipped(Item item)
+        public bool CanTypeBeEquipped(Item item)
         {
             if (item.ItemType is Weapon)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        
+        public bool CanApply(Item item)
+        {
+            if (item == null)
+                return false;
+
+            if (!Items.Contains(item))
+                return false;
+
+            return CanTypeBeApplied(item);
+        }
+        
+        public bool CanTypeBeApplied(Item item)
+        {
+            if (item.ItemType is Gadget or NanoFlask)
             {
                 return true;
             }
@@ -371,6 +341,11 @@ namespace MarsUndiscovered.Components
                 return EquippedWeapon;
 
             return null;
+        }
+
+        public Keys GetKeyForItem(Item item)
+        {
+            return ItemKeyAssignments.First(i => i.Value.Contains(item)).Key;
         }
     }
 }
