@@ -127,7 +127,7 @@ namespace MarsUndiscovered.Components
         public string GetEnchantmentLevelText()
         {
             return
-                $"With the current enchantment level of {(EnchantmentLevel > 0 ? "{{L_RED}}+" : "{{L_BLUE}}-")}{EnchantmentLevel}{{{{DEFAULT}}}}";
+                $"With the current enchantment level of {(EnchantmentLevel >= 0 ? "{{L_BLUE}}+" : "{{L_RED}}-")}{EnchantmentLevel}{{{{DEFAULT}}}}";
         }
     }
 }

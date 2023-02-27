@@ -131,18 +131,21 @@ namespace MarsUndiscovered.Components
             PopulateLoadState(memento.State);
             Breed = Breed.Breeds[memento.State.BreedName];
 
-            _seenTilesAfterLoad = memento.State.SeenTiles
-                .Select(s =>
-                    {
-                        var seenTiles = new SeenTile(s.State.Point);
+            if (!IsDead)
+            {
+                _seenTilesAfterLoad = memento.State.SeenTiles
+                    .Select(s =>
+                        {
+                            var seenTiles = new SeenTile(s.State.Point);
 
-                        // Monster goals currently don't care about last seen game objects
-                        // so we can pass in a new dictionary
-                        seenTiles.SetLoadState(s, new Dictionary<uint, IGameObject>());
-                        return seenTiles;
-                    }
-                )
-                .ToArray();
+                            // Monster goals currently don't care about last seen game objects
+                            // so we can pass in a new dictionary
+                            seenTiles.SetLoadState(s, new Dictionary<uint, IGameObject>());
+                            return seenTiles;
+                        }
+                    )
+                    .ToArray();
+            }
         }
 
         public IMemento<MonsterSaveData> GetSaveState()
@@ -152,9 +155,13 @@ namespace MarsUndiscovered.Components
             base.PopulateSaveState(memento.State);
 
             memento.State.BreedName = Breed.Name;
-            memento.State.SeenTiles = _seenTiles.ToArray()
-                .Select(s => s.GetSaveState())
-                .ToList();
+            
+            if (!IsDead)
+            {
+                memento.State.SeenTiles = _seenTiles.ToArray()
+                    .Select(s => s.GetSaveState())
+                    .ToList();
+            }
 
             return memento;
         }

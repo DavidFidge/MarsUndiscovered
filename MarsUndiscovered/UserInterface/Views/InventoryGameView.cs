@@ -91,6 +91,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _equipButton.Enabled = inventoryItem.CanEquip;
             _unequipButton.Enabled = inventoryItem.CanUnequip;
             _dropButton.Enabled = inventoryItem.CanDrop;
+            _applyButton.Enabled = inventoryItem.CanApply;
         }
 
         private void OnEquip(Entity entity)

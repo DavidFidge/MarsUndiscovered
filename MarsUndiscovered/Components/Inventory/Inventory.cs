@@ -85,7 +85,8 @@ namespace MarsUndiscovered.Components
                             LongDescription = item.GetLongDescription(itemTypeDiscovery),
                             CanEquip = CanEquip(item),
                             CanDrop = true,
-                            CanUnequip = CanUnequip(item)
+                            CanUnequip = CanUnequip(item),
+                            CanApply = CanApply(item)
                         };
                     }
                 ).ToList();
