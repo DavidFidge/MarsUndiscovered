@@ -11,8 +11,8 @@ namespace MarsUndiscovered.Commands
     {
         public Actor Source { get; private set; }
         public Actor Target { get; private set; }
-        
-        private int _damage;
+
+        private AttackRestoreData _attackRestoreData;
 
         public MeleeAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -31,6 +31,7 @@ namespace MarsUndiscovered.Commands
 
             memento.State.SourceId = Source.ID;
             memento.State.TargetId = Target.ID;
+            memento.State.AttackRestoreData = _attackRestoreData;
 
             return memento;
         }
@@ -41,14 +42,21 @@ namespace MarsUndiscovered.Commands
 
             Source = (Actor)GameWorld.GameObjects[memento.State.SourceId];
             Target = (Actor)GameWorld.GameObjects[memento.State.TargetId];
+            _attackRestoreData = memento.State.AttackRestoreData;
         }
 
         protected override CommandResult ExecuteInternal()
         {
-            // Result does not need to be persisted as long as random number seed is the same
-            _damage = Source.MeleeAttack.Roll();
+            var damage = Source.MeleeAttack.Roll();
 
-            Target.Health -= _damage;
+            _attackRestoreData = new AttackRestoreData
+            {
+                Damage = damage,
+                Health = Target.Health,
+                Shield = Target.Shield
+            };
+
+            Target.ApplyDamage(damage);
 
             var message = $"{Source.NameSpecificArticleUpperCase} hit {Target.NameSpecificArticleLowerCase}";
 
@@ -66,7 +74,8 @@ namespace MarsUndiscovered.Commands
 
         protected override void UndoInternal()
         {
-            Target.Health += _damage;
+            Target.Health = _attackRestoreData.Health;
+            Target.Shield = _attackRestoreData.Shield;
         }
     }
 }

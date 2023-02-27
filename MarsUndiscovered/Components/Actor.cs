@@ -65,5 +65,18 @@ namespace MarsUndiscovered.Components
                 ResidualRegen = 0;
             }
         }
+
+        public void ApplyDamage(int damage)
+        {
+            Shield -= damage;
+
+            if (Shield > 0)
+                return;
+            
+            damage = Math.Abs(Shield);
+            Shield = 0;
+            
+            Health -= damage;
+        }
     }
 }

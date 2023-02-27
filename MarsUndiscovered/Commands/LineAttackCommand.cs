@@ -12,7 +12,8 @@ namespace MarsUndiscovered.Commands
 {
     public class LineAttackCommand : BaseAttackCommand<LineAttackCommandSaveData>
     {
-        private Dictionary<Monster, int> _targetDamage = new Dictionary<Monster, int>();
+        private List<AttackRestoreData> _targetHitDetails = new List<AttackRestoreData>();
+        private IList<Actor> _targets;
 
         public Actor Source { get; private set; }
         public List<Point> Path { get; private set; }
@@ -28,6 +29,7 @@ namespace MarsUndiscovered.Commands
 
             memento.State.SourceId = Source.ID;
             memento.State.Path = Path.ToList();
+            memento.State.LineAttackCommandRestore = _targetHitDetails.ToList();
 
             return memento;
         }
@@ -38,6 +40,8 @@ namespace MarsUndiscovered.Commands
 
             Source = (Actor)GameWorld.GameObjects[memento.State.SourceId];
             Path = memento.State.Path.ToList();
+            _targetHitDetails = memento.State.LineAttackCommandRestore.ToList();
+            _targets = GetTargets(Source, Path);
         }
         
         protected override CommandResult ExecuteInternal()
@@ -45,18 +49,25 @@ namespace MarsUndiscovered.Commands
             if (Source.LineAttack == null)
                 throw new Exception("Object does not have a line attack");
 
-            var targets = GetTargets(Source, Path);
-
-            if (targets.IsEmpty())
+            if (_targets.IsEmpty())
                 return CommandResult.Exception(this, "No targets found for LineAttack");
 
-            var commandResult = CommandResult.Success(this, new List<string>(targets.Count));
+            var commandResult = CommandResult.Success(this, new List<string>(_targets.Count));
 
-            foreach (var target in targets)
+            foreach (var target in _targets)
             {
                 var damage = Source.LineAttack.Roll();
 
-                target.Health -= damage;
+                var lineAttackCommandRestore = new AttackRestoreData
+                {
+                    Damage = damage,
+                    Health = target.Health,
+                    Shield = target.Shield
+                };
+                
+                _targetHitDetails.Add(lineAttackCommandRestore);
+
+                target.ApplyDamage(damage);
 
                 var message = $"{Source.NameSpecificArticleUpperCase} hit {target.NameSpecificArticleLowerCase}";
                 commandResult.Messages.Add(message);
@@ -67,8 +78,6 @@ namespace MarsUndiscovered.Commands
                     deathCommand.Initialise(target, Source.NameGenericArticleLowerCase);
                     commandResult.SubsequentCommands.Add(deathCommand);
                 }
-                
-                _targetDamage.Add(target, damage);
             }
 
             return Result(commandResult);
@@ -76,9 +85,10 @@ namespace MarsUndiscovered.Commands
 
         protected override void UndoInternal()
         {
-            foreach (var monster in _targetDamage)
+            for (var i = 0; i < _targets.Count; i++)
             {
-                monster.Key.Health += monster.Value;
+                _targets[i].Health = _targetHitDetails[i].Health;
+                _targets[i].Shield = _targetHitDetails[i].Shield;
             }
         }
 
@@ -86,13 +96,14 @@ namespace MarsUndiscovered.Commands
         {
             Source = source;
             Path = path;
+            _targets = GetTargets(Source, Path);
         }
 
-        private IList<Monster> GetTargets(Actor source, List<Point> lineAttackPath)
+        private IList<Actor> GetTargets(Actor source, List<Point> lineAttackPath)
         {
             return lineAttackPath
                 .Skip(1)
-                .Select(p => source.CurrentMap.GetObjectAt<Monster>(p))
+                .Select(p => source.CurrentMap.GetObjectAt<Actor>(p))
                 .Where(p => p != null)
                 .ToList();
         }

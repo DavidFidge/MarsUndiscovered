@@ -6,5 +6,6 @@ namespace MarsUndiscovered.Commands
     {
         public uint SourceId { get; set; }
         public List<Point> Path { get; set; }
+        public List<AttackRestoreData> LineAttackCommandRestore { get; set; }
     }
 }
