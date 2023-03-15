@@ -13,9 +13,9 @@ namespace MarsUndiscovered.Components
                 return base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity, includePrefix);
             
             if (!itemDiscovery.IsEnchantLevelDiscovered)
-                return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}";
+                return $"{(includePrefix ? "A " : "")}{GetTypeDescription()} ({item.GetRechargeText()})";
 
-            return $"{(includePrefix ? "A " : "")}{GetEnchantText(item)} {GetTypeDescription()}";
+            return $"{(includePrefix ? "A " : "")}{GetEnchantText(item)} {GetTypeDescription()} ({item.GetRechargeText()})";
         }
 
         public override string GetTypeDescription()
@@ -62,12 +62,16 @@ namespace MarsUndiscovered.Components
 
             if (itemTypeDiscovery.IsItemTypeDiscovered)
             {
-                stringBuilder.Append($"{item.GetEnchantmentLevelText()} this shield generator will give you a shield worth {{{{L_BLUE}}}}{item.DamageShieldPercentage}%{{{{DEFAULT}}}} of your maximum health.");
+                stringBuilder.AppendLine($"{item.GetEnchantmentLevelText()} this shield generator will give you a shield worth {{{{L_BLUE}}}}{item.DamageShieldPercentage}%{{{{DEFAULT}}}} of your maximum health.");
             }
             else
             {
-                stringBuilder.Append($"{GetPropertiesUnknownText()} the shield generator will act like a +1 device and give you a shield worth {{{{L_BLUE}}}}{_damageShieldPercentage}%{{{{DEFAULT}}}} of your maximum health.");
+                stringBuilder.AppendLine($"{GetPropertiesUnknownText()} the shield generator will act like a +1 device and give you a shield worth {{{{L_BLUE}}}}{_damageShieldPercentage}%{{{{DEFAULT}}}} of your maximum health.");
             }
+
+            stringBuilder.AppendLine();
+
+            stringBuilder.AppendLine(item.GetRechargeLongDescription());
 
             return stringBuilder.ToString();
         }

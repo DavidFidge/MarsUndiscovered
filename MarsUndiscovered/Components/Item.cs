@@ -11,12 +11,12 @@ namespace MarsUndiscovered.Components
         public ItemType ItemType { get; set; }
         public int EnchantmentLevel { get; set; }
         public int CurrentRechargeDelay { get; set; }
-        public bool IsCharged { get; set; }
+        public int TotalRechargeDelay { get; set; }
 
+        public bool IsCharged { get; set; }
         public Attack MeleeAttack { get; set; }
         public Attack LineAttack { get; set; }
         public int DamageShieldPercentage { get; set; }
-        public int TotalRechargeDelay { get; set; }
         public int HealPercentOfMax { get; set; }
         public int MaxHealthIncrease { get; set; }
         public bool GroupsInInventory { get; set; }
@@ -128,6 +128,24 @@ namespace MarsUndiscovered.Components
         {
             return
                 $"With the current enchantment level of {(EnchantmentLevel >= 0 ? "{{L_BLUE}}+" : "{{L_RED}}-")}{EnchantmentLevel}{{{{DEFAULT}}}}";
+        }
+        
+        public string GetRechargeText()
+        {
+            if (CurrentRechargeDelay == 0)
+                return "ready";
+
+            return $"{((TotalRechargeDelay - CurrentRechargeDelay) * 100) / TotalRechargeDelay}% charged";
+        }
+
+        public string GetRechargeLongDescription()
+        {
+            var afterUseText = $"After use, it will take {TotalRechargeDelay} turns to recharge.";
+            
+            if (CurrentRechargeDelay == 0)
+                return $"The item is ready to use. {afterUseText}";
+
+            return $"The item is recharging and will be ready to use in {CurrentRechargeDelay} turns. {afterUseText}";
         }
     }
 }
