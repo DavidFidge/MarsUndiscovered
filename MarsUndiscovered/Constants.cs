@@ -6,6 +6,7 @@
         public const float UiIndentLevel2 = 40f;
         public const float TextInputMinimalHeight = 0.12f;
         public const float MiddlePanelWidth = 0.805f;
+        public const float LeftPanelWidth = 0.19f;
 
         // Layers
         public const int TerrainLayer = 0;

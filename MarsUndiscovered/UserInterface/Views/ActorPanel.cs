@@ -2,7 +2,6 @@
 
 using GeonBit.UI.Entities;
 
-using MarsUndiscovered.Components;
 using MarsUndiscovered.Components.Dto;
 
 namespace MarsUndiscovered.UserInterface.Views
@@ -36,7 +35,7 @@ namespace MarsUndiscovered.UserInterface.Views
         public void Update(ActorStatus actorStatus)
         {
             Name.Text = actorStatus.Name;
-            HealthBar.UpdateHealth(actorStatus.Health, actorStatus.MaxHealth);
+            HealthBar.UpdateHealth(actorStatus.Health, actorStatus.MaxHealth, actorStatus.Shield);
         }
 
         public override void AddAsChildTo(Entity parent)

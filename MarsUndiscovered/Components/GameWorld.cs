@@ -738,6 +738,7 @@ namespace MarsUndiscovered.Components
                 IsDead = Player.IsDead,
                 IsVictorious = Player.IsVictorious,
                 MaxHealth = Player.MaxHealth,
+                Shield = Player.Shield,
                 Name = Player.Name
             };
         }

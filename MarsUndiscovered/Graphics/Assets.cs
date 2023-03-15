@@ -3,6 +3,7 @@
 using MarsUndiscovered.Interfaces;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.View.Extensions;
 using GoRogue.GameFramework;
 using MarsUndiscovered.Components;
 using Microsoft.Xna.Framework;
@@ -232,7 +233,7 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            new Color(Color.Black, 1f),
+            Color.Black,
             0.199f
         );
 
@@ -240,7 +241,7 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            new Color(Color.Black, 0.8f),
+            Color.Black.WithTransparency(0.8f),
             0.198f
         );
 
