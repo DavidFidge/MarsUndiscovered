@@ -56,6 +56,9 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Anchor(Anchor.CenterRight);
 
             _shieldBar.AddChild(_gainLossLabel);
+
+            // This is needed otherwise the first Draw call does not draw the panel with the correct height
+            _healthBarContainer.SetHeightBasedOnChildren();
         }
 
         public override void AddAsChildTo(Entity parent)
