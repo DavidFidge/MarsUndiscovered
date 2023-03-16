@@ -250,6 +250,7 @@ namespace MarsUndiscovered.Components
             if (item.ItemType is Weapon)
             {
                 EquippedWeapon = item;
+                item.IsEquipped = true;
             }
             
             _gameWorld.Player.RecalculateAttacks();
@@ -305,10 +306,7 @@ namespace MarsUndiscovered.Components
             if (item == null)
                 return false;
 
-            if (item == EquippedWeapon)
-                return true;
-            
-            return false;
+            return item.IsEquipped;
         }
 
         public void Unequip(Item item)
@@ -318,6 +316,8 @@ namespace MarsUndiscovered.Components
 
             if (item == EquippedWeapon)
                 EquippedWeapon = null;
+
+            item.IsEquipped = false;
             
             _gameWorld.Player.RecalculateAttacks();
         }

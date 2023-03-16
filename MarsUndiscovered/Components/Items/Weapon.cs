@@ -10,13 +10,15 @@
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
             ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
+            var status = includeStatus && item.IsEquipped ? " (equipped)" : "";
+            
             if (itemTypeDiscovery is { IsItemTypeDiscovered: false })
-                return $"{(includePrefix ? "An " : "")}Unknown {GetAbstractTypeDescription()}";
+                return $"{(includePrefix ? "An " : "")}Unknown {GetAbstractTypeDescription()}{status}";
                
             if (!itemDiscovery.IsEnchantLevelDiscovered)
-                return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}";
+                return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}{status}";
 
-            return $"{(includePrefix ? "A " : "")}{GetEnchantText(item)} {GetTypeDescription()}";
+            return $"{(includePrefix ? "A " : "")}{GetEnchantText(item)} {GetTypeDescription()}{status}";
         }
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)

@@ -116,6 +116,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(itemTypeDiscovery.IsItemTypeDiscovered);
             Assert.IsNull(newGameWorld.Player.MeleeAttack);
             Assert.IsNotNull(newGameWorld.Player.LineAttack);
+
+            var loadedItem5 = newGameWorld.Inventory.EquippedWeapon;
+            Assert.AreEqual(item5.ID, loadedItem5.ID);
+            Assert.IsTrue(loadedItem5.IsEquipped);
         }
 
         [TestMethod]

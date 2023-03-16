@@ -13,6 +13,7 @@ namespace MarsUndiscovered.Components
         public int CurrentRechargeDelay { get; set; }
         public int TotalRechargeDelay { get; set; }
 
+        public bool IsEquipped { get; set; }
         public bool IsCharged { get; set; }
         public Attack MeleeAttack { get; set; }
         public Attack LineAttack { get; set; }
@@ -53,6 +54,7 @@ namespace MarsUndiscovered.Components
             memento.State.EnchantmentLevel = EnchantmentLevel;
             memento.State.CurrentRechargeDelay = CurrentRechargeDelay;
             memento.State.IsCharged = IsCharged;
+            memento.State.IsEquipped = IsEquipped;
 
             if (MeleeAttack != null)
                 memento.State.MeleeAttack = (Attack)MeleeAttack.Clone();
@@ -81,6 +83,7 @@ namespace MarsUndiscovered.Components
             EnchantmentLevel = memento.State.EnchantmentLevel;
             CurrentRechargeDelay = memento.State.CurrentRechargeDelay;
             IsCharged = memento.State.IsCharged;
+            IsEquipped = memento.State.IsEquipped;
 
             if (memento.State.MeleeAttack != null)
                 MeleeAttack = (Attack)memento.State.MeleeAttack.Clone();
