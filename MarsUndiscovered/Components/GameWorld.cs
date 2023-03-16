@@ -492,8 +492,14 @@ namespace MarsUndiscovered.Components
             }
 
             Regenerate();
+            RechargeItems();
 
             UpdateMonstersInView();
+        }
+
+        private void RechargeItems()
+        {
+            Items.RechargeItems();
         }
 
         protected void UpdateMonstersInView()
