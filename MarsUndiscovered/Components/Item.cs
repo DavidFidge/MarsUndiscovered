@@ -109,6 +109,11 @@ namespace MarsUndiscovered.Components
             return ItemType.GetDescription(this, ItemDiscovery, itemTypeDiscovery, quantity);
         }
         
+        public string GetDescriptionWithoutStatus(ItemTypeDiscovery itemTypeDiscovery)
+        {
+            return ItemType.GetDescription(this, ItemDiscovery, itemTypeDiscovery, 1, true, false);
+        }
+        
         public string GetDescriptionWithoutPrefix(ItemTypeDiscovery itemTypeDiscovery)
         {
             return ItemType.GetDescription(this, ItemDiscovery, itemTypeDiscovery, 0, false);

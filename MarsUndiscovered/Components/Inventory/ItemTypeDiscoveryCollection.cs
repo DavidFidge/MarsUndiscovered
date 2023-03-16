@@ -117,10 +117,7 @@ public class ItemTypeDiscoveryCollection : Dictionary<ItemType, ItemTypeDiscover
     {
         TryGetValue(item.ItemType, out var itemTypeDiscovery);
             
-        return item.GetDescription(
-            itemTypeDiscovery,
-            1
-        );
+        return item.GetDescriptionWithoutStatus(itemTypeDiscovery);
     }
 
     public string GetInventoryDescriptionAsSingleItemLowerCase(Item item)

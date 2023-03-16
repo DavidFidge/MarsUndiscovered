@@ -47,9 +47,11 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly ConsoleView _consoleView;
         private readonly InventoryGameView _inventoryGameView;
         private readonly GameViewGameOverKeyboardHandler _gameOverKeyboardHandler;
+        private readonly GameViewGameOverMouseHandler _gameOverMouseHandler;
         private readonly GameViewRadioCommsKeyboardHandler _radioCommsKeyboardHandler;
         private readonly GameViewRadioCommsMouseHandler _gameViewRadioCommsMouseHandler;
         private readonly IStopwatchProvider _stopwatchProvider;
+        private readonly Options _options;
         private Path _currentMovePath;
         private bool _isAutoExploring;
         private double _lastMoveTime = 0;
@@ -69,10 +71,12 @@ namespace MarsUndiscovered.UserInterface.Views
             ConsoleView consoleView,
             InventoryGameView inventoryGameView,
             GameViewGameOverKeyboardHandler gameOverKeyboardHandler,
+            GameViewGameOverMouseHandler gameOverMouseHandler,
             GameViewRadioCommsKeyboardHandler radioCommsKeyboardHandler,
             GameViewRadioCommsMouseHandler gameViewRadioCommsMouseHandler,
             IGameCamera gameCamera,
-            IStopwatchProvider stopwatchProvider
+            IStopwatchProvider stopwatchProvider,
+            Options options
         )
             : base(gameCamera, gameViewModel)
         {
@@ -80,9 +84,11 @@ namespace MarsUndiscovered.UserInterface.Views
             _consoleView = consoleView;
             _inventoryGameView = inventoryGameView;
             _gameOverKeyboardHandler = gameOverKeyboardHandler;
+            _gameOverMouseHandler = gameOverMouseHandler;
             _radioCommsKeyboardHandler = radioCommsKeyboardHandler;
             _gameViewRadioCommsMouseHandler = gameViewRadioCommsMouseHandler;
             _stopwatchProvider = stopwatchProvider;
+            _options = options;
         }
 
         protected override void InitializeInternal()
@@ -314,13 +320,13 @@ namespace MarsUndiscovered.UserInterface.Views
 
                 if (_viewModel.PlayerStatus.IsDead)
                 {
-                    GameInputService?.ChangeInput(MouseHandler, _gameOverKeyboardHandler);
-                    StatusParagraph.Text = DelimitWithDashes("YOU ARE DEAD. PRESS SPACE TO EXIT GAME.");
+                    GameInputService?.ChangeInput(_gameOverMouseHandler, _gameOverKeyboardHandler);
+                    StatusParagraph.Text = DelimitWithDashes("YOU ARE DEAD. PRESS SPACE OR CLICK TO EXIT GAME.");
                 }
                 else if (_viewModel.PlayerStatus.IsVictorious)
                 {
-                    GameInputService?.ChangeInput(MouseHandler, _gameOverKeyboardHandler);
-                    StatusParagraph.Text = DelimitWithDashes("YOU ARE VICTORIOUS! PRESS SPACE TO EXIT GAME.");
+                    GameInputService?.ChangeInput(_gameOverMouseHandler, _gameOverKeyboardHandler);
+                    StatusParagraph.Text = DelimitWithDashes("YOU ARE VICTORIOUS! PRESS SPACE OR CLICK TO EXIT GAME.");
                 }
             }
             else
@@ -334,6 +340,9 @@ namespace MarsUndiscovered.UserInterface.Views
             foreach (var item in _viewModel.GetNewRadioCommsItems()) 
                 _radioCommsItems.Enqueue(item);
 
+            if (_options.SkipRadioComms)
+                _radioCommsItems.Clear();
+            
             if (_radioCommsItems.Any())
             {
                 _isWaitingForRadioComms = true;
@@ -348,7 +357,7 @@ namespace MarsUndiscovered.UserInterface.Views
             {
                 var nextRadioComms = _radioCommsItems.Dequeue();
 
-                StatusParagraph.Text = DelimitWithDashes("PRESS SPACE TO CONTINUE");
+                StatusParagraph.Text = DelimitWithDashes("PRESS SPACE OR CLICK TO CONTINUE");
 
                 RadioCommsMessage.Text = nextRadioComms.Message;
                 RadioCommsSource.Text = nextRadioComms.Source;

@@ -15,7 +15,8 @@ namespace MarsUndiscovered.Components
             item.MaxHealthIncrease = ((Player.BaseHealth * _healthIncreasePercent) / 100);
         }
 
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true)
+        public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
+            ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
             if (!itemTypeDiscovery.IsItemTypeDiscovered)
                 return base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity, includePrefix);

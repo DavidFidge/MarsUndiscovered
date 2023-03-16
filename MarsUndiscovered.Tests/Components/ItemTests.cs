@@ -97,10 +97,10 @@ namespace MarsUndiscovered.Tests.Components
 
         [TestMethod]
         [DataRow(1, false, false, "A Shiny Gadget")]
-        [DataRow(1, false, true, "A Shield Generator Gadget")]
-        [DataRow(1, true, true, "A +1 Shield Generator Gadget")]
-        [DataRow(0, true, true, "A +0 Shield Generator Gadget")]
-        [DataRow(-1, true, true, "A -1 Shield Generator Gadget")]
+        [DataRow(1, false, true, "A Shield Generator Gadget (ready)")]
+        [DataRow(1, true, true, "A +1 Shield Generator Gadget (ready)")]
+        [DataRow(0, true, true, "A +0 Shield Generator Gadget (ready)")]
+        [DataRow(-1, true, true, "A -1 Shield Generator Gadget (ready)")]
         public void Should_Get_ShieldGenerator_Description(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
         {
             var item = new Item(Substitute.For<IGameWorld>(), 1)
@@ -111,6 +111,27 @@ namespace MarsUndiscovered.Tests.Components
 
             // Act
             var result = item.GetDescription(new ItemTypeDiscovery("A Shiny") { IsItemTypeDiscovered = isDiscovered }, 1);
+
+            // Assert
+            Assert.AreEqual(expectedResult, result);
+        }
+        
+        [TestMethod]
+        [DataRow(1, false, false, "A Shiny Gadget")]
+        [DataRow(1, false, true, "A Shield Generator Gadget")]
+        [DataRow(1, true, true, "A +1 Shield Generator Gadget")]
+        [DataRow(0, true, true, "A +0 Shield Generator Gadget")]
+        [DataRow(-1, true, true, "A -1 Shield Generator Gadget")]
+        public void Should_Get_ShieldGenerator_Description_Without_Status(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
+        {
+            var item = new Item(Substitute.For<IGameWorld>(), 1)
+                .WithItemType(ItemType.ShieldGenerator)
+                .WithEnchantmentLevel(enchantmentLevel);
+
+            item.ItemDiscovery.IsEnchantLevelDiscovered = isEnchantDiscovered;
+
+            // Act
+            var result = item.GetDescriptionWithoutStatus(new ItemTypeDiscovery("A Shiny") { IsItemTypeDiscovered = isDiscovered });
 
             // Assert
             Assert.AreEqual(expectedResult, result);

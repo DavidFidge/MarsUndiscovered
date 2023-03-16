@@ -107,13 +107,13 @@ namespace MarsUndiscovered.Components
             
             Inventory = new Inventory(this);
             
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).InInventory(Inventory));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).InInventory(Inventory));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).InInventory(Inventory));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).InInventory(Inventory));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).InInventory(Inventory));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).InInventory(Inventory));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).InInventory(Inventory));
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).IntoPlayerInventory());
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).IntoPlayerInventory());
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).IntoPlayerInventory());
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).IntoPlayerInventory());
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).IntoPlayerInventory());
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).IntoPlayerInventory());
+            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).IntoPlayerInventory());
 
             _radioComms.CreateGameStartMessages(Ships.First().Value, _messageLog);
 
@@ -461,9 +461,6 @@ namespace MarsUndiscovered.Components
                 nextPoint = subsequentSteps.First();
             }
 
-            if (CurrentMap.GetObjectAt<Wall>(nextPoint) != null)
-                return commandResults;
-
             foreach (var surroundingPoint in AdjacencyRule.EightWay.Neighbors(Player.Position))
             {
                 if (CurrentMap.Bounds().Contains(surroundingPoint) && CurrentMap.GetObjectAt<Monster>(surroundingPoint) != null)
@@ -572,6 +569,9 @@ namespace MarsUndiscovered.Components
         public void SpawnItem(SpawnItemParams spawnItemParams)
         {
             var map = spawnItemParams.MapId.HasValue ? Maps.First(m => m.Id == spawnItemParams.MapId) : CurrentMap;
+            
+            if (spawnItemParams.IntoPlayerInventory)
+                spawnItemParams.Inventory = Inventory;
 
             ItemGenerator.SpawnItem(spawnItemParams, GameObjectFactory, map, Items);
         }

@@ -42,7 +42,7 @@ namespace MarsUndiscovered.Components
             return null;
         }
 
-        public abstract string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true);
+        public abstract string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true);
         public abstract string GetTypeDescription();
         public abstract string GetAbstractTypeDescription();
 

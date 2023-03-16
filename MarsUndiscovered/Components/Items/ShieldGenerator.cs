@@ -7,15 +7,17 @@ namespace MarsUndiscovered.Components
         private int _damageShieldPercentage = 30;
         public override string Name => nameof(ShieldGenerator);
 
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true)
+        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
             if (!itemTypeDiscovery.IsItemTypeDiscovered)
-                return base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity, includePrefix);
+                return base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity, includePrefix, includeStatus);
+
+            var status = includeStatus ? $" ({item.GetRechargeText()})" : "";
             
             if (!itemDiscovery.IsEnchantLevelDiscovered)
-                return $"{(includePrefix ? "A " : "")}{GetTypeDescription()} ({item.GetRechargeText()})";
+                return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}{status}";
 
-            return $"{(includePrefix ? "A " : "")}{GetEnchantText(item)} {GetTypeDescription()} ({item.GetRechargeText()})";
+            return $"{(includePrefix ? "A " : "")}{GetEnchantText(item)} {GetTypeDescription()}{status}";
         }
 
         public override string GetTypeDescription()

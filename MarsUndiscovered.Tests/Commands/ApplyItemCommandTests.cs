@@ -114,7 +114,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
             Assert.IsNotNull(_gameWorld.Inventory.Items.SingleOrDefault(i => i.Equals(item)));
             Assert.AreEqual(1, item.CurrentRechargeDelay);
-            Assert.AreEqual("Cannot apply the Shield Generator Gadget. It is still recharging.", result.Messages[0]);
+            Assert.AreEqual("Cannot apply the Shield Generator Gadget (99% charged). It is still recharging.", result.Messages[0]);
         }
         
         [TestMethod]

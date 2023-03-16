@@ -4,7 +4,8 @@
     {
         public override string Name => nameof(ShipRepairParts);
 
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true)
+        public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
+            ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
             return GetTypeDescription();
         }

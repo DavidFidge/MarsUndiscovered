@@ -7,7 +7,8 @@
             return "Weapon";
         }
         
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true)
+        public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
+            ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
             if (itemTypeDiscovery is { IsItemTypeDiscovered: false })
                 return $"{(includePrefix ? "An " : "")}Unknown {GetAbstractTypeDescription()}";

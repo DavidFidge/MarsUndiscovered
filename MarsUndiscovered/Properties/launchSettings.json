@@ -11,6 +11,10 @@
     "New Game": {
       "commandName": "Project",
       "commandLineArgs": "--NewGame"
+    },
+    "New Game Skip Comms": {
+      "commandName": "Project",
+      "commandLineArgs": "--NewGame --SkipRadioComms"
     }
   }
 }

@@ -4,7 +4,8 @@
     {
         public override bool GroupsInInventory => true;
 
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true)
+        public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
+            ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
             if (!includePrefix)
                 return $"{itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeDescription()}";

@@ -360,6 +360,7 @@ namespace MarsUndiscovered.Installers
                     .DependsOn(Dependency.OnComponent<IMouseHandler, GameViewMouseHandler>())
                     .DependsOn(Dependency.OnComponent<GameViewRadioCommsMouseHandler, GameViewRadioCommsMouseHandler>())
                     .DependsOn(Dependency.OnComponent<GameViewRadioCommsKeyboardHandler, GameViewRadioCommsKeyboardHandler>())
+                    .DependsOn(Dependency.OnComponent<GameViewGameOverMouseHandler, GameViewGameOverMouseHandler>())
                     .DependsOn(Dependency.OnComponent<GameViewGameOverKeyboardHandler, GameViewGameOverKeyboardHandler>()),
 
                 Component.For<GameViewModel>()

@@ -232,7 +232,7 @@ namespace MarsUndiscovered.Tests.Commands
         }
 
         [TestMethod]
-        public void Should_Walk_To_Position_And_Stop_At_Wall()
+        public void Should_Walk_To_Position_And_Stop_At_Wall_With_NoMove()
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItems();
@@ -252,7 +252,9 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.IsTrue(result1[0].Command is WalkCommand);
             Assert.IsTrue(result1[1].Command is MoveCommand);
 
-            Assert.AreEqual(0, result2.Count);
+            Assert.AreEqual(1, result2.Count);
+            Assert.IsTrue(result2[0].Command is WalkCommand);
+            Assert.IsTrue(((WalkCommand)result2[0].Command).CommandResult.Result == CommandResultEnum.NoMove);
         }
 
         [TestMethod]
@@ -359,6 +361,32 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Act - player always starts directly underneath ship, moving up will enter the ship
             _gameWorld.MoveRequest(Direction.Up);
+
+            // Assert
+            Assert.IsTrue(_gameWorld.Player.IsVictorious);
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.Count());
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands.Count);
+
+            var walkCommand = _gameWorld.HistoricalCommands.WalkCommands[0];
+
+            Assert.AreEqual(CommandResultEnum.NoMove, walkCommand.CommandResult.Result);
+            Assert.AreEqual("You board your ship, make hasty repairs to critical parts and fire the engines! You have escaped!", walkCommand.CommandResult.Messages.First());
+            Assert.AreEqual(0, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+        }
+        
+        [TestMethod]
+        public void WalkCommand_Into_Ship_With_Repair_Parts_Using_Path_Should_Set_Victory_Flag()
+        {
+            // Arrange
+            _gameWorld.NewGame();
+
+            var shipRepairParts = _gameWorld.Items.Values.First(i => i.ItemType is ShipRepairParts);
+
+            _gameWorld.Inventory.Add(shipRepairParts);
+
+            // Act - player always starts directly underneath ship, moving up will enter the ship
+            var path = _gameWorld.GetPathToPlayer(new Point(_gameWorld.Player.Position.X, _gameWorld.Player.Position.Y - 1));
+            var result = _gameWorld.MoveRequest(path);
 
             // Assert
             Assert.IsTrue(_gameWorld.Player.IsVictorious);
