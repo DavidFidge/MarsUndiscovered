@@ -17,12 +17,20 @@ namespace MarsUndiscovered.Components
             return _gameObjectFactory.CreateItem(id);
         }
 
-        public void RechargeItems()
+        public List<Item> RechargeItems()
         {
-            foreach (var item in this.Values)
+            var rechargedItems = new List<Item>();
+            
+            foreach (var item in Values)
             {
+                var oldRechargeDelay = item.CurrentRechargeDelay;
+                item.Recharge();
                 
+                if (oldRechargeDelay != 0  && item.CurrentRechargeDelay == 0)
+                    rechargedItems.Add(item);
             }
+
+            return rechargedItems;
         }
     }
 }

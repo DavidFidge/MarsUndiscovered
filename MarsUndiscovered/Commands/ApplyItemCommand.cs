@@ -87,8 +87,8 @@ namespace MarsUndiscovered.Commands
             {
                 message = $"You apply {GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(Item)}";
             }
-            
-            Item.CurrentRechargeDelay = Item.TotalRechargeDelay;
+
+            Item.ResetRechargeDelay();
             
             if (Item.ItemType is NanoFlask)
                 GameWorld.Inventory.Remove(Item);

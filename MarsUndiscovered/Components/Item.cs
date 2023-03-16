@@ -147,5 +147,21 @@ namespace MarsUndiscovered.Components
 
             return $"The item is recharging and will be ready to use in {CurrentRechargeDelay} turns. {afterUseText}";
         }
+
+        public void Recharge()
+        {
+            if (CurrentRechargeDelay > 0)
+                CurrentRechargeDelay--;
+        }
+        
+        public void FullRecharge()
+        {
+            CurrentRechargeDelay = 0;
+        }
+
+        public void ResetRechargeDelay()
+        {
+            CurrentRechargeDelay = TotalRechargeDelay;
+        }
     }
 }

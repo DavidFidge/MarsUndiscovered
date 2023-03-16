@@ -493,13 +493,18 @@ namespace MarsUndiscovered.Components
 
             Regenerate();
             RechargeItems();
-
             UpdateMonstersInView();
         }
 
         private void RechargeItems()
         {
-            Items.RechargeItems();
+            var rechargedItems = Items
+                .RechargeItems()
+                .Select(i =>
+                    $"{i.GetDescriptionWithoutPrefix(Inventory.ItemTypeDiscoveries[i.ItemType])} has recharged")
+                .ToList();
+
+            _messageLog.AddMessages(rechargedItems);
         }
 
         protected void UpdateMonstersInView()
