@@ -75,7 +75,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
-
+            _gameWorld.Player.VisualRange = 1000;
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
             var wallPosition2 = new Point(1, 1);
@@ -107,7 +107,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
-
+            _gameWorld.Player.VisualRange = 1000;
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
             var wallPosition2 = new Point(1, 1);
@@ -145,7 +145,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
-
+            _gameWorld.Player.VisualRange = 1000;
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
             var wallPosition2 = new Point(1, 1);
@@ -205,7 +205,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
-
+            _gameWorld.Player.VisualRange = 1000;
             _gameWorld.Player.Position = new Point(0, 0);
 
             for (var y = 1; y < 6; y++)
@@ -311,6 +311,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            _gameWorld.Player.VisualRange = 1000;
 
             var playerPosition = new Point(3, 3);
             _gameWorld.Player.Position = playerPosition;

@@ -179,7 +179,7 @@ namespace MarsUndiscovered.Components
         public IEnumerable<BaseGameActionCommand> NextTurn(ICommandFactory commandFactory)
         {
             _commandFactory = commandFactory;
-            _fieldOfView.Calculate(Position);
+            _fieldOfView.Calculate(Position, VisualRange);
             UpdateSeenTiles(_fieldOfView.NewlySeen);
             _nextCommands.Clear();
             _behaviourTree.Tick(this);
@@ -379,13 +379,14 @@ namespace MarsUndiscovered.Components
         {
             _goalStates.Clear();
 
-            for (var x = 0; x < CurrentMap.Width; x++)
+            var updateRadius = (uint)Distance.Chebyshev.Calculate(GameWorld.Player.Position, Position) + 1;
+            var range = CurrentMap.RectangleForRadiusAndPoint(updateRadius, Position);
+            
+            for (var x = range.MinExtentX; x <= range.MaxExtentX; x++)
             {
-                for (var y = 0; y < CurrentMap.Height; y++)
+                for (var y = range.MinExtentY; y <= range.MaxExtentY; y++)
                 {
-                    var gameObjects = CurrentMap
-                        .GetObjectsAt(x, y)
-                        .ToList();
+                    var gameObjects = CurrentMap.GetObjectsAt(x, y);
 
                     _goalStates[x, y] = GoalState.Clear;
 
@@ -426,10 +427,12 @@ namespace MarsUndiscovered.Components
         public Direction Wander()
         {
             _goalStates.Clear();
+            
+            var range = CurrentMap.RectangleForRadiusAndPoint(VisualRange, Position);
 
-            for (var x = 0; x < CurrentMap.Width; x++)
+            for (var x = range.MinExtentX; x <= range.MaxExtentX; x++)
             {
-                for (var y = 0; y < CurrentMap.Height; y++)
+                for (var y = range.MinExtentY; y <= range.MaxExtentY; y++)
                 {
                     if (!_seenTiles[x, y].HasBeenSeen)
                     {
@@ -437,9 +440,7 @@ namespace MarsUndiscovered.Components
                         continue;
                     }
 
-                    var gameObjects = CurrentMap
-                        .GetObjectsAt(x, y)
-                        .ToList();
+                    var gameObjects = CurrentMap.GetObjectsAt(x, y);
 
                     _goalStates[x, y] = GoalState.Clear;
 
@@ -470,6 +471,11 @@ namespace MarsUndiscovered.Components
             _manhattanGoalState.Update();
 
             return _goalMap.GetDirectionOfMinValue(Position, AdjacencyRule.EightWay, false);
+        }
+
+        public IGridView<double?> GetGoalMap()
+        {
+            return _goalMap;
         }
     }
 }

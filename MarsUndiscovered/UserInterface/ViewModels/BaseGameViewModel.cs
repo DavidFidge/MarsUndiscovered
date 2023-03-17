@@ -24,6 +24,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             PlayerStatus = GameWorldEndpoint.GetPlayerStatus();
             _radioCommsItems.AddRange(GameWorldEndpoint.GetNewRadioCommsItems());
             MessageStatus.AddMessages(GameWorldEndpoint.GetMessagesSince(MessageStatus.SeenMessageCount));
+            MapViewModel.UpdateDebugTiles();
         }
 
         public IList<RadioCommsItem> GetNewRadioCommsItems()

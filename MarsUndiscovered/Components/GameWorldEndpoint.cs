@@ -10,7 +10,7 @@ using MarsUndiscovered.Interfaces;
 using Microsoft.Xna.Framework.Input;
 
 using SadRogue.Primitives;
-
+using SadRogue.Primitives.GridViews;
 using Point = SadRogue.Primitives.Point;
 using Rectangle = SadRogue.Primitives.Rectangle;
 
@@ -183,6 +183,11 @@ namespace MarsUndiscovered.Components
         public IList<RadioCommsItem> GetNewRadioCommsItems()
         {
             return GameWorld.GetNewRadioCommsItems();
+        }
+
+        public IGridView<double?> GetGoalMap()
+        {
+            return GameWorld.GetGoalMap();
         }
 
         public void LoadReplay(string gameName)

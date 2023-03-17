@@ -211,7 +211,6 @@ namespace MarsUndiscovered.Components
                 .AddToMap(map);
             
             SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Roach")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Repair Drone")).OnMap(map.Id));
             
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).OnMap(map.Id));
             SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).OnMap(map.Id));
@@ -315,7 +314,7 @@ namespace MarsUndiscovered.Components
 
         public void UpdateFieldOfView(bool partialUpdate = true)
         {
-            CurrentMap.UpdateFieldOfView(Player.Position);
+            CurrentMap.UpdateFieldOfView(Player.Position, Player.VisualRange);
 
             if (partialUpdate)
             {
@@ -549,6 +548,11 @@ namespace MarsUndiscovered.Components
                 .GetNewRadioComms()
                 .Select(s => new RadioCommsItem(s))
                 .ToList();;
+        }
+
+        public IGridView<double?> GetGoalMap()
+        {
+            return Monsters.First().Value.GetGoalMap();
         }
 
         public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
