@@ -13,13 +13,12 @@ namespace MarsUndiscovered.Commands
 {
     public class LightningAttackCommand : BaseAttackCommand<LightningAttackCommandSaveData>
     {
-        private int _damage;
+        private List<AttackRestoreData> _targetHitDetails = new List<AttackRestoreData>();
         private IList<Actor> _targets;
-        
+        public IList<Actor> Targets => _targets;
+
         public Actor Source { get; private set; }
         public List<Point> Path { get; private set; }
-
-        public IList<Actor> Targets => _targets;
 
         public LightningAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -32,6 +31,7 @@ namespace MarsUndiscovered.Commands
 
             memento.State.SourceId = Source.ID;
             memento.State.Path = Path.ToList();
+            memento.State.LineAttackCommandRestore = _targetHitDetails.ToList();
 
             return memento;
         }
@@ -43,6 +43,7 @@ namespace MarsUndiscovered.Commands
             Source = (Actor)GameWorld.GameObjects[memento.State.SourceId];
             Path = memento.State.Path.ToList();
             _targets = GetTargets(Source, Path);
+            _targetHitDetails = memento.State.LineAttackCommandRestore.ToList();
         }
         
         protected override CommandResult ExecuteInternal()
@@ -50,13 +51,22 @@ namespace MarsUndiscovered.Commands
             if (Source.LightningAttack == null)
                 throw new Exception("Object does not have a lightning attack");
 
-            _damage = Source.LightningAttack.Damage;
+            var damage = Source.LightningAttack.Damage;
 
             var commandResult = CommandResult.Success(this, new List<string>(_targets.Count));
 
             foreach (var target in _targets)
             {
-                target.Health -= _damage;
+                var lineAttackCommandRestore = new AttackRestoreData
+                {
+                    Damage = damage,
+                    Health = target.Health,
+                    Shield = target.Shield
+                };
+                
+                _targetHitDetails.Add(lineAttackCommandRestore);
+                
+                target.ApplyDamage(damage);
 
                 var message = $"{Source.NameSpecificArticleUpperCase} zapped {target.NameSpecificArticleLowerCase}";
                 commandResult.Messages.Add(message);
@@ -74,9 +84,10 @@ namespace MarsUndiscovered.Commands
 
         protected override void UndoInternal()
         {
-            foreach (var target in _targets)
+            for (var i = 0; i < _targets.Count; i++)
             {
-                target.Health += _damage;
+                _targets[i].Health = _targetHitDetails[i].Health;
+                _targets[i].Shield = _targetHitDetails[i].Shield;
             }
         }
 
@@ -89,10 +100,8 @@ namespace MarsUndiscovered.Commands
                 .ToList();
 
             Source = source;
-
             Path = lightningAttackPath;
-
-            _targets = GetTargets(source, lightningAttackPath);
+            _targets = GetTargets(Source, Path);
         }
 
         private IList<Actor> GetTargets(Actor source, List<Point> lightningAttackPath)

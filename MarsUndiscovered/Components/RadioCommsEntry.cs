@@ -1,18 +1,19 @@
 ﻿using GoRogue.GameFramework;
 
-namespace MarsUndiscovered.Components
-{
-    public class RadioCommsEntry
-    {
-        public string Message { get; private set; }
-        public string Source { get; private set; }
-        public IGameObject GameObject { get; private set; }
+namespace MarsUndiscovered.Components;
 
-        public RadioCommsEntry(string message, string source, IGameObject gameObject)
-        {
-            Message = message;
-            Source = source;
-            GameObject = gameObject;
-        }
+public class RadioCommsEntry
+{
+    public int Id { get; private set; }
+    public string Message { get; private set; }
+    public string Source { get; private set; }
+    public IGameObject GameObject { get; private set; }
+
+    public RadioCommsEntry(int id, string message, string source, IGameObject gameObject)
+    {
+        Id = id;
+        Message = message;
+        Source = source;
+        GameObject = gameObject;
     }
 }

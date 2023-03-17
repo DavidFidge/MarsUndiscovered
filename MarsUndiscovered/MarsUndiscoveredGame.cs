@@ -221,6 +221,9 @@ namespace MarsUndiscovered
             if (_isExiting)
                 Exit();
 
+            if (!IsActive)
+                return;
+
             if (_startNewGameFromCommandLine && _options.NewGame)
             {
                 _mediator.Send(new NewGameRequest());
@@ -248,6 +251,9 @@ namespace MarsUndiscovered
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            if (!IsActive)
+                return;
+            
             _gameProvider.Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
             GeonBit.UI.UserInterface.Active.Draw(_spriteBatch);

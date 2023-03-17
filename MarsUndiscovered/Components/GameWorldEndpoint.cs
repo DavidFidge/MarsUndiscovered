@@ -75,6 +75,11 @@ namespace MarsUndiscovered.Components
             GameWorld.DropItemRequest(requestKey);
         }
 
+        public void ApplyItemRequest(Keys requestKey)
+        {
+            GameWorld.ApplyItemRequest(requestKey);
+        }
+
         public string GetSeed()
         {
             return GameWorld.Seed.ToString();

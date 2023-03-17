@@ -11,12 +11,13 @@ namespace MarsUndiscovered.Components
         public ItemType ItemType { get; set; }
         public int EnchantmentLevel { get; set; }
         public int CurrentRechargeDelay { get; set; }
-        public bool IsCharged { get; set; }
+        public int TotalRechargeDelay { get; set; }
 
+        public bool IsEquipped { get; set; }
+        public bool IsCharged { get; set; }
         public Attack MeleeAttack { get; set; }
         public Attack LineAttack { get; set; }
         public int DamageShieldPercentage { get; set; }
-        public int TotalRechargeDelay { get; set; }
         public int HealPercentOfMax { get; set; }
         public int MaxHealthIncrease { get; set; }
         public bool GroupsInInventory { get; set; }
@@ -53,6 +54,7 @@ namespace MarsUndiscovered.Components
             memento.State.EnchantmentLevel = EnchantmentLevel;
             memento.State.CurrentRechargeDelay = CurrentRechargeDelay;
             memento.State.IsCharged = IsCharged;
+            memento.State.IsEquipped = IsEquipped;
 
             if (MeleeAttack != null)
                 memento.State.MeleeAttack = (Attack)MeleeAttack.Clone();
@@ -81,6 +83,7 @@ namespace MarsUndiscovered.Components
             EnchantmentLevel = memento.State.EnchantmentLevel;
             CurrentRechargeDelay = memento.State.CurrentRechargeDelay;
             IsCharged = memento.State.IsCharged;
+            IsEquipped = memento.State.IsEquipped;
 
             if (memento.State.MeleeAttack != null)
                 MeleeAttack = (Attack)memento.State.MeleeAttack.Clone();
@@ -109,6 +112,16 @@ namespace MarsUndiscovered.Components
             return ItemType.GetDescription(this, ItemDiscovery, itemTypeDiscovery, quantity);
         }
         
+        public string GetDescriptionWithoutStatus(ItemTypeDiscovery itemTypeDiscovery)
+        {
+            return ItemType.GetDescription(this, ItemDiscovery, itemTypeDiscovery, 1, true, false);
+        }
+        
+        public string GetDescriptionWithoutPrefix(ItemTypeDiscovery itemTypeDiscovery)
+        {
+            return ItemType.GetDescription(this, ItemDiscovery, itemTypeDiscovery, 0, false);
+        }
+        
         public string GetDiscoveredDescription(int quantity)
         {
             return ItemType.GetDescription(this, ItemDiscovery.ItemDiscoveryDiscovered, ItemTypeDiscovery.ItemTypeDiscoveryDiscovered, quantity);
@@ -116,7 +129,47 @@ namespace MarsUndiscovered.Components
 
         public string GetLongDescription(ItemTypeDiscovery itemTypeDiscovery)
         {
-            return "Placeholder for long description";
+            return ItemType.GetLongDescription(this, itemTypeDiscovery);
+        }
+        
+        public string GetEnchantmentLevelText()
+        {
+            return
+                $"With the current enchantment level of {(EnchantmentLevel >= 0 ? "{{L_BLUE}}+" : "{{L_RED}}-")}{EnchantmentLevel}{{{{DEFAULT}}}}";
+        }
+        
+        public string GetRechargeText()
+        {
+            if (CurrentRechargeDelay == 0)
+                return "ready";
+
+            return $"{((TotalRechargeDelay - CurrentRechargeDelay) * 100) / TotalRechargeDelay}% charged";
+        }
+
+        public string GetRechargeLongDescription()
+        {
+            var afterUseText = $"After use, it will take {TotalRechargeDelay} turns to recharge.";
+            
+            if (CurrentRechargeDelay == 0)
+                return $"The item is ready to use. {afterUseText}";
+
+            return $"The item is recharging and will be ready to use in {CurrentRechargeDelay} turns. {afterUseText}";
+        }
+
+        public void Recharge()
+        {
+            if (CurrentRechargeDelay > 0)
+                CurrentRechargeDelay--;
+        }
+        
+        public void FullRecharge()
+        {
+            CurrentRechargeDelay = 0;
+        }
+
+        public void ResetRechargeDelay()
+        {
+            CurrentRechargeDelay = TotalRechargeDelay;
         }
     }
 }

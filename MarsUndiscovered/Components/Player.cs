@@ -30,6 +30,7 @@ namespace MarsUndiscovered.Components
         {
             MaxHealth = 100;
             Health = MaxHealth;
+            RegenRate = 0.005m;
             InitialiseAttacks();
         }
 

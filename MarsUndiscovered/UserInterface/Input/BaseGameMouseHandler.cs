@@ -1,4 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
 using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
 using Microsoft.Xna.Framework.Input;
@@ -10,6 +11,10 @@ namespace MarsUndiscovered.UserInterface.Input
         private readonly IStopwatchProvider _stopwatchProvider;
         private double _mouseMoveThrottle = 20;
         private double _lastTotalMilliseconds;
+        
+        private MouseState? _mouseStateBeforeDrag;
+        private int _halvedWindowX;
+        private int _halvedWindowY;
 
         public ICameraMovement CameraMovement { get; set; }
 
@@ -17,6 +22,36 @@ namespace MarsUndiscovered.UserInterface.Input
         {
             _stopwatchProvider = stopwatchProvider;
             _stopwatchProvider.Start();
+        }
+        
+        public override void HandleRightMouseDragging(MouseState mouseState, MouseState originalMouseState)
+        {
+            if (_mouseStateBeforeDrag == null)
+            {
+                _mouseStateBeforeDrag = originalMouseState;
+
+                _halvedWindowX = Game.Window.ClientBounds.Width / 2;
+                _halvedWindowY = Game.Window.ClientBounds.Height / 2;
+            }
+            else
+            {
+                var xDisplacement = mouseState.X - _halvedWindowX;
+                var yDisplacement = mouseState.Y - _halvedWindowY;
+
+                Mediator.Send(new MoveViewRequest(xDisplacement * 0.05f, yDisplacement * 0.05f));
+            }
+
+            Mouse.SetPosition(_halvedWindowX, _halvedWindowY);
+        }
+
+        public override void HandleRightMouseDragDone(MouseState mouseState, MouseState originalMouseState)
+        {
+            if (_mouseStateBeforeDrag != null)
+                Mouse.SetPosition(originalMouseState.X, originalMouseState.Y);
+
+            _mouseStateBeforeDrag = null;
+
+            base.HandleRightMouseDragDone(mouseState, originalMouseState);
         }
 
         protected bool CanSendMouseMoveEvent()

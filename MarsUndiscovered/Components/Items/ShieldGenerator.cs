@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace MarsUndiscovered.Components
 {
     public class ShieldGenerator : Gadget
@@ -5,17 +7,22 @@ namespace MarsUndiscovered.Components
         private int _damageShieldPercentage = 30;
         public override string Name => nameof(ShieldGenerator);
 
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity)
+        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
-            var baseDescription = base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity);
+            if (!itemTypeDiscovery.IsItemTypeDiscovered)
+                return base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity, includePrefix, includeStatus);
 
-            if (!String.IsNullOrEmpty(baseDescription))
-                return baseDescription;
-
+            var status = includeStatus ? $" ({item.GetRechargeText()})" : "";
+            
             if (!itemDiscovery.IsEnchantLevelDiscovered)
-                return $"A Shield Generator Gadget";
+                return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}{status}";
 
-            return $"A {GetEnchantText(item)} Shield Generator Gadget";
+            return $"{(includePrefix ? "A " : "")}{GetEnchantText(item)} {GetTypeDescription()}{status}";
+        }
+
+        public override string GetTypeDescription()
+        {
+            return $"Shield Generator {GetAbstractTypeDescription()}";
         }
 
         protected override int RechargeDelay => 300;
@@ -39,7 +46,36 @@ namespace MarsUndiscovered.Components
             }
 
             item.IsCharged = true;
-            item.CurrentRechargeDelay = item.TotalRechargeDelay;
+            item.CurrentRechargeDelay = 0;
+        }
+
+        public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)
+        {
+            var baseLongDescription = base.GetLongDescription(item, itemTypeDiscovery);
+
+            if (!String.IsNullOrEmpty(baseLongDescription))
+                return baseLongDescription;
+            
+            var stringBuilder = new StringBuilder();
+            
+            stringBuilder.AppendLine("Strapped around the waist, this device emits a band of negative energy around the wearer. Any harmful object or particle enters into the space immediately surrounding the wearer, it immediately repels it, thus protecting the wearer from harm.");
+            
+            stringBuilder.AppendLine();
+
+            if (itemTypeDiscovery.IsItemTypeDiscovered)
+            {
+                stringBuilder.AppendLine($"{item.GetEnchantmentLevelText()} this shield generator will give you a shield worth {{{{L_BLUE}}}}{item.DamageShieldPercentage}%{{{{DEFAULT}}}} of your maximum health.");
+            }
+            else
+            {
+                stringBuilder.AppendLine($"{GetPropertiesUnknownText()} the shield generator will act like a +1 device and give you a shield worth {{{{L_BLUE}}}}{_damageShieldPercentage}%{{{{DEFAULT}}}} of your maximum health.");
+            }
+
+            stringBuilder.AppendLine();
+
+            stringBuilder.AppendLine(item.GetRechargeLongDescription());
+
+            return stringBuilder.ToString();
         }
     }
 }

@@ -76,23 +76,27 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public bool Move(Path path)
         {
-            if (GameWorldEndpoint.GetPlayerPosition().Equals(path.End))
+            var currentPlayerPosition = GameWorldEndpoint.GetPlayerPosition();
+            
+            if (currentPlayerPosition.Equals(path.End))
                 return true;
-
-            if (Animations.Any())
-                return false;
 
             var result = GameWorldEndpoint.MoveRequest(path);
 
             QueueAnimations(result);
-
+            
+            MapViewModel.RecentreMap();
+            Mediator.Publish(new RefreshViewNotification());
+            
             if (result.IsEmpty())
                 return true;
 
-            MapViewModel.RecentreMap();
-            Mediator.Publish(new RefreshViewNotification());
-
             if (path.Length == 1)
+                return true;
+
+            var newPlayerPosition = GameWorldEndpoint.GetPlayerPosition();
+
+            if (currentPlayerPosition.Equals(newPlayerPosition))
                 return true;
 
             return false;

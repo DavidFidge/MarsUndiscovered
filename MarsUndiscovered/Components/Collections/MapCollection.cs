@@ -32,11 +32,6 @@ namespace MarsUndiscovered.Components
             return new Memento<MapCollectionSaveData>(memento.State);
         }
 
-        public void SetLoadState(IMemento<MapCollectionSaveData> memento)
-        {
-            throw new NotImplementedException();
-        }
-
         public void SetLoadState(IMemento<MapCollectionSaveData> memento, IGameWorld gameWorld)
         {
             foreach (var mapSaveData in memento.State.Maps)

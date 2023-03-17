@@ -6,6 +6,7 @@
         public int EnchantmentLevel { get; set; }
         public int CurrentRechargeDelay { get; set; }
         public bool IsCharged { get; set; }
+        public bool IsEquipped { get; set; }
         public Attack MeleeAttack { get; set; }
         public Attack LineAttack { get; set; }
         public int DamageShieldPercentage { get; set; }

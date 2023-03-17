@@ -230,6 +230,15 @@ namespace MarsUndiscovered.Installers
                     .AsFactory(),
 
                 Component.For<ICommandFactory<ChangeMapCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<ApplyItemCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<ApplyShieldCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<ApplyHealingBotsCommand>>()
                     .AsFactory()
             );
         }
@@ -351,6 +360,7 @@ namespace MarsUndiscovered.Installers
                     .DependsOn(Dependency.OnComponent<IMouseHandler, GameViewMouseHandler>())
                     .DependsOn(Dependency.OnComponent<GameViewRadioCommsMouseHandler, GameViewRadioCommsMouseHandler>())
                     .DependsOn(Dependency.OnComponent<GameViewRadioCommsKeyboardHandler, GameViewRadioCommsKeyboardHandler>())
+                    .DependsOn(Dependency.OnComponent<GameViewGameOverMouseHandler, GameViewGameOverMouseHandler>())
                     .DependsOn(Dependency.OnComponent<GameViewGameOverKeyboardHandler, GameViewGameOverKeyboardHandler>()),
 
                 Component.For<GameViewModel>()
@@ -427,7 +437,8 @@ namespace MarsUndiscovered.Installers
         {
             container.Register(
                 Component.For<InventoryGameView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, InventoryGameViewKeyboardHandler>()),
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, InventoryGameViewKeyboardHandler>())
+                    .DependsOn(Dependency.OnComponent<IMouseHandler, NullMouseHandler>()),
 
                 Component.For<InventoryGameViewModel>()
             );

@@ -43,7 +43,75 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual("You hit the roach", attackCommand.CommandResult.Messages[0]);
             Assert.AreSame(_gameWorld.Player, attackCommand.Source);
             Assert.AreSame(monster, attackCommand.Target);
-       }
+        }
+        
+        [TestMethod]
+        public void AttackCommand_Should_Deduct_Health_After_Shield()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItems();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
+            var monster = _gameWorld.Monsters.Values.First();
+            _gameWorld.Player.MeleeAttack.DamageRange = new Range<int>(5, 5);
+            var healthBefore = monster.Health;
+            monster.Shield = 1;
+
+            // Act
+            _gameWorld.MoveRequest(Direction.Down);
+
+            // Assert
+            var walkCommand = _gameWorld.HistoricalCommands.WalkCommands[0];
+
+            Assert.AreEqual(CommandResultEnum.Success, walkCommand.CommandResult.Result);
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+
+            var attackCommand =
+                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
+            Assert.IsNotNull(attackCommand);
+            Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
+
+            Assert.AreEqual(healthBefore - 4, monster.Health);
+            Assert.AreEqual(0, monster.Shield);
+            Assert.AreEqual("You hit the roach", attackCommand.CommandResult.Messages[0]);
+            Assert.AreSame(_gameWorld.Player, attackCommand.Source);
+            Assert.AreSame(monster, attackCommand.Target);
+        }
+        
+        [TestMethod]
+        public void AttackCommand_Should_Deduct_Shield_Before_Health()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItems();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
+            var monster = _gameWorld.Monsters.Values.First();
+            _gameWorld.Player.MeleeAttack.DamageRange = new Range<int>(5, 5);
+            var healthBefore = monster.Health;
+            monster.Shield = 6;
+
+            // Act
+            _gameWorld.MoveRequest(Direction.Down);
+
+            // Assert
+            var walkCommand = _gameWorld.HistoricalCommands.WalkCommands[0];
+
+            Assert.AreEqual(CommandResultEnum.Success, walkCommand.CommandResult.Result);
+            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+
+            var attackCommand =
+                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
+            Assert.IsNotNull(attackCommand);
+            Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
+
+            Assert.AreEqual(healthBefore, monster.Health);
+            Assert.AreEqual(1, monster.Shield);
+            Assert.AreEqual("You hit the roach", attackCommand.CommandResult.Messages[0]);
+            Assert.AreSame(_gameWorld.Player, attackCommand.Source);
+            Assert.AreSame(monster, attackCommand.Target);
+        }
         
         [TestMethod]
         public void AttackCommand_Should_Kill_Monster_If_Health_Drops_Below_Zero()

@@ -60,7 +60,7 @@ namespace MarsUndiscovered.UserInterface.Views
             consolePanel.AddChild(hr);
 
             _consoleHistory = new SelectList()
-                .NoSkin()
+                .SkinNone()
                 .Anchor(Anchor.Auto)
                 .NoPadding()
                 .Size(new Vector2(0.99f, 0.88f));

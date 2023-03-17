@@ -66,7 +66,7 @@ namespace MarsUndiscovered.Components
 
             return spawnParams;
         }
-
+        
         private static void CheckPositionAgainstAvoidPosition<T>(T spawnParams) where T : BaseSpawnGameObjectParams
         {
             if (spawnParams.AvoidPosition != null &&

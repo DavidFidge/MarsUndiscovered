@@ -8,18 +8,39 @@ namespace MarsUndiscovered.UserInterface.Views
 {
     public class HealthBar : BaseCompositeEntity
     {
+        private Panel _healthBarContainer;
         private ProgressBar _healthBar;
+        private ProgressBar _shieldBar;
         private Label _healthLabel;
         private Label _gainLossLabel;
 
         public HealthBar()
         {
+            _healthBarContainer = new Panel()
+                .NoPadding()
+                .SkinNone()
+                .AutoHeight()
+                .WidthOfContainer()
+                .Anchor(Anchor.Auto);
+
             _healthBar = new ProgressBar()
                 .NoPadding()
-                .Anchor(Anchor.Auto)
+                .Anchor(Anchor.TopLeft)
                 .TransparentFillColor()
                 .ProgressBarFillColor(Color.Red)
+                .WidthOfContainer()
                 .Locked();
+
+            _shieldBar = new ProgressBar()
+                .NoPadding()
+                .Anchor(Anchor.TopLeft)
+                .TransparentFillColor()
+                .ProgressBarFillColor(Color.LightBlue.WithTransparencyPremultiplied(0.9f))
+                .WidthOfContainer()
+                .Locked();
+
+            _healthBarContainer.AddChild(_healthBar);
+            _healthBarContainer.AddChild(_shieldBar);
 
             _healthBar.Value = 0;
 
@@ -27,26 +48,30 @@ namespace MarsUndiscovered.UserInterface.Views
                 .NoPadding()
                 .Anchor(Anchor.Center);
 
-            _healthBar.AddChild(_healthLabel);
+            // Add health labels to shield bar instead otherwise the text gets obscured by the shield bar colour
+            _shieldBar.AddChild(_healthLabel);
 
             _gainLossLabel = new Label("")
                 .NoPadding()
                 .Anchor(Anchor.CenterRight);
 
-            _healthBar.AddChild(_gainLossLabel);
+            _shieldBar.AddChild(_gainLossLabel);
+
+            // This is needed otherwise the first Draw call does not draw the panel with the correct height
+            _healthBarContainer.SetHeightBasedOnChildren();
         }
 
         public override void AddAsChildTo(Entity parent)
         {
-            parent.AddChild(_healthBar);
+            parent.AddChild(_healthBarContainer);
         }
 
         public override void RemoveFromParent()
         {
-            _healthBar.RemoveFromParent();
+            _healthBarContainer.RemoveFromParent();
         }
 
-        public void UpdateHealth(int currentHealth, int maxHealth)
+        public void UpdateHealth(int currentHealth, int maxHealth, int currentShield)
         {
             var oldHealth = _healthBar.Value;
 
@@ -74,6 +99,10 @@ namespace MarsUndiscovered.UserInterface.Views
                 _healthLabel.Text = "DEAD";
             else
                 _healthLabel.Text = "Health";
+
+            _shieldBar.StepsCount = _healthBar.Max;
+            _shieldBar.Max = (uint)maxHealth;
+            _shieldBar.Value = currentShield;
         }
     }
 }

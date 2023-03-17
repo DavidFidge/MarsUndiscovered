@@ -10,8 +10,8 @@ namespace MarsUndiscovered.UserInterface.Input
     {
         public override void HandleKeyboardKeyDown(Keys[] keysDown, Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
-            if (ActionMap.ActionIs<CloseGameInventoryRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new CloseGameInventoryRequest());
+            if (ActionMap.ActionIs<CloseGameInventoryContextRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new CloseGameInventoryContextRequest());
 
             if (ActionMap.ActionIs<InventoryItemSelectionRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new InventoryItemSelectionRequest(keyInFocus));

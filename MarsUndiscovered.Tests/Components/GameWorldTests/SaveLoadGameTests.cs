@@ -116,6 +116,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(itemTypeDiscovery.IsItemTypeDiscovered);
             Assert.IsNull(newGameWorld.Player.MeleeAttack);
             Assert.IsNotNull(newGameWorld.Player.LineAttack);
+
+            var loadedItem5 = newGameWorld.Inventory.EquippedWeapon;
+            Assert.AreEqual(item5.ID, loadedItem5.ID);
+            Assert.IsTrue(loadedItem5.IsEquipped);
         }
 
         [TestMethod]
@@ -230,6 +234,26 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             Assert.AreNotEqual(Point.None, mapExit1.LandingPosition);
             Assert.AreNotEqual(Point.None, mapExit2.LandingPosition);
+        }
+        
+        [TestMethod]
+        public void Should_Retain_Residual_Regen()
+        {
+            // Arrange
+            NewGameWithNoMonstersNoItems();
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach"));
+            _gameWorld.Player.ResidualRegen = 0.1m;
+            _gameWorld.Monsters.First().Value.ResidualRegen = 0.2m;
+
+            _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
+
+            // Act
+            var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            newGameWorld.LoadGame("TestShouldSaveThenLoad");
+
+            // Assert
+            Assert.AreEqual(0.1m, newGameWorld.Player.ResidualRegen);
+            Assert.AreEqual(0.2m, newGameWorld.Monsters.First().Value.ResidualRegen);
         }
     }
 }

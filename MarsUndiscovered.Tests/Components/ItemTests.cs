@@ -43,7 +43,7 @@ namespace MarsUndiscovered.Tests.Components
             Assert.IsNull(item.MeleeAttack);
             Assert.IsTrue(item.IsCharged);
             Assert.AreEqual(30, item.DamageShieldPercentage);
-            Assert.AreEqual(300, item.CurrentRechargeDelay);
+            Assert.AreEqual(0, item.CurrentRechargeDelay);
             Assert.AreEqual(300, item.TotalRechargeDelay);
         }
 
@@ -60,7 +60,7 @@ namespace MarsUndiscovered.Tests.Components
             Assert.IsNull(item.MeleeAttack);
             Assert.IsFalse(item.IsCharged);
             Assert.AreEqual(100, item.HealPercentOfMax);
-            Assert.AreEqual((int)(Player.BaseHealth * 0.5), item.MaxHealthIncrease);
+            Assert.AreEqual((int)(Player.BaseHealth * 0.25), item.MaxHealthIncrease);
         }
 
         [TestMethod]
@@ -97,10 +97,10 @@ namespace MarsUndiscovered.Tests.Components
 
         [TestMethod]
         [DataRow(1, false, false, "A Shiny Gadget")]
-        [DataRow(1, false, true, "A Shield Generator Gadget")]
-        [DataRow(1, true, true, "A +1 Shield Generator Gadget")]
-        [DataRow(0, true, true, "A +0 Shield Generator Gadget")]
-        [DataRow(-1, true, true, "A -1 Shield Generator Gadget")]
+        [DataRow(1, false, true, "A Shield Generator Gadget (ready)")]
+        [DataRow(1, true, true, "A +1 Shield Generator Gadget (ready)")]
+        [DataRow(0, true, true, "A +0 Shield Generator Gadget (ready)")]
+        [DataRow(-1, true, true, "A -1 Shield Generator Gadget (ready)")]
         public void Should_Get_ShieldGenerator_Description(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
         {
             var item = new Item(Substitute.For<IGameWorld>(), 1)
@@ -115,6 +115,27 @@ namespace MarsUndiscovered.Tests.Components
             // Assert
             Assert.AreEqual(expectedResult, result);
         }
+        
+        [TestMethod]
+        [DataRow(1, false, false, "A Shiny Gadget")]
+        [DataRow(1, false, true, "A Shield Generator Gadget")]
+        [DataRow(1, true, true, "A +1 Shield Generator Gadget")]
+        [DataRow(0, true, true, "A +0 Shield Generator Gadget")]
+        [DataRow(-1, true, true, "A -1 Shield Generator Gadget")]
+        public void Should_Get_ShieldGenerator_Description_Without_Status(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
+        {
+            var item = new Item(Substitute.For<IGameWorld>(), 1)
+                .WithItemType(ItemType.ShieldGenerator)
+                .WithEnchantmentLevel(enchantmentLevel);
+
+            item.ItemDiscovery.IsEnchantLevelDiscovered = isEnchantDiscovered;
+
+            // Act
+            var result = item.GetDescriptionWithoutStatus(new ItemTypeDiscovery("A Shiny") { IsItemTypeDiscovered = isDiscovered });
+
+            // Assert
+            Assert.AreEqual(expectedResult, result);
+        }
 
         [TestMethod]
         [DataRow(1, false, true, "A Magnesium Pipe")]
@@ -122,7 +143,51 @@ namespace MarsUndiscovered.Tests.Components
         [DataRow(1, true, true, "A +1 Magnesium Pipe")]
         [DataRow(0, true, true, "A +0 Magnesium Pipe")]
         [DataRow(-1, true, true, "A -1 Magnesium Pipe")]
-        public void Should_Get_MagnesiumPipe_Description(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
+        public void Should_Get_MagnesiumPipe_Description_Without_Status(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
+        {
+            var item = new Item(Substitute.For<IGameWorld>(), 1)
+                .WithItemType(ItemType.MagnesiumPipe)
+                .WithEnchantmentLevel(enchantmentLevel);
+
+            item.ItemDiscovery.IsEnchantLevelDiscovered = isEnchantDiscovered;
+            item.IsEquipped = true;
+            
+            // Act
+            var result = item.GetDescriptionWithoutStatus(new ItemTypeDiscovery("A Shiny") { IsItemTypeDiscovered = isDiscovered });
+
+            // Assert
+            Assert.AreEqual(expectedResult, result);
+        }
+        
+        [TestMethod]
+        [DataRow(1, false, true, "A Magnesium Pipe (equipped)")]
+        [DataRow(1, false, false, "An Unknown Weapon (equipped)")]
+        [DataRow(1, true, true, "A +1 Magnesium Pipe (equipped)")]
+        [DataRow(0, true, true, "A +0 Magnesium Pipe (equipped)")]
+        [DataRow(-1, true, true, "A -1 Magnesium Pipe (equipped)")]
+        public void Should_Get_MagnesiumPipe_Description_Equipped(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
+        {
+            var item = new Item(Substitute.For<IGameWorld>(), 1)
+                .WithItemType(ItemType.MagnesiumPipe)
+                .WithEnchantmentLevel(enchantmentLevel);
+
+            item.ItemDiscovery.IsEnchantLevelDiscovered = isEnchantDiscovered;
+            item.IsEquipped = true;
+
+            // Act
+            var result = item.GetDescription(new ItemTypeDiscovery("A Shiny") { IsItemTypeDiscovered = isDiscovered }, 1);
+
+            // Assert
+            Assert.AreEqual(expectedResult, result);
+        }
+        
+        [TestMethod]
+        [DataRow(1, false, true, "A Magnesium Pipe")]
+        [DataRow(1, false, false, "An Unknown Weapon")]
+        [DataRow(1, true, true, "A +1 Magnesium Pipe")]
+        [DataRow(0, true, true, "A +0 Magnesium Pipe")]
+        [DataRow(-1, true, true, "A -1 Magnesium Pipe")]
+        public void Should_Get_MagnesiumPipe_Description_Unequipped(int enchantmentLevel, bool isEnchantDiscovered, bool isDiscovered, string expectedResult)
         {
             var item = new Item(Substitute.For<IGameWorld>(), 1)
                 .WithItemType(ItemType.MagnesiumPipe)

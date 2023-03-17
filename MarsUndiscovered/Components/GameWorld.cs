@@ -106,20 +106,8 @@ namespace MarsUndiscovered.Components
             CreateLevel2(mapLevel1);
             
             Inventory = new Inventory(this);
-
-            _radioComms.AddRadioCommsEntry(
-                Ships.First().Value,
-                "Welcome to Mars captain! I apologise for the rough landing. The small matter of the explosion has ripped a hole in the hull and has crippled the primary fuel injection system. Unfortunately we have no spares on board, however the mine nearby likely has a similar controller which I can rig up as a temporary solution to get us flying again. You'll have to put on your spacesuit and walk over there.",
-                RadioComms.ShipAiSource,
-                _messageLog
-                );
             
-            _radioComms.AddRadioCommsEntry(
-                Ships.First().Value,
-                "There's no communications signals coming from the mine at all - not even on the encrypted channels. I'm not sure what's going on in there. Be careful, won't you? I don't want to be left forsaken on this cold, barren dust bowl. Or worse, found by scrappers and sold off to the black market. I'll keep in touch on this secure channel.",
-                RadioComms.ShipAiSource,
-                _messageLog
-                );
+            _radioComms.CreateGameStartMessages(Ships.First().Value, _messageLog);
 
             ResetFieldOfView();
             GameTimeService.Start();
@@ -465,9 +453,6 @@ namespace MarsUndiscovered.Components
                 nextPoint = subsequentSteps.First();
             }
 
-            if (CurrentMap.GetObjectAt<Wall>(nextPoint) != null)
-                return commandResults;
-
             foreach (var surroundingPoint in AdjacencyRule.EightWay.Neighbors(Player.Position))
             {
                 if (CurrentMap.Bounds().Contains(surroundingPoint) && CurrentMap.GetObjectAt<Monster>(surroundingPoint) != null)
@@ -495,7 +480,20 @@ namespace MarsUndiscovered.Components
                 }
             }
 
+            Regenerate();
+            RechargeItems();
             UpdateMonstersInView();
+        }
+
+        private void RechargeItems()
+        {
+            var rechargedItems = Items
+                .RechargeItems()
+                .Select(i =>
+                    $"{i.GetDescriptionWithoutPrefix(Inventory.ItemTypeDiscoveries[i.ItemType])} has recharged")
+                .ToList();
+
+            _messageLog.AddMessages(rechargedItems);
         }
 
         protected void UpdateMonstersInView()
@@ -510,6 +508,7 @@ namespace MarsUndiscovered.Components
         {
             var result = command.Execute();
             _messageLog.AddMessages(result.Messages);
+            _radioComms.ProcessCommand(command, _messageLog);
 
             if (isPlayerAction)
                 HistoricalCommands.AddCommand(command);
@@ -562,6 +561,9 @@ namespace MarsUndiscovered.Components
         public void SpawnItem(SpawnItemParams spawnItemParams)
         {
             var map = spawnItemParams.MapId.HasValue ? Maps.First(m => m.Id == spawnItemParams.MapId) : CurrentMap;
+            
+            if (spawnItemParams.IntoPlayerInventory)
+                spawnItemParams.Inventory = Inventory;
 
             ItemGenerator.SpawnItem(spawnItemParams, GameObjectFactory, map, Items);
         }
@@ -739,6 +741,7 @@ namespace MarsUndiscovered.Components
                 IsDead = Player.IsDead,
                 IsVictorious = Player.IsVictorious,
                 MaxHealth = Player.MaxHealth,
+                Shield = Player.Shield,
                 Name = Player.Name
             };
         }
@@ -828,6 +831,28 @@ namespace MarsUndiscovered.Components
             unequipItemCommand.Initialise(itemGroup.First());
 
             return ExecuteCommand(unequipItemCommand).ToList();
+        }
+        
+        public IList<CommandResult> ApplyItemRequest(Keys itemKey)
+        {
+            if (!Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
+                return null;
+
+            var applyItemCommand = CommandFactory.CreateApplyItemCommand(this);
+
+            applyItemCommand.Initialise(Player, itemGroup.First());
+
+            return ExecuteCommand(applyItemCommand).ToList();
+        }
+
+        public void Regenerate()
+        {
+            Player.Regenerate();
+            
+            foreach (var monster in Monsters.Values.Where(m => !m.IsDead))
+            {
+                monster.Regenerate();
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ namespace MarsUndiscovered.Interfaces
         void EquipItemRequest(Keys requestKey);
         void UnequipItemRequest(Keys requestKey);
         void DropItemRequest(Keys requestKey);
+        void ApplyItemRequest(Keys requestKey);
         string GetSeed();
         Rectangle GetCurrentMapDimensions();
         IList<IGameObject> GetLastSeenGameObjectsAtPosition(Point point);

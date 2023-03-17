@@ -151,7 +151,6 @@ No enemies were defeated
             Assert.AreEqual(morgue, report);
         }
         
-        
         [TestMethod]
         public async Task WriteMorgueToFile_Should_Write_Report_To_File_With_Correct_Contents_After_Reset_And_New_Game()
         {

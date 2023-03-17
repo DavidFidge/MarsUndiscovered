@@ -13,6 +13,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             GameWorldEndpoint.LoadReplay(filename);
             IsActive = true;
             SetupNewReplay();
+            MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
         }
 
@@ -31,6 +32,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 return false;
 
             TurnNumber++;
+            MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
 
             return true;

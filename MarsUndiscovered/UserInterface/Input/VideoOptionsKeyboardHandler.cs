@@ -17,6 +17,7 @@ namespace MarsUndiscovered.UserInterface.Input
             {
                 Mediator.Send(new SaveVideoOptionsRequest());
                 Mediator.Send(new CloseVideoOptionsRequest());
+                Mediator.Send(new CloseInGameVideoOptionsRequest());
             }
         }
     }

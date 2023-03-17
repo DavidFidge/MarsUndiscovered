@@ -11,6 +11,7 @@ namespace MarsUndiscovered.Components
         public string Name { get; set;}
         public string Description { get; set; }
         public int MaxHealth { get; set; }
+        public decimal RegenRate { get; set; }
         
         public char AsciiCharacter { get; set; }
         public Color ForegroundColour { get; set; }
@@ -55,6 +56,9 @@ namespace MarsUndiscovered.Components
                 }
 
                 breed.MaxHealth = int.Parse(csvBreed.MaxHealth.ToString());
+                
+                if (!string.IsNullOrEmpty(csvBreed.RegenRate))
+                    breed.RegenRate = decimal.Parse(csvBreed.RegenRate.ToString());
 
                 if (!string.IsNullOrEmpty(csvBreed.BasicAttackMin))
                 {
