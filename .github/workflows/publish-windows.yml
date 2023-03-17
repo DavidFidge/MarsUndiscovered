@@ -58,7 +58,7 @@ jobs:
 
     - name: Build and Publish
       run: |
-        dotnet publish .\MarsUndiscovered\MarsUndiscovered\MarsUndiscovered.csproj /p:UseAppHost=true /p:TieredCompilation=false /p:DebugType=None /p:DebugSymbols=false --self-contained --configuration Release --runtime win-x64 --output Publish --framework net6.0-windows
+        dotnet publish .\MarsUndiscovered\MarsUndiscovered\MarsUndiscovered.csproj /p:UseAppHost=true /p:TieredCompilation=false /p:DebugType=None /p:DebugSymbols=false --self-contained --configuration Release --runtime win-x64 --output Publish --framework net6.0-windows -p:PublishSingleFile=true
       
     - name: Create Artifact
       run: |
