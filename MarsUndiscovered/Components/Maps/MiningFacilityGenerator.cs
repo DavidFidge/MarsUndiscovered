@@ -2,8 +2,6 @@ using GoRogue.Random;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Extensions;
 
-using SadRogue.Primitives;
-
 namespace MarsUndiscovered.Components.Maps
 {
     public class MiningFacilityGenerator : BaseGameObjectGenerator, IMiningFacilityGenerator
@@ -39,30 +37,25 @@ namespace MarsUndiscovered.Components.Maps
             var miningFacilityStartX = GlobalRandom.DefaultRNG.NextInt(0, map.Width - lines[0].Length - 1);
             var miningFacilityStartY = 0;
 
-            for (var y = miningFacilityStartY; y < miningFacilityStartY + lines.Length; y++)
+            var mapTemplate = new MapTemplate(lines, miningFacilityStartX, miningFacilityStartY);
+
+            foreach (var item in mapTemplate)
             {
-                for (var x = miningFacilityStartX; x < miningFacilityStartX + lines[0].Length; x++)
-                {
-                    var miningFacilitySection = lines[y - miningFacilityStartY][x - miningFacilityStartX];
+                map.CreateFloor(item.Point, gameObjectFactory);
 
-                    var point = new Point(x, y);
+                if (map.GetObjectsAt(item.Point).Any(o => o is not Floor))
+                    throw new Exception("CreateMiningFacility must be done as the first object creation steps");
 
-                    map.CreateFloor(point, gameObjectFactory);
+                if (item.Char == 'X')
+                    continue; // This is a blank square, so no miningFacility part, but we still want to clear out any nearby walls otherwise the map may have unreachable spots
 
-                    if (map.GetObjectsAt(point).Any(o => !(o is Floor)))
-                        throw new Exception("CreateMiningFacility must be done as the first object creation steps");
+                var miningFacility = gameObjectFactory.CreateMiningFacility()
+                    .PositionedAt(item.Point)
+                    .WithMiningFacilitySection(item.Char);
 
-                    if (miningFacilitySection == 'X')
-                        continue; // This is a blank square, so no miningFacility part, but we still want to clear out any nearby walls otherwise the map may have unreachable spots
+                miningFacilityCollection.Add(miningFacility.ID, miningFacility);
 
-                    var miningFacility = gameObjectFactory.CreateMiningFacility()
-                        .PositionedAt(point)
-                        .WithMiningFacilitySection(lines[y - miningFacilityStartY][x - miningFacilityStartX]);
-
-                    miningFacilityCollection.Add(miningFacility.ID, miningFacility);
-
-                    map.AddEntity(miningFacility);
-                }
+                map.AddEntity(miningFacility);               
             }
         }
     }

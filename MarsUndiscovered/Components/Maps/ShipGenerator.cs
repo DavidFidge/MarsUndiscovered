@@ -21,39 +21,35 @@ namespace MarsUndiscovered.Components.Maps
                 "XX.------`  |--`X",
                 "X{ (|       |XXXX",
                 "XX`------.  |--.X",
-                "XXXXXXXXXX`-+--`X",
+                "XXXXXXXXXX`-+--`X"
                 
             };
+            
             // ship is in the middle of the x axis
             var shipStartX = (map.Width / 2) - lines[0].Length / 2;
 
             // ship is at the bottom of the screen.  Subtract by 2 to get it off the border 
             var shipStartY = map.Height - Constants.ShipOffset - lines.Length;
+            
+            var mapTemplate = new MapTemplate(lines, shipStartX, shipStartY);
 
-            for (var y = shipStartY; y < shipStartY + lines.Length; y++)
+            foreach (var item in mapTemplate)
             {
-                for (var x = shipStartX; x < shipStartX + lines[0].Length; x++)
-                {
-                    var shipPart = lines[y - shipStartY][x - shipStartX];
+                map.CreateFloor(item.Point, gameObjectFactory);
 
-                    var point = new Point(x, y);
+                if (map.GetObjectsAt(item.Point).Any(o => !(o is Floor)))
+                    throw new Exception("CreateShip must be done as the first object creation steps");
 
-                    map.CreateFloor(point, gameObjectFactory);
+                if (item.Char == 'X')
+                    continue; // This is a blank square, so no ship part, but we still want to clear out any nearby walls otherwise the map may have unreachable spots
 
-                    if (map.GetObjectsAt(point).Any(o => !(o is Floor)))
-                        throw new Exception("CreateShip must be done as the first object creation steps");
+                var ship = gameObjectFactory.CreateShip()
+                    .PositionedAt(item.Point)
+                    .WithShipPart(item.Char);
 
-                    if (shipPart == 'X')
-                        continue; // This is a blank square, so no ship part, but we still want to clear out any nearby walls otherwise the map may have unreachable spots
+                shipCollection.Add(ship.ID, ship);
 
-                    var ship = gameObjectFactory.CreateShip()
-                        .PositionedAt(point)
-                        .WithShipPart(lines[y - shipStartY][x - shipStartX]);
-
-                    shipCollection.Add(ship.ID, ship);
-
-                    map.AddEntity(ship);
-                }
+                map.AddEntity(ship);
             }
         }
     }

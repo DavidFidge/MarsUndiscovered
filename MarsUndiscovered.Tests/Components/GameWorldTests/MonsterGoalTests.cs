@@ -1,11 +1,14 @@
+using System.Text;
+using FrigidRogue.MonoGame.Core.Extensions;
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components;
-
+using MarsUndiscovered.Components.Maps;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NGenerics.Extensions;
 
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
@@ -47,6 +50,142 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsNotNull(moveCommand);
             Assert.AreEqual(monster.Position, moveCommand.FromTo.Item1);
             Assert.AreEqual(new Point(1, 4), moveCommand.FromTo.Item2);
+        }
+        
+        [TestMethod]
+        public void Should_Move_Traverse_Out_Of_Caves()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+            
+            var lines = new[]
+            {
+                "#########",
+                "#........",
+                "#########"
+            };
+            
+            var mapTemplate = new MapTemplate(lines, 1, 1);
+
+            foreach (var item in mapTemplate)
+            {
+                if (item.Char == '#')
+                    _gameWorld.CreateWall(item.Point);
+            }
+
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)));
+
+            var monster = _gameWorld.Monsters.Values.First();
+            monster.VisualRange = 2;
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+
+            // Act
+            var result1 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var moveCommand1 = (MoveCommand)result1[0];
+            monster.Position = moveCommand1.FromTo.Item2;
+            
+            var result2 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var moveCommand2 = (MoveCommand)result2[0];
+            monster.Position = moveCommand2.FromTo.Item2;
+            
+            var result3 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var moveCommand3 = (MoveCommand)result3[0];
+            monster.Position = moveCommand3.FromTo.Item2;
+            
+            var result4 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var moveCommand4 = (MoveCommand)result4[0];
+            monster.Position = moveCommand4.FromTo.Item2;
+
+            // Assert
+            Assert.AreEqual(new Point(3, 2), moveCommand1.FromTo.Item2);
+            Assert.AreEqual(new Point(4, 2), moveCommand2.FromTo.Item2);
+            Assert.AreEqual(new Point(5, 2), moveCommand3.FromTo.Item2);
+            Assert.AreEqual(new Point(6, 2), moveCommand4.FromTo.Item2);
+        }
+        
+        [TestMethod]
+        public void Should_Move_Traverse_Out_Of_Caves_After_Traversing_In()
+        {
+            // Arrange
+            var mapGenerator = new BlankMapGenerator(
+                _gameWorld.GameObjectFactory,
+                Container.Resolve<IMapGenerator>()
+            );
+
+            mapGenerator.OutdoorMapDimensions = new Point(15, 5);
+            
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(mapGenerator);
+
+            _gameWorld.Player.Position = new Point(0, 0);
+            
+            var lines = new[]
+            {
+                "#########",
+                "#........",
+                "#########"
+            };
+            
+            var mapTemplate = new MapTemplate(lines, 1, 1);
+
+            foreach (var item in mapTemplate)
+            {
+                if (item.Char == '#')
+                    _gameWorld.CreateWall(item.Point);
+            }
+
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(4, 2)));
+
+            var monster = _gameWorld.Monsters.Values.First();
+            monster.VisualRange = 2;
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+
+            // Act
+            var result1 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("Map Turn 1");
+            monster.GetGoalMap().AddToStringBuilder(stringBuilder);
+
+            var moveCommand1 = (MoveCommand)result1[0];
+            monster.Position = moveCommand1.FromTo.Item2;
+
+            var result2 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            
+            stringBuilder.AppendLine("Map Turn 2");
+            monster.GetGoalMap().AddToStringBuilder(stringBuilder);
+            
+            var moveCommand2 = (MoveCommand)result2[0];
+            monster.Position = moveCommand2.FromTo.Item2;
+            
+            var result3 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            
+            stringBuilder.AppendLine("Map Turn 3");
+            monster.GetGoalMap().AddToStringBuilder(stringBuilder);
+            
+            var moveCommand3 = (MoveCommand)result3[0];
+            monster.Position = moveCommand3.FromTo.Item2;
+            
+            var result4 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            
+            stringBuilder.AppendLine("Map Turn 4");
+            monster.GetGoalMap().AddToStringBuilder(stringBuilder);
+            
+            var moveCommand4 = (MoveCommand)result4[0];
+            monster.Position = moveCommand4.FromTo.Item2;
+            
+            // Assert
+            Console.Write(stringBuilder.ToString());
+            
+            Assert.AreEqual(new Point(3, 2), moveCommand1.FromTo.Item2);
+            Assert.AreEqual(new Point(4, 2), moveCommand2.FromTo.Item2);
+            Assert.AreEqual(new Point(5, 2), moveCommand3.FromTo.Item2);
+            Assert.AreEqual(new Point(6, 2), moveCommand4.FromTo.Item2);
         }
 
         [TestMethod]

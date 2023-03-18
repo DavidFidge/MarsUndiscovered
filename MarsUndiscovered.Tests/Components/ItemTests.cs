@@ -78,7 +78,7 @@ namespace MarsUndiscovered.Tests.Components
             Assert.IsFalse(item1.CanGroupWith(item4));
         }
 
-        [TestMethod]
+        [DataTestMethod]
         [DataRow(1, false, "A Blue NanoFlask")]
         [DataRow(2, false, "2 Blue NanoFlasks")]
         [DataRow(1, true, "A NanoFlask of Healing Bots")]
@@ -95,7 +95,7 @@ namespace MarsUndiscovered.Tests.Components
             Assert.AreEqual(expectedResult, result);
         }
 
-        [TestMethod]
+        [DataTestMethod]
         [DataRow(1, false, false, "A Shiny Gadget")]
         [DataRow(1, false, true, "A Shield Generator Gadget (ready)")]
         [DataRow(1, true, true, "A +1 Shield Generator Gadget (ready)")]
@@ -116,7 +116,7 @@ namespace MarsUndiscovered.Tests.Components
             Assert.AreEqual(expectedResult, result);
         }
         
-        [TestMethod]
+        [DataTestMethod]
         [DataRow(1, false, false, "A Shiny Gadget")]
         [DataRow(1, false, true, "A Shield Generator Gadget")]
         [DataRow(1, true, true, "A +1 Shield Generator Gadget")]
@@ -137,7 +137,7 @@ namespace MarsUndiscovered.Tests.Components
             Assert.AreEqual(expectedResult, result);
         }
 
-        [TestMethod]
+        [DataTestMethod]
         [DataRow(1, false, true, "A Magnesium Pipe")]
         [DataRow(1, false, false, "An Unknown Weapon")]
         [DataRow(1, true, true, "A +1 Magnesium Pipe")]
@@ -159,7 +159,7 @@ namespace MarsUndiscovered.Tests.Components
             Assert.AreEqual(expectedResult, result);
         }
         
-        [TestMethod]
+        [DataTestMethod]
         [DataRow(1, false, true, "A Magnesium Pipe (equipped)")]
         [DataRow(1, false, false, "An Unknown Weapon (equipped)")]
         [DataRow(1, true, true, "A +1 Magnesium Pipe (equipped)")]
@@ -181,7 +181,7 @@ namespace MarsUndiscovered.Tests.Components
             Assert.AreEqual(expectedResult, result);
         }
         
-        [TestMethod]
+        [DataTestMethod]
         [DataRow(1, false, true, "A Magnesium Pipe")]
         [DataRow(1, false, false, "An Unknown Weapon")]
         [DataRow(1, true, true, "A +1 Magnesium Pipe")]

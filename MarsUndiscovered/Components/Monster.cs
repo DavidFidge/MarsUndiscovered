@@ -436,6 +436,7 @@ namespace MarsUndiscovered.Components
                 {
                     if (!_seenTiles[x, y].HasBeenSeen)
                     {
+                        // This can include walls, so if dumping a gaol map to text you may see walls come up with a goal of 0 until they come into the field of view 
                         _goalStates[x, y] = GoalState.Goal;
                         continue;
                     }
