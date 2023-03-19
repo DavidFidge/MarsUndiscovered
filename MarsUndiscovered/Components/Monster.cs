@@ -310,7 +310,7 @@ namespace MarsUndiscovered.Components
                         "move to next unexplored square",
                         monster =>
                         {
-                            var nextDirection = Wander();
+                            var nextDirection = WanderUsingGoalMap();
 
                             if (nextDirection == Direction.None)
                                 return BehaviourStatus.Failed;
@@ -380,11 +380,11 @@ namespace MarsUndiscovered.Components
         {
             _goalStates.Clear();
 
-            // Hunt radius only requires the distance between player and monster, plus two for monsters to be able to surround the player.
-            // This will have a limitation where a player can stand at a 'fake' choke point and monsters won't be able to take another path
-            // around.
-            var updateRadius = (uint)Distance.Chebyshev.Calculate(GameWorld.Player.Position, Position) + 2;
-            var range = CurrentMap.RectangleForRadiusAndPoint(updateRadius, Position);
+            // Hunt radius only requires the distance between player and monster, plus an extra 3 for monsters to be able to surround the player
+            // or walk around any blocking enemies. This may limit the monster's ability to walk around blocking terrain if the path around
+            // the terrain is not included in this submap, but 99% of cases should be fine, and may sometimes be beneficial as it means
+            // monsters can't be tricked into taking a longer path to the player.
+            var range = Rectangle.GetIntersection(CurrentMap.RectangleCoveringPoints(GameWorld.Player.Position, Position).Expand(3, 3), CurrentMap.Bounds());
             
             for (var x = range.MinExtentX; x <= range.MaxExtentX; x++)
             {
@@ -428,7 +428,7 @@ namespace MarsUndiscovered.Components
             return _goalMap.GetDirectionOfMinValue(Position, AdjacencyRule.EightWay, false);
         }
 
-        public Direction Wander()
+        public Direction WanderUsingGoalMap()
         {
             _goalStates.Clear();
 
