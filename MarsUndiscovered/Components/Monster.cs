@@ -218,6 +218,7 @@ namespace MarsUndiscovered.Components
 
             _behaviourTree = fluentBuilder
                 .Sequence("root")
+                .Condition("map is not null", monster => CurrentMap != null)
                 .Condition("on same map as player", monster => CurrentMap.Equals(GameWorld.Player.CurrentMap))
                 .Selector("action selector")
                     .Subtree(MeleeAttackBehaviour())
@@ -379,7 +380,10 @@ namespace MarsUndiscovered.Components
         {
             _goalStates.Clear();
 
-            var updateRadius = (uint)Distance.Chebyshev.Calculate(GameWorld.Player.Position, Position) + 1;
+            // Hunt radius only requires the distance between player and monster, plus two for monsters to be able to surround the player.
+            // This will have a limitation where a player can stand at a 'fake' choke point and monsters won't be able to take another path
+            // around.
+            var updateRadius = (uint)Distance.Chebyshev.Calculate(GameWorld.Player.Position, Position) + 2;
             var range = CurrentMap.RectangleForRadiusAndPoint(updateRadius, Position);
             
             for (var x = range.MinExtentX; x <= range.MaxExtentX; x++)
@@ -418,8 +422,8 @@ namespace MarsUndiscovered.Components
                 }
             }
 
-            _chebyshevGoalState.Update();
-            _manhattanGoalState.Update();
+            _chebyshevGoalState.Update(range);
+            _manhattanGoalState.Update(range);
 
             return _goalMap.GetDirectionOfMinValue(Position, AdjacencyRule.EightWay, false);
         }
@@ -427,8 +431,8 @@ namespace MarsUndiscovered.Components
         public Direction Wander()
         {
             _goalStates.Clear();
-            
-            var range = CurrentMap.RectangleForRadiusAndPoint(VisualRange, Position);
+
+            var range = CurrentMap.Bounds();
 
             for (var x = range.MinExtentX; x <= range.MaxExtentX; x++)
             {
