@@ -159,19 +159,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 return;
 
             _showGoalMap = !_showGoalMap;
-
+            
             UpdateAllTiles();
-        }
-
-        public void UpdateGoalMapText()
-        {
-            if (_mapEntity == null)
-                return;
-
-            if (!_showGoalMap)
-                return;
-
-            UpdateAllTiles();
+            DebugUpdateTileGoalMap();
         }
 
         private void CreateMapGraph()
@@ -238,7 +228,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             {
                 for (var y = 0; y < _height; y++)
                 {
-                    UpdateTile(new Point(x, y));
+                    var point = new Point(x, y);
+                    
+                    UpdateTile(point);
                 }
             }
         }
@@ -318,27 +310,32 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 _terrainTiles[point].SetWall();
         }
 
-        /// <summary>
-        /// Debug view of a goal map. Currently not used.
-        /// </summary>
-        private void UpdateTileGoalMap(Point point, IList<IGameObject> gameObjects, GoalMap goalMap)
+        private void DebugUpdateTileGoalMap()
         {
             if (!_showGoalMap)
                 return;
 
-            _goalMapTiles[point].IsVisible = false;
+            var goalMap = _gameWorldEndpoint.GetGoalMap();
 
-            var floor = gameObjects.FirstOrDefault(go => go is Floor);
-
-            if (floor == null)
+            if (goalMap == null)
                 return;
 
-            var goalMapValue = goalMap[floor.Position];
-
-            if (goalMapValue != null)
+            for (var x = 0; x < goalMap.Width; x++)
             {
-                _goalMapTiles[point].IsVisible = true;
-                _goalMapTiles[point].Text = Math.Round(goalMapValue.Value, 2).ToString();
+                for (var y = 0; y < goalMap.Height; y++)
+                {
+                    var point = new Point(x, y);
+                    
+                    _goalMapTiles[point].IsVisible = false;
+
+                    var goalMapValue = goalMap[point];
+
+                    if (goalMapValue != null)
+                    {
+                        _goalMapTiles[point].IsVisible = true;
+                        _goalMapTiles[point].Text = Math.Round(goalMapValue.Value, 2).ToString();
+                    }                   
+                }
             }
         }
         
@@ -447,6 +444,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void RecentreMap()
         {
             _mapEntity.SetCentreTranslation(_gameWorldEndpoint.GetPlayerPosition());
+        }
+
+        public void UpdateDebugTiles()
+        {
+            DebugUpdateTileGoalMap();
         }
     }
 }

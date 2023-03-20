@@ -27,6 +27,8 @@ namespace MarsUndiscovered.Components
 
         public abstract bool IsWallTurret { get; }
 
+        public uint VisualRange { get; set; } = 20;
+
         public Actor(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.ActorLayer, false, true, () => id)
         {
         }
@@ -40,6 +42,7 @@ namespace MarsUndiscovered.Components
             actorSaveData.Shield = Shield;
             actorSaveData.ResidualRegen = ResidualRegen;
             actorSaveData.IsDead = IsDead;
+            actorSaveData.VisualRange = VisualRange;
         }
 
         protected void PopulateLoadState(ActorSaveData actorSaveData)
@@ -50,6 +53,7 @@ namespace MarsUndiscovered.Components
             Shield = actorSaveData.Shield;
             ResidualRegen = actorSaveData.ResidualRegen;
             IsDead = actorSaveData.IsDead;
+            VisualRange = actorSaveData.VisualRange;
         }
         
         public void Regenerate()

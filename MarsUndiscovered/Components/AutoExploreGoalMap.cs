@@ -78,9 +78,7 @@ namespace MarsUndiscovered.Components
                             }
                         }
 
-                        var gameObjects = map
-                            .GetObjectsAt(x, y)
-                            .ToList();
+                        var gameObjects = map.GetObjectsAt(x, y);
 
                         _goalStates[x, y] = GoalState.Clear;
 

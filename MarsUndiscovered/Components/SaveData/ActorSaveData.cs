@@ -7,5 +7,6 @@
         public int Shield { get; set; }
         public int MaxHealth { get; set; }
         public decimal ResidualRegen { get; set; }
+        public uint VisualRange { get; set; }
     }
 }

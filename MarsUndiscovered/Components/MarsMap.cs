@@ -91,9 +91,9 @@ namespace MarsUndiscovered.Components
             SeenTile.ResetSeenTiles(SeenTiles);
         }
 
-        public void UpdateFieldOfView(Point position)
+        public void UpdateFieldOfView(Point position, uint visualRange)
         {
-            PlayerFOV.Calculate(position);
+            PlayerFOV.Calculate(position, visualRange);
 
             UpdateSeenTiles(PlayerFOV.CurrentFOV);
         }

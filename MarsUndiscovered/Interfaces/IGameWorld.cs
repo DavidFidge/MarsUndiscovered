@@ -11,6 +11,7 @@ using MarsUndiscovered.Components.Dto;
 using Microsoft.Xna.Framework.Input;
 
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Interfaces
 {
@@ -60,5 +61,6 @@ namespace MarsUndiscovered.Interfaces
         Task SendMorgueToWeb(Guid gameId);
         void SnapshotMorgue(string username);
         IList<RadioCommsItem> GetNewRadioCommsItems();
+        IGridView<double?> GetGoalMap();
     }
 }

@@ -26,6 +26,24 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             Assert.AreEqual(2, result.Count);
         }
+        
+        [TestMethod]
+        public void GetStatusOfMonstersInView_Should_Return_Monster_Statuses_In_Visual_Range()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItems();
+            _gameWorld.Player.VisualRange = 1;
+            _gameWorld.Player.Position = new Point(0, 0);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 2)));
+            _gameWorld.TestResetFieldOfView();
+
+            // Act
+            var result = _gameWorld.GetStatusOfMonstersInView();
+
+            // Assert
+            Assert.AreEqual(1, result.Count);
+        }
 
         [TestMethod]
         public void GetStatusOfMonstersInView_Should_Return_Monsters_In_Field_Of_View_Only()
