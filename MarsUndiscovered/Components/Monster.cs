@@ -11,7 +11,7 @@ using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.FOV;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
-
+using GoRogue.Random;
 using MarsUndiscovered.Commands;
 using MarsUndiscovered.Components.Factories;
 using MarsUndiscovered.Components.SaveData;
@@ -20,6 +20,7 @@ using MarsUndiscovered.Interfaces;
 
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Components
 {
@@ -34,6 +35,7 @@ namespace MarsUndiscovered.Components
         public override bool IsWallTurret => Breed.IsWallTurret;
 
         public bool FriendlyFireAllies => Breed.FriendlyFireAllies;
+        public bool UseGoalMapWander { get; set; } = false;
 
         private IFOV _fieldOfView;
         private ArrayView<SeenTile> _seenTiles;
@@ -45,6 +47,7 @@ namespace MarsUndiscovered.Components
         private IList<BaseGameActionCommand> _nextCommands;
         private ICommandFactory _commandFactory;
         private SeenTile[] _seenTilesAfterLoad;
+        private Path _wanderPath;
 
         public string GetInformation(Player player)
         {
@@ -130,7 +133,9 @@ namespace MarsUndiscovered.Components
         {
             PopulateLoadState(memento.State);
             Breed = Breed.Breeds[memento.State.BreedName];
-
+            UseGoalMapWander = memento.State.UseGoalMapWander;
+            _wanderPath = memento.State.WanderPath != null ? new Path(memento.State.WanderPath) : null;
+            
             if (!IsDead)
             {
                 _seenTilesAfterLoad = memento.State.SeenTiles
@@ -155,7 +160,9 @@ namespace MarsUndiscovered.Components
             base.PopulateSaveState(memento.State);
 
             memento.State.BreedName = Breed.Name;
-            
+            memento.State.WanderPath = _wanderPath?.Steps.ToList();
+            memento.State.UseGoalMapWander = UseGoalMapWander;
+
             if (!IsDead)
             {
                 memento.State.SeenTiles = _seenTiles.ToArray()
@@ -236,7 +243,8 @@ namespace MarsUndiscovered.Components
                     .Condition("is not a turret", monster => !IsWallTurret)
                     .Selector("move selector")
                         .Subtree(HuntBehaviour())
-                        .Subtree(WanderBehavior())
+                        .Subtree(WanderUsingAStarBehavior())
+                        .Subtree(WanderUsingGoalMapBehavior())
                     .End()
                 .End()
                 .Build();
@@ -302,10 +310,62 @@ namespace MarsUndiscovered.Components
             return BehaviourStatus.Succeeded;
         }
 
-        private IBehaviour<Monster> WanderBehavior()
+        private IBehaviour<Monster> WanderUsingAStarBehavior()
         {
             var behaviour = FluentBuilder.Create<Monster>()
-                .Selector("wander")
+                .Sequence("wander using AStar sequence")
+                    .Condition("can wander using AStar", monster => !monster.UseGoalMapWander)
+                    .Condition(
+                        "is not blocked",
+                        monster =>
+                        {
+                            foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
+                            {
+                                if (CurrentMap.GameObjectCanMove(this, Position + direction))
+                                    return true;
+                            }
+
+                            return false;
+                        }
+                    )
+                    .Do(
+                        "move to next unexplored square",
+                        monster =>
+                        {
+                            var nextDirection = WanderUsingAStar();
+
+                            if (nextDirection != Direction.None)
+                            {
+                                var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
+                                _nextCommands.Add(moveCommand);
+                            }
+
+                            return BehaviourStatus.Succeeded;
+                        })
+                .End()
+                .Build();
+
+            return behaviour;
+        }
+        
+        private IBehaviour<Monster> WanderUsingGoalMapBehavior()
+        {
+            var behaviour = FluentBuilder.Create<Monster>()
+                .Sequence("wander using goal map sequence")
+                    .Condition("can wander using goal map", monster => monster.UseGoalMapWander)
+                    .Condition(
+                        "is not blocked",
+                        monster =>
+                        {
+                            foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
+                            {
+                                if (CurrentMap.GameObjectCanMove(this, Position + direction))
+                                    return true;
+                            }
+
+                            return false;
+                        }
+                    )
                     .Do(
                         "move to next unexplored square",
                         monster =>
@@ -321,29 +381,6 @@ namespace MarsUndiscovered.Components
                             return BehaviourStatus.Succeeded;
                         }
                     )
-                    .Sequence("rebuild field of view sequence")
-                    .Condition(
-                        "is blocked",
-                        monster =>
-                        {
-                            foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
-                            {
-                                if (CurrentMap.GameObjectCanMove(this, Position + direction))
-                                    return false;
-                            }
-
-                            return true;
-                        }
-                    )
-                    .Do(
-                        "Rebuild fieldOfView",
-                        monster =>
-                        {
-                            ResetFieldOfViewAndSeenTiles();
-                            return BehaviourStatus.Succeeded;
-                        }
-                    )
-                    .End()
                 .End()
                 .Build();
 
@@ -477,10 +514,148 @@ namespace MarsUndiscovered.Components
 
             return _goalMap.GetDirectionOfMinValue(Position, AdjacencyRule.EightWay, false);
         }
+        
+        public Direction WanderUsingAStar()
+        {
+            var currentPathLocation = Point.None;
+
+            if (_wanderPath != null)
+                currentPathLocation = GetCurrentPointOnWanderPath();
+
+            if (currentPathLocation == Point.None)
+            {
+                _wanderPath = GetNewWanderPath();
+                
+                if (_wanderPath != null)
+                    currentPathLocation = _wanderPath.Start;
+                
+                // No floor tiles are left unexplored OR no non-blocking path could be found. Wandering has a condition where it ensures the entity is not completely blocked before entering this method, so 
+                // it is likely that the map has been split by blocking monsters or by temporary walls.  It makes the most sense here to reset the field of view.
+                if (currentPathLocation == Point.None)
+                {
+                    ResetFieldOfViewAndSeenTiles();
+                    return Direction.None;
+                }
+            }
+            
+            System.Diagnostics.Debug.Assert(currentPathLocation != Point.None);
+
+            var nextPointInPath = _wanderPath.GetStepAfterPointWithStart(currentPathLocation);
+
+            if (!CurrentMap.GameObjectCanMove(this, nextPointInPath))
+            {
+                // Path is blocked. Stay stationary this turn and find a new path next turn.
+                _wanderPath = null;
+                ResetFieldOfViewAndSeenTiles();
+                return Direction.None;                
+            }
+
+            if (nextPointInPath == Point.None)
+            {
+                System.Diagnostics.Debug.Fail("Could not find a next point in path and path lookup logic did not return Direction.None. This should never happen.");
+                return Direction.None;
+            }
+
+            return Direction.GetDirection(Position, nextPointInPath);
+        }
+
+        private Path GetNewWanderPath()
+        {
+            Path wanderPath = null;
+
+            var findPathToUnseenFloorTileTries = 20;
+            var checkedIndexes = new List<int>(20);
+
+            for (var i = 0; i < findPathToUnseenFloorTileTries; i++)
+            {
+                var randomUnseenTileIndex = GetRandomUnseenFloorTileIndex(checkedIndexes);
+
+                if (randomUnseenTileIndex == -1)
+                {
+                    return null;
+                }
+
+                wanderPath = CurrentMap.AStar.ShortestPath(Position, Point.FromIndex(randomUnseenTileIndex, CurrentMap.Width));
+
+                if (wanderPath != null)
+                    break;
+
+                // Found point is blocked. Ignore it on subsequent executions
+                checkedIndexes.Add(i);
+            }
+
+            return wanderPath;
+        }
+
+        private Point GetCurrentPointOnWanderPath()
+        {
+            Point currentPathLocation;
+            currentPathLocation = _wanderPath.StepsWithStart.DefaultIfEmpty(Point.None).FirstOrDefault(s => s == Position);
+
+            if (currentPathLocation == Point.None)
+            {
+                // Current position does not lie on the current wander path, force a new path to be found
+                currentPathLocation = Point.None;
+            }
+
+            if (_wanderPath != null && currentPathLocation == _wanderPath.End)
+            {
+                // Reached the destination, force a new point to be found
+                currentPathLocation = Point.None;
+            }
+
+            return currentPathLocation;
+        }
+
+        private int GetRandomUnseenFloorTileIndex(List<int> checkedIndexes)
+        {
+            var randomUnseenTileIndex = GlobalRandom.DefaultRNG.RandomPosition(_seenTiles).ToIndex(_seenTiles.Width);
+
+            var foundUnseenTile = false;
+
+            for (var i = randomUnseenTileIndex; i < _seenTiles.Count; i++)
+            {
+                if (checkedIndexes.Contains(i))
+                    continue;
+                
+                if (!_seenTiles[i].HasBeenSeen && CurrentMap.GetTerrainAt(Point.FromIndex(i, _seenTiles.Width)) is Floor)
+                {
+                    randomUnseenTileIndex = i;
+                    foundUnseenTile = true;
+                    break;
+                }
+            }
+
+            if (!foundUnseenTile)
+            {
+                for (var i = 0; i < randomUnseenTileIndex; i++)
+                {
+                    if (checkedIndexes.Contains(i))
+                        continue;
+                    
+                    if (!_seenTiles[i].HasBeenSeen && CurrentMap.GetTerrainAt(Point.FromIndex(i, _seenTiles.Width)) is Floor)
+                    {
+                        randomUnseenTileIndex = i;
+                        foundUnseenTile = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!foundUnseenTile)
+                return -1;
+
+            return randomUnseenTileIndex;
+        }
 
         public IGridView<double?> GetGoalMap()
         {
             return _goalMap;
+        }
+
+        public Path GetWanderPath()
+        {
+            return _wanderPath;
         }
     }
 }

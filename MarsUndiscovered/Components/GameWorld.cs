@@ -627,6 +627,18 @@ namespace MarsUndiscovered.Components
             CurrentMap.CreateFloor(position, GameObjectFactory);
             UpdateFieldOfView();
         }
+        
+        public void CreateWall(int x, int y)
+        {
+            CurrentMap.CreateWall(new Point(x, y), GameObjectFactory);
+            UpdateFieldOfView();
+        }
+
+        public void CreateFloor(int x, int y)
+        {
+            CurrentMap.CreateFloor(new Point(x, y), GameObjectFactory);
+            UpdateFieldOfView();
+        }
 
         public SaveGameResult SaveGame(string saveGameName, bool overwrite)
         {
