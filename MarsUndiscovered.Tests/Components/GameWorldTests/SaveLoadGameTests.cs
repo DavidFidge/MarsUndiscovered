@@ -237,6 +237,34 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
         
         [TestMethod]
+        public void Should_Save_Then_Load_Game_Weapon_LineAttack_Properties_Restored()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItems();
+
+            var maps = _gameWorld.Maps.ToList();
+
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).AtPosition(new Point(1, 1))
+                .OnMap(_gameWorld.CurrentMap.Id));
+
+            var item = _gameWorld.Items.Values.First();
+
+            Assert.IsTrue(item.LineAttack.DamageRange.Min > 0);
+            _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
+
+            // Act
+            var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            newGameWorld.LoadGame("TestShouldSaveThenLoad");
+
+            // Assert
+            var newItem = newGameWorld.Items.Values.First();
+            Assert.AreEqual(item.LineAttack.DamageRange.Min, newItem.LineAttack.DamageRange.Min);
+            Assert.AreEqual(item.LineAttack.DamageRange.Max, newItem.LineAttack.DamageRange.Max);
+        }
+
+        [TestMethod]
         public void Should_Retain_Residual_Regen()
         {
             // Arrange
