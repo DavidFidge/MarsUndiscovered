@@ -235,7 +235,7 @@ namespace MarsUndiscovered.Components
                 .End()
                 .Build();
         }
-
+        
         private IBehaviour<Monster> MoveBehavior()
         {
             var behaviour = FluentBuilder.Create<Monster>()
@@ -481,7 +481,7 @@ namespace MarsUndiscovered.Components
                         _goalStates[x, y] = GoalState.Goal;
                         continue;
                     }
-
+                    
                     var gameObjects = CurrentMap.GetObjectsAt(x, y);
 
                     _goalStates[x, y] = GoalState.Clear;

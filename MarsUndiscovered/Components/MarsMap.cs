@@ -35,7 +35,7 @@ namespace MarsUndiscovered.Components
         public int MapHeight => _mapHeight;
 
         public MarsMap(IGameWorld gameWorld, int mapWidth, int mapHeight)
-            : base(mapWidth, mapHeight, 3, Distance.Chebyshev, null, UInt32.MaxValue, UInt32.MaxValue, 0)
+            : base(mapWidth, mapHeight, 3, Distance.Chebyshev, null, UInt32.MaxValue, 1, 0)
         {
             Id = Guid.NewGuid();
             Level = 1;
@@ -105,7 +105,10 @@ namespace MarsUndiscovered.Components
                 var seenTile = SeenTiles[point];
 
                 seenTile.HasBeenSeen = true;
-                seenTile.LastSeenGameObjects = GetObjectsAt(point).ToList();
+                seenTile.LastSeenGameObjects.Clear();
+                
+                foreach (var gameObject in GetObjectsAt(point))
+                    seenTile.LastSeenGameObjects.Add(gameObject);
             }
         }
 

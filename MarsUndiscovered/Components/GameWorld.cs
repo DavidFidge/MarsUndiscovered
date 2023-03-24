@@ -368,7 +368,7 @@ namespace MarsUndiscovered.Components
                 Mediator.Publish(
                     new FieldOfViewChangedNotifcation(
                         CurrentMap.PlayerFOV.CurrentFOV,
-                        CurrentMap.Positions().ToEnumerable(),
+                        CurrentMap.Positions(),
                         CurrentMap.SeenTiles
                     )
                 );
@@ -380,7 +380,7 @@ namespace MarsUndiscovered.Components
             UpdateFieldOfView(false);
             CurrentMap.UpdateSeenTiles(CurrentMap.PlayerFOV.CurrentFOV);
 
-            Mediator.Publish(new FieldOfViewChangedNotifcation(CurrentMap.PlayerFOV.CurrentFOV, CurrentMap.Positions().ToEnumerable(), CurrentMap.SeenTiles));
+            Mediator.Publish(new FieldOfViewChangedNotifcation(CurrentMap.PlayerFOV.CurrentFOV, CurrentMap.Positions(), CurrentMap.SeenTiles));
         }
         
         public void AfterProgressiveWorldGeneration()
@@ -391,7 +391,7 @@ namespace MarsUndiscovered.Components
 
             Mediator.Publish(
                 new FieldOfViewChangedNotifcation(
-                    CurrentMap.Positions().ToEnumerable(),
+                    CurrentMap.Positions(),
                     Array.Empty<Point>(),
                     new ArrayView<SeenTile>(CurrentMap.Width, CurrentMap.Height)
                 )

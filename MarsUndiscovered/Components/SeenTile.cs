@@ -58,7 +58,6 @@ namespace MarsUndiscovered.Components
         public static ArrayView<SeenTile> CreateArrayViewFromMap(MarsMap map)
         {
             var seenTiles = map.Positions()
-                .ToEnumerable()
                 .Select(p => new SeenTile(p))
                 .ToArray();
 
