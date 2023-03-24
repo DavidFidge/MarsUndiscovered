@@ -277,7 +277,7 @@ namespace MarsUndiscovered
             _spriteBatch.Begin();
 
             if (_showFps)
-                _fpsCounter.DrawFps(_spriteBatch, _assets.MapFont, new Vector2(1f, 1f), Color.White);
+                _fpsCounter.DrawFps(_spriteBatch, _assets.UiRegularFont, new Vector2(1f, 1f), Color.White);
 
             _spriteBatch.End();
 

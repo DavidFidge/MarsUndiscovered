@@ -31,7 +31,7 @@ namespace MarsUndiscovered.Interfaces
         MapTileTexture LineAttackNorthEastSouthWest { get; set; }
         MapTileTexture LineAttackNorthWestSouthEast { get; set; }
         MapTileTexture LineAttackNorthSouth { get; set; }
-        SpriteFont MapFont { get; set; }
+        SpriteFont UiRegularFont { get; set; }
 
         void LoadContent();
         SpriteSheet GetRadioCommsSpriteSheet(IGameObject gameObject);

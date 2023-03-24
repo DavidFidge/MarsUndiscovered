@@ -20,10 +20,11 @@ public class Assets : IAssets
     public static Color WallColor = new Color(0xFF244BB6);
     public static Color UserInterfaceColor = new Color(0xFF1E0097);
         
+    public SpriteFont UiRegularFont { get; set; }
     public SpriteSheet ShipAiRadioComms { get; set; }
     public Texture2D TitleTexture { get; set; }
     public Texture2D TitleTextTexture { get; set; }
-    public SpriteFont MapFont { get; set; }
+    public Texture2D MapBitmapFont { get; set; }
     public SpriteFont GoalMapFont { get; set; }
     public MapTileTexture MouseHover { get; set; }
     public MapTileTexture Wall { get; set; }
@@ -63,7 +64,8 @@ public class Assets : IAssets
 
         TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/Title");
         TitleTextTexture = _gameProvider.Game.Content.Load<Texture2D>("images/TitleText");
-        MapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/MapFont");
+        UiRegularFont = _gameProvider.Game.Content.Load<SpriteFont>("GeonBit.UI/themes/mars/fonts/Regular");
+        MapBitmapFont = _gameProvider.Game.Content.Load<Texture2D>("fonts/BitmapFont");
         GoalMapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/GoalMapFont");
         ShipAiRadioComms = _gameProvider.Game.Content.Load<SpriteSheet>("animations/ShipAiRadioComms.sf", new JsonContentLoader());
 
@@ -71,7 +73,7 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
+            MapBitmapFont,
             '#',
             0.999f,
             Color.White,
@@ -82,8 +84,8 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
-            '.',
+            MapBitmapFont,
+            (char)0xfa,
             0.998f,
             Color.Tan
         );
@@ -92,7 +94,7 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
+            MapBitmapFont,
                 
             '>',
             0.997f,
@@ -104,10 +106,9 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
+            MapBitmapFont,
             '<',
             0.996f,
-            _itemColour,
             Color.SaddleBrown
         );
             
@@ -121,7 +122,7 @@ public class Assets : IAssets
                 _gameProvider,
                 Constants.TileWidth,
                 Constants.TileHeight,
-                MapFont,
+                MapBitmapFont,
                 ch,
                 0.8f + shipPartDrawDepth,
                 Color.SteelBlue,
@@ -141,7 +142,7 @@ public class Assets : IAssets
                 _gameProvider,
                 Constants.TileWidth,
                 Constants.TileHeight,
-                MapFont,
+                MapBitmapFont,
                 ch,
                 0.8f + miningFacilitySectionDrawDepth,
                 Color.MediumPurple,
@@ -155,8 +156,8 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
-            '↑',
+            MapBitmapFont,
+            (char)0x18,
             0.598f,
             _itemColour
         );
@@ -165,8 +166,8 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
-            '⏻',
+            MapBitmapFont,
+            (char)237,
             0.597f,
             _itemColour
         );
@@ -175,8 +176,8 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
-            '૪',
+            MapBitmapFont,
+            (char)0x9a,
             0.596f,
             _itemColour
         );
@@ -185,7 +186,7 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
+            MapBitmapFont,
             '&',
             0.595f,
             _itemColour
@@ -197,7 +198,7 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
+            MapBitmapFont,
             '@',
             actorDrawDepth,
             Color.Yellow
@@ -211,7 +212,7 @@ public class Assets : IAssets
                 _gameProvider,
                 Constants.TileWidth,
                 Constants.TileHeight,
-                MapFont,
+                MapBitmapFont,
                 breed.Value.AsciiCharacter,
                 actorDrawDepth,
                 breed.Value.ForegroundColour,
@@ -265,7 +266,7 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
+            MapBitmapFont,
             '|',
             0.298f,
             _lineAttackColour
@@ -275,7 +276,7 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
+            MapBitmapFont,
             '-',
             0.297f,
             _lineAttackColour
@@ -285,7 +286,7 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
+            MapBitmapFont,
             '/',
             0.296f,
             _lineAttackColour
@@ -295,7 +296,7 @@ public class Assets : IAssets
             _gameProvider,
             Constants.TileWidth,
             Constants.TileHeight,
-            MapFont,
+            MapBitmapFont,
             '\\',
             0.295f,
             _lineAttackColour
