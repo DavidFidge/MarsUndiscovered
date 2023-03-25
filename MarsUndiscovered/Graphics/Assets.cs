@@ -11,15 +11,47 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Serialization;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Content;
+using MonoGame.Extended.TextureAtlases;
 
 namespace MarsUndiscovered.Graphics;
+
+public class MapTileGraphics
+{
+    public TextureAtlas AsciiAtlas { get; set; }
+    public TextureAtlas TileAtlas { get; set; }
+    
+    public AnimatedSprite AsciiSprites { get; set; }
+
+    public MapTileGraphics()
+    {
+        var spriteSheet = new SpriteSheet();
+        spriteSheet.TextureAtlas = AsciiAtlas;
+
+        var animation = spriteSheet.CreateAnimation("test");
+        animation.KeyFrames = 
+        AsciiSprites = new AnimatedSprite(AsciiAtlas, )
+        
+        // current idea - go with having all specific types and specific methods e.g. AddWallFrame, AddFloorFrame,
+        // AddBreedFrame etc holding each in a dictionary.
+        // After this, create a list of all the frames.  Get the next perfect square, create a texture of that size,
+        // then write all the frames to it.  You can then call TextureAtlas.Create which will automatically
+        // create all the regions and you can index into it with the indexer.
+        // Then create SpriteSheetAnimationCycle objects and also creating the frames, the frame Index property must be
+        // set to the texture atlas index.  We will now have AnimatedSprites for each of Wall, Floor, monster breeds,
+        // ship parts etc.
+        
+        // We can have one of these for the Ascii graphics and another one for the Tile graphics. The graphics
+        // can then easily be changed if the game settings change.
+    }
+    
+}
 
 public class Assets : IAssets
 {
     // Alpha comes first, then reverse the hex if copying from Paint.NET
     public static Color WallColor = new Color(0xFF244BB6);
     public static Color UserInterfaceColor = new Color(0xFF1E0097);
-        
+
     public SpriteFont UiRegularFont { get; set; }
     public SpriteSheet ShipAiRadioComms { get; set; }
     public Texture2D TitleTexture { get; set; }
@@ -60,6 +92,8 @@ public class Assets : IAssets
 
     public void LoadContent()
     {
+        var allTextures = new List<MapTileTexture>();
+        
         Monsters = new Dictionary<string, MapTileTexture>();
 
         TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/Title");
@@ -79,6 +113,8 @@ public class Assets : IAssets
             Color.White,
             WallColor
         );
+        
+        allTextures.Add(Wall);
 
         Floor = new MapTileTexture(
             _gameProvider,
@@ -89,7 +125,9 @@ public class Assets : IAssets
             0.998f,
             Color.Tan
         );
-            
+        
+        allTextures.Add(Floor);
+        
         MapExitDown = new MapTileTexture(
             _gameProvider,
             Constants.TileWidth,
@@ -101,6 +139,8 @@ public class Assets : IAssets
             _itemColour,
             Color.SaddleBrown
         );
+        
+        allTextures.Add(MapExitDown);
 
         MapExitUp = new MapTileTexture(
             _gameProvider,
@@ -112,6 +152,8 @@ public class Assets : IAssets
             Color.SaddleBrown
         );
             
+        allTextures.Add(MapExitUp);
+
         ShipParts = new Dictionary<char, MapTileTexture>();
         var shipPartChars = "{_-`.+|( ";
 
@@ -130,6 +172,8 @@ public class Assets : IAssets
             );
 
             ShipParts.Add(ch, shipPart);
+            
+            allTextures.Add(shipPart);
         }
             
         MiningFacilitySection = new Dictionary<char, MapTileTexture>();
@@ -150,6 +194,8 @@ public class Assets : IAssets
             );
 
             MiningFacilitySection.Add(ch, miningFacilitySection);
+            
+            allTextures.Add(miningFacilitySection);
         }
             
         Weapon = new MapTileTexture(
@@ -161,6 +207,8 @@ public class Assets : IAssets
             0.598f,
             _itemColour
         );
+        
+        allTextures.Add(Weapon);
 
         Gadget = new MapTileTexture(
             _gameProvider,
@@ -172,6 +220,8 @@ public class Assets : IAssets
             _itemColour
         );
 
+        allTextures.Add(Gadget);
+
         NanoFlask = new MapTileTexture(
             _gameProvider,
             Constants.TileWidth,
@@ -181,7 +231,9 @@ public class Assets : IAssets
             0.596f,
             _itemColour
         );
-            
+        
+        allTextures.Add(NanoFlask);
+
         ShipRepairParts = new MapTileTexture(
             _gameProvider,
             Constants.TileWidth,
@@ -191,6 +243,8 @@ public class Assets : IAssets
             0.595f,
             _itemColour
         );
+        
+        allTextures.Add(ShipRepairParts);
             
         var actorDrawDepth = 0.4999f;
             
@@ -204,11 +258,13 @@ public class Assets : IAssets
             Color.Yellow
         );
 
+        allTextures.Add(Player);
+
         actorDrawDepth -= 0.0001f;
 
         foreach (var breed in Breed.Breeds)
         {
-            var mapTileQuad = new MapTileTexture(
+            var monster = new MapTileTexture(
                 _gameProvider,
                 Constants.TileWidth,
                 Constants.TileHeight,
@@ -218,18 +274,12 @@ public class Assets : IAssets
                 breed.Value.ForegroundColour,
                 breed.Value.BackgroundColour
             );
+            
+            allTextures.Add(monster);
 
-            Monsters.Add(breed.Key, mapTileQuad);
+            Monsters.Add(breed.Key, monster);
         }
-
-        GoalMapTileTexture = new GoalMapTileTexture(
-            _gameProvider,
-            Constants.TileWidth,
-            Constants.TileHeight,
-            GoalMapFont,
-            Color.White
-        );
-
+        
         FieldOfViewUnrevealedTexture = new MapTileTexture(
             _gameProvider,
             Constants.TileWidth,
@@ -238,6 +288,8 @@ public class Assets : IAssets
             0.199f
         );
 
+        allTextures.Add(FieldOfViewUnrevealedTexture);
+
         FieldOfViewHasBeenSeenTexture = new MapTileTexture(
             _gameProvider,
             Constants.TileWidth,
@@ -245,6 +297,8 @@ public class Assets : IAssets
             Color.Black.WithTransparency(0.8f),
             0.198f
         );
+        
+        allTextures.Add(FieldOfViewHasBeenSeenTexture);
 
         MouseHover = new MapTileTexture(
             _gameProvider,
@@ -253,6 +307,8 @@ public class Assets : IAssets
             new Color(Color.LightYellow, 0.75f),
             0.099f
         );
+        
+        allTextures.Add(MouseHover);
 
         Lightning = new MapTileTexture(
             _gameProvider,
@@ -261,6 +317,8 @@ public class Assets : IAssets
             new Color(Color.White, 1f),
             0.299f
         );
+        
+        allTextures.Add(Lightning);
      
         LineAttackNorthSouth = new MapTileTexture(
             _gameProvider,
@@ -271,6 +329,8 @@ public class Assets : IAssets
             0.298f,
             _lineAttackColour
         );
+        
+        allTextures.Add(LineAttackNorthSouth);
             
         LineAttackEastWest = new MapTileTexture(
             _gameProvider,
@@ -281,6 +341,8 @@ public class Assets : IAssets
             0.297f,
             _lineAttackColour
         );
+        
+        allTextures.Add(LineAttackEastWest);
             
         LineAttackNorthEastSouthWest = new MapTileTexture(
             _gameProvider,
@@ -291,6 +353,8 @@ public class Assets : IAssets
             0.296f,
             _lineAttackColour
         );
+        
+        allTextures.Add(LineAttackNorthEastSouthWest);
             
         LineAttackNorthWestSouthEast = new MapTileTexture(
             _gameProvider,
@@ -300,7 +364,17 @@ public class Assets : IAssets
             '\\',
             0.295f,
             _lineAttackColour
-        );          
+        );
+        
+        allTextures.Add(LineAttackNorthWestSouthEast);
+
+        GoalMapTileTexture = new GoalMapTileTexture(
+            _gameProvider,
+            Constants.TileWidth,
+            Constants.TileHeight,
+            GoalMapFont,
+            Color.White
+        );
     }
 
     public SpriteSheet GetRadioCommsSpriteSheet(IGameObject gameObject)
