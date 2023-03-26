@@ -23,5 +23,7 @@
         // Width and height of one quad when drawing all the triangles in 3D
         public const float TileQuadHeight = 1f;
         public const float TileQuadWidth = 1f;
+
+        public const float MapTileAnimationTime = 1f;
     }
 }

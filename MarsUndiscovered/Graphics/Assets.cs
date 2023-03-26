@@ -12,16 +12,17 @@ using MonoGame.Extended.Serialization;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Content;
 using MonoGame.Extended.TextureAtlases;
+using Serilog.Data;
 
 namespace MarsUndiscovered.Graphics;
 
 public class MapTileGraphics
 {
-    public TextureAtlas AsciiAtlas { get; set; }
-    public TextureAtlas TileAtlas { get; set; }
+    public TextureAtlas Atlas { get; set; }
     
-    public AnimatedSprite AsciiSprites { get; set; }
-
+    private Dictionary<TileType, List<MapTileTexture>> _mapTileTextures =
+        new Dictionary<TileType, List<MapTileTexture>>();
+    
     public MapTileGraphics()
     {
         var spriteSheet = new SpriteSheet();
@@ -43,7 +44,102 @@ public class MapTileGraphics
         // We can have one of these for the Ascii graphics and another one for the Tile graphics. The graphics
         // can then easily be changed if the game settings change.
     }
-    
+
+    public void AddMapTileTextures(TileType tileType, params MapTileTexture[] mapTileTextureFrames)
+    {
+        _mapTileTextures.Add(tileType, mapTileTextureFrames.ToList());
+    }
+
+    public void Build(GraphicsDevice graphicsDevice)
+    {
+        var atlas = CreateAtlas(graphicsDevice);
+
+        Atlas = atlas;
+
+        var spriteSheet = new SpriteSheet();
+
+        spriteSheet.TextureAtlas = Atlas;
+
+
+        //spriteSheet.Cycles.Add("Walls",);
+
+        var animation = spriteSheet.CreateAnimation("Walls");
+
+        var textureIndex = 0;
+
+        foreach (var key in _mapTileTextures.Keys)
+        {
+            var spriteSheetAnimationCycle = new SpriteSheetAnimationCycle();
+            spriteSheetAnimationCycle.Frames.Add(new SpriteSheetAnimationFrame(_mapTileTextures[key].Count, Constants.MapTileAnimationTime));
+
+            spriteSheet.Cycles.Add(Enum.GetName(key)!, spriteSheetAnimationCycle);
+        }
+        for (var i = 0; i < allTiles.Count; i++)
+        {
+            Atlas[i]
+        }
+    }
+
+    private TextureAtlas CreateAtlas(GraphicsDevice graphicsDevice)
+    {
+        var allTiles = _mapTileTextures.SelectMany(m => m.Value).ToList();
+
+        var squareRoot = Math.Sqrt(allTiles.Count);
+
+        var perfectSquare = (int)squareRoot;
+
+        if (Math.Abs(squareRoot - perfectSquare) > double.Epsilon)
+        {
+            perfectSquare++;
+        }
+
+        var texture = new Texture2D(graphicsDevice, Constants.TileWidth * perfectSquare,
+            Constants.TileHeight * perfectSquare);
+
+        var tileIndex = 0;
+        var textureData = new Color[Constants.TileWidth * Constants.TileHeight];
+
+        for (var x = 0; x < perfectSquare; x++)
+        {
+            for (var y = 0; y < perfectSquare; y++)
+            {
+                var nextTile = allTiles[tileIndex++];
+
+                nextTile.Texture2D.GetData(textureData);
+
+                var rectangle = new Rectangle(x * Constants.TileWidth, y * Constants.TileHeight, Constants.TileWidth,
+                    Constants.TileHeight);
+
+                texture.SetData(0, rectangle, textureData, 0, textureData.Length);
+
+                if (tileIndex >= allTiles.Count)
+                    break;
+            }
+        }
+
+        var atlas = TextureAtlas.Create("Tiles", texture, Constants.TileWidth, Constants.TileHeight);
+
+        return atlas;
+    }
+}
+
+public enum TileType
+{
+    Wall,
+    Floor,
+    Player,
+    MapExitDown,
+    MapExitUp,
+    Weapon,
+    Gadget,
+    NanoFlask,
+    LineAttackEastWest,
+    LineAttackNorthEastSouthWest,
+    LineAttackNorthWestSouthEast,
+    LineAttackNorthSouth,
+    ShipRepairParts,
+    FieldOfViewUnrevealedTexture,
+    FieldOfViewHasBeenSeenTexture
 }
 
 public class Assets : IAssets
