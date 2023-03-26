@@ -12,71 +12,49 @@ using MonoGame.Extended.Serialization;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Content;
 using MonoGame.Extended.TextureAtlases;
-using Serilog.Data;
 
 namespace MarsUndiscovered.Graphics;
 
 public class MapTileGraphics
 {
-    public TextureAtlas Atlas { get; set; }
+    public SpriteSheet SpriteSheet { get; private set; }
     
-    private Dictionary<TileType, List<MapTileTexture>> _mapTileTextures =
-        new Dictionary<TileType, List<MapTileTexture>>();
-    
-    public MapTileGraphics()
-    {
-        var spriteSheet = new SpriteSheet();
-        spriteSheet.TextureAtlas = AsciiAtlas;
+    private Dictionary<string, List<MapTileTexture>> _mapTileTextures = new();
 
-        var animation = spriteSheet.CreateAnimation("test");
-        animation.KeyFrames = 
-        AsciiSprites = new AnimatedSprite(AsciiAtlas, )
-        
-        // current idea - go with having all specific types and specific methods e.g. AddWallFrame, AddFloorFrame,
-        // AddBreedFrame etc holding each in a dictionary.
-        // After this, create a list of all the frames.  Get the next perfect square, create a texture of that size,
-        // then write all the frames to it.  You can then call TextureAtlas.Create which will automatically
-        // create all the regions and you can index into it with the indexer.
-        // Then create SpriteSheetAnimationCycle objects and also creating the frames, the frame Index property must be
-        // set to the texture atlas index.  We will now have AnimatedSprites for each of Wall, Floor, monster breeds,
-        // ship parts etc.
-        
-        // We can have one of these for the Ascii graphics and another one for the Tile graphics. The graphics
-        // can then easily be changed if the game settings change.
+    public void AddMapTileTextures(TileAnimationType tileAnimationType, params MapTileTexture[] mapTileTextureFrames)
+    {
+        _mapTileTextures.Add(Enum.GetName(tileAnimationType)!, mapTileTextureFrames.ToList());
     }
 
-    public void AddMapTileTextures(TileType tileType, params MapTileTexture[] mapTileTextureFrames)
+    public void AddMapTileTextures(Breed breed, params MapTileTexture[] mapTileTextureFrames)
     {
-        _mapTileTextures.Add(tileType, mapTileTextureFrames.ToList());
+        _mapTileTextures.Add($"{Enum.GetName(TileAnimationType.Monster)}{breed.Name}", mapTileTextureFrames.ToList());
     }
 
     public void Build(GraphicsDevice graphicsDevice)
     {
         var atlas = CreateAtlas(graphicsDevice);
 
-        Atlas = atlas;
+        SpriteSheet = new SpriteSheet
+        {
+            TextureAtlas = atlas
+        };
 
-        var spriteSheet = new SpriteSheet();
-
-        spriteSheet.TextureAtlas = Atlas;
-
-
-        //spriteSheet.Cycles.Add("Walls",);
-
-        var animation = spriteSheet.CreateAnimation("Walls");
-
-        var textureIndex = 0;
+        var atlasIndex = 0;
 
         foreach (var key in _mapTileTextures.Keys)
         {
             var spriteSheetAnimationCycle = new SpriteSheetAnimationCycle();
-            spriteSheetAnimationCycle.Frames.Add(new SpriteSheetAnimationFrame(_mapTileTextures[key].Count, Constants.MapTileAnimationTime));
 
-            spriteSheet.Cycles.Add(Enum.GetName(key)!, spriteSheetAnimationCycle);
-        }
-        for (var i = 0; i < allTiles.Count; i++)
-        {
-            Atlas[i]
+            for (var frameAtlasIndex = atlasIndex; frameAtlasIndex <
+                                                   atlasIndex + _mapTileTextures[key].Count; frameAtlasIndex++)
+            {
+                spriteSheetAnimationCycle.Frames.Add(new SpriteSheetAnimationFrame(frameAtlasIndex, Constants.MapTileAnimationTime));
+            }
+
+            atlasIndex += _mapTileTextures[key].Count;
+
+            SpriteSheet.Cycles.Add(key, spriteSheetAnimationCycle);
         }
     }
 
@@ -123,7 +101,7 @@ public class MapTileGraphics
     }
 }
 
-public enum TileType
+public enum TileAnimationType
 {
     Wall,
     Floor,
@@ -139,7 +117,8 @@ public enum TileType
     LineAttackNorthSouth,
     ShipRepairParts,
     FieldOfViewUnrevealedTexture,
-    FieldOfViewHasBeenSeenTexture
+    FieldOfViewHasBeenSeenTexture,
+    Monster
 }
 
 public class Assets : IAssets
@@ -180,6 +159,7 @@ public class Assets : IAssets
 
     private Color _itemColour = Color.Yellow;
     private Color _lineAttackColour = Color.LightGray;
+    private MapTileGraphics _mapTileGraphics;
 
     public Assets(IGameProvider gameProvider)
     {
@@ -188,10 +168,8 @@ public class Assets : IAssets
 
     public void LoadContent()
     {
-        var allTextures = new List<MapTileTexture>();
-        
+        _mapTileGraphics = new MapTileGraphics();
         Monsters = new Dictionary<string, MapTileTexture>();
-
         TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/Title");
         TitleTextTexture = _gameProvider.Game.Content.Load<Texture2D>("images/TitleText");
         UiRegularFont = _gameProvider.Game.Content.Load<SpriteFont>("GeonBit.UI/themes/mars/fonts/Regular");
@@ -210,8 +188,8 @@ public class Assets : IAssets
             WallColor
         );
         
-        allTextures.Add(Wall);
-
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.Wall, Wall);
+        
         Floor = new MapTileTexture(
             _gameProvider,
             Constants.TileWidth,
@@ -222,7 +200,7 @@ public class Assets : IAssets
             Color.Tan
         );
         
-        allTextures.Add(Floor);
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.Floor, Floor);
         
         MapExitDown = new MapTileTexture(
             _gameProvider,
@@ -236,7 +214,7 @@ public class Assets : IAssets
             Color.SaddleBrown
         );
         
-        allTextures.Add(MapExitDown);
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.MapExitDown, MapExitDown);
 
         MapExitUp = new MapTileTexture(
             _gameProvider,
@@ -248,7 +226,7 @@ public class Assets : IAssets
             Color.SaddleBrown
         );
             
-        allTextures.Add(MapExitUp);
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.MapExitUp, MapExitUp);
 
         ShipParts = new Dictionary<char, MapTileTexture>();
         var shipPartChars = "{_-`.+|( ";
@@ -268,8 +246,6 @@ public class Assets : IAssets
             );
 
             ShipParts.Add(ch, shipPart);
-            
-            allTextures.Add(shipPart);
         }
             
         MiningFacilitySection = new Dictionary<char, MapTileTexture>();
@@ -290,8 +266,6 @@ public class Assets : IAssets
             );
 
             MiningFacilitySection.Add(ch, miningFacilitySection);
-            
-            allTextures.Add(miningFacilitySection);
         }
             
         Weapon = new MapTileTexture(
@@ -304,7 +278,7 @@ public class Assets : IAssets
             _itemColour
         );
         
-        allTextures.Add(Weapon);
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.Weapon, Gadget);
 
         Gadget = new MapTileTexture(
             _gameProvider,
@@ -315,8 +289,8 @@ public class Assets : IAssets
             0.597f,
             _itemColour
         );
-
-        allTextures.Add(Gadget);
+        
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.Gadget, Gadget);
 
         NanoFlask = new MapTileTexture(
             _gameProvider,
@@ -327,8 +301,8 @@ public class Assets : IAssets
             0.596f,
             _itemColour
         );
-        
-        allTextures.Add(NanoFlask);
+
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.NanoFlask, NanoFlask);
 
         ShipRepairParts = new MapTileTexture(
             _gameProvider,
@@ -339,9 +313,9 @@ public class Assets : IAssets
             0.595f,
             _itemColour
         );
-        
-        allTextures.Add(ShipRepairParts);
-            
+
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.ShipRepairParts, ShipRepairParts);
+
         var actorDrawDepth = 0.4999f;
             
         Player = new MapTileTexture(
@@ -353,8 +327,8 @@ public class Assets : IAssets
             actorDrawDepth,
             Color.Yellow
         );
-
-        allTextures.Add(Player);
+        
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.Player, Player);
 
         actorDrawDepth -= 0.0001f;
 
@@ -371,7 +345,7 @@ public class Assets : IAssets
                 breed.Value.BackgroundColour
             );
             
-            allTextures.Add(monster);
+            _mapTileGraphics.AddMapTileTextures(breed.Value, monster);
 
             Monsters.Add(breed.Key, monster);
         }
@@ -384,7 +358,7 @@ public class Assets : IAssets
             0.199f
         );
 
-        allTextures.Add(FieldOfViewUnrevealedTexture);
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.FieldOfViewUnrevealedTexture, FieldOfViewUnrevealedTexture);
 
         FieldOfViewHasBeenSeenTexture = new MapTileTexture(
             _gameProvider,
@@ -393,8 +367,8 @@ public class Assets : IAssets
             Color.Black.WithTransparency(0.8f),
             0.198f
         );
-        
-        allTextures.Add(FieldOfViewHasBeenSeenTexture);
+
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.FieldOfViewHasBeenSeenTexture, FieldOfViewHasBeenSeenTexture);
 
         MouseHover = new MapTileTexture(
             _gameProvider,
