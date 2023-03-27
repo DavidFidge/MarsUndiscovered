@@ -45,11 +45,12 @@ public class MapTileGraphics
         foreach (var key in _mapTileTextures.Keys)
         {
             var spriteSheetAnimationCycle = new SpriteSheetAnimationCycle();
+            spriteSheetAnimationCycle.IsLooping = true;
 
-            for (var frameAtlasIndex = atlasIndex; frameAtlasIndex <
-                                                   atlasIndex + _mapTileTextures[key].Count; frameAtlasIndex++)
+            for (var frameAtlasIndex = atlasIndex; frameAtlasIndex < atlasIndex + _mapTileTextures[key].Count; frameAtlasIndex++)
             {
-                spriteSheetAnimationCycle.Frames.Add(new SpriteSheetAnimationFrame(frameAtlasIndex, Constants.MapTileAnimationTime));
+                var spriteSheetAnimationFrame = new SpriteSheetAnimationFrame(frameAtlasIndex, Constants.MapTileAnimationTime);
+                spriteSheetAnimationCycle.Frames.Add(spriteSheetAnimationFrame);
             }
 
             atlasIndex += _mapTileTextures[key].Count;
@@ -115,6 +116,8 @@ public enum TileAnimationType
     LineAttackNorthEastSouthWest,
     LineAttackNorthWestSouthEast,
     LineAttackNorthSouth,
+    MouseHover,
+    Lightning,
     ShipRepairParts,
     FieldOfViewUnrevealedTexture,
     FieldOfViewHasBeenSeenTexture,
@@ -377,8 +380,8 @@ public class Assets : IAssets
             new Color(Color.LightYellow, 0.75f),
             0.099f
         );
-        
-        allTextures.Add(MouseHover);
+
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.MouseHover, MouseHover);
 
         Lightning = new MapTileTexture(
             _gameProvider,
@@ -387,9 +390,9 @@ public class Assets : IAssets
             new Color(Color.White, 1f),
             0.299f
         );
-        
-        allTextures.Add(Lightning);
-     
+
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.Lightning, Lightning);
+
         LineAttackNorthSouth = new MapTileTexture(
             _gameProvider,
             Constants.TileWidth,
@@ -400,7 +403,7 @@ public class Assets : IAssets
             _lineAttackColour
         );
         
-        allTextures.Add(LineAttackNorthSouth);
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.LineAttackNorthSouth, LineAttackNorthSouth);
             
         LineAttackEastWest = new MapTileTexture(
             _gameProvider,
@@ -412,7 +415,7 @@ public class Assets : IAssets
             _lineAttackColour
         );
         
-        allTextures.Add(LineAttackEastWest);
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.LineAttackEastWest, LineAttackEastWest);
             
         LineAttackNorthEastSouthWest = new MapTileTexture(
             _gameProvider,
@@ -423,9 +426,9 @@ public class Assets : IAssets
             0.296f,
             _lineAttackColour
         );
-        
-        allTextures.Add(LineAttackNorthEastSouthWest);
-            
+
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.LineAttackNorthEastSouthWest, LineAttackNorthEastSouthWest);
+
         LineAttackNorthWestSouthEast = new MapTileTexture(
             _gameProvider,
             Constants.TileWidth,
@@ -435,8 +438,8 @@ public class Assets : IAssets
             0.295f,
             _lineAttackColour
         );
-        
-        allTextures.Add(LineAttackNorthWestSouthEast);
+
+        _mapTileGraphics.AddMapTileTextures(TileAnimationType.LineAttackNorthWestSouthEast, LineAttackNorthWestSouthEast);
 
         GoalMapTileTexture = new GoalMapTileTexture(
             _gameProvider,
