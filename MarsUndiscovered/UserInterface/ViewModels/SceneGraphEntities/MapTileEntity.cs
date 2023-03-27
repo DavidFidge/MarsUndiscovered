@@ -3,6 +3,7 @@ using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
 
 using Microsoft.Xna.Framework;
@@ -18,7 +19,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     {
         public IAssets Assets { get; set; }
         public Point Position { get; set; }
-        public MapTileTexture MapTileTexture { get; set; }
+        public IMapTileTexture MapTileTexture { get; set; }
         public bool IsVisible { get; set; }
         public float? Opacity { get; set; }
 
@@ -32,26 +33,25 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void SetWall()
         {
-            MapTileTexture = Assets.Wall;
+            MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.Wall);
             IsVisible = true;
         }
 
         public void SetFloor()
         {
-            MapTileTexture = Assets.Floor;
+            MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.Floor);
             IsVisible = true;
         }
 
         public void SetPlayer()
         {
-            MapTileTexture = Assets.Player;
+            MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.Player);
             IsVisible = true;
         }
 
         public void SetMapExit(Direction direction)
         {
-            MapTileTexture = direction == Direction.Down ? Assets.MapExitDown : Assets.MapExitUp;
-
+            MapTileTexture = Assets.GetMapTileTexture(direction == Direction.Down ? TileAnimationType.MapExitDown : TileAnimationType.MapExitUp);
             IsVisible = true;
         }
 
@@ -69,21 +69,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void SetItem(ItemType itemType)
         {
-            MapTileTexture = Assets.GetTextureForItemType(itemType);
-
+            MapTileTexture = Assets.GetMapTileTexture(itemType);
             IsVisible = true;
         }
 
         public void SetMonster(Breed breed)
         {
-            MapTileTexture = Assets.Monsters[breed.Name];
-           
+            MapTileTexture = Assets.GetMapTileTexture(breed);
             IsVisible = true;
         }
 
         public void SetMouseHover()
         {
-            MapTileTexture = Assets.MouseHover;
+            MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.MouseHover);
             IsVisible = false;
         }
         
@@ -101,7 +99,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void SetLightning(float opacity)
         {
             IsVisible = true;
-            MapTileTexture = Assets.Lightning;
+            MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.Lightning);
             Opacity = opacity;
         }
         
@@ -115,19 +113,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     break;
                 case Direction.Types.Up:
                 case Direction.Types.Down:
-                    MapTileTexture = Assets.LineAttackNorthSouth;
+                    MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.LineAttackNorthSouth);
                     break;
                 case Direction.Types.UpRight:
                 case Direction.Types.DownLeft:
-                    MapTileTexture = Assets.LineAttackNorthEastSouthWest;
+                    MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.LineAttackNorthEastSouthWest);
                     break;
                 case Direction.Types.Right:
                 case Direction.Types.Left:
-                    MapTileTexture = Assets.LineAttackEastWest;
+                    MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.LineAttackEastWest);
                     break;
                 case Direction.Types.DownRight:
                 case Direction.Types.UpLeft:
-                    MapTileTexture = Assets.LineAttackNorthWestSouthEast;
+                    MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.LineAttackNorthWestSouthEast);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

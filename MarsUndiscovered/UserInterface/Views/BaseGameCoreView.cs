@@ -58,7 +58,7 @@ namespace MarsUndiscovered.UserInterface.Views
             Game.GraphicsDevice.SetRenderTarget(_renderTarget);
             Game.GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             var drawableTiles = _viewModel.MapViewModel.GetVisibleDrawableTiles();
             
