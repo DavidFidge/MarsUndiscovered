@@ -1,6 +1,7 @@
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 using GoRogue.GameFramework;
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Graphics;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Sprites;
 
@@ -10,31 +11,17 @@ namespace MarsUndiscovered.Interfaces
     {
         public Texture2D TitleTexture { get; set; }
         public Texture2D TitleTextTexture { get; set; }
-        MapTileTexture Wall { get; set; }
-        MapTileTexture Floor { get; set; }
-        MapTileTexture Player { get; set; }
-        MapTileTexture MapExitDown { get; set; }
-        MapTileTexture MapExitUp { get; set; }
-        IDictionary<string, MapTileTexture> Monsters { get; set; }
         GoalMapTileTexture GoalMapTileTexture { get; set; }
-        MapTileTexture MouseHover { get; set; }
-        MapTileTexture Weapon { get; set; }
-        MapTileTexture Gadget { get; set; }
-        MapTileTexture NanoFlask { get; set; }
-        MapTileTexture Lightning { get; set; }
-        MapTileTexture FieldOfViewUnrevealedTexture { get; set; }
-        MapTileTexture FieldOfViewHasBeenSeenTexture { get; set; }
-        IDictionary<char, MapTileTexture> ShipParts { get; set; }
-        IDictionary<char, MapTileTexture> MiningFacilitySection { get; set; }
-        MapTileTexture ShipRepairParts { get; set; }
-        MapTileTexture LineAttackEastWest { get; set; }
-        MapTileTexture LineAttackNorthEastSouthWest { get; set; }
-        MapTileTexture LineAttackNorthWestSouthEast { get; set; }
-        MapTileTexture LineAttackNorthSouth { get; set; }
-        SpriteFont MapFont { get; set; }
+        SpriteFont UiRegularFont { get; set; }
 
         void LoadContent();
         SpriteSheet GetRadioCommsSpriteSheet(IGameObject gameObject);
-        MapTileTexture GetTextureForItemType(ItemType itemType);
+        IMapTileTexture GetMapTileTexture(TileGraphicType tileGraphicType);
+        IMapTileTexture GetMapTileTexture(Breed breed);
+        IMapTileTexture GetMapTileTexture(ItemType itemType);
+        Texture2D GetStaticTexture(TileGraphicType tileGraphicType);
+        Texture2D GetStaticTexture(Breed breed);
+        Texture2D GetStaticTexture(ItemType itemType);
+        IMapTileTexture GetMapTileTexture(TileGraphicFeatureType tileGraphicFeatureType, char c);
     }
 }

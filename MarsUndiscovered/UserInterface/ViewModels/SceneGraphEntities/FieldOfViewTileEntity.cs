@@ -1,4 +1,5 @@
-﻿using Point = SadRogue.Primitives.Point;
+﻿using MarsUndiscovered.Graphics;
+using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -12,14 +13,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void SetFieldOfViewUnrevealed()
         {
-            MapTileTexture = Assets.FieldOfViewUnrevealedTexture;
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.FieldOfViewUnrevealedTexture);
             IsVisible = true;
             HasBeenSeen = false;
         }
 
         public void SetFieldOfViewHasBeenSeen()
         {
-            MapTileTexture = Assets.FieldOfViewHasBeenSeenTexture;
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.FieldOfViewHasBeenSeenTexture);
             IsVisible = true;
             HasBeenSeen = true;
         }
