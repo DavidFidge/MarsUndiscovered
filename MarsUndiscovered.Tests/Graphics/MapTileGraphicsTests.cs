@@ -14,9 +14,9 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         // Arrange
         var mapTileGraphics = new MapTileGraphics();
 
-        var mapTileTexture1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Red, 0);
-        var mapTileTexture2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Blue, 0);
-        var mapTileTexture3 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Green, 0);
+        var mapTileTexture1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Red);
+        var mapTileTexture2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Blue);
+        var mapTileTexture3 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Green);
 
         mapTileGraphics.AddMapTileTextures(TileGraphicType.Wall, mapTileTexture1);
         mapTileGraphics.AddMapTileTextures(TileGraphicType.Player, mapTileTexture2);
@@ -90,10 +90,10 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         // Arrange
         var mapTileGraphics = new MapTileGraphics();
 
-        var mapTileTexture1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Red, 0);
-        var mapTileTexture2Frame1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Blue, 0);
-        var mapTileTexture2Frame2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Yellow, 0);
-        var mapTileTexture3 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Green, 0);
+        var mapTileTexture1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Red);
+        var mapTileTexture2Frame1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Blue);
+        var mapTileTexture2Frame2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Yellow);
+        var mapTileTexture3 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Green);
 
         mapTileGraphics.AddMapTileTextures(TileGraphicType.Wall, mapTileTexture1);
         mapTileGraphics.AddMapTileTextures(TileGraphicType.Player, mapTileTexture2Frame1, mapTileTexture2Frame2);
@@ -190,8 +190,8 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         // Arrange
         var mapTileGraphics = new MapTileGraphics();
 
-        var mapTileTextureFrame1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Blue, 0);
-        var mapTileTextureFrame2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Yellow, 0);
+        var mapTileTextureFrame1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Blue);
+        var mapTileTextureFrame2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Yellow);
 
         mapTileGraphics.AddMapTileTextures(TileGraphicType.Player, mapTileTextureFrame1, mapTileTextureFrame2);
 
@@ -225,8 +225,8 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         // Arrange
         var mapTileGraphics = new MapTileGraphics();
 
-        var mapTileTextureFrame1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Blue, 0);
-        var mapTileTextureFrame2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Yellow, 0);
+        var mapTileTextureFrame1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Blue);
+        var mapTileTextureFrame2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Yellow);
 
         mapTileGraphics.AddMapTileTextures(TileGraphicType.Player, mapTileTextureFrame1, mapTileTextureFrame2);
 

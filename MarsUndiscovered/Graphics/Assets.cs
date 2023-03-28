@@ -56,7 +56,6 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             '#',
-            0.999f,
             Color.White,
             WallColor
         );
@@ -69,7 +68,6 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             (char)0xfa,
-            0.998f,
             Color.Tan
         );
         
@@ -81,7 +79,6 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             '>',
-            0.997f,
             _itemColour,
             Color.SaddleBrown
         );
@@ -94,7 +91,6 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             '<',
-            0.996f,
             _itemColour,
             Color.SaddleBrown
         );
@@ -105,14 +101,12 @@ public class Assets : IAssets
 
         foreach (char ch in shipPartChars)
         {
-            var shipPartDrawDepth = ch * 0.000001f;
             var shipPart = new MapTileTexture(
                 _gameProvider.Game.GraphicsDevice,
                 Constants.TileWidth,
                 Constants.TileHeight,
                 MapBitmapFont,
                 ch,
-                0.8f + shipPartDrawDepth,
                 Color.SteelBlue,
                 Color.Black
             );
@@ -124,14 +118,12 @@ public class Assets : IAssets
 
         foreach (char ch in miningFacilitySectionChars)
         {
-            var miningFacilitySectionDrawDepth = ch * 0.001001f;
             var miningFacilitySection = new MapTileTexture(
                 _gameProvider.Game.GraphicsDevice,
                 Constants.TileWidth,
                 Constants.TileHeight,
                 MapBitmapFont,
                 ch,
-                0.8f + miningFacilitySectionDrawDepth,
                 Color.MediumPurple,
                 Color.Black
             );
@@ -145,7 +137,6 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             (char)0x18,
-            0.598f,
             _itemColour
         );
         
@@ -157,7 +148,6 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             (char)237,
-            0.597f,
             _itemColour
         );
         
@@ -169,7 +159,6 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             (char)0x9a,
-            0.596f,
             _itemColour
         );
 
@@ -181,27 +170,21 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             '&',
-            0.595f,
             _itemColour
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.ShipRepairParts, shipRepairParts);
 
-        var actorDrawDepth = 0.4999f;
-            
         var player = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
             Constants.TileHeight,
             MapBitmapFont,
             '@',
-            actorDrawDepth,
             Color.Yellow
         );
         
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Player, player);
-
-        actorDrawDepth -= 0.0001f;
 
         foreach (var breed in Breed.Breeds)
         {
@@ -211,7 +194,6 @@ public class Assets : IAssets
                 Constants.TileHeight,
                 MapBitmapFont,
                 breed.Value.AsciiCharacter,
-                actorDrawDepth,
                 breed.Value.ForegroundColour,
                 breed.Value.BackgroundColour
             );
@@ -223,8 +205,7 @@ public class Assets : IAssets
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
             Constants.TileHeight,
-            Color.Black,
-            0.199f
+            Color.Black
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.FieldOfViewUnrevealedTexture, fieldOfViewUnrevealedTexture);
@@ -233,8 +214,7 @@ public class Assets : IAssets
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
             Constants.TileHeight,
-            Color.Black.WithTransparency(0.8f),
-            0.198f
+            Color.Black.WithTransparency(0.8f)
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.FieldOfViewHasBeenSeenTexture, fieldOfViewHasBeenSeenTexture);
@@ -243,8 +223,7 @@ public class Assets : IAssets
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
             Constants.TileHeight,
-            new Color(Color.LightYellow, 0.75f),
-            0.099f
+            new Color(Color.LightYellow, 0.75f)
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MouseHover, mouseHover);
@@ -253,8 +232,7 @@ public class Assets : IAssets
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
             Constants.TileHeight,
-            new Color(Color.White, 1f),
-            0.299f
+            new Color(Color.White, 1f)
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Lightning, lightning);
@@ -265,7 +243,6 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             '|',
-            0.298f,
             _lineAttackColour
         );
         
@@ -277,7 +254,6 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             '-',
-            0.297f,
             _lineAttackColour
         );
         
@@ -289,7 +265,6 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             '/',
-            0.296f,
             _lineAttackColour
         );
 
@@ -301,7 +276,6 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             '\\',
-            0.295f,
             _lineAttackColour
         );
 
