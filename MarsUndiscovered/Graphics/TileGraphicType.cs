@@ -1,6 +1,6 @@
 ﻿namespace MarsUndiscovered.Graphics;
 
-public enum TileAnimationType
+public enum TileGraphicType
 {
     Wall,
     Floor,
@@ -19,5 +19,6 @@ public enum TileAnimationType
     ShipRepairParts,
     FieldOfViewUnrevealedTexture,
     FieldOfViewHasBeenSeenTexture,
-    Monster
+    Monster,
+    Feature
 }

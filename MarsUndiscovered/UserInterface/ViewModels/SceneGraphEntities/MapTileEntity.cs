@@ -33,37 +33,37 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void SetWall()
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.Wall);
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Wall);
             IsVisible = true;
         }
 
         public void SetFloor()
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.Floor);
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Floor);
             IsVisible = true;
         }
 
         public void SetPlayer()
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.Player);
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Player);
             IsVisible = true;
         }
 
         public void SetMapExit(Direction direction)
         {
-            MapTileTexture = Assets.GetMapTileTexture(direction == Direction.Down ? TileAnimationType.MapExitDown : TileAnimationType.MapExitUp);
+            MapTileTexture = Assets.GetMapTileTexture(direction == Direction.Down ? TileGraphicType.MapExitDown : TileGraphicType.MapExitUp);
             IsVisible = true;
         }
 
         public void SetShip(char shipPart)
         {
-            MapTileTexture = Assets.ShipParts[shipPart];
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicFeatureType.Ship, shipPart);
             IsVisible = true;
         }
         
         public void SetMiningFacility(char miningFacilityPart)
         {
-            MapTileTexture = Assets.MiningFacilitySection[miningFacilityPart];
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicFeatureType.MiningFacility, miningFacilityPart);
             IsVisible = true;
         }
 
@@ -81,7 +81,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void SetMouseHover()
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.MouseHover);
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.MouseHover);
             IsVisible = false;
         }
         
@@ -99,7 +99,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void SetLightning(float opacity)
         {
             IsVisible = true;
-            MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.Lightning);
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Lightning);
             Opacity = opacity;
         }
         
@@ -113,19 +113,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     break;
                 case Direction.Types.Up:
                 case Direction.Types.Down:
-                    MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.LineAttackNorthSouth);
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackNorthSouth);
                     break;
                 case Direction.Types.UpRight:
                 case Direction.Types.DownLeft:
-                    MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.LineAttackNorthEastSouthWest);
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackNorthEastSouthWest);
                     break;
                 case Direction.Types.Right:
                 case Direction.Types.Left:
-                    MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.LineAttackEastWest);
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackEastWest);
                     break;
                 case Direction.Types.DownRight:
                 case Direction.Types.UpLeft:
-                    MapTileTexture = Assets.GetMapTileTexture(TileAnimationType.LineAttackNorthWestSouthEast);
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackNorthWestSouthEast);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

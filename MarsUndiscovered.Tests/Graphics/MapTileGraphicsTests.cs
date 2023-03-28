@@ -18,9 +18,9 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         var mapTileTexture2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Blue, 0);
         var mapTileTexture3 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Green, 0);
 
-        mapTileGraphics.AddMapTileTextures(TileAnimationType.Wall, mapTileTexture1);
-        mapTileGraphics.AddMapTileTextures(TileAnimationType.Player, mapTileTexture2);
-        mapTileGraphics.AddMapTileTextures(TileAnimationType.Gadget, mapTileTexture3);
+        mapTileGraphics.AddMapTileTextures(TileGraphicType.Wall, mapTileTexture1);
+        mapTileGraphics.AddMapTileTextures(TileGraphicType.Player, mapTileTexture2);
+        mapTileGraphics.AddMapTileTextures(TileGraphicType.Gadget, mapTileTexture3);
 
         // Act
         mapTileGraphics.Build(GraphicsDevice);
@@ -31,7 +31,7 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.AreEqual(expectedBounds, mapTileGraphics.SpriteSheet.TextureAtlas.Texture.Bounds);
 
         // Wall Tile
-        var mapTileTextureResult1 = mapTileGraphics.GetMapTileTexture(TileAnimationType.Wall);
+        var mapTileTextureResult1 = mapTileGraphics.GetMapTileTexture(TileGraphicType.Wall);
         Assert.IsTrue(mapTileTextureResult1 is SpriteSheetMapTileTexture);
         
         var spriteSheetMapTileTextureResult1 = (SpriteSheetMapTileTexture)mapTileTextureResult1;
@@ -50,7 +50,7 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.AreEqual(textureColours[0], Color.Red);
 
         // Player Tile
-        var mapTileTextureResult2 = mapTileGraphics.GetMapTileTexture(TileAnimationType.Player);
+        var mapTileTextureResult2 = mapTileGraphics.GetMapTileTexture(TileGraphicType.Player);
         Assert.IsTrue(mapTileTextureResult2 is SpriteSheetMapTileTexture);
 
         var spriteSheetMapTileTextureResult2 = (SpriteSheetMapTileTexture)mapTileTextureResult2;
@@ -67,7 +67,7 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.AreEqual(textureColours[0], Color.Blue);
 
         // Gadget Tile
-        var mapTileTextureResult3 = mapTileGraphics.GetMapTileTexture(TileAnimationType.Gadget);
+        var mapTileTextureResult3 = mapTileGraphics.GetMapTileTexture(TileGraphicType.Gadget);
         Assert.IsTrue(mapTileTextureResult3 is SpriteSheetMapTileTexture);
 
         var spriteSheetMapTileTextureResult3 = (SpriteSheetMapTileTexture)mapTileTextureResult3;
@@ -95,9 +95,9 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         var mapTileTexture2Frame2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Yellow, 0);
         var mapTileTexture3 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Green, 0);
 
-        mapTileGraphics.AddMapTileTextures(TileAnimationType.Wall, mapTileTexture1);
-        mapTileGraphics.AddMapTileTextures(TileAnimationType.Player, mapTileTexture2Frame1, mapTileTexture2Frame2);
-        mapTileGraphics.AddMapTileTextures(TileAnimationType.Gadget, mapTileTexture3);
+        mapTileGraphics.AddMapTileTextures(TileGraphicType.Wall, mapTileTexture1);
+        mapTileGraphics.AddMapTileTextures(TileGraphicType.Player, mapTileTexture2Frame1, mapTileTexture2Frame2);
+        mapTileGraphics.AddMapTileTextures(TileGraphicType.Gadget, mapTileTexture3);
 
         // Act
         mapTileGraphics.Build(GraphicsDevice);
@@ -108,7 +108,7 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.AreEqual(expectedBounds, mapTileGraphics.SpriteSheet.TextureAtlas.Texture.Bounds);
 
         // Wall Tile
-        var mapTileTextureResult1 = mapTileGraphics.GetMapTileTexture(TileAnimationType.Wall);
+        var mapTileTextureResult1 = mapTileGraphics.GetMapTileTexture(TileGraphicType.Wall);
         Assert.IsTrue(mapTileTextureResult1 is SpriteSheetMapTileTexture);
         
         var spriteSheetMapTileTextureResult1 = (SpriteSheetMapTileTexture)mapTileTextureResult1;
@@ -127,7 +127,7 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.AreEqual(textureColours[0], Color.Red);
 
         // Player Tile
-        var mapTileTextureResult2 = mapTileGraphics.GetMapTileTexture(TileAnimationType.Player);
+        var mapTileTextureResult2 = mapTileGraphics.GetMapTileTexture(TileGraphicType.Player);
         Assert.IsTrue(mapTileTextureResult2 is SpriteSheetMapTileTexture);
 
         var spriteSheetMapTileTextureResult2 = (SpriteSheetMapTileTexture)mapTileTextureResult2;
@@ -167,7 +167,7 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.AreEqual(textureColours[0], Color.Yellow);
 
         // Gadget Tile
-        var mapTileTextureResult3 = mapTileGraphics.GetMapTileTexture(TileAnimationType.Gadget);
+        var mapTileTextureResult3 = mapTileGraphics.GetMapTileTexture(TileGraphicType.Gadget);
         Assert.IsTrue(mapTileTextureResult3 is SpriteSheetMapTileTexture);
 
         var spriteSheetMapTileTextureResult3 = (SpriteSheetMapTileTexture)mapTileTextureResult3;
@@ -193,10 +193,10 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         var mapTileTextureFrame1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Blue, 0);
         var mapTileTextureFrame2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Yellow, 0);
 
-        mapTileGraphics.AddMapTileTextures(TileAnimationType.Player, mapTileTextureFrame1, mapTileTextureFrame2);
+        mapTileGraphics.AddMapTileTextures(TileGraphicType.Player, mapTileTextureFrame1, mapTileTextureFrame2);
 
         mapTileGraphics.Build(GraphicsDevice);
-        var mapTileTextureResult = mapTileGraphics.GetMapTileTexture(TileAnimationType.Player);
+        var mapTileTextureResult = mapTileGraphics.GetMapTileTexture(TileGraphicType.Player);
         var spriteSheetMapTileTextureResult = (SpriteSheetMapTileTexture)mapTileTextureResult;
 
         FakeStopwatchProvider.Elapsed = TimeSpan.FromSeconds(Constants.MapTileAnimationTime);
@@ -228,10 +228,10 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         var mapTileTextureFrame1 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Blue, 0);
         var mapTileTextureFrame2 = new MapTileTexture(GraphicsDevice, Constants.TileWidth, Constants.TileHeight, Color.Yellow, 0);
 
-        mapTileGraphics.AddMapTileTextures(TileAnimationType.Player, mapTileTextureFrame1, mapTileTextureFrame2);
+        mapTileGraphics.AddMapTileTextures(TileGraphicType.Player, mapTileTextureFrame1, mapTileTextureFrame2);
 
         mapTileGraphics.Build(GraphicsDevice);
-        var mapTileTextureResult = mapTileGraphics.GetMapTileTexture(TileAnimationType.Player);
+        var mapTileTextureResult = mapTileGraphics.GetMapTileTexture(TileGraphicType.Player);
         var spriteSheetMapTileTextureResult = (SpriteSheetMapTileTexture)mapTileTextureResult;
 
         FakeStopwatchProvider.Elapsed = TimeSpan.FromSeconds(Constants.MapTileAnimationTime);

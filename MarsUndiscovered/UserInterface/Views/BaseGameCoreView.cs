@@ -58,6 +58,11 @@ namespace MarsUndiscovered.UserInterface.Views
             Game.GraphicsDevice.SetRenderTarget(_renderTarget);
             Game.GraphicsDevice.Clear(Color.Black);
 
+            // All tiles are currently in a single atlas which means we can use Deferred sprite sort mode because
+            // the graphics card can use the same texture for each tile and thus have good performance.
+            // If more than one atlas needs to be introduced then this will need to be changed to
+            // Texture and texture levels will need to be defined and passed into the layerDepth parameter
+            // in spriteBatch.Draw.
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             var drawableTiles = _viewModel.MapViewModel.GetVisibleDrawableTiles();

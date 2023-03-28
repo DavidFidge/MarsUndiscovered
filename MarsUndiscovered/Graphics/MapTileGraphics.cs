@@ -17,9 +17,9 @@ public class MapTileGraphics
     private Dictionary<string, MapTileTexture> _staticMapTileTextures = new();
     private List<SpriteSheetMapTileTexture> _spriteSheetMapTileTextures = new();
 
-    public void AddMapTileTextures(TileAnimationType tileAnimationType, params MapTileTexture[] mapTileTextureFrames)
+    public void AddMapTileTextures(TileGraphicType tileGraphicType, params MapTileTexture[] mapTileTextureFrames)
     {
-        _rawMapTileTextures.Add(Enum.GetName(tileAnimationType)!, mapTileTextureFrames.ToList());
+        _rawMapTileTextures.Add(Enum.GetName(tileGraphicType)!, mapTileTextureFrames.ToList());
     }
 
     public void AddMapTileTextures(Breed breed, params MapTileTexture[] mapTileTextureFrames)
@@ -27,9 +27,19 @@ public class MapTileGraphics
         _rawMapTileTextures.Add(GetMonsterKey(breed), mapTileTextureFrames.ToList());
     }
 
+    public void AddMapTileTextures(TileGraphicFeatureType tileGraphicFeatureType, char c, params MapTileTexture[] mapTileTextureFrames)
+    {
+        _rawMapTileTextures.Add(GetFeatureKey(tileGraphicFeatureType, c), mapTileTextureFrames.ToList());
+    }
+
     private static string GetMonsterKey(Breed breed)
     {
-        return $"{Enum.GetName(TileAnimationType.Monster)}{breed.Name}";
+        return $"{Enum.GetName(TileGraphicType.Monster)}{breed.Name}";
+    }
+
+    private static string GetFeatureKey(TileGraphicFeatureType tileGraphicFeatureType, char c)
+    {
+        return $"{Enum.GetName(TileGraphicType.Feature)!}{Enum.GetName(tileGraphicFeatureType)!}{c}";
     }
 
     public void Build(GraphicsDevice graphicsDevice)
@@ -79,9 +89,9 @@ public class MapTileGraphics
         }
     }
 
-    public IMapTileTexture GetMapTileTexture(TileAnimationType tileAnimationType)
+    public IMapTileTexture GetMapTileTexture(TileGraphicType tileGraphicType)
     {
-        return _mapTileTextures[Enum.GetName(tileAnimationType)!];
+        return _mapTileTextures[Enum.GetName(tileGraphicType)!];
     }
 
     public IMapTileTexture GetMapTileTexture(Breed breed)
@@ -94,13 +104,18 @@ public class MapTileGraphics
         return _mapTileTextures[GetItemTypeKey(itemType)];
     }
 
+    public IMapTileTexture GetMapTileTexture(TileGraphicFeatureType tileGraphicAnimationType, char c)
+    {
+        return _mapTileTextures[GetFeatureKey(tileGraphicAnimationType, c)];
+    }
+
     // For use with ad-hoc requests to get an individual tile texture.
     // Do not use for drawing a map as it does not come from a texture atlas.
     // Current use case is for drawing an image in the inventory. Could consider changing
     // it to use texture atlases and animations later and removing this method.
-    public Texture2D GetStaticTexture(TileAnimationType tileAnimationType)
+    public Texture2D GetStaticTexture(TileGraphicType tileGraphicType)
     {
-        return _staticMapTileTextures[Enum.GetName(tileAnimationType)!].Texture2D;
+        return _staticMapTileTextures[Enum.GetName(tileGraphicType)!].Texture2D;
     }
 
     // For use with ad-hoc requests to get an individual tile texture.
@@ -125,10 +140,10 @@ public class MapTileGraphics
     {
         var itemTypeKey = itemType switch
         {
-            Weapon _ => Enum.GetName(TileAnimationType.Weapon),
-            Gadget _ => Enum.GetName(TileAnimationType.Gadget),
-            NanoFlask _ => Enum.GetName(TileAnimationType.NanoFlask),
-            ShipRepairParts _ =>Enum.GetName(TileAnimationType.ShipRepairParts),
+            Weapon _ => Enum.GetName(TileGraphicType.Weapon),
+            Gadget _ => Enum.GetName(TileGraphicType.Gadget),
+            NanoFlask _ => Enum.GetName(TileGraphicType.NanoFlask),
+            ShipRepairParts _ =>Enum.GetName(TileGraphicType.ShipRepairParts),
             _ => throw new Exception($"Unknown item type {itemType}")
         };
 
