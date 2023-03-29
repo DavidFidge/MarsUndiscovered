@@ -805,7 +805,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             _gameWorld.CreateWall(wallPosition1);
             _gameWorld.CreateWall(wallPosition2);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Tesla Coil").AtPosition(wallPosition1));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition1));
 
             var monster = _gameWorld.Monsters.Values.First();
 
@@ -829,7 +829,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition1 = new Point(1, 1);
 
             _gameWorld.CreateWall(wallPosition1);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Tesla Coil").AtPosition(wallPosition1));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition1));
 
             var monster = _gameWorld.Monsters.Values.First();
 

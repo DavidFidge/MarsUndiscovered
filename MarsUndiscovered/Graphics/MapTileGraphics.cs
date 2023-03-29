@@ -44,7 +44,7 @@ public class MapTileGraphics
 
     private static string GetMonsterKey(Breed breed)
     {
-        return $"{Enum.GetName(TileGraphicType.Monster)}{breed.Name}";
+        return $"{Enum.GetName(TileGraphicType.Monster)}{breed.NameWithoutSpaces}";
     }
 
     private static string GetFeatureKey(TileGraphicFeatureType tileGraphicFeatureType, char c)

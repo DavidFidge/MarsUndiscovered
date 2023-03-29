@@ -116,7 +116,7 @@ namespace MarsUndiscovered.Tests.Commands
 
             var wallPosition = new Point(0, 1);
             _gameWorld.CreateWall(wallPosition);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Tesla Coil").AtPosition(wallPosition));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition));
 
             var monster = _gameWorld.Monsters.Values.First();
             var healthBefore = monster.Health;

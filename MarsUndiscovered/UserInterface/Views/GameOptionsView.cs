@@ -99,7 +99,12 @@ namespace MarsUndiscovered.UserInterface.Views
             {
                 Checked = Data.UseAsciiTiles,
                 OnValueChange = entity =>
-                    Mediator.Send(new InterfaceRequest<GameOptionsData>(Data.GetPropertyInfo(nameof(Data.UseAsciiTiles)), ((CheckBox)entity).Checked))
+                {
+                    Mediator.Send(new InterfaceRequest<GameOptionsData>(
+                        Data.GetPropertyInfo(nameof(Data.UseAsciiTiles)), ((CheckBox)entity).Checked));
+                    
+                    Mediator.Send(new UseAsciiTilesRequest(Data.UseAsciiTiles));
+                }
             };
 
             _useAsciiTiles.AddTo(contentPanel);
