@@ -1746,6 +1746,8 @@
 
 # Since MonoGame 3.8, pipeline cannot import its own mgcb files as resources so we have to reference a dummy file instead.
 # The content importer then replaces the extension with .mgcb to read from Content.mgcb
+# Note - you have to delete the Content.xnb file in \Content\bin\Windows\Content for a new resources list to be built after
+# making changes to Content.mgcb
 /importer:ResourceInfoImporter
 /processor:PassThroughProcessor
 /build:Content.npl

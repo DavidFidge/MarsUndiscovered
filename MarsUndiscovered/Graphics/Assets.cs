@@ -82,7 +82,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Wall, wall);
         AddGraphicalMapTileTexture(assetsList, TileGraphicType.Wall,
-            $"{tilesPrefix}\\/{Enum.GetName(TileGraphicType.Wall)}");
+            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Wall)}");
 
         var floor = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -95,7 +95,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Floor, floor);
         AddGraphicalMapTileTexture(assetsList, TileGraphicType.Floor,
-            $"{tilesPrefix}\\/{Enum.GetName(TileGraphicType.Floor)}");
+            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Floor)}");
 
         var mapExitDown = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -166,7 +166,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Weapon, weapon);
         AddGraphicalMapTileTexture(assetsList, TileGraphicType.Weapon,
-            $"{tilesPrefix}\\/{Enum.GetName(TileGraphicType.Weapon)}");
+            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Weapon)}");
 
         var gadget = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -179,7 +179,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Gadget, gadget);
         AddGraphicalMapTileTexture(assetsList, TileGraphicType.Gadget,
-            $"{tilesPrefix}\\/{Enum.GetName(TileGraphicType.Gadget)}");
+            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Gadget)}");
 
         var nanoFlask = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -192,7 +192,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.NanoFlask, nanoFlask);
         AddGraphicalMapTileTexture(assetsList, TileGraphicType.NanoFlask,
-            $"{tilesPrefix}\\/{Enum.GetName(TileGraphicType.NanoFlask)}");
+            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.NanoFlask)}");
 
         var shipRepairParts = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -205,7 +205,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.ShipRepairParts, shipRepairParts);
         AddGraphicalMapTileTexture(assetsList, TileGraphicType.ShipRepairParts,
-            $"{tilesPrefix}\\/{Enum.GetName(TileGraphicType.ShipRepairParts)}");
+            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.ShipRepairParts)}");
 
         var player = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -218,7 +218,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Player, player);
         AddGraphicalMapTileTexture(assetsList, TileGraphicType.Player,
-            $"{tilesPrefix}\\/{Enum.GetName(TileGraphicType.Player)}");
+            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Player)}");
 
         foreach (var breed in Breed.Breeds)
         {
@@ -233,7 +233,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
             );
 
             _asciiMapTileGraphics.AddMapTileTextures(breed.Value, monster);
-            AddGraphicalMapTileTexture(assetsList, breed.Value, $"{tilesPrefix}\\/{breed.Key}");
+            AddGraphicalMapTileTexture(assetsList, breed.Value, $"{tilesPrefix}/{breed.Key}");
         }
 
         var fieldOfViewUnrevealedTexture = new MapTileTexture(
