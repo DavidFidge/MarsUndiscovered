@@ -1,8 +1,10 @@
-﻿using FrigidRogue.MonoGame.Core.Graphics.Quads;
+﻿using System.Text.RegularExpressions;
+using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using MarsUndiscovered.Interfaces;
 
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 using GoRogue.GameFramework;
 using MarsUndiscovered.Components;
@@ -34,13 +36,15 @@ public class Assets : IAssets
     private Color _lineAttackColour = Color.LightGray;
     
     private MapTileGraphics _asciiMapTileGraphics;
+    private MapTileGraphics _graphicalMapTileGraphics;
+    private MapTileGraphics _currentMapTileGraphics;
 
     public Assets(IGameProvider gameProvider)
     {
         _gameProvider = gameProvider;
     }
 
-    public void LoadContent()
+    public void LoadContent(IGameOptionsStore gameOptionsStore)
     {
         _asciiMapTileGraphics = new MapTileGraphics();
         TitleTexture = _gameProvider.Game.Content.Load<Texture2D>("images/Title");
@@ -49,6 +53,8 @@ public class Assets : IAssets
         MapBitmapFont = _gameProvider.Game.Content.Load<Texture2D>("fonts/BitmapFont");
         GoalMapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/GoalMapFont");
         ShipAiRadioComms = _gameProvider.Game.Content.Load<SpriteSheet>("animations/ShipAiRadioComms.sf", new JsonContentLoader());
+        var assetsList = _gameProvider.Game.Content.Load<string[]>("Content");
+        var tilesPrefix = "tiles";
 
         var wall = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -59,9 +65,10 @@ public class Assets : IAssets
             Color.White,
             WallColor
         );
-        
+
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Wall, wall);
-        
+        AddGraphicalMapTileTexture(assetsList, TileGraphicType.Wall, $"{tilesPrefix}\\{Enum.GetName(TileGraphicType.Wall)}");
+
         var floor = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
@@ -70,9 +77,10 @@ public class Assets : IAssets
             (char)0xfa,
             Color.Tan
         );
-        
+
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Floor, floor);
-        
+        AddGraphicalMapTileTexture(assetsList, TileGraphicType.Floor, $"{tilesPrefix}\\{Enum.GetName(TileGraphicType.Floor)}");
+
         var mapExitDown = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
@@ -82,7 +90,7 @@ public class Assets : IAssets
             _itemColour,
             Color.SaddleBrown
         );
-        
+
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MapExitDown, mapExitDown);
 
         var mapExitUp = new MapTileTexture(
@@ -94,7 +102,7 @@ public class Assets : IAssets
             _itemColour,
             Color.SaddleBrown
         );
-            
+
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MapExitUp, mapExitUp);
 
         var shipPartChars = "{_-`.+|( ";
@@ -141,6 +149,7 @@ public class Assets : IAssets
         );
         
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Weapon, weapon);
+        AddGraphicalMapTileTexture(assetsList, TileGraphicType.Weapon, $"{tilesPrefix}\\{Enum.GetName(TileGraphicType.Weapon)}");
 
         var gadget = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -152,6 +161,7 @@ public class Assets : IAssets
         );
         
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Gadget, gadget);
+        AddGraphicalMapTileTexture(assetsList, TileGraphicType.Gadget, $"{tilesPrefix}\\{Enum.GetName(TileGraphicType.Gadget)}");
 
         var nanoFlask = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -163,6 +173,7 @@ public class Assets : IAssets
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.NanoFlask, nanoFlask);
+        AddGraphicalMapTileTexture(assetsList, TileGraphicType.NanoFlask, $"{tilesPrefix}\\{Enum.GetName(TileGraphicType.NanoFlask)}");
 
         var shipRepairParts = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -174,6 +185,7 @@ public class Assets : IAssets
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.ShipRepairParts, shipRepairParts);
+        AddGraphicalMapTileTexture(assetsList, TileGraphicType.ShipRepairParts, $"{tilesPrefix}\\{Enum.GetName(TileGraphicType.ShipRepairParts)}");
 
         var player = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -185,6 +197,7 @@ public class Assets : IAssets
         );
         
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Player, player);
+        AddGraphicalMapTileTexture(assetsList, TileGraphicType.Player, $"{tilesPrefix}\\{Enum.GetName(TileGraphicType.Player)}");
 
         foreach (var breed in Breed.Breeds)
         {
@@ -199,6 +212,7 @@ public class Assets : IAssets
             );
 
             _asciiMapTileGraphics.AddMapTileTextures(breed.Value, monster);
+            AddGraphicalMapTileTexture(assetsList, breed.Value, $"{tilesPrefix}\\{breed.Key}");
         }
         
         var fieldOfViewUnrevealedTexture = new MapTileTexture(
@@ -290,6 +304,39 @@ public class Assets : IAssets
         );
 
         _asciiMapTileGraphics.Build(_gameProvider.Game.GraphicsDevice);
+    }
+
+    private void AddGraphicalMapTileTexture(string[] assetsList, TileGraphicType tileGraphicType, string tileAssetPattern)
+    {
+        _graphicalMapTileGraphics.AddMapTileTextures(
+            tileGraphicType,
+            GetTileAssets(assetsList, tileAssetPattern)
+        );
+    }
+
+    private void AddGraphicalMapTileTexture(string[] assetsList, Breed breed, string tileAssetPattern)
+    {
+        _graphicalMapTileGraphics.AddMapTileTextures(
+            breed,
+            GetTileAssets(assetsList, tileAssetPattern)
+        );
+    }
+
+    private MapTileTexture[] GetTileAssets(string[] assetsList, string pattern)
+    {
+        return assetsList
+            .Where(asset =>
+                Regex.Match(asset, pattern, RegexOptions.IgnoreCase)
+                    .Success)
+            .Select(asset =>
+                new MapTileTexture(
+                    _gameProvider.Game.GraphicsDevice,
+                    Constants.TileWidth,
+                    Constants.TileHeight,
+                    _gameProvider.Game.Content.Load<Texture2D>(asset)
+                )
+            )
+            .ToArray();
     }
 
     public SpriteSheet GetRadioCommsSpriteSheet(IGameObject gameObject)

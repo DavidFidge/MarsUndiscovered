@@ -10,12 +10,22 @@ namespace MarsUndiscovered.Graphics;
 
 public class MapTileGraphics
 {
+    private readonly MapTileGraphics _fallbackTiles;
     public SpriteSheet SpriteSheet { get; private set; }
     
     private Dictionary<string, List<MapTileTexture>> _rawMapTileTextures = new();
     private Dictionary<string, IMapTileTexture> _mapTileTextures = new();
     private Dictionary<string, MapTileTexture> _staticMapTileTextures = new();
     private List<SpriteSheetMapTileTexture> _spriteSheetMapTileTextures = new();
+
+    public MapTileGraphics()
+    {
+    }
+
+    public MapTileGraphics(MapTileGraphics fallbackTiles)
+    {
+        _fallbackTiles = fallbackTiles;
+    }
 
     public void AddMapTileTextures(TileGraphicType tileGraphicType, params MapTileTexture[] mapTileTextureFrames)
     {
@@ -91,22 +101,34 @@ public class MapTileGraphics
 
     public IMapTileTexture GetMapTileTexture(TileGraphicType tileGraphicType)
     {
-        return _mapTileTextures[Enum.GetName(tileGraphicType)!];
+        var tileKey = Enum.GetName(tileGraphicType)!;
+        return _mapTileTextures.ContainsKey(tileKey)
+            ? _mapTileTextures[tileKey]
+            : _fallbackTiles.GetMapTileTexture(tileGraphicType);
     }
 
     public IMapTileTexture GetMapTileTexture(Breed breed)
     {
-        return _mapTileTextures[GetMonsterKey(breed)];
+        var tileKey = GetMonsterKey(breed);
+        return _mapTileTextures.ContainsKey(tileKey)
+            ? _mapTileTextures[tileKey]
+            : _fallbackTiles.GetMapTileTexture(breed);
     }
 
     public IMapTileTexture GetMapTileTexture(ItemType itemType)
     {
-        return _mapTileTextures[GetItemTypeKey(itemType)];
+        var tileKey = GetItemTypeKey(itemType);
+        return _mapTileTextures.ContainsKey(tileKey)
+            ? _mapTileTextures[tileKey]
+            : _fallbackTiles.GetMapTileTexture(itemType);
     }
 
     public IMapTileTexture GetMapTileTexture(TileGraphicFeatureType tileGraphicAnimationType, char c)
     {
-        return _mapTileTextures[GetFeatureKey(tileGraphicAnimationType, c)];
+        var s = GetFeatureKey(tileGraphicAnimationType, c);
+        return _mapTileTextures.ContainsKey(s)
+            ? _mapTileTextures[s]
+            : _fallbackTiles.GetMapTileTexture(tileGraphicAnimationType, c);
     }
 
     // For use with ad-hoc requests to get an individual tile texture.
@@ -115,7 +137,10 @@ public class MapTileGraphics
     // it to use texture atlases and animations later and removing this method.
     public Texture2D GetStaticTexture(TileGraphicType tileGraphicType)
     {
-        return _staticMapTileTextures[Enum.GetName(tileGraphicType)!].Texture2D;
+        var s = Enum.GetName(tileGraphicType)!;
+        return _staticMapTileTextures.ContainsKey(s)
+            ? _staticMapTileTextures[s].Texture2D
+            : _fallbackTiles.GetStaticTexture(tileGraphicType);
     }
 
     // For use with ad-hoc requests to get an individual tile texture.
@@ -124,7 +149,10 @@ public class MapTileGraphics
     // it to use texture atlases and animations later and removing this method.
     public Texture2D GetStaticTexture(Breed breed)
     {
-        return _staticMapTileTextures[GetMonsterKey(breed)].Texture2D;
+        var s = GetMonsterKey(breed);
+        return _staticMapTileTextures.ContainsKey(s)
+            ? _staticMapTileTextures[s].Texture2D
+            : _fallbackTiles.GetStaticTexture(breed);
     }
 
     // For use with ad-hoc requests to get an individual tile texture.
@@ -133,7 +161,10 @@ public class MapTileGraphics
     // it to use texture atlases and animations later and removing this method.
     public Texture2D GetStaticTexture(ItemType itemType)
     {
-        return _staticMapTileTextures[GetItemTypeKey(itemType)].Texture2D;
+        var s = GetItemTypeKey(itemType);
+        return _staticMapTileTextures.ContainsKey(s)
+            ? _staticMapTileTextures[s].Texture2D
+            : _fallbackTiles.GetStaticTexture(itemType);
     }
 
     public string GetItemTypeKey(ItemType itemType)

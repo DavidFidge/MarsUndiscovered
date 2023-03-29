@@ -6,8 +6,11 @@ namespace MarsUndiscovered.UserInterface.Data
     {
         [Display(Name = "Morgue File Username")]
         public string MorgueUsername { get; set; }
-        
+
         [Display(Name = "Upload Morgue Files to Website")]
         public bool UploadMorgueFiles { get; set; }
+
+        [Display(Name = "Use Ascii Tiles")]
+        public bool UseAsciiTiles { get; set; }
     }
 }

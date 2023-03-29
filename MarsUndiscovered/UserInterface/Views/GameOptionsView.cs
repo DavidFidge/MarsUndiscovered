@@ -14,6 +14,7 @@ namespace MarsUndiscovered.UserInterface.Views
         BaseMarsUndiscoveredView<GameOptionsViewModel, GameOptionsData>
     {
         private CheckBox _uploadMorgueCheckBox;
+        private CheckBox _useAsciiTiles;
         private TextInput _morgueFileUsernameInput;
 
         public GameOptionsView(GameOptionsViewModel gameOptionsViewModel)
@@ -93,6 +94,15 @@ namespace MarsUndiscovered.UserInterface.Views
             };
 
             _uploadMorgueCheckBox.AddTo(contentPanel);
+
+            _useAsciiTiles = new CheckBox("Use Ascii Tiles", offset: new Vector2(Constants.UiIndentLevel1, 0f))
+            {
+                Checked = Data.UseAsciiTiles,
+                OnValueChange = entity =>
+                    Mediator.Send(new InterfaceRequest<GameOptionsData>(Data.GetPropertyInfo(nameof(Data.UseAsciiTiles)), ((CheckBox)entity).Checked))
+            };
+
+            _useAsciiTiles.AddTo(contentPanel);
         }
     }
 }
