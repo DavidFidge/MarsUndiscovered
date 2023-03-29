@@ -39,6 +39,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
 
     private readonly IGameProvider _gameProvider;
     private readonly IGameOptionsStore _gameOptionsStore;
+    private readonly IGameTimeService _gameTimeService;
 
     private Color _itemColour = Color.Yellow;
     private Color _lineAttackColour = Color.LightGray;
@@ -49,10 +50,12 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
 
     public Assets(
         IGameProvider gameProvider,
-        IGameOptionsStore gameOptionsStore)
+        IGameOptionsStore gameOptionsStore,
+        IGameTimeService gameTimeService)
     {
         _gameProvider = gameProvider;
         _gameOptionsStore = gameOptionsStore;
+        _gameTimeService = gameTimeService;
     }
 
     public void LoadContent()
@@ -437,5 +440,10 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
     {
         SetTileGraphics(request.UseAsciiTiles);
         return Unit.Task;
+    }
+
+    public void Update()
+    {
+        _currentMapTileGraphics.Update(_gameTimeService);
     }
 }

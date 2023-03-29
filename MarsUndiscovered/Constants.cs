@@ -24,6 +24,6 @@
         public const float TileQuadHeight = 1f;
         public const float TileQuadWidth = 1f;
 
-        public const float MapTileAnimationTime = 1f;
+        public const float MapTileAnimationTime = 0.5f;
     }
 }
