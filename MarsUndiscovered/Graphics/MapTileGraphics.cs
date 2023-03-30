@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
+using SpriteSheetAnimation = FrigidRogue.MonoGame.Core.Graphics.Sprites.SpriteSheetAnimation;
 
 namespace MarsUndiscovered.Graphics;
 
