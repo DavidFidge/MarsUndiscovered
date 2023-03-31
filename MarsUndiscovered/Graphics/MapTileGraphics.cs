@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
-using SpriteSheetAnimation = FrigidRogue.MonoGame.Core.Graphics.Sprites.SpriteSheetAnimation;
 
 namespace MarsUndiscovered.Graphics;
 
@@ -18,7 +17,6 @@ public class MapTileGraphics
     private Dictionary<string, IMapTileTexture> _mapTileTextures = new();
     private Dictionary<string, MapTileTexture> _staticMapTileTextures = new();
     private List<SpriteSheetMapTileTexture> _spriteSheetMapTileTextures = new();
-    private int _millisecondsSinceLastUpdate = 0;
 
     public MapTileGraphics()
     {
