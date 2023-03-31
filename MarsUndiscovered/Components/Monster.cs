@@ -159,7 +159,7 @@ namespace MarsUndiscovered.Components
 
             base.PopulateSaveState(memento.State);
 
-            memento.State.BreedName = Breed.Name;
+            memento.State.BreedName = Breed.NameWithoutSpaces;
             memento.State.WanderPath = _wanderPath?.Steps.ToList();
             memento.State.UseGoalMapWander = UseGoalMapWander;
 

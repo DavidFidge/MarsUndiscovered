@@ -505,7 +505,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             mapGenerator.OutdoorMapDimensions = new Point(4, 5);
             
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(mapGenerator);
-            
+
             // ..#@
             // .###
             // ....
@@ -517,7 +517,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(1, 1);
             _gameWorld.CreateWall(2, 1);
             _gameWorld.CreateWall(3, 1);
-            _gameWorld.CreateWall(0, 2);
+            _gameWorld.CreateWall(2, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 4)));
 
             var monster = _gameWorld.Monsters.Values.First();

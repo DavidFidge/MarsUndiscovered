@@ -143,7 +143,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
 
             Assert.IsTrue(monster.Health < healthBefore);
-            Assert.AreEqual("You hit the tesla coil", attackCommand.CommandResult.Messages[0]);
+            Assert.AreEqual("You hit the tesla turret", attackCommand.CommandResult.Messages[0]);
         }
 
         [TestMethod]
