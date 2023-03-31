@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.IO;
 using CsvHelper;
+using FrigidRogue.MonoGame.Core.Extensions;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
@@ -9,6 +10,7 @@ namespace MarsUndiscovered.Components
     public class Breed
     {
         public string Name { get; set;}
+        public string NameWithoutSpaces { get; set;}
         public string Description { get; set; }
         public int MaxHealth { get; set; }
         public decimal RegenRate { get; set; }
@@ -38,6 +40,7 @@ namespace MarsUndiscovered.Components
                 var breed = new Breed();
                 
                 breed.Name = csvBreed.Name.ToString();
+                breed.NameWithoutSpaces = breed.Name.RemoveSpaces();
                 breed.Description = csvBreed.Description.ToString();
                 
                 var bytes = int.Parse(csvBreed.UnicodeCharacter.ToString(), NumberStyles.HexNumber);
@@ -82,7 +85,7 @@ namespace MarsUndiscovered.Components
                     breed.IsWallTurret = true;
                 }
                 
-                Breeds.Add(breed.Name, breed);
+                Breeds.Add(breed.NameWithoutSpaces, breed);
             }
         }
 

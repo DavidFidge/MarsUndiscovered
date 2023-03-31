@@ -113,7 +113,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Anchor(Anchor.BottomCenter)
                 .NoPadding()
                 .Height(0.1f);
-            
+
             StatusParagraph.BackgroundColor = Color.Black;
 
             BottomPanel.AddChild(StatusParagraph);

@@ -317,6 +317,8 @@ namespace MarsUndiscovered.UserInterface.Views
             if (_viewModel.PlayerStatus.IsDead || _viewModel.PlayerStatus.IsVictorious)
             {
                 _viewModel.WriteAndSendMorgue();
+                _viewModel.MapViewModel.ClearHover();
+                _viewModel.MapViewModel.UpdateAllTiles();
 
                 if (_viewModel.PlayerStatus.IsDead)
                 {

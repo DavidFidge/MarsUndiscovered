@@ -43,9 +43,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
         }
 
-        public void SetPlayer()
+        public void SetPlayer(Player player)
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Player);
+            MapTileTexture = Assets.GetMapTileTexture(!player.IsDead ? TileGraphicType.Player : TileGraphicType.PlayerDead);
             IsVisible = true;
         }
 

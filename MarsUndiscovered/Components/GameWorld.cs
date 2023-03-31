@@ -155,8 +155,8 @@ namespace MarsUndiscovered.Components
             var mapLevel2 = MapGenerator.MarsMap;
 
             SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("Roach"));
-            SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("Repair Drone"));
-            SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("Tesla Coil"));
+            SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("RepairDroid"));
+            SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("TeslaTurret"));
 
             SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.MagnesiumPipe));
             SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.MagnesiumPipe));

@@ -320,7 +320,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var mapExitPosition = new Point(5, 5);
 
             _gameWorld.CreateWall(wallPosition);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Tesla Coil").AtPosition(wallPosition));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition));
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
             _gameWorld.TestResetFieldOfView();
 

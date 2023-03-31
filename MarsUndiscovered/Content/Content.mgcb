@@ -8,6 +8,7 @@
 #-------------------------------- References --------------------------------#
 
 /reference:GeonBit.UI.DataTypes.dll
+/reference:FrigidRogue.MonoGame.Core.ContentPipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -1570,3 +1571,190 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Fonts/BitmapFont.png
+
+#begin Images/TitleText.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/TitleText.png
+
+#begin Tiles/Wall_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Wall_1.png
+
+#begin Tiles/Floor_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Floor_1.png
+
+#begin Tiles/BlackOpsDefender_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/BlackOpsDefender_1.png
+
+#begin Tiles/BlackOpsDefender_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/BlackOpsDefender_2.png
+
+#begin Tiles/BlackOpsSniper_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/BlackOpsSniper_1.png
+
+#begin Tiles/BlackOpsSniper_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/BlackOpsSniper_2.png
+
+#begin Tiles/EldritchWorm_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/EldritchWorm_1.png
+
+#begin Tiles/EldritchWorm_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/EldritchWorm_2.png
+
+#begin Tiles/Gadget_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Gadget_1.png
+
+#begin Tiles/Gadget_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Gadget_2.png
+
+#begin Tiles/MonolithCarrier_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/MonolithCarrier_1.png
+
+#begin Tiles/MonolithCarrier_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/MonolithCarrier_2.png
+
+#begin Tiles/MonolithChucker_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/MonolithChucker_1.png
+
+#begin Tiles/MonolithChucker_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/MonolithChucker_2.png
+
+#begin Tiles/NanoFlask_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/NanoFlask_1.png
+
+#begin Tiles/NanoFlask_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/NanoFlask_2.png
+
+#begin Tiles/PhasmidHunter_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/PhasmidHunter_1.png
+
+#begin Tiles/PhasmidHunter_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/PhasmidHunter_2.png
+
+#begin Tiles/Player_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Player_1.png
+
+#begin Tiles/Player_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Player_2.png
+
+#begin Tiles/RepairDroid_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/RepairDroid_1.png
+
+#begin Tiles/RepairDroid_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/RepairDroid_2.png
+
+#begin Tiles/Roach_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Roach_1.png
+
+#begin Tiles/Roach_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Roach_2.png
+
+#begin Tiles/ShipRepairParts_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/ShipRepairParts_1.png
+
+#begin Tiles/ShipRepairParts_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/ShipRepairParts_2.png
+
+#begin Tiles/TentacleHorror_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/TentacleHorror_1.png
+
+#begin Tiles/TentacleHorror_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/TentacleHorror_2.png
+
+#begin Tiles/TeslaTurret_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/TeslaTurret_1.png
+
+#begin Tiles/TeslaTurret_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/TeslaTurret_2.png
+
+#begin Tiles/Weapon_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Weapon_1.png
+
+#begin Tiles/Weapon_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Weapon_2.png
+
+#begin Tiles/PlayerDead_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/PlayerDead_1.png
+
+# Note - when adding new tiles, must delete Content.xnb file as noted below.
+
+# Since MonoGame 3.8, pipeline cannot import its own mgcb files as resources so we have to reference a dummy file instead.
+# The content importer then replaces the extension with .mgcb to read from Content.mgcb
+# Note - you have to delete the Content.xnb file in \Content\bin\Windows\Content for a new resources list to be built after
+# making changes to Content.mgcb
+/importer:ResourceInfoImporter
+/processor:PassThroughProcessor
+/build:Content.npl

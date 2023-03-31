@@ -1,4 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Graphics.Quads;
+using FrigidRogue.TestInfrastructure;
 using MarsUndiscovered.Graphics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xna.Framework;
@@ -203,7 +204,7 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         FakeGameTimeService.Update(new GameTime());
 
         // Act
-        spriteSheetMapTileTextureResult.Update(FakeGameTimeService);
+        spriteSheetMapTileTextureResult.Update(FakeGameTimeService.GameTime);
 
         // Assert
         var textureColours = new Color[Constants.TileWidth * Constants.TileHeight];
@@ -237,13 +238,13 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         FakeStopwatchProvider.Elapsed = TimeSpan.FromSeconds(Constants.MapTileAnimationTime);
         FakeGameTimeService.Update(new GameTime());
 
-        spriteSheetMapTileTextureResult.Update(FakeGameTimeService);
+        spriteSheetMapTileTextureResult.Update(FakeGameTimeService.GameTime);
 
         FakeStopwatchProvider.Elapsed = TimeSpan.FromSeconds(Constants.MapTileAnimationTime * 2);
         FakeGameTimeService.Update(new GameTime());
 
         // Act
-        spriteSheetMapTileTextureResult.Update(FakeGameTimeService);
+        spriteSheetMapTileTextureResult.Update(FakeGameTimeService.GameTime);
 
         // Assert
         var textureColours = new Color[Constants.TileWidth * Constants.TileHeight];

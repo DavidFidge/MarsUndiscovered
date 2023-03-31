@@ -242,6 +242,8 @@ namespace MarsUndiscovered
             if (_showFps)
                 _fpsCounter.Update(gameTime);
 
+            _assets.Update();
+
             base.Update(gameTime);
         }
 
