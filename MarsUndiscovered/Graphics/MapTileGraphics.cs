@@ -17,6 +17,7 @@ public class MapTileGraphics
     private Dictionary<string, IMapTileTexture> _mapTileTextures = new();
     private Dictionary<string, MapTileTexture> _staticMapTileTextures = new();
     private List<SpriteSheetMapTileTexture> _spriteSheetMapTileTextures = new();
+    private double _accumulatedUpdateTime;
 
     public MapTileGraphics()
     {
@@ -92,21 +93,16 @@ public class MapTileGraphics
 
     public void Update(IGameTimeService gameTimeService)
     {
-        // _millisecondsSinceLastUpdate = gameTimeService.GameTime.ElapsedRealTime.Milliseconds + _millisecondsSinceLastUpdate;
-        // var updateAnimations = false;
-        //
-        // if ((_millisecondsSinceLastUpdate / (Constants.MapTileAnimationTime * 1000)) > 1)
-        // {
-        //     _millisecondsSinceLastUpdate %= (int)(Constants.MapTileAnimationTime * 1000);
-        //     updateAnimations = true;
-        // }
-        var updateAnimations = true;
-        if (updateAnimations)
+        _accumulatedUpdateTime += gameTimeService.GameTime.ElapsedGameTime.TotalSeconds;
+
+        if (_accumulatedUpdateTime > Constants.MapTileAnimationTime)
         {
             foreach (var animation in _spriteSheetMapTileTextures)
             {
-                animation.Update(gameTimeService);
+                animation.Update(new GameTime(TimeSpan.Zero, TimeSpan.FromSeconds(_accumulatedUpdateTime)));
             }
+
+            _accumulatedUpdateTime = 0;
         }
     }
 

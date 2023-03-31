@@ -1744,6 +1744,13 @@
 /processor:TextureProcessor
 /build:Tiles/Weapon_2.png
 
+#begin Tiles/PlayerDead_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/PlayerDead_1.png
+
+# Note - when adding new tiles, must delete Content.xnb file as noted below.
+
 # Since MonoGame 3.8, pipeline cannot import its own mgcb files as resources so we have to reference a dummy file instead.
 # The content importer then replaces the extension with .mgcb to read from Content.mgcb
 # Note - you have to delete the Content.xnb file in \Content\bin\Windows\Content for a new resources list to be built after

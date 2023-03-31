@@ -5,6 +5,7 @@ public enum TileGraphicType
     Wall,
     Floor,
     Player,
+    PlayerDead,
     MapExitDown,
     MapExitUp,
     Weapon,

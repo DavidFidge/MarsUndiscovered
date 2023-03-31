@@ -263,8 +263,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             if (actor != null)
             {
-                if (actor is Player)
-                    _actorTiles[point].SetPlayer();
+                if (actor is Player player)
+                    _actorTiles[point].SetPlayer(player);
                 else if (actor is Monster monster)
                     _actorTiles[point].SetMonster(monster.Breed);
 
@@ -371,7 +371,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 UpdateTile(newlyVisiblePoint);
             }
         }
-        
+
+        public void ClearHover()
+        {
+            UpdateMouseHoverPathTileVisibility(false);
+
+            _mouseHoverPath = null;
+        }
+
         public void ShowHover(Ray ray)
         {
             UpdateMouseHoverPathTileVisibility(false);
@@ -379,7 +386,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             var mapPosition = MousePointerRayToMapPosition(ray);
 
             if (mapPosition == null)
+            {
+                _mouseHoverPath = null;
                 return;
+            }
 
             _mouseHoverPath = _gameWorldEndpoint.GetPathToPlayer(mapPosition.Value);
 

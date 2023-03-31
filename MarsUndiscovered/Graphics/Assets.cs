@@ -223,6 +223,19 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
         AddGraphicalMapTileTexture(assetsList, TileGraphicType.Player,
             $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Player)}");
 
+        var playerDead = new MapTileTexture(
+            _gameProvider.Game.GraphicsDevice,
+            Constants.TileWidth,
+            Constants.TileHeight,
+            MapBitmapFont,
+            '@',
+            Color.Gray
+        );
+
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.PlayerDead, playerDead);
+        AddGraphicalMapTileTexture(assetsList, TileGraphicType.PlayerDead,
+            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.PlayerDead)}");
+
         foreach (var breed in Breed.Breeds)
         {
             var monster = new MapTileTexture(
@@ -366,7 +379,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
     {
         return assetsList
             .Where(asset =>
-                Regex.Match(asset, pattern, RegexOptions.IgnoreCase)
+                Regex.Match(asset, $"{pattern}_", RegexOptions.IgnoreCase)
                     .Success)
             .Select(asset =>
                 new MapTileTexture(
