@@ -187,53 +187,29 @@ namespace MarsUndiscovered.UserInterface.Views
                 panel.RemoveFromParent();
             }
 
-            var monsters = _viewModel.MonsterStatusInView
+            var newMonsterStatuses = _viewModel.MonsterStatusInView
                 .OrderBy(m => m.DistanceFromPlayer)
                 .ToList();
-            
-            var existingMonsterPanels = monsters
-                .Join(
-                    MonsterPanels,
-                    m => m.ID,
-                    m => m.ActorStatus.ID,
-                    (m, p) => new { MonsterPanel = p, Status = m })
-                .ToList();
-            
+
+            var mergedMonsterPanelStatusQuery = (
+                from monsterStatus in newMonsterStatuses
+                join panel in MonsterPanels on monsterStatus.ID equals panel.ActorStatus.ID into gj
+                from subPanel in gj.DefaultIfEmpty()
+                select new
+                {
+                    MonsterStatus = monsterStatus,
+                    MonsterPanel = subPanel ?? new MonsterPanel(monsterStatus)
+                }).ToList();
+
             MonsterPanels.Clear();
 
-            foreach (var monster in monsters)
+            foreach (var monsterJoin in mergedMonsterPanelStatusQuery)
             {
-                var monsterPanel = existingMonsterPanels.FirstOrDefault(m => m.Status.ID == monster.ID)?.MonsterPanel;
-                
-                if (monsterPanel == null)
-                    monsterPanel = new MonsterPanel(monster);
-                else
-                    monsterPanel.Update(monster);
-                
-                MonsterPanels.Add(monsterPanel);
-                monsterPanel.AddAsChildTo(LeftPanel);
+                monsterJoin.MonsterPanel.Update(monsterJoin.MonsterStatus);
+
+                MonsterPanels.Add(monsterJoin.MonsterPanel);
+                monsterJoin.MonsterPanel.AddAsChildTo(LeftPanel);
             }
-            
-            //
-            // var mergedMonsterPanelStatus =
-            //     from monsterStatus in newMonsterStatuses
-            //     join panel in MonsterPanels on monsterStatus.ID equals panel.ActorStatus.ID into gj
-            //     from subPanel in gj.DefaultIfEmpty()
-            //     select new
-            //     {
-            //         MonsterStatus = monsterStatus,
-            //         MonsterPanel = subPanel ?? new MonsterPanel(monsterStatus)
-            //     };
-            //
-            // MonsterPanels.Clear();
-            //
-            // foreach (var monsterJoin in mergedMonsterPanelStatus)
-            // {
-            //     monsterJoin.MonsterPanel.Update(monsterJoin.MonsterStatus);
-            //     
-            //     MonsterPanels.Add(monsterJoin.MonsterPanel);
-            //     monsterJoin.MonsterPanel.AddAsChildTo(LeftPanel);
-            // }                  
         }
 
         protected string DelimitWithDashes(string text)

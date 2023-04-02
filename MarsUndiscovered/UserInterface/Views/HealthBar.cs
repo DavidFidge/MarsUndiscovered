@@ -81,7 +81,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 oldHealth = currentHealth;
                 _firstHealthUpdate = false;
             }
-            
+
             _healthBar.Max = (uint)maxHealth;
             _healthBar.StepsCount = _healthBar.Max;
             _healthBar.Value = currentHealth;
