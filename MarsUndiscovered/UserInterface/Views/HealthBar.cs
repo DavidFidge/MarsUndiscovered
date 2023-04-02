@@ -13,6 +13,7 @@ namespace MarsUndiscovered.UserInterface.Views
         private ProgressBar _shieldBar;
         private Label _healthLabel;
         private Label _gainLossLabel;
+        private bool _firstHealthUpdate = true;
 
         public HealthBar()
         {
@@ -75,6 +76,12 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             var oldHealth = _healthBar.Value;
 
+            if (_firstHealthUpdate)
+            {
+                oldHealth = currentHealth;
+                _firstHealthUpdate = false;
+            }
+            
             _healthBar.Max = (uint)maxHealth;
             _healthBar.StepsCount = _healthBar.Max;
             _healthBar.Value = currentHealth;
@@ -103,6 +110,11 @@ namespace MarsUndiscovered.UserInterface.Views
             _shieldBar.StepsCount = _healthBar.Max;
             _shieldBar.Max = (uint)maxHealth;
             _shieldBar.Value = currentShield;
+        }
+
+        public void Reset()
+        {
+            _firstHealthUpdate = true;
         }
     }
 }

@@ -11,6 +11,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel Panel;
         protected HealthBar HealthBar;
         protected Label Name;
+        public ActorStatus ActorStatus { get; private set; }
 
         public ActorPanel()
         {
@@ -34,6 +35,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public void Update(ActorStatus actorStatus)
         {
+            ActorStatus = actorStatus;
             Name.Text = actorStatus.Name;
             HealthBar.UpdateHealth(actorStatus.Health, actorStatus.MaxHealth, actorStatus.Shield);
         }
@@ -46,6 +48,11 @@ namespace MarsUndiscovered.UserInterface.Views
         public override void RemoveFromParent()
         {
             Panel.RemoveFromParent();
+        }
+        
+        public void Reset()
+        {
+            HealthBar.Reset();
         }
     }
 }
