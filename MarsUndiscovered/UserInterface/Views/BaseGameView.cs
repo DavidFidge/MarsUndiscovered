@@ -148,6 +148,7 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _gameCamera.Reset();
             _messageLog.ClearItems();
+            PlayerPanel.Reset();
         }
 
         protected override void ViewModelChanged()
@@ -186,17 +187,28 @@ namespace MarsUndiscovered.UserInterface.Views
                 panel.RemoveFromParent();
             }
 
-            MonsterPanels.Clear();
-
-            var monsters = _viewModel.MonsterStatusInView
+            var newMonsterStatuses = _viewModel.MonsterStatusInView
                 .OrderBy(m => m.DistanceFromPlayer)
                 .ToList();
 
-            foreach (var monster in monsters)
+            var mergedMonsterPanelStatusQuery = (
+                from monsterStatus in newMonsterStatuses
+                join panel in MonsterPanels on monsterStatus.ID equals panel.ActorStatus.ID into gj
+                from subPanel in gj.DefaultIfEmpty()
+                select new
+                {
+                    MonsterStatus = monsterStatus,
+                    MonsterPanel = subPanel ?? new MonsterPanel(monsterStatus)
+                }).ToList();
+
+            MonsterPanels.Clear();
+
+            foreach (var monsterJoin in mergedMonsterPanelStatusQuery)
             {
-                var monsterPanel = new MonsterPanel(monster);
-                MonsterPanels.Add(monsterPanel);
-                monsterPanel.AddAsChildTo(LeftPanel);
+                monsterJoin.MonsterPanel.Update(monsterJoin.MonsterStatus);
+
+                MonsterPanels.Add(monsterJoin.MonsterPanel);
+                monsterJoin.MonsterPanel.AddAsChildTo(LeftPanel);
             }
         }
 
