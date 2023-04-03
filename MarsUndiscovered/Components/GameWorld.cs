@@ -762,6 +762,10 @@ namespace MarsUndiscovered.Components
 
             var gameWorldSaveData = GetSaveState();
             saveGameService.SaveToStore(gameWorldSaveData);
+
+            var headerSaveDataMemento = new Memento<HeaderSaveData>(new HeaderSaveData());
+            headerSaveDataMemento.State.LoadGameDetail = LoadGameDetail;
+            saveGameService.SaveHeaderToStore(headerSaveDataMemento);
         }
 
         public IMemento<GameWorldSaveData> GetSaveState()
@@ -769,7 +773,6 @@ namespace MarsUndiscovered.Components
             var memento = new Memento<GameWorldSaveData>(new GameWorldSaveData());
             memento.State.GameId = GameId;
             memento.State.Seed = Seed;
-            memento.State.LoadGameDetail = LoadGameDetail;
             memento.State.RandomNumberGenerator = new MizuchiRandom(((MizuchiRandom)GlobalRandom.DefaultRNG).StateA, ((MizuchiRandom)GlobalRandom.DefaultRNG).StateB); ;
             memento.State.MonstersInView = MonstersInView.Select(m => m.ID).ToList();
             memento.State.LastMonstersInView = LastMonstersInView.Select(m => m.ID).ToList();
@@ -780,7 +783,6 @@ namespace MarsUndiscovered.Components
         {
             GameId = memento.State.GameId;
             Seed = memento.State.Seed;
-            LoadGameDetail = memento.State.LoadGameDetail;
             LastMonstersInView = memento.State.LastMonstersInView.Select(m => Monsters[m]).ToList();
             MonstersInView = memento.State.MonstersInView.Select(m => Monsters[m]).ToList();
             GlobalRandom.DefaultRNG = new MizuchiRandom(memento.State.RandomNumberGenerator.StateA, memento.State.RandomNumberGenerator.StateB);
