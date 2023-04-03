@@ -15,7 +15,7 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Interfaces
 {
-    public interface IGameWorld : ILoadGameDetail, IBaseComponent
+    public interface IGameWorld : IBaseComponent
     {
         IMorgue Morgue { get; }
         Player Player { get; }
