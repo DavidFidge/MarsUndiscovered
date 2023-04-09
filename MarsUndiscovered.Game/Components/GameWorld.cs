@@ -13,7 +13,7 @@ using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Game.Extensions;
-using MarsUndiscovered.Game.Messages;
+using MarsUndiscovered.Game.ViewMessages;
 using Microsoft.Xna.Framework.Input;
 
 using SadRogue.Primitives;
@@ -354,7 +354,7 @@ namespace MarsUndiscovered.Game.Components
             if (partialUpdate)
             {
                 Mediator.Publish(
-                    new FieldOfViewChangedNotifcation(
+                    new FieldOfViewChangedNotification(
                         CurrentMap.PlayerFOV.NewlySeen,
                         CurrentMap.PlayerFOV.NewlyUnseen,
                         CurrentMap.SeenTiles
@@ -364,7 +364,7 @@ namespace MarsUndiscovered.Game.Components
             else
             {
                 Mediator.Publish(
-                    new FieldOfViewChangedNotifcation(
+                    new FieldOfViewChangedNotification(
                         CurrentMap.PlayerFOV.CurrentFOV,
                         CurrentMap.Positions(),
                         CurrentMap.SeenTiles
@@ -378,7 +378,7 @@ namespace MarsUndiscovered.Game.Components
             UpdateFieldOfView(false);
             CurrentMap.UpdateSeenTiles(CurrentMap.PlayerFOV.CurrentFOV);
 
-            Mediator.Publish(new FieldOfViewChangedNotifcation(CurrentMap.PlayerFOV.CurrentFOV, CurrentMap.Positions(), CurrentMap.SeenTiles));
+            Mediator.Publish(new FieldOfViewChangedNotification(CurrentMap.PlayerFOV.CurrentFOV, CurrentMap.Positions(), CurrentMap.SeenTiles));
         }
         
         public void AfterProgressiveWorldGeneration()
@@ -388,7 +388,7 @@ namespace MarsUndiscovered.Game.Components
             Mediator.Publish(new MapChangedNotification());
 
             Mediator.Publish(
-                new FieldOfViewChangedNotifcation(
+                new FieldOfViewChangedNotification(
                     CurrentMap.Positions(),
                     Array.Empty<Point>(),
                     new ArrayView<SeenTile>(CurrentMap.Width, CurrentMap.Height)

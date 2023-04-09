@@ -1,18 +1,17 @@
 using MarsUndiscovered.Game.Components;
 using MediatR;
-
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
-namespace MarsUndiscovered.Game.Messages
+namespace MarsUndiscovered.Game.ViewMessages
 {
-    public class FieldOfViewChangedNotifcation : INotification
+    public class FieldOfViewChangedNotification : INotification
     {
         public IEnumerable<Point> NewlyVisibleTiles { get; }
         public IEnumerable<Point> NewlyHiddenTiles { get; }
         public ArrayView<SeenTile> SeenTiles { get; }
 
-        public FieldOfViewChangedNotifcation(
+        public FieldOfViewChangedNotification(
             IEnumerable<Point> newlyVisiblePoints,
             IEnumerable<Point> newlyHiddenPoints,
             ArrayView<SeenTile> seenTiles

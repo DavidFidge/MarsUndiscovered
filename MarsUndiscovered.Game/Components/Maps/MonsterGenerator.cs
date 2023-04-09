@@ -1,6 +1,6 @@
 ﻿using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Extensions;
-using MarsUndiscovered.Game.Messages;
+using MarsUndiscovered.Game.ViewMessages;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {

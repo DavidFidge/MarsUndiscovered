@@ -1,8 +1,7 @@
 ﻿using MediatR;
-
 using SadRogue.Primitives;
 
-namespace MarsUndiscovered.Game.Messages
+namespace MarsUndiscovered.Game.ViewMessages
 {
     public class MapTileChangedNotification : INotification
     {
