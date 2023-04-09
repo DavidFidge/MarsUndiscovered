@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BehaviourTree\src\BehaviourTree\BehaviourTree.csproj" />
+    <ProjectReference Include="..\..\FrigidRogue\FrigidRogue.MonoGame.Core\FrigidRogue.MonoGame.Core.csproj" />
+  </ItemGroup>
+
+</Project>

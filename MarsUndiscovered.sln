@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Extended", "..\Mon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Extended.Tweening", "..\MonoGame.Extended\src\cs\MonoGame.Extended.Tweening\MonoGame.Extended.Tweening.csproj", "{A3770718-3723-4BAE-BECF-6145B42A6689}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarsUndiscovered.Game", "MarsUndiscovered.Game\MarsUndiscovered.Game.csproj", "{066DA915-0B39-488E-B14E-19DB034D970C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{A3770718-3723-4BAE-BECF-6145B42A6689}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3770718-3723-4BAE-BECF-6145B42A6689}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3770718-3723-4BAE-BECF-6145B42A6689}.Release|Any CPU.Build.0 = Release|Any CPU
+		{066DA915-0B39-488E-B14E-19DB034D970C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{066DA915-0B39-488E-B14E-19DB034D970C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{066DA915-0B39-488E-B14E-19DB034D970C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{066DA915-0B39-488E-B14E-19DB034D970C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
