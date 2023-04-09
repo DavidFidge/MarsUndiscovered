@@ -9,7 +9,7 @@ using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 
 using GeonBit.UI.Entities;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Views

@@ -1,5 +1,4 @@
-﻿using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Services;
+﻿using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;

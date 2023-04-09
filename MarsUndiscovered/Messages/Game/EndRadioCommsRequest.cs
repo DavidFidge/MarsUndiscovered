@@ -1,6 +1,4 @@
-﻿using FrigidRogue.MonoGame.Core.UserInterface;
-using MediatR;
-using Microsoft.Xna.Framework.Input;
+﻿using MediatR;
 
 namespace MarsUndiscovered.Messages
 {

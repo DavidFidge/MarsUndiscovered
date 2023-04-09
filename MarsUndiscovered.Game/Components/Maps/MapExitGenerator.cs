@@ -4,9 +4,8 @@ using GoRogue.GameFramework;
 using GoRogue.Random;
 
 using MarsUndiscovered.Game.Components.Factories;
-using MarsUndiscovered.Extensions;
-using MarsUndiscovered.Messages;
-
+using MarsUndiscovered.Game.Extensions;
+using MarsUndiscovered.Game.Messages;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 

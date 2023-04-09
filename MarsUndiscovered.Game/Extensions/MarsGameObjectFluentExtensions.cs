@@ -1,5 +1,5 @@
 ﻿using GoRogue.GameFramework;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Extensions

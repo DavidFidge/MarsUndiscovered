@@ -18,13 +18,11 @@ using Castle.Windsor;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Graphics.Terrain;
-using FrigidRogue.MonoGame.Core.Installers;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
 using FrigidRogue.MonoGame.Core.UserInterface;
-using FrigidRogue.MonoGame.Core.View.Installers;
 using FrigidRogue.MonoGame.Core.View.Interfaces;
 
 using InputHandlers.Keyboard;
@@ -36,7 +34,6 @@ namespace MarsUndiscovered.Installers
 {
     public class MarsUndiscoveredInstaller : IWindsorInstaller
     {
-        
         [Conditional("DEBUG")]
         private void SetDebugEnvironment(ref string environment)
         {
@@ -92,9 +89,6 @@ namespace MarsUndiscovered.Installers
 
                 Component.For<ScreenCollection>(),
 
-                Component.For<IHeightMapGenerator>()
-                    .ImplementedBy<HeightMapGenerator>(),
-                
                 Classes.FromAssemblyContaining<IGameCamera>()
                     .BasedOn<IGameCamera>()
                     .WithServiceDefaultInterfaces(),
@@ -140,9 +134,6 @@ namespace MarsUndiscovered.Installers
                     .LifeStyle.Transient,
 
                 Component.For<IFactory<GoalMapEntity>>()
-                    .AsFactory(),
-
-                Component.For<IFactory<IGameWorld>>()
                     .AsFactory()
             );
         }

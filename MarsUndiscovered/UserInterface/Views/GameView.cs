@@ -12,7 +12,7 @@ using MarsUndiscovered.UserInterface.ViewModels;
 using GeonBit.UI.Entities;
 
 using GoRogue.Pathing;
-using MarsUndiscovered.Components.Dto;
+using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.UserInterface.Input;
 
 using MediatR;

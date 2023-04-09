@@ -1,7 +1,6 @@
 using FrigidRogue.MonoGame.Core.Components;
-
-using MarsUndiscovered.Commands;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Commands;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Tests.Components;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;

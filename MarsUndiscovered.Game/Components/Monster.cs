@@ -15,7 +15,7 @@ using GoRogue.Random;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
-using MarsUndiscovered.Extensions;
+using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
 
 using SadRogue.Primitives;

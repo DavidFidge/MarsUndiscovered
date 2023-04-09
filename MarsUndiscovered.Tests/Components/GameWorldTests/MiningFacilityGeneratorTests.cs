@@ -1,7 +1,7 @@
 ﻿using GoRogue.GameFramework;
-using MarsUndiscovered.Components;
-using MarsUndiscovered.Components.Factories;
-using MarsUndiscovered.Components.Maps;
+using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Game.Components.Factories;
+using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;

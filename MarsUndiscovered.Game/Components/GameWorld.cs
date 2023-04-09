@@ -3,8 +3,6 @@ using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
-
-using MarsUndiscovered.Extensions;
 using MarsUndiscovered.Interfaces;
 
 using GoRogue.GameFramework;
@@ -14,8 +12,8 @@ using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Game.Components.SaveData;
-using MarsUndiscovered.Messages;
-
+using MarsUndiscovered.Game.Extensions;
+using MarsUndiscovered.Game.Messages;
 using Microsoft.Xna.Framework.Input;
 
 using SadRogue.Primitives;

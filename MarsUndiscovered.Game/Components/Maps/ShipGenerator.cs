@@ -1,7 +1,5 @@
 using MarsUndiscovered.Game.Components.Factories;
-using MarsUndiscovered.Extensions;
-
-using SadRogue.Primitives;
+using MarsUndiscovered.Game.Extensions;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {

@@ -1,8 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Castle.MicroKernel;
-using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using MarsUndiscovered.Interfaces;
@@ -11,7 +9,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 using GoRogue.GameFramework;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MediatR;
@@ -397,7 +395,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
         return gameObject switch
         {
             Ship => ShipAiRadioComms,
-            Item { ItemType: Components.ShipRepairParts } => ShipAiRadioComms,
+            Item { ItemType: ShipRepairParts } => ShipAiRadioComms,
             _ => null
         };
     }

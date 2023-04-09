@@ -3,7 +3,6 @@ using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.Steps;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-using SharpDX.WIC;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {

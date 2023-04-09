@@ -1,7 +1,6 @@
 using Castle.MicroKernel.Registration;
-
-using MarsUndiscovered.Components;
-using MarsUndiscovered.Components.Maps;
+using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Interfaces;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;

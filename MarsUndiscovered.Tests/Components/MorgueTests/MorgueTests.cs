@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;

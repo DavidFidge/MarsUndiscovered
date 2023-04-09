@@ -1,7 +1,4 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
-
-using GoRogue.Random;
-
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Interfaces;
 

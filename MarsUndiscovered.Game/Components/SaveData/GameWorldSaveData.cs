@@ -1,5 +1,3 @@
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components.SaveData

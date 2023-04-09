@@ -5,9 +5,8 @@ using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.GameFramework;
 
 using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Game.Messages;
 using MarsUndiscovered.Interfaces;
-using MarsUndiscovered.Messages;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Commands

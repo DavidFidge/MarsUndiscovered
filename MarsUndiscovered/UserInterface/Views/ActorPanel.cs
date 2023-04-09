@@ -1,8 +1,7 @@
 ﻿using FrigidRogue.MonoGame.Core.View.Extensions;
 
 using GeonBit.UI.Entities;
-
-using MarsUndiscovered.Components.Dto;
+using MarsUndiscovered.Game.Components.Dto;
 
 namespace MarsUndiscovered.UserInterface.Views
 {

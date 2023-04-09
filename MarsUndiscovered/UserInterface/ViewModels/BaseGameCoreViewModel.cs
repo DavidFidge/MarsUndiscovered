@@ -4,8 +4,8 @@ using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
-
-using MarsUndiscovered.Commands;
+using MarsUndiscovered.Game.Commands;
+using MarsUndiscovered.Game.Messages;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Animation;

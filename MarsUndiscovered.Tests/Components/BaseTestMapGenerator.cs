@@ -1,12 +1,6 @@
-﻿using GoRogue.GameFramework;
-using GoRogue.Random;
-using MarsUndiscovered.Components;
-using MarsUndiscovered.Components.Factories;
-using MarsUndiscovered.Components.Maps;
-using MarsUndiscovered.Interfaces;
-
+﻿using MarsUndiscovered.Game.Components.Factories;
+using MarsUndiscovered.Game.Components.Maps;
 using SadRogue.Primitives;
-using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Tests.Components
 {

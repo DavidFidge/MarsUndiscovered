@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Threading.Tasks;
 using FrigidRogue.TestInfrastructure;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MarsUndiscovered.Tests.Components.MorgueTests;

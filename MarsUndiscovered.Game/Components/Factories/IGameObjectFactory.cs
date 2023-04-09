@@ -1,5 +1,3 @@
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-
 using GoRogue.GameFramework;
 
 using MarsUndiscovered.Interfaces;

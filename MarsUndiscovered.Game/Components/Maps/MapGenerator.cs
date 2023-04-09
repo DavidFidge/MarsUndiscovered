@@ -7,7 +7,7 @@ using GoRogue.Random;
 
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.GenerationSteps;
-using MarsUndiscovered.Extensions;
+using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;

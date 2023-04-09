@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
-using MarsUndiscovered.Extensions;
+using FrigidRogue.MonoGame.Core.Extensions;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Serilog;

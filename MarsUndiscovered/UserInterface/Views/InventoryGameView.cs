@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
 using GeonBit.UI.Entities;
 using FrigidRogue.MonoGame.Core.View.Extensions;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;

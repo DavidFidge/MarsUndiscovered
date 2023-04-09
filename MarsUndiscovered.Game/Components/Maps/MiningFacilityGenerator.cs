@@ -1,6 +1,6 @@
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components.Factories;
-using MarsUndiscovered.Extensions;
+using MarsUndiscovered.Game.Extensions;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {

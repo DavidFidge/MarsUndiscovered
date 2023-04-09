@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
 
 using Castle.Facilities.TypedFactory;
 
@@ -12,9 +11,6 @@ using Castle.Windsor;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Graphics.Terrain;
-using FrigidRogue.MonoGame.Core.Installers;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
 using FrigidRogue.MonoGame.Core.UserInterface;
@@ -23,7 +19,6 @@ using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
-using Microsoft.Extensions.Configuration;
 
 namespace MarsUndiscovered.Game.Installers
 {
@@ -56,9 +51,6 @@ namespace MarsUndiscovered.Game.Installers
                 Component.For<IMapExitGenerator>()
                     .ImplementedBy<MapExitGenerator>(),
 
-                Component.For<IHeightMapGenerator>()
-                    .ImplementedBy<HeightMapGenerator>(),
-                
                 Classes.FromAssemblyContaining<IGameCamera>()
                     .BasedOn<IGameCamera>()
                     .WithServiceDefaultInterfaces(),
@@ -69,9 +61,6 @@ namespace MarsUndiscovered.Game.Installers
                 Component.For<IGameWorld>()
                     .ImplementedBy<GameWorld>()
                     .LifestyleTransient(),
-
-                Component.For<IActionMapStore>()
-                    .ImplementedBy<DefaultActionMapStore>(),
 
                 Classes.FromAssembly(Assembly.GetExecutingAssembly())
                     .BasedOn<MarsGameObject>()

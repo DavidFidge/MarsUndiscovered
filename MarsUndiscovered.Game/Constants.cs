@@ -1,4 +1,4 @@
-﻿namespace MarsUndiscovered
+﻿namespace MarsUndiscovered.Game
 {
     public class Constants
     {

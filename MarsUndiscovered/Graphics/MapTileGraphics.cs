@@ -1,6 +1,6 @@
 ﻿using FrigidRogue.MonoGame.Core.Graphics.Quads;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Sprites;

@@ -1,9 +1,6 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
-using GoRogue;
-
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 
