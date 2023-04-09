@@ -1,5 +1,4 @@
-﻿using MarsUndiscovered.Components;
-using MarsUndiscovered.Components.Dto;
+﻿using MarsUndiscovered.Game.Components.Dto;
 
 namespace MarsUndiscovered.UserInterface.Views
 {

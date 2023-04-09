@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 using FrigidRogue.TestInfrastructure;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 #pragma warning disable CS4014

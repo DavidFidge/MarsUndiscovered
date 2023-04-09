@@ -1,4 +1,4 @@
-﻿using MarsUndiscovered.Components.Dto;
+﻿using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.UserInterface.Data;
 
 namespace MarsUndiscovered.UserInterface.ViewModels

@@ -1,9 +1,9 @@
 using System.Text;
 using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.Random;
-using MarsUndiscovered.Commands;
-using MarsUndiscovered.Components;
-using MarsUndiscovered.Components.Maps;
+using MarsUndiscovered.Game.Commands;
+using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Game.Components.Maps;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NGenerics.Extensions;

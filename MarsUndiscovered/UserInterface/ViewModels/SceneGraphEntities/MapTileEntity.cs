@@ -1,8 +1,7 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
-
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
 

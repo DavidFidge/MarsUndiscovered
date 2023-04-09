@@ -1,5 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.UserInterface;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using MediatR;
 
 using Microsoft.Xna.Framework.Input;

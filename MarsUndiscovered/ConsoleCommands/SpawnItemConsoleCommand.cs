@@ -1,8 +1,7 @@
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Extensions;
-
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.ConsoleCommands

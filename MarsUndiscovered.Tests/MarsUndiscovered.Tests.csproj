@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\FrigidRogue\FrigidRogue.TestInfrastructure\FrigidRogue.TestInfrastructure.csproj" />
     <ProjectReference Include="..\MarsUndiscovered\MarsUndiscovered.csproj" />
+    <ProjectReference Include="..\MarsUndiscovered.Game\MarsUndiscovered.Game.csproj" />
   </ItemGroup>
 
 </Project>

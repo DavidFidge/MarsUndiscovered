@@ -24,7 +24,7 @@ using Serilog;
 
 namespace MarsUndiscovered
 {
-    public class MarsUndiscoveredGame : Game, IGame, IRequestHandler<ToggleFpsRequest>
+    public class MarsUndiscoveredGame : Microsoft.Xna.Framework.Game, IGame, IRequestHandler<ToggleFpsRequest>
     {
         private readonly ILogger _logger;
         private readonly IGameProvider _gameProvider;

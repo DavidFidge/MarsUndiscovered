@@ -1,6 +1,6 @@
 ﻿using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI.Entities;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
 using Microsoft.Xna.Framework;

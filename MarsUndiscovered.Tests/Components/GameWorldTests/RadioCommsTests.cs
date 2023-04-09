@@ -1,5 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Extensions;
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SadRogue.Primitives;
 

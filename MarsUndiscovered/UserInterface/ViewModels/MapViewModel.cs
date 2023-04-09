@@ -6,6 +6,7 @@ using GoRogue.GameFramework;
 using GoRogue.Pathing;
 
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 
 using Microsoft.Xna.Framework;

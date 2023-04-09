@@ -1,6 +1,6 @@
-﻿using MarsUndiscovered.Components;
-using MarsUndiscovered.Components.Factories;
-using MarsUndiscovered.Components.Maps;
+﻿using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Game.Components.Factories;
+using MarsUndiscovered.Game.Components.Maps;
 
 namespace MarsUndiscovered.Tests.Components
 {

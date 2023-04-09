@@ -1,4 +1,4 @@
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xna.Framework.Input;
 

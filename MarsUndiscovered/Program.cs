@@ -1,8 +1,10 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using CommandLine;
+using FrigidRogue.MonoGame.Core.Installers;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
-
+using FrigidRogue.MonoGame.Core.View.Installers;
+using MarsUndiscovered.Game.Installers;
 using MarsUndiscovered.Installers;
 
 namespace MarsUndiscovered
@@ -20,8 +22,11 @@ namespace MarsUndiscovered
         {
             var container = new WindsorContainer();
 
+            container.Install(new CoreInstaller());
             container.Install(new GameInstaller());
-
+            container.Install(new ViewInstaller());
+            container.Install(new MarsUndiscoveredInstaller());
+            
             container.Register(
                 Component.For<Options>()
                     .Instance(options)

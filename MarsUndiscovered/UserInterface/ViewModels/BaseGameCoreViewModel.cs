@@ -4,8 +4,8 @@ using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
-
-using MarsUndiscovered.Commands;
+using MarsUndiscovered.Game.Commands;
+using MarsUndiscovered.Game.ViewMessages;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Animation;
@@ -24,7 +24,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         INotificationHandler<ToggleShowGoalMapNotification>,
         INotificationHandler<ToggleShowEntireMapNotification>,
         INotificationHandler<RefreshViewNotification>,
-        INotificationHandler<FieldOfViewChangedNotifcation>,
+        INotificationHandler<FieldOfViewChangedNotification>,
         INotificationHandler<MapChangedNotification>
         where T : new()
     {
@@ -141,7 +141,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             return Unit.Task;
         }
 
-        public Task Handle(FieldOfViewChangedNotifcation notification, CancellationToken cancellationToken)
+        public Task Handle(FieldOfViewChangedNotification notification, CancellationToken cancellationToken)
         {
             if (IsActive)
                 MapViewModel.UpdateFieldOfView(notification.NewlyVisibleTiles, notification.NewlyHiddenTiles, notification.SeenTiles);

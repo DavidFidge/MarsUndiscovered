@@ -1,6 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
-
-using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components;
 
 namespace MarsUndiscovered.Tests.Components
 {
