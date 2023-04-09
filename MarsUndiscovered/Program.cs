@@ -22,11 +22,11 @@ namespace MarsUndiscovered
         {
             var container = new WindsorContainer();
 
-            container.Install(new MarsUndiscoveredInstaller());
-            container.Install(new GameInstaller());
             container.Install(new CoreInstaller());
+            container.Install(new GameInstaller());
             container.Install(new ViewInstaller());
-
+            container.Install(new MarsUndiscoveredInstaller());
+            
             container.Register(
                 Component.For<Options>()
                     .Instance(options)

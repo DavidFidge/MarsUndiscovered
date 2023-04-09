@@ -21,10 +21,10 @@ namespace MarsUndiscovered.Tests
         {
             Container = new WindsorContainer();
 
-            Container.Install(new MarsUndiscoveredInstaller());
-            Container.Install(new GameInstaller());
             Container.Install(new CoreInstaller());
+            Container.Install(new GameInstaller());
             Container.Install(new ViewInstaller());
+            Container.Install(new MarsUndiscoveredInstaller());
 
             FakeLogger = new FakeLogger();
             Container.Register(Component.For<ILogger>().Instance(FakeLogger).IsDefault());
