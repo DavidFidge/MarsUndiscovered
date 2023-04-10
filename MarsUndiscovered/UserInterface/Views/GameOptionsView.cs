@@ -42,6 +42,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 OnClick = entity =>
                 {
                     Mediator.Send(new CloseGameOptionsRequest());
+                    Mediator.Send(new CloseInGameOptionsRequest());
                 }
             };
 
