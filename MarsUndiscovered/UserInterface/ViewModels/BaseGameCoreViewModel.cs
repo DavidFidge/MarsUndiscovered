@@ -26,7 +26,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         INotificationHandler<RefreshViewNotification>,
         INotificationHandler<FieldOfViewChangedNotification>,
         INotificationHandler<MapChangedNotification>,
-        INotificationHandler<UseAsciiTilesNotification>
+        INotificationHandler<ChangeTileGraphicsOptionsNotification>
         where T : new()
     {
         public Queue<TileAnimation> Animations { get; set; } = new Queue<TileAnimation>();
@@ -171,10 +171,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             return Unit.Task;
         }
 
-        public Task Handle(UseAsciiTilesNotification notification, CancellationToken cancellationToken)
+        public Task Handle(ChangeTileGraphicsOptionsNotification notification, CancellationToken cancellationToken)
         {
             if (IsActive)
-                MapViewModel.SetTileGraphics(notification.UseAsciiTiles);
+                MapViewModel.SetTileGraphicsOptions(notification.TileGraphicOptions);
 
             return Unit.Task;
         }

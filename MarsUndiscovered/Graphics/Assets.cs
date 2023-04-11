@@ -343,12 +343,15 @@ public class Assets : IAssets
 
         var gameOptionsData = _gameOptionsStore.GetFromStore<GameOptionsData>();
 
-        SetTileGraphics(gameOptionsData.State.UseAsciiTiles);
+        SetTileGraphicOptions(new TileGraphicOptions(gameOptionsData.State));
     }
 
-    public void SetTileGraphics(bool useAsciiTiles)
+    public void SetTileGraphicOptions(TileGraphicOptions tileGraphicOptions)
     {
-        _currentMapTileGraphics = useAsciiTiles
+        _asciiMapTileGraphics.UseAnimations(tileGraphicOptions.UseAnimations);
+        _graphicalMapTileGraphics.UseAnimations(tileGraphicOptions.UseAnimations);
+
+        _currentMapTileGraphics = tileGraphicOptions.UseAsciiTiles
             ? _asciiMapTileGraphics
             : _graphicalMapTileGraphics;
     }

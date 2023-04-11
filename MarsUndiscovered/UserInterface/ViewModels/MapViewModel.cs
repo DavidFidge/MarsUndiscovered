@@ -8,6 +8,7 @@ using GoRogue.Pathing;
 
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
 using Microsoft.Xna.Framework;
@@ -85,7 +86,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IGameOptionsStore gameOptionsStore
             )
         {
-            _assets.SetTileGraphics(gameOptionsStore.GetFromStore<GameOptionsData>().State.UseAsciiTiles);
+            _assets.SetTileGraphicOptions(new TileGraphicOptions(gameOptionsStore.GetFromStore<GameOptionsData>().State));
 
             _mouseHoverPath = null;
             _gameWorldEndpoint = gameWorldEndpoint;
@@ -473,9 +474,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             DebugUpdateTileGoalMap();
         }
 
-        public void SetTileGraphics(bool useAsciiTiles)
+        public void SetTileGraphicsOptions(TileGraphicOptions tileGraphicOptions)
         {
-            _assets.SetTileGraphics(useAsciiTiles);
+            _assets.SetTileGraphicOptions(tileGraphicOptions);
             UpdateAllTiles();
         }
     }
