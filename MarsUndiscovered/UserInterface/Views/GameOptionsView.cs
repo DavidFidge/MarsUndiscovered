@@ -42,7 +42,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 OnClick = entity =>
                 {
                     Mediator.Send(new CloseGameOptionsRequest());
-                    Mediator.Send(new CloseInGameOptionsRequest());
+                    Mediator.Send(new CloseInGameGameOptionsRequest());
                 }
             };
 
@@ -103,8 +103,8 @@ namespace MarsUndiscovered.UserInterface.Views
                 {
                     Mediator.Send(new InterfaceRequest<GameOptionsData>(
                         Data.GetPropertyInfo(nameof(Data.UseAsciiTiles)), ((CheckBox)entity).Checked));
-                    
-                    Mediator.Send(new UseAsciiTilesRequest(Data.UseAsciiTiles));
+
+                    Mediator.Publish(new UseAsciiTilesNotification(Data.UseAsciiTiles));
                 }
             };
 

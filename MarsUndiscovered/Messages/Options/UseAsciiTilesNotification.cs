@@ -2,11 +2,11 @@
 
 namespace MarsUndiscovered.Messages
 {
-    public class UseAsciiTilesRequest : IRequest
+    public class UseAsciiTilesNotification : INotification
     {
         public bool UseAsciiTiles { get; }
 
-        public UseAsciiTilesRequest(bool useAsciiTiles)
+        public UseAsciiTilesNotification(bool useAsciiTiles)
         {
             UseAsciiTiles = useAsciiTiles;
         }

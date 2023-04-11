@@ -1,6 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
 
 using MarsUndiscovered.Interfaces;
@@ -10,9 +8,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 using GoRogue.GameFramework;
 using MarsUndiscovered.Game.Components;
-using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
-using MediatR;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Serialization;
@@ -21,7 +17,7 @@ using MonoGame.Extended.Content;
 
 namespace MarsUndiscovered.Graphics;
 
-public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
+public class Assets : IAssets
 {
     // Alpha comes first, then reverse the hex if copying from Paint.NET
     public static Color WallColor = new Color(0xFF244BB6);
@@ -350,7 +346,7 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
         SetTileGraphics(gameOptionsData.State.UseAsciiTiles);
     }
 
-    private void SetTileGraphics(bool useAsciiTiles)
+    public void SetTileGraphics(bool useAsciiTiles)
     {
         _currentMapTileGraphics = useAsciiTiles
             ? _asciiMapTileGraphics
@@ -445,12 +441,6 @@ public class Assets : IAssets, IRequestHandler<UseAsciiTilesRequest>
     public Texture2D GetStaticTexture(ItemType itemType)
     {
         return _currentMapTileGraphics.GetStaticTexture(itemType);
-    }
-
-    public Task<Unit> Handle(UseAsciiTilesRequest request, CancellationToken cancellationToken)
-    {
-        SetTileGraphics(request.UseAsciiTiles);
-        return Unit.Task;
     }
 
     public void Update()

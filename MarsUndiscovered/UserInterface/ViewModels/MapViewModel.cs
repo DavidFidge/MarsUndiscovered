@@ -1,6 +1,7 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
+using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
@@ -8,7 +9,7 @@ using GoRogue.Pathing;
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
-
+using MarsUndiscovered.UserInterface.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SadRogue.Primitives.GridViews;
@@ -17,8 +18,11 @@ using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
+    // MapViewModel is a child of Replay and Game view models and is thus registered as transient.
+    // Any Notifications need to be registered on the parent and forwarded here.
     public class MapViewModel
     {
+        private readonly IAssets _assets;
         private readonly ISceneGraph _sceneGraph;
         private readonly IMapTileEntityFactory _mapTileEntityFactory;
         private readonly IFieldOfViewTileEntityFactory _fieldOfViewTileEntityFactory;
@@ -48,6 +52,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public int Height => _height;
 
         public MapViewModel(
+            IAssets assets,
             ISceneGraph sceneGraph,
             IMapTileEntityFactory mapTileEntityFactory,
             IFieldOfViewTileEntityFactory fieldOfViewTileEntityFactory,
@@ -55,6 +60,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IFactory<GoalMapEntity> goalMapEntityFactory
         )
         {
+            _assets = assets;
             _sceneGraph = sceneGraph;
             _mapTileEntityFactory = mapTileEntityFactory;
             _mapEntityFactory = mapEntityFactory;
@@ -74,8 +80,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             return _allTiles;
         }
 
-        public void SetupNewMap(IGameWorldEndpoint gameWorldEndpoint)
+        public void SetupNewMap(
+            IGameWorldEndpoint gameWorldEndpoint,
+            IGameOptionsStore gameOptionsStore
+            )
         {
+            _assets.SetTileGraphics(gameOptionsStore.GetFromStore<GameOptionsData>().State.UseAsciiTiles);
+
             _mouseHoverPath = null;
             _gameWorldEndpoint = gameWorldEndpoint;
 
@@ -93,7 +104,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _goalMapTiles = new ArrayView<GoalMapEntity>(_width, _height);
             
             _allTiles = new List<ISpriteBatchDrawable>(_width * _height * 8);
-            
+
             _mapEntity.LoadContent(_width, _height);
 
             _sceneGraph.Initialise(_mapEntity);
@@ -160,7 +171,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 return;
 
             _showGoalMap = !_showGoalMap;
-            
+
             UpdateAllTiles();
             DebugUpdateTileGoalMap();
         }
@@ -230,7 +241,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 for (var y = 0; y < _height; y++)
                 {
                     var point = new Point(x, y);
-                    
+
                     UpdateTile(point);
                 }
             }
@@ -335,7 +346,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     {
                         _goalMapTiles[point].IsVisible = true;
                         _goalMapTiles[point].Text = Math.Round(goalMapValue.Value, 2).ToString();
-                    }                   
+                    }
                 }
             }
         }
@@ -460,6 +471,12 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void UpdateDebugTiles()
         {
             DebugUpdateTileGoalMap();
+        }
+
+        public void SetTileGraphics(bool useAsciiTiles)
+        {
+            _assets.SetTileGraphics(useAsciiTiles);
+            UpdateAllTiles();
         }
     }
 }

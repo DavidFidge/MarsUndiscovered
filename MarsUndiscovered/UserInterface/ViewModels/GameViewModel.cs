@@ -14,13 +14,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class GameViewModel : BaseGameViewModel<GameData>
     {
-        private readonly IGameOptionsStore _gameOptionsStore;
-
-        public GameViewModel(IGameOptionsStore gameOptionsStore)
-        {
-            _gameOptionsStore = gameOptionsStore;
-        }
-        
         public void NewGame(ulong? seed = null)
         {
             IsActive = false;
@@ -104,7 +97,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void WriteAndSendMorgue()
         {
             var gameId = GameWorldEndpoint.GetGameId();
-            var gameOptionsStore = _gameOptionsStore.GetFromStore<GameOptionsData>();
+            var gameOptionsStore = GameOptionsStore.GetFromStore<GameOptionsData>();
 
             GameWorldEndpoint.SnapshotMorgue(gameOptionsStore.State.MorgueUsername ?? String.Empty);
 

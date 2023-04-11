@@ -49,7 +49,6 @@ namespace MarsUndiscovered.UserInterface.Views
 
             SetupSharedChildPanelWithButton<OpenInGameVideoOptionsRequest, VideoOptionsViewModel, VideoOptionsData>(_inGameOptionsMenuPanel, "Video Options", _videoOptionsView);
 
-            //TODO - when reopening optins it goes to in game game options
             SetupSharedChildPanelWithButton<OpenInGameGameOptionsRequest, GameOptionsViewModel, GameOptionsData>(_inGameOptionsMenuPanel, "Game Options", _gameOptionsView);
             
             new Button("Exit Game")

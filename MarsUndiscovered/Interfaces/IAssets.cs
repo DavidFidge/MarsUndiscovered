@@ -24,5 +24,6 @@ namespace MarsUndiscovered.Interfaces
         Texture2D GetStaticTexture(ItemType itemType);
         IMapTileTexture GetMapTileTexture(TileGraphicFeatureType tileGraphicFeatureType, char c);
         void Update();
+        void SetTileGraphics(bool useAsciiTiles);
     }
 }
