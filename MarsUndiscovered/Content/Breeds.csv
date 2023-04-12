@@ -2,3 +2,7 @@ Name,Description,UnicodeCharacter,ForegroundColour,BackgroundColour,MaxHealth,Ba
 Roach,The Mars Roach can survive days in the natural outdoors of Mars and is a master scavenger within the crooks of human dwellings. This one is the size of a human foot.,0072,#8B4513,,20,2,4,,FALSE,,,0.005
 Repair Droid,The repair droid is a small robot that performs minor precision repair jobs around the mine site. This droid has malfunctioned (or has been reprogrammed?) and now seeks and destroys anything it comes across. Repair droids prefer to hunt in packs and can repair each other when damaged.,0064,#808080,,30,4,8,,FALSE,,,0
 Tesla Turret,This turret shoots lightning bolts at nearby threats.,00E8,#4682B4,#FFFFFF,50,,,6,TRUE,,,0
+Black Ops Defender,Black ops defenders have gadgets of advanced technology which they use to block any ranged damage done to adjacent allies.,0044,#000099,,50,2,2,,FALSE,,,0.005
+Black Ops Sniper,"Black ops snipers are efficient ruthless killers, taking down foes from the shadows with impeccable precision.",0083,#7474E0,,50,2,2,,FALSE,,,0.005
+Crazed Foreman,"With all sanity lost from the madness that has overtaken the mine, this crazed foreman wanders the mines, looking for anything to kill.",0077,#D1FF00,,50,2,2,,FALSE,,,0.005
+Crazed Miner,"Terror, fright and a primal urge for survival is all that is left of this miner's sanity.",006D,#00D300,,50,2,2,,FALSE,,,0.005

@@ -20,6 +20,7 @@ namespace MarsUndiscovered.Graphics;
 public class Assets : IAssets
 {
     // Alpha comes first, then reverse the hex if copying from Paint.NET
+    // In Breeds.csv there is no alpha and the hex can by copied directly
     public static Color WallColor = new Color(0xFF244BB6);
     public static Color UserInterfaceColor = new Color(0xFF1E0097);
 
