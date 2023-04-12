@@ -5,7 +5,7 @@ namespace MarsUndiscovered.Game.Components
 {
     public class IronSpike : Weapon
     {
-        private Attack _lineAttack = new(new Range<int>(5, 9));
+        private Attack _lineAttack = new(new Range<int>(50, 90));
 
         public override string Name => nameof(IronSpike);
 

@@ -1,23 +1,23 @@
-Name,Description,UnicodeCharacter,ForegroundColour,BackgroundColour,MaxHealth,BasicAttackMin,BasicAttackMax,LightningAttack,IsWallTurret,LineAttackMin,LineAttackMax,RegenRate
-Roach,"The Mars Roach can survive days in the natural outdoors of Mars and is a master scavenger within the crooks of human dwellings. This one is the size of a human foot.",0072,#8B4513,,20,2,4,,FALSE,,,0.005
-Repair Droid,"The repair droid is a small robot that performs minor precision repair jobs around the mine site. This droid has malfunctioned (or has been reprogrammed?) and now seeks and destroys anything it comes across. Repair droids prefer to hunt in packs and can repair each other when damaged.",0064,#808080,,30,4,8,,FALSE,,,0
-Tesla Turret,"This turret shoots lightning bolts at nearby threats.",00E8,#4682B4,#FFFFFF,50,,,6,TRUE,,,0
-Black Ops Defender,"Black ops defenders have gadgets of advanced technology which they use to block any ranged damage done to adjacent allies.",0044,#000099,,50,2,2,,FALSE,,,0.005
-Black Ops Sniper,"Black ops snipers are efficient ruthless killers, taking down foes from the shadows with impeccable precision.",0083,#7474E0,,50,2,2,,FALSE,,,0.005
-Crazed Foreman,"With all sanity lost from the madness that has overtaken the mine, this crazed foreman wanders the mines, looking for anything to kill.",0077,#D1FF00,,50,2,2,,FALSE,,,0.005
+Name,Description,CodePage437Character,ForegroundColour,BackgroundColour,MaxHealth,BasicAttackMin,BasicAttackMax,LightningAttack,IsWallTurret,LineAttackMin,LineAttackMax,RegenRate
+Black Ops Defender,Black ops defenders have gadgets of advanced technology which they use to block any ranged damage done to adjacent allies.,0062,#000099,,50,2,2,,FALSE,,,0.005
+Black Ops Sniper,"Black ops snipers are efficient ruthless killers, taking down foes from the shadows with impeccable precision.",0062,#7474E0,,50,2,2,,FALSE,,,0.005
+Crazed Foreman,"With all sanity lost from the madness that has overtaken the mine, this crazed foreman wanders the mines, looking for anything to kill.",006D,#D1FF00,,50,2,2,,FALSE,,,0.005
 Crazed Miner,"Terror, fright and a primal urge for survival is all that is left of this miner's sanity.",006D,#00D300,,50,2,2,,FALSE,,,0.005
 Eldritch Worm,"Buried and hibernating for eons, this worm has awakened and now seeks sustenance.",0057,#FF00FF,,50,2,2,,FALSE,,,0.005
-Flame Turret,"Formerly part of the smelter, this flamer has been repurposed as a defensive installation by desperate miners.",00A5,#FF0000,#FFFFFF,50,,,6,TRUE,,,0
+Flame Turret,"Formerly part of the smelter, this flamer has been repurposed as a defensive installation by desperate miners.",00E8,#FF0000,#FFFFFF,50,,,6,TRUE,,,0
 Megalith Carrier,"A huge conglomerate of melted flesh and rock, this megalith carries rocks for use by megalith chuckers.",004D,#CC6600,,50,2,2,,FALSE,,,0.005
 Megalith Chucker,"A huge conglomerate of melted flesh and rock, this megalith resembles a giant hand on legs. It stays close to megalith carriers who provide a constant supply of missiles to throw at hostile creatures.",004D,#FF2200,,50,2,2,,FALSE,,,0.005
-Nirgal Bomber,The most strong-willed miners have banded together and call themselves Nirgals. This Nirgal is an experienced demolitionist and throws improvised explosives at enemies.,0062,#CC4500,,50,2,2,,FALSE,,,0.005
-Nirgal Rebel,The most strong-willed miners have banded together and call themselves Nirgals. This Nirgal fights fiercely with small arms weaponry.,0072,#EE4500,,50,2,2,,FALSE,,,0.005
+Missile Turret,Surface to air missiles have been repurposed as ammunition for a crude bazooka. Being directly hit by this missile would result in certain death.,00E8,#000000,#FFFFFF,50,,,6,TRUE,,,0
+Nirgal Bomber,The most strong-willed miners have banded together and call themselves Nirgals. This Nirgal is an experienced demolitionist and throws improvised explosives at enemies.,006E,#CC4500,,50,2,2,,FALSE,,,0.005
+Nirgal Rebel,The most strong-willed miners have banded together and call themselves Nirgals. This Nirgal fights fiercely with small arms weaponry.,006E,#EE4500,,50,2,2,,FALSE,,,0.005
 Phasmid Hunter,"A strange, shy creature built for cave dwelling. While blind, its other senses far surpass that of humans. It has rapidly ascended from the depths and is looking for food.",0070,#DDD200,,50,2,2,,FALSE,,,0.005
-Spiral Borer,This large machine is built for boring holes in softer ground.,00C5,#777777,,50,2,2,,FALSE,,,0
-Tunnel Borer,This huge machine is built for boring tunnels in hard ground.,0051,#777777,,50,2,2,,FALSE,,,0
-Steam Elemental,"A furious maelstrom of water, fire and nanobots controlled by a malevolent AI. Anything that comes close to it is scaled with steam.",0051,#FFFF00,,50,2,2,,FALSE,,,0
-Tentacle Horror,"A biological nightmare with thick, slimy tentacles. Hovering a metre above the ground, it is clearly not a natural organism. It searches for prey to feed its internal machinery.",0068,#00FF55,,50,2,2,,FALSE,,,0
-Missile Turret,Surface to air missiles have been repurposed as ammunition for a crude bazooka. Being directly hit by this missile would result in certain death.,0054,#000000,#FFFFFF,50,,,6,TRUE,,,0
-Werewolf,This creature appears to be a Yendorian that has been biologically modified to enhance its strength for hand to hand combat. It looks remarkably like a werewolf out of folklore.,0057,#A54D00,,50,2,2,,FALSE,,,0.1
-Yendorian Grunt,"A short, stumpy creature built as a slave for the Yendorians. Even though it is short of stature it posesses great strength.",0067,#A56551,,50,2,2,,FALSE,,,0.1
-Yendorian Master,The Yendorian Master is the last of its race. It is a being full of malice and hatred. It stands at 3 metres tall. Any wounds inflicted to it are regenerated within seconds. It is invincible and it is well-advised you run away from it.,0059,#75FFFF,,1000,2,2,,FALSE,,,0.5
+Repair Droid,The repair droid is a small robot that performs minor precision repair jobs around the mine site. This droid has malfunctioned (or has been reprogrammed?) and now seeks and destroys anything it comes across. Repair droids prefer to hunt in packs and can repair each other when damaged.,0064,#808080,,30,4,8,,FALSE,,,0
+Roach,The Mars Roach can survive days in the natural outdoors of Mars and is a master scavenger within the crooks of human dwellings. This one is the size of a human foot.,0072,#8B4513,,20,2,4,,FALSE,,,0.005
+Spiral Borer,This large machine is built for boring holes in softer ground.,0042,#777777,,50,2,2,,FALSE,,,0
+Steam Elemental,"A furious maelstrom of water, fire and nanobots controlled by a malevolent AI. Anything that comes close to it is scaled with steam.",0065,#FFFF00,,50,2,2,,FALSE,,,0
+Tentacle Horror,"A biological nightmare with thick, slimy tentacles. Hovering a metre above the ground, it is clearly not a natural organism. It searches for prey to feed its internal machinery.",0048,#00FF55,,50,2,2,,FALSE,,,0
+Tesla Turret,This turret shoots lightning bolts at nearby threats.,00E8,#4682B4,#FFFFFF,50,,,6,TRUE,,,0
+Tunnel Borer,This huge machine is built for boring tunnels in hard ground.,0042,#777777,,50,2,2,,FALSE,,,0
+Werewolf,This creature appears to be a Yendorian that has been biologically modified to enhance its strength for hand to hand combat. It looks remarkably like a werewolf out of folklore.,0057,#A54D00,,50,2,2,,FALSE,,,0.01
+Yendorian Grunt,"A short, stumpy creature built as a slave for the Yendorians. Even though it is short of stature it posesses great strength.",0079,#A56551,,50,2,2,,FALSE,,,0.01
+Yendorian Master,The Yendorian Master is the last of its race. It is a being full of malice and hatred. It stands at 3 metres tall. Any wounds inflicted to it are regenerated within seconds. It is almost invincible.,0059,#75FFFF,,500,2,2,,FALSE,,,0.02
