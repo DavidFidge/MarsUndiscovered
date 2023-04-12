@@ -108,7 +108,8 @@ namespace MarsUndiscovered
             var gameOptionsData = new GameOptionsData
             {
                 MorgueUsername = "Unknown Adventurer",
-                UploadMorgueFiles = true
+                UploadMorgueFiles = true,
+                UseAnimations = true
             };
             
             gameOptionsStore.SaveToStore(new Memento<GameOptionsData>(gameOptionsData));

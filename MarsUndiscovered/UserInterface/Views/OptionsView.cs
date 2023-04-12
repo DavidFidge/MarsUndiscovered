@@ -46,10 +46,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             SetupSharedChildPanelWithButton<OpenVideoOptionsRequest, VideoOptionsViewModel, VideoOptionsData>(_optionsMenuPanel, "Video Options", _videoOptionsView);
 
-            SetupChildPanelWithButton<OpenGameOptionsRequest, GameOptionsViewModel, GameOptionsData>(
-                _optionsMenuPanel,
-                "Game Options",
-                _gameOptionsView);
+            SetupSharedChildPanelWithButton<OpenGameOptionsRequest, GameOptionsViewModel, GameOptionsData>(_optionsMenuPanel, "Game Options", _gameOptionsView);
             
             new Button("Back")
                 .SendOnClick<CloseOptionsViewRequest>(Mediator)
@@ -68,7 +65,7 @@ namespace MarsUndiscovered.UserInterface.Views
         
         public Task<Unit> Handle(OpenGameOptionsRequest request, CancellationToken cancellationToken)
         {
-            return ShowChildView(_gameOptionsView, _optionsMenuPanel);
+            return ShowChildViewWithRootSwap(_gameOptionsView, _optionsMenuPanel);
         }
 
         public Task<Unit> Handle(CloseGameOptionsRequest request, CancellationToken cancellationToken)

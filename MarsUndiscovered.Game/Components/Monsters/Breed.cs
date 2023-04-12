@@ -31,7 +31,6 @@ namespace MarsUndiscovered.Game.Components
         {
             Breeds = new Dictionary<string, Breed>();
 
-            //TODO needs fixing
             using var reader = new StreamReader("Content\\Breeds.csv");
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
             

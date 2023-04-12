@@ -6,6 +6,7 @@ using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI.Entities;
+using MarsUndiscovered.Graphics;
 using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views
@@ -15,6 +16,7 @@ namespace MarsUndiscovered.UserInterface.Views
     {
         private CheckBox _uploadMorgueCheckBox;
         private CheckBox _useAsciiTiles;
+        private CheckBox _useAnimations;
         private TextInput _morgueFileUsernameInput;
 
         public GameOptionsView(GameOptionsViewModel gameOptionsViewModel)
@@ -42,6 +44,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 OnClick = entity =>
                 {
                     Mediator.Send(new CloseGameOptionsRequest());
+                    Mediator.Send(new CloseInGameGameOptionsRequest());
                 }
             };
 
@@ -102,12 +105,26 @@ namespace MarsUndiscovered.UserInterface.Views
                 {
                     Mediator.Send(new InterfaceRequest<GameOptionsData>(
                         Data.GetPropertyInfo(nameof(Data.UseAsciiTiles)), ((CheckBox)entity).Checked));
-                    
-                    Mediator.Send(new UseAsciiTilesRequest(Data.UseAsciiTiles));
+
+                    Mediator.Publish(new ChangeTileGraphicsOptionsNotification(new TileGraphicOptions(Data)));
                 }
             };
 
             _useAsciiTiles.AddTo(contentPanel);
+
+            _useAnimations = new CheckBox("Enable Animations", offset: new Vector2(Constants.UiIndentLevel1, 0f))
+            {
+                Checked = Data.UseAnimations,
+                OnValueChange = entity =>
+                {
+                    Mediator.Send(new InterfaceRequest<GameOptionsData>(
+                        Data.GetPropertyInfo(nameof(Data.UseAnimations)), ((CheckBox)entity).Checked));
+
+                    Mediator.Publish(new ChangeTileGraphicsOptionsNotification(new TileGraphicOptions(Data)));
+                }
+            };
+
+            _useAnimations.AddTo(contentPanel);
         }
     }
 }

@@ -14,19 +14,24 @@ namespace MarsUndiscovered.UserInterface.Views
     public class InGameOptionsView : BaseMarsUndiscoveredView<InGameOptionsViewModel, InGameOptionsData>,
         IRequestHandler<OpenInGameVideoOptionsRequest>,
         IRequestHandler<CloseInGameVideoOptionsRequest>,
+        IRequestHandler<OpenInGameGameOptionsRequest>,
+        IRequestHandler<CloseInGameGameOptionsRequest>,
         IRequestHandler<OpenSaveGameViewRequest>,
         IRequestHandler<CloseSaveGameViewRequest>
     {
         private readonly VideoOptionsView _videoOptionsView;
+        private readonly GameOptionsView _gameOptionsView;
         private readonly SaveGameView _saveGameView;
         private Panel _inGameOptionsMenuPanel;
 
         public InGameOptionsView(
             InGameOptionsViewModel inGameOptionsViewModel,
             VideoOptionsView videoOptionsView,
+            GameOptionsView gameOptionsView,
             SaveGameView saveGameView
         ) : base(inGameOptionsViewModel)
         {
+            _gameOptionsView = gameOptionsView;
             _videoOptionsView = videoOptionsView;
             _saveGameView = saveGameView;
         }
@@ -44,6 +49,8 @@ namespace MarsUndiscovered.UserInterface.Views
 
             SetupSharedChildPanelWithButton<OpenInGameVideoOptionsRequest, VideoOptionsViewModel, VideoOptionsData>(_inGameOptionsMenuPanel, "Video Options", _videoOptionsView);
 
+            SetupSharedChildPanelWithButton<OpenInGameGameOptionsRequest, GameOptionsViewModel, GameOptionsData>(_inGameOptionsMenuPanel, "Game Options", _gameOptionsView);
+            
             new Button("Exit Game")
                 .SendOnClick<CloseInGameOptionsRequest, QuitToTitleRequest>(Mediator)
                 .AddTo(_inGameOptionsMenuPanel);
@@ -71,6 +78,16 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(CloseInGameVideoOptionsRequest request, CancellationToken cancellationToken)
         {
             return HideChildView(_videoOptionsView, _inGameOptionsMenuPanel);
+        }
+
+        public Task<Unit> Handle(OpenInGameGameOptionsRequest request, CancellationToken cancellationToken)
+        {
+            return ShowChildViewWithRootSwap(_gameOptionsView, _inGameOptionsMenuPanel);
+        }
+
+        public Task<Unit> Handle(CloseInGameGameOptionsRequest request, CancellationToken cancellationToken)
+        {
+            return HideChildView(_gameOptionsView, _inGameOptionsMenuPanel);
         }
     }
 }

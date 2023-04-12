@@ -25,7 +25,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         INotificationHandler<ToggleShowEntireMapNotification>,
         INotificationHandler<RefreshViewNotification>,
         INotificationHandler<FieldOfViewChangedNotification>,
-        INotificationHandler<MapChangedNotification>
+        INotificationHandler<MapChangedNotification>,
+        INotificationHandler<ChangeTileGraphicsOptionsNotification>
         where T : new()
     {
         public Queue<TileAnimation> Animations { get; set; } = new Queue<TileAnimation>();
@@ -34,9 +35,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public MapViewModel MapViewModel { get; set; }
         public bool IsActive { get; set; }
 
+        public IGameOptionsStore GameOptionsStore { get; set; }
+
         protected void SetUpGameCoreViewModels()
         {
-            MapViewModel.SetupNewMap(GameWorldEndpoint);
+            MapViewModel.SetupNewMap(GameWorldEndpoint, GameOptionsStore);
         }
 
         public void QueueAnimations(IList<CommandResult> commandResults)
@@ -153,7 +156,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             if (IsActive)
             {
-                MapViewModel.SetupNewMap(GameWorldEndpoint);
+                MapViewModel.SetupNewMap(GameWorldEndpoint, GameOptionsStore);
                 Notify();
             }
 
@@ -164,6 +167,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             if (IsActive)
                 MapViewModel.ToggleFieldOfView();
+
+            return Unit.Task;
+        }
+
+        public Task Handle(ChangeTileGraphicsOptionsNotification notification, CancellationToken cancellationToken)
+        {
+            if (IsActive)
+                MapViewModel.SetTileGraphicsOptions(notification.TileGraphicOptions);
 
             return Unit.Task;
         }

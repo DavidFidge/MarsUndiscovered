@@ -12,5 +12,8 @@ namespace MarsUndiscovered.UserInterface.Data
 
         [Display(Name = "Use Ascii Tiles")]
         public bool UseAsciiTiles { get; set; }
+
+        [Display(Name = "Enable Animations")]
+        public bool UseAnimations { get; set; }
     }
 }

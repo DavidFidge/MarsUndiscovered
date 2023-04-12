@@ -12,12 +12,13 @@ public class MapTileGraphics
 {
     private readonly MapTileGraphics _fallbackTiles;
     public SpriteSheet SpriteSheet { get; private set; }
-    
+
     private Dictionary<string, List<MapTileTexture>> _rawMapTileTextures = new();
     private Dictionary<string, IMapTileTexture> _mapTileTextures = new();
     private Dictionary<string, MapTileTexture> _staticMapTileTextures = new();
     private List<SpriteSheetMapTileTexture> _spriteSheetMapTileTextures = new();
     private double _accumulatedUpdateTime;
+    private bool _useAnimations;
 
     public MapTileGraphics()
     {
@@ -91,8 +92,24 @@ public class MapTileGraphics
         }
     }
 
+    public void UseAnimations(bool useAnimations)
+    {
+        _useAnimations = useAnimations;
+
+        foreach (var animation in _spriteSheetMapTileTextures)
+        {
+            if (!useAnimations)
+                animation.Stop();
+            else
+                animation.Play();
+        }
+    }
+
     public void Update(IGameTimeService gameTimeService)
     {
+        if (!_useAnimations)
+            return;
+
         _accumulatedUpdateTime += gameTimeService.GameTime.ElapsedGameTime.TotalSeconds;
 
         if (_accumulatedUpdateTime > Constants.MapTileAnimationTime)
