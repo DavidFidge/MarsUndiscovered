@@ -1584,16 +1584,6 @@
 /processorParam:TextureFormat=Color
 /build:Images/TitleText.png
 
-#begin Tiles/Wall_1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Tiles/Wall_1.png
-
-#begin Tiles/Floor_1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Tiles/Floor_1.png
-
 #begin Tiles/BlackOpsDefender_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1614,6 +1604,26 @@
 /processor:TextureProcessor
 /build:Tiles/BlackOpsSniper_2.png
 
+#begin Tiles/CrazedForeman_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/CrazedForeman_1.png
+
+#begin Tiles/CrazedForeman_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/CrazedForeman_2.png
+
+#begin Tiles/CrazedMiner_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/CrazedMiner_1.png
+
+#begin Tiles/CrazedMiner_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/CrazedMiner_2.png
+
 #begin Tiles/EldritchWorm_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1623,6 +1633,21 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /build:Tiles/EldritchWorm_2.png
+
+#begin Tiles/FlameTurret_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/FlameTurret_1.png
+
+#begin Tiles/FlameTurret_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/FlameTurret_2.png
+
+#begin Tiles/Floor_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Floor_1.png
 
 #begin Tiles/Gadget_1.png
 /importer:TextureImporter
@@ -1634,25 +1659,35 @@
 /processor:TextureProcessor
 /build:Tiles/Gadget_2.png
 
-#begin Tiles/MonolithCarrier_1.png
+#begin Tiles/MegalithCarrier_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MonolithCarrier_1.png
+/build:Tiles/MegalithCarrier_1.png
 
-#begin Tiles/MonolithCarrier_2.png
+#begin Tiles/MegalithCarrier_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MonolithCarrier_2.png
+/build:Tiles/MegalithCarrier_2.png
 
-#begin Tiles/MonolithChucker_1.png
+#begin Tiles/MegalithChucker_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MonolithChucker_1.png
+/build:Tiles/MegalithChucker_1.png
 
-#begin Tiles/MonolithChucker_2.png
+#begin Tiles/MegalithChucker_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MonolithChucker_2.png
+/build:Tiles/MegalithChucker_2.png
+
+#begin Tiles/MissileTurret_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/MissileTurret_1.png
+
+#begin Tiles/MissileTurret_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/MissileTurret_2.png
 
 #begin Tiles/NanoFlask_1.png
 /importer:TextureImporter
@@ -1663,6 +1698,26 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /build:Tiles/NanoFlask_2.png
+
+#begin Tiles/NirgalBomber_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/NirgalBomber_1.png
+
+#begin Tiles/NirgalBomber_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/NirgalBomber_2.png
+
+#begin Tiles/NirgalRebel_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/NirgalRebel_1.png
+
+#begin Tiles/NirgalRebel_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/NirgalRebel_2.png
 
 #begin Tiles/PhasmidHunter_1.png
 /importer:TextureImporter
@@ -1683,6 +1738,11 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /build:Tiles/Player_2.png
+
+#begin Tiles/PlayerDead_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/PlayerDead_1.png
 
 #begin Tiles/RepairDroid_1.png
 /importer:TextureImporter
@@ -1714,6 +1774,26 @@
 /processor:TextureProcessor
 /build:Tiles/ShipRepairParts_2.png
 
+#begin Tiles/SpiralBorer_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/SpiralBorer_1.png
+
+#begin Tiles/SpiralBorer_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/SpiralBorer_2.png
+
+#begin Tiles/SteamElemental_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/SteamElemental_1.png
+
+#begin Tiles/SteamElemental_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/SteamElemental_2.png
+
 #begin Tiles/TentacleHorror_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1734,6 +1814,21 @@
 /processor:TextureProcessor
 /build:Tiles/TeslaTurret_2.png
 
+#begin Tiles/TunnelBorer_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/TunnelBorer_1.png
+
+#begin Tiles/TunnelBorer_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/TunnelBorer_2.png
+
+#begin Tiles/Wall_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Wall_1.png
+
 #begin Tiles/Weapon_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1744,11 +1839,37 @@
 /processor:TextureProcessor
 /build:Tiles/Weapon_2.png
 
-#begin Tiles/PlayerDead_1.png
+#begin Tiles/Werewolf_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/PlayerDead_1.png
+/build:Tiles/Werewolf_1.png
 
+#begin Tiles/Werewolf_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Werewolf_2.png
+
+#begin Tiles/YendorianGrunt_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/YendorianGrunt_1.png
+
+#begin Tiles/YendorianGrunt_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/YendorianGrunt_2.png
+
+#begin Tiles/YendorianMaster_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/YendorianMaster_1.png
+
+#begin Tiles/YendorianMaster_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/YendorianMaster_2.png
+
+# add new tiles automatically using tools\create_tilecontent.ps1
 # Note - when adding new tiles, must delete Content.xnb file as noted below.
 
 # Since MonoGame 3.8, pipeline cannot import its own mgcb files as resources so we have to reference a dummy file instead.

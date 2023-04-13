@@ -43,7 +43,7 @@ namespace MarsUndiscovered.Game.Components
                 breed.NameWithoutSpaces = breed.Name.RemoveSpaces();
                 breed.Description = csvBreed.Description.ToString();
                 
-                var bytes = int.Parse(csvBreed.UnicodeCharacter.ToString(), NumberStyles.HexNumber);
+                var bytes = int.Parse(csvBreed.CodePage437Character.ToString(), NumberStyles.HexNumber);
                 
                 breed.AsciiCharacter = (char)bytes;
                 
@@ -91,7 +91,7 @@ namespace MarsUndiscovered.Game.Components
 
         public static Breed GetBreed(string breed)
         {
-            return Breeds[breed];
+            return Breeds[breed.RemoveSpaces()];
         }
     }
 }
