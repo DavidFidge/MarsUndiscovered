@@ -1,6 +1,6 @@
 ﻿namespace MarsUndiscovered.Game.Components;
 
-public class MorgueExportData : ICloneable
+public class MorgueExportData
 {
     public Guid Id { get; set; }
     public string Seed { get; set; }
@@ -16,12 +16,4 @@ public class MorgueExportData : ICloneable
     public string TextReport { get; set; }
     public int Version { get; set; }
     public string GameVersion => "0.1.1"; 
-    
-    public object Clone()
-    {
-        var clone = (MorgueExportData)MemberwiseClone();
-        clone.EnemiesDefeated = EnemiesDefeated.ToDictionary(k => k.Key, v => v.Value);
-        clone.FinalInventory = FinalInventory.ToList();
-        return clone;
-    }
 }

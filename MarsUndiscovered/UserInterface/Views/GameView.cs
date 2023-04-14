@@ -336,7 +336,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 ProcessRadioComms();
             }
         }
-        
+
         protected void ProcessRadioComms()
         {
             foreach (var item in _viewModel.GetNewRadioCommsItems()) 

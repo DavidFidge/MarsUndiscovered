@@ -14,7 +14,6 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
     private readonly IMorgueFileWriter _morgueFileWriter;
     private readonly IMorgueWebService _morgueWebService;
     private MorgueSaveData _morgueSaveData;
-    private Dictionary<Guid, MorgueExportData> _morgueExportData = new();
 
     public Morgue(
         IMorgueFileWriter morgueFileWriter,
@@ -25,46 +24,30 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
         _morgueSaveData = new MorgueSaveData();
     }
 
-    public async Task WriteMorgueToFile(Guid gameId)
+    private async Task SendMorgueExportDataToWeb(MorgueExportData morgueExportData)
     {
-        if (_morgueExportData.ContainsKey(gameId))
-        {
-            var morgueExportDataClone = (MorgueExportData)_morgueExportData[gameId].Clone();
+        var success = true;
 
+        try
+        {
+            await _morgueWebService.SendMorgue(morgueExportData);
+        }
+        catch (Exception ex)
+        {
+            Logger.Warning(ex, "Error while sending morgue file to web site.");
+            success = false;
+        }
+
+        if (success)
+        {
             try
             {
-                await _morgueFileWriter.WriteMorgueTextReportToFile(morgueExportDataClone.TextReport, morgueExportDataClone.Username,
-                    morgueExportDataClone.Id);
+                _morgueFileWriter.DeletePendingMorgue(morgueExportData);
             }
             catch (Exception ex)
             {
-                Logger.Warning(ex, "Error while writing morgue to file");
+                Logger.Warning(ex, "Unable to delete pending morgue file.");
             }
-        }
-        else
-        {
-            Logger.Warning("Morgue snapshot is null. Call SnapshotMorgueExportData first.");
-        }
-    }
-
-    public async Task SendMorgueToWeb(Guid gameId)
-    {
-        if (_morgueExportData.ContainsKey(gameId))
-        {
-            var morgueExportDataClone = (MorgueExportData)_morgueExportData[gameId].Clone();
-            
-            try
-            {
-                await _morgueWebService.SendMorgue(morgueExportDataClone);
-            }
-            catch (Exception ex)
-            {
-                Logger.Warning(ex, "Error while sending morgue file to web site");
-            }
-        }
-        else
-        {
-            Logger.Warning("Morgue snapshot is null. Call SnapshotMorgueExportData first.");
         }
     }
 
@@ -104,7 +87,7 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
         _morgueSaveData.EndDate = DateTimeProvider.UtcNow;
     }
 
-    public void SnapshotMorgueExportData(IGameWorld gameWorld, string username)
+    public void SnapshotMorgueExportData(IGameWorld gameWorld, string username, bool uploadMorgueFiles)
     {
         if (!gameWorld.Player.IsGameEndState)
         {
@@ -113,14 +96,58 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
         }
 
         var morgueExportData = CreateMorgueExportData(gameWorld, username);
+
         var morgueTextReport = BuildTextReport(morgueExportData);
-        
         morgueExportData.TextReport = morgueTextReport.ToString();
 
-        if (!_morgueExportData.TryAdd(gameWorld.GameId, morgueExportData))
-            _morgueExportData[gameWorld.GameId] = morgueExportData;
+        WriteMorgueTextReportToFile(morgueExportData);
+
+        if (uploadMorgueFiles)
+            WritePendingMorgue(morgueExportData);
     }
-    
+
+    private void WritePendingMorgue(MorgueExportData morgueExportData)
+    {
+        try
+        {
+            _morgueFileWriter.WritePendingMorgue(morgueExportData);
+        }
+        catch (Exception ex)
+        {
+            Logger.Warning(ex, "Error while writing pending morgue to file. Morgue will not be sent to web service.");
+        }
+    }
+
+    private void WriteMorgueTextReportToFile(MorgueExportData morgueExportData)
+    {
+        try
+        {
+            _morgueFileWriter.WriteMorgueTextReportToFile(morgueExportData.TextReport, morgueExportData.Username,
+                morgueExportData.Id);
+        }
+        catch (Exception ex)
+        {
+            Logger.Warning(ex, "Error while writing morgue report to file");
+        }
+    }
+
+    public async Task SendPendingMorgues()
+    {
+        try
+        {
+            var failedMorgues = _morgueFileWriter.ReadPendingMorgues();
+
+            foreach (var morgueExportData in failedMorgues)
+            {
+                await SendMorgueExportDataToWeb(morgueExportData);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Warning(ex, "Error while sending pending morgues");
+        }
+    }
+
     public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
     {
         var memento = new Memento<MorgueSaveData>();

@@ -43,9 +43,8 @@ namespace MarsUndiscovered.Interfaces
         Point GetPlayerPosition();
         bool ExecuteNextReplayCommand();
         void AfterProgressiveWorldGeneration();
-        Task WriteMorgueToFile(Guid gameId);
-        Task SendMorgueToWeb(Guid gameId);
-        void SnapshotMorgue(string username);
+        Task SendPendingMorgues();
+        void SnapshotMorgue(string username, bool uploadMorgueFiles);
         Guid GetGameId();
         IList<RadioCommsItem> GetNewRadioCommsItems();
         IGridView<double?> GetGoalMap();

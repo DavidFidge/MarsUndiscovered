@@ -5,6 +5,8 @@ using MarsUndiscovered.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using Serilog.Events;
+
 #pragma warning disable CS4014
 
 namespace MarsUndiscovered.Tests.Components.MorgueTests
@@ -28,59 +30,93 @@ namespace MarsUndiscovered.Tests.Components.MorgueTests
         }
 
         [TestMethod]
-        public async Task SendMorgue_Should_Call_WebService()
+        public async Task SendPendingMorgues_Should_Call_WebService()
+        {
+            // Arrange
+            var morgueExportDatas = new List<MorgueExportData>
+            {
+                new(),
+                new()
+            };
+
+            _morgueFileWriter.ReadPendingMorgues().Returns(morgueExportDatas);
+            
+            // Act
+            await _morgue.SendPendingMorgues();
+
+            // Assert
+            var calls = _morgueWebService.ReceivedCalls().ToList();
+            Assert.AreEqual(2, calls.Count);
+
+            Assert.AreEqual("SendMorgue", calls.First().GetMethodInfo().Name);
+            Assert.AreSame(morgueExportDatas[0], calls.First().GetArguments()[0]);
+
+            Assert.AreEqual("SendMorgue", calls.Last().GetMethodInfo().Name);
+            Assert.AreSame(morgueExportDatas[1], calls.Last().GetArguments()[0]);
+
+            _morgueFileWriter.Received().DeletePendingMorgue(Arg.Is(morgueExportDatas[0]));
+            _morgueFileWriter.Received().DeletePendingMorgue(Arg.Is(morgueExportDatas[1]));
+
+        }
+
+        [TestMethod]
+        public async Task SendPendingMorgue_Failure_With_Read_Should_Log_Error()
+        {
+            // Arrange
+            var exception = new Exception();
+            _morgueFileWriter.ReadPendingMorgues().Throws(exception);
+
+            // Act
+            await _morgue.SendPendingMorgues();
+
+            // Assert
+            FakeLogger.AssertLogEvent("Error while sending pending morgues", exception, LogEventLevel.Warning);
+            _morgueFileWriter.DidNotReceive().DeletePendingMorgue(Arg.Any<MorgueExportData>());
+        }
+
+        [TestMethod]
+        public void SnapshotMorgueExportData_Should_Call_MorgueFileWriterWriteMorgueTextReportToFile()
         {
             // Arrange
             _gameWorld.NewGame();
             _gameWorld.Player.IsDead = true;
-            _morgue.SnapshotMorgueExportData(_gameWorld, "user");
-            
-            // Act
-            await _morgue.SendMorgueToWeb(_gameWorld.GameId);
 
-            // Assert
-            _morgueWebService.Received().SendMorgue(Arg.Any<MorgueExportData>());
-        }
-        
-        [TestMethod]
-        public async Task SendMorgue_Should_Log_Warning_If_Morgue_Not_Snapshotted()
-        {
             // Act
-            await _morgue.SendMorgueToWeb(_gameWorld.GameId);
-
-            // Assert
-            _morgueWebService.DidNotReceive().SendMorgue(Arg.Any<MorgueExportData>());
-            Assert.AreEqual("Morgue snapshot is null. Call SnapshotMorgueExportData first.", FakeLogger.LogEvents.Last().MessageTemplate.Text);
-        }
-        
-        [TestMethod]
-        public async Task WriteMorgueTextReportToFile_Should_Call_FileWriter()
-        {
-            // Arrange
-            _gameWorld.NewGame();
-            _gameWorld.Player.IsDead = true;
-            _morgue.SnapshotMorgueExportData(_gameWorld, "TestUser");
-            
-            // Act
-            await _morgue.WriteMorgueToFile(_gameWorld.GameId);
+            _morgue.SnapshotMorgueExportData(_gameWorld, "TestUser", true);
 
             // Assert
             _morgueFileWriter.Received().WriteMorgueTextReportToFile(Arg.Any<string>(), Arg.Any<string>(),
                 Arg.Any<Guid>());
         }
-        
+
         [TestMethod]
-        public async Task WriteMorgueTextReportToFile_Should_Log_Warning_If_Morgue_Not_Snapshotted()
+        public void SnapshotMorgueExportData_Should_Call_MorgueFileWriterWritePendingMorgue()
         {
+            // Arrange
+            _gameWorld.NewGame();
+            _gameWorld.Player.IsDead = true;
+
             // Act
-            await _morgue.WriteMorgueToFile(_gameWorld.GameId);
+            _morgue.SnapshotMorgueExportData(_gameWorld, "TestUser", true);
 
             // Assert
-            _morgueFileWriter.DidNotReceive().WriteMorgueTextReportToFile(Arg.Any<string>(), Arg.Any<string>(),
-                Arg.Any<Guid>());
-            Assert.AreEqual("Morgue snapshot is null. Call SnapshotMorgueExportData first.", FakeLogger.LogEvents.Last().MessageTemplate.Text);
+            _morgueFileWriter.Received().WritePendingMorgue(Arg.Any<MorgueExportData>());
         }
-        
+
+        [TestMethod]
+        public void SnapshotMorgueExportData_Should_Not_Call_MorgueFileWriterWritePendingMorgue_When_UploadMorgueFiles_Is_False()
+        {
+            // Arrange
+            _gameWorld.NewGame();
+            _gameWorld.Player.IsDead = true;
+
+            // Act
+            _morgue.SnapshotMorgueExportData(_gameWorld, "TestUser", false);
+
+            // Assert
+            _morgueFileWriter.DidNotReceive().WritePendingMorgue(Arg.Any<MorgueExportData>());
+        }
+
         [TestMethod]
         public void SnapshotMorgueExportData_Should_Log_Warning_When_Player_Is_Not_Dead_Or_Victorious()
         {
@@ -90,7 +126,7 @@ namespace MarsUndiscovered.Tests.Components.MorgueTests
             gameWorld.Player.Returns(player);
             
             // Act
-            _morgue.SnapshotMorgueExportData(gameWorld, "TestUser");
+            _morgue.SnapshotMorgueExportData(gameWorld, "TestUser", true);
 
             // Assert
             Assert.AreEqual("Cannot snapshot morgue data - player is not dead and victory has not been achieved.", FakeLogger.LogEvents.Last().MessageTemplate.Text); 
@@ -98,9 +134,27 @@ namespace MarsUndiscovered.Tests.Components.MorgueTests
             _morgueFileWriter.DidNotReceive().WriteMorgueTextReportToFile(Arg.Any<string>(), Arg.Any<string>(),
                 Arg.Any<Guid>());
         }
-        
+
         [TestMethod]
-        public async Task WriteMorgueToFile_Should_Write_Report_To_File_With_Correct_Contents()
+        public void SnapshotMorgueExportData_Should_Log_Warning_If_Unable_To_Write_Pending_File()
+        {
+            // Arrange
+            _gameWorld.NewGame();
+            _gameWorld.Player.IsDead = true;
+
+            _morgueFileWriter
+                .WhenForAnyArgs(c => c.WritePendingMorgue(Arg.Any<MorgueExportData>()))
+                .Do(c => { throw new Exception(); });
+
+            // Act
+            _morgue.SnapshotMorgueExportData(_gameWorld, "TestUser", true);
+
+            // Assert
+            FakeLogger.AssertLogEvent("Error while writing pending morgue to file. Morgue will not be sent to web service.", LogEventLevel.Warning);
+        }
+
+        [TestMethod]
+        public void WriteMorgueToFile_Should_Write_Report_To_File_With_Correct_Contents()
         {
             // Arrange
             _gameWorld.NewGame(9999);
@@ -139,11 +193,9 @@ ENEMIES DEFEATED
 --------------------------------------------------------------------------------
 No enemies were defeated
 ";
-            
-            _morgue.SnapshotMorgueExportData(_gameWorld, "Username12345!@#$%");
 
             // Act
-            await _morgue.WriteMorgueToFile(_gameWorld.GameId);
+            _morgue.SnapshotMorgueExportData(_gameWorld, "Username12345!@#$%", true);
 
             // Assert
             var report = (string)_morgueFileWriter.ReceivedCalls().First().GetArguments()[0];
@@ -152,7 +204,7 @@ No enemies were defeated
         }
         
         [TestMethod]
-        public async Task WriteMorgueToFile_Should_Write_Report_To_File_With_Correct_Contents_After_Reset_And_New_Game()
+        public void WriteMorgueToFile_Should_Write_Report_To_File_With_Correct_Contents_After_Reset_And_New_Game()
         {
             // Arrange
             _gameWorld.NewGame(9999);
@@ -166,7 +218,7 @@ No enemies were defeated
             _morgue.GameStarted();
             _morgue.GameEnded();
             
-            _morgue.SnapshotMorgueExportData(_gameWorld, String.Empty);
+            _morgue.SnapshotMorgueExportData(_gameWorld, String.Empty, true);
             
             _gameWorld.NewGame(10000);
             
@@ -202,53 +254,72 @@ ENEMIES DEFEATED
 --------------------------------------------------------------------------------
 No enemies were defeated
 ";
-            
-            _morgue.SnapshotMorgueExportData(_gameWorld, "Username12345!@#$%");
+            _morgueFileWriter.ClearReceivedCalls();
 
             // Act
-            await _morgue.WriteMorgueToFile(_gameWorld.GameId);
+            _morgue.SnapshotMorgueExportData(_gameWorld, "Username12345!@#$%", true);
 
             // Assert
             var report = (string)_morgueFileWriter.ReceivedCalls().First().GetArguments()[0];
 
             Assert.AreEqual(morgue, report);
         }
-        
+
         [TestMethod]
         public async Task SendMorgue_Should_Catch_Exception_And_Log()
         {
             // Arrange
-            _gameWorld.NewGame();
-            _gameWorld.Player.IsDead = true;
-            _morgue.SnapshotMorgueExportData(_gameWorld, "user");
-            
-            _morgueWebService.SendMorgue(Arg.Any<MorgueExportData>()).Throws(new Exception("Test Exception Message"));
+            _morgueFileWriter
+                .ReadPendingMorgues()
+                .Returns(new List<MorgueExportData> { new() });
+
+            var exception = new Exception("Test Exception Message");
+            _morgueWebService.SendMorgue(Arg.Any<MorgueExportData>()).Throws(exception);
 
             // Act
-            await _morgue.SendMorgueToWeb(_gameWorld.GameId);
+            await _morgue.SendPendingMorgues();
 
             // Assert
-            Assert.AreEqual("Error while sending morgue file to web site",FakeLogger.LogEvents.Last().MessageTemplate.Text);
-            Assert.AreEqual("Test Exception Message",FakeLogger.LogEvents.Last().Exception.Message);
+            FakeLogger.AssertLogEvent("Error while sending morgue file to web site.", exception, LogEventLevel.Warning);
+            _morgueFileWriter.DidNotReceive().DeletePendingMorgue(Arg.Any<MorgueExportData>());
         }
-        
+
         [TestMethod]
-        public async Task WriteMorgueTextReportToFile_Should_Catch_Exception_And_Log()
+        public async Task SendMorgue_Should_Catch_Exception_On_Attempt_To_Delete_File_And_Log()
+        {
+            // Arrange
+            _morgueFileWriter
+                .ReadPendingMorgues()
+                .Returns(new List<MorgueExportData> { new() });
+
+            var exception = new Exception();
+            _morgueFileWriter.WhenForAnyArgs(c => c.DeletePendingMorgue(Arg.Any<MorgueExportData>())).Do(c => throw exception);
+
+            // Act
+            await _morgue.SendPendingMorgues();
+
+            // Assert
+            FakeLogger.AssertLogEvent("Unable to delete pending morgue file.", exception, LogEventLevel.Warning);
+        }
+
+        [TestMethod]
+        public void WriteMorgueTextReportToFile_Should_Catch_Exception_And_Log()
         {
             // Arrange
             _gameWorld.NewGame();
             _gameWorld.Player.IsDead = true;
-            _morgue.SnapshotMorgueExportData(_gameWorld, "user");
+            _morgue.SnapshotMorgueExportData(_gameWorld, "user", true);
 
-            _morgueFileWriter.WriteMorgueTextReportToFile(Arg.Any<string>(), Arg.Any<string>(),
-                Arg.Any<Guid>()).Throws(new Exception("Test Exception Message"));
-            
+            var exception = new Exception("Test Exception Message");
+            _morgueFileWriter
+                .WhenForAnyArgs(c => c.WriteMorgueTextReportToFile(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>()))
+                .Do(c => throw exception);
+
             // Act
-            await _morgue.WriteMorgueToFile(_gameWorld.GameId);
+            _morgue.SnapshotMorgueExportData(_gameWorld, "user", true);
 
             // Assert
-            Assert.AreEqual("Error while writing morgue to file",FakeLogger.LogEvents.Last().MessageTemplate.Text);
-            Assert.AreEqual("Test Exception Message",FakeLogger.LogEvents.Last().Exception.Message);
+            FakeLogger.AssertLogEvent("Error while writing morgue report to file", exception, LogEventLevel.Warning);
         }
     }
 }

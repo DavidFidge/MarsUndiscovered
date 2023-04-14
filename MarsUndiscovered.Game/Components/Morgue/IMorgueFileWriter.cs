@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
-
-namespace MarsUndiscovered.Game.Components;
+﻿namespace MarsUndiscovered.Game.Components;
 
 public interface IMorgueFileWriter
 {
-    Task WriteMorgueTextReportToFile(string morgueTextReport, string username, Guid gameId);
+    void WriteMorgueTextReportToFile(string morgueTextReport, string username, Guid gameId);
+    void WritePendingMorgue(MorgueExportData morgueExportData);
+    List<MorgueExportData> ReadPendingMorgues();
+    void DeletePendingMorgue(MorgueExportData morgueExportData);
 }
