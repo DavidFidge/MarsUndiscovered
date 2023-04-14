@@ -173,7 +173,7 @@ namespace MarsUndiscovered.Tests.Components.MorgueTests
             var morgue =
 $@"Mars Undiscovered
 Game ID: {_gameWorld.GameId}
-Game Version: 0.1.1
+Game Version: 0.1.4
 Seed: 9999
 Username: Username12345!@#$%
 Start Date: 2000-12-30 12:13:14 UTC
@@ -202,7 +202,7 @@ No enemies were defeated
 
             Assert.AreEqual(morgue, report);
         }
-        
+
         [TestMethod]
         public void WriteMorgueToFile_Should_Write_Report_To_File_With_Correct_Contents_After_Reset_And_New_Game()
         {
@@ -234,7 +234,7 @@ No enemies were defeated
             var morgue =
                 $@"Mars Undiscovered
 Game ID: {_gameWorld.GameId}
-Game Version: 0.1.1
+Game Version: 0.1.4
 Seed: 10000
 Username: Username12345!@#$%
 Start Date: 2000-12-30 12:13:14 UTC

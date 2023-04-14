@@ -23,11 +23,35 @@ public class MorgueFileWriter : BaseComponent, IMorgueFileWriter
         return morgueFilePath;
     }
 
+    private string GetMorguePendingFilePath()
+    {
+        var path = GetMorgueFilePath();
+
+        var morguePendingFilePath = Path.Combine(path, "Pending");
+
+        if (!Directory.Exists(morguePendingFilePath))
+            Directory.CreateDirectory(morguePendingFilePath);
+
+        return morguePendingFilePath;
+    }
+
+    private string GetMorgueErrorFilePath()
+    {
+        var path = GetMorgueFilePath();
+
+        var morgueErrorFilePath = Path.Combine(path, "Error");
+
+        if (!Directory.Exists(morgueErrorFilePath))
+            Directory.CreateDirectory(morgueErrorFilePath);
+
+        return morgueErrorFilePath;
+    }
+
     public void WriteMorgueTextReportToFile(string morgueTextReport, string username, Guid gameId)
     {
         var morgueFilePath = GetMorgueFilePath();
 
-        var file = new FileInfo(Path.Combine(morgueFilePath, $"{username} {gameId}.txt"));
+        var file = new FileInfo(Path.Combine(morgueFilePath, $"{username} {gameId} Morgue.txt"));
 
         using var writer = file.CreateText();
 
@@ -38,7 +62,7 @@ public class MorgueFileWriter : BaseComponent, IMorgueFileWriter
 
     public void WritePendingMorgue(MorgueExportData morgueExportData)
     {
-        var morgueFilePath = GetMorgueFilePath();
+        var morgueFilePath = GetMorguePendingFilePath();
 
         var file = new FileInfo(Path.Combine(morgueFilePath, $"Pending{morgueExportData.Id}.txt"));
 
@@ -56,7 +80,7 @@ public class MorgueFileWriter : BaseComponent, IMorgueFileWriter
 
     public List<MorgueExportData> ReadPendingMorgues()
     {
-        var morgueFilePath = GetMorgueFilePath();
+        var morgueFilePath = GetMorguePendingFilePath();
 
         var directory = new DirectoryInfo(morgueFilePath);
 
@@ -78,7 +102,7 @@ public class MorgueFileWriter : BaseComponent, IMorgueFileWriter
             {
                 var newFilename = file.Name.Replace("Pending", "Error");
                 Logger.Warning(ex, $"Could not read pending morgue file {file.Name}. Renaming to {newFilename}.");
-                file.CopyTo(Path.Combine(directory.FullName, newFilename), true);
+                file.CopyTo(Path.Combine(GetMorgueErrorFilePath(), newFilename), true);
                 file.Delete();
             }
         }
@@ -88,7 +112,7 @@ public class MorgueFileWriter : BaseComponent, IMorgueFileWriter
 
     public void DeletePendingMorgue(MorgueExportData morgueExportData)
     {
-        var morgueFilePath = GetMorgueFilePath();
+        var morgueFilePath = GetMorguePendingFilePath();
 
         var file = new FileInfo(Path.Combine(morgueFilePath, $"Pending{morgueExportData.Id}.txt"));
 
