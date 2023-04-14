@@ -2,6 +2,8 @@
 {
     public class Constants
     {
+        public const string GameVersion = "0.1.4";
+
         // Layers
         public const int TerrainLayer = 0;
         public const int ActorLayer = 1;

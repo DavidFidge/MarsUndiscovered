@@ -15,5 +15,5 @@ public class MorgueExportData
     public int MaxHealth { get; set; }
     public string TextReport { get; set; }
     public int Version { get; set; }
-    public string GameVersion => "0.1.1"; 
+    public string GameVersion => Constants.GameVersion;
 }
