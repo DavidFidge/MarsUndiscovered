@@ -5,11 +5,10 @@ namespace MarsUndiscovered.Game.Components;
 
 public interface IMorgue 
 {
-    Task WriteMorgueToFile(Guid gameId);
-    Task SendMorgueToWeb(Guid gameId);
     void Reset();
     void GameStarted();
     void GameEnded();
     void LogActorDeath(Actor actor);
-    void SnapshotMorgueExportData(IGameWorld gameWorld, string username);
+    void SnapshotMorgueExportData(IGameWorld gameWorld, string username, bool uploadMorgueFiles);
+    Task SendPendingMorgues();
 }

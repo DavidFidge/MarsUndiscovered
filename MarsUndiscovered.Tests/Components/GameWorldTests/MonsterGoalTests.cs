@@ -319,9 +319,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             
             // ..#@
             // P###
-            // P...
             // .P..
             // ..M.
+            // ....
             // ....
             _gameWorld.Player.Position = new Point(3, 0);
             var wallPosition1 = new Point(1, 1);
@@ -333,7 +333,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.CreateWall(wallPosition2);
             _gameWorld.CreateWall(wallPosition3);
             _gameWorld.CreateWall(wallPosition3);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 4)));
+            _gameWorld.CreateWall(wallPosition4);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 3)));
 
             var monster = _gameWorld.Monsters.Values.First();
 
@@ -347,7 +348,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var moveCommand = result[0] as MoveCommand;
             Assert.IsNotNull(moveCommand);
             Assert.AreEqual(monster.Position, moveCommand.FromTo.Item1);
-            Assert.AreEqual(new Point(1, 3), moveCommand.FromTo.Item2);
+            Assert.AreEqual(new Point(1, 2), moveCommand.FromTo.Item2);
         }
 
         [TestMethod]

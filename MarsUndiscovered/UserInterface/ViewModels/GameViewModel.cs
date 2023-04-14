@@ -96,15 +96,12 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void WriteAndSendMorgue()
         {
-            var gameId = GameWorldEndpoint.GetGameId();
             var gameOptionsStore = GameOptionsStore.GetFromStore<GameOptionsData>();
 
-            GameWorldEndpoint.SnapshotMorgue(gameOptionsStore.State.MorgueUsername ?? String.Empty);
-
-            Task.Run(() => GameWorldEndpoint.WriteMorgueToFile(gameId));
+            GameWorldEndpoint.SnapshotMorgue(gameOptionsStore.State.MorgueUsername ?? String.Empty, gameOptionsStore.State.UploadMorgueFiles);
 
             if (gameOptionsStore.State.UploadMorgueFiles)
-                Task.Run(() => GameWorldEndpoint.SendMorgueToWeb(gameId));
+                Task.Run(() => GameWorldEndpoint.SendPendingMorgues());
         }
     }
 }

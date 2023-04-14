@@ -69,13 +69,13 @@ public class MorgueWebService : BaseComponent, IMorgueWebService
         using StringContent morgueJson = new(JsonConvert.SerializeObject(morgueExportData),
             Encoding.UTF8,
             "application/json");
-        
+
         var httpRequestMessage = new HttpRequestMessage();
         httpRequestMessage.Method = HttpMethod.Post;
 
         var response = await _httpClient.PostAsync(_uri, morgueJson);
-        
-        if (response.EnsureSuccessStatusCode().IsSuccessStatusCode)
+
+        if (response.EnsureSuccessStatusCode().IsSuccessStatusCode) // Throws exception if not successful
             Logger?.Information($"Successfully sent morgue file to {_uri}");
     }
 }

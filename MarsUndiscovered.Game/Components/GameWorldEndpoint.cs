@@ -160,19 +160,14 @@ namespace MarsUndiscovered.Game.Components
             GameWorld.AfterProgressiveWorldGeneration();
         }
 
-        public async Task WriteMorgueToFile(Guid gameId)
+        public async Task SendPendingMorgues()
         {
-            await GameWorld.WriteMorgueToFile(gameId);
-        }
-        
-        public async Task SendMorgueToWeb(Guid gameId)
-        {
-            await GameWorld.SendMorgueToWeb(gameId);
+            await GameWorld.SendPendingMorgues();
         }
 
-        public void SnapshotMorgue(string username)
+        public void SnapshotMorgue(string username, bool uploadMorgueFiles)
         {
-            GameWorld.SnapshotMorgue(username);
+            GameWorld.SnapshotMorgue(username, uploadMorgueFiles);
         }
 
         public Guid GetGameId()
