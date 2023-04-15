@@ -1,92 +1,13 @@
-﻿using System.Drawing;
-using FrigidRogue.MonoGame.Core.Extensions;
-using GoRogue.Random;
+﻿using GoRogue.Random;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Content;
 using MonoGame.Extended.Serialization;
-using SadRogue.Primitives;
 using ShaiRandom.Generators;
+
 using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.Game.Components.WaveFunction;
-
-public class TileAttributes
-{
-    public Dictionary<string, TileAttribute> Tiles = new();
-}
-
-public class TileAttribute
-{
-    public string Symmetry { get; set; }
-    public double Weight { get; set; }
-    public string Adapters { get; set; }
-}
-
-public class TileContent
-{
-    public string Name { get; set; }
-    public TileAttribute Attributes { get; set; }
-    public Texture2D Texture { get; set; }
-
-    public List<Tile> ProcessTiles()
-    {
-        var tiles = new List<Tile>();
-
-        if (Attributes.Symmetry == "X")
-        {
-            var adapters = AdjacencyRule.Cardinals.DirectionsOfNeighborsCache
-                .ToDictionary(x => x, x => (Adapter)Attributes.Adapters);
-
-            tiles.Add(new Tile(this, adapters));
-        }
-        if (Attributes.Symmetry == "L")
-        {
-        }
-
-        return tiles;
-    }
-}
-
-public class Tile
-{
-    private TileContent _tileContent;
-    public double Weight => _tileContent.Attributes.Weight;
-    public Texture2D Texture => _tileContent.Texture;
-
-    public SpriteEffects SpriteEffects = SpriteEffects.None;
-    public float Rotation = 0f; 
-    public Dictionary<Direction, Adapter> Adapters { get; set; } = new();
-
-    public Tile(TileContent tileContent, Dictionary<Direction, Adapter> adapters)
-    {
-        _tileContent = tileContent;
-        Adapters = adapters;
-    }
-}
-
-public class TileResult
-{
-    public int Index { get; }
-    public bool IsCollapsed => Tile != null;
-    public Tile Tile { get; set; }
-    public int Entropy { get; set; } = Int32.MaxValue;
-
-    public TileResult(int index)
-    {
-        Index = index;
-    }
-}
-
-public class Adapter
-{
-    public string Pattern { get; set; }
-
-    public static implicit operator Adapter(string pattern)
-    {
-        return new Adapter { Pattern = pattern };
-    }
-}
 
 public class WaveFunctionCollapse
 {
@@ -128,18 +49,20 @@ public class WaveFunctionCollapse
         _mapHeight = mapHeight;
         _mapWidth = mapWidth;
 
-        var CurrentState = new TileResult[mapWidth * mapHeight];
+        CurrentState = new TileResult[mapWidth * mapHeight];
 
         for (var y = 0; y < mapHeight; y++)
         {
             for (var x = 0; x < mapWidth; x++)
             {
-                CurrentState[x + (y * mapWidth)] = new TileResult(x + (y * mapWidth));
+                var point = new Point(x, y);
+
+                CurrentState[point.ToIndex(mapWidth)] = new TileResult(point, mapWidth);
             }
         }
     }
 
-    public void NextStep()
+    public bool NextStep()
     {
         var entropy = CurrentState
             .OrderBy(t => t.Entropy)
@@ -147,14 +70,11 @@ public class WaveFunctionCollapse
 
         entropy = entropy.TakeWhile(e => e.Entropy == entropy.First().Entropy).ToList();
 
-        var randomIndex = GlobalRandom.DefaultRNG.RandomIndex(entropy);
+        var chosenTile = entropy[GlobalRandom.DefaultRNG.RandomIndex(entropy)];
 
-        var neighbours = Point.FromIndex(randomIndex, _mapWidth)
-            .Neighbours(_mapWidth, _mapHeight)
-            .Select(n => CurrentState[n.ToIndex(_mapWidth)])
-            .ToList();
+        var validTiles = _tiles.ToList();
 
-        foreach (var neighbour in neighbours)
+        foreach (var neighbour in chosenTile.Neighbours)
         {
             if (!neighbour.IsCollapsed)
             {
@@ -162,14 +82,15 @@ public class WaveFunctionCollapse
             }
             else
             {
-                 
+                validTiles = validTiles.Where(t => t.CanAdaptTo(chosenTile, neighbour)).ToList();
             }
-
         }
 
+        if (!validTiles.Any())
+            return false;
 
+        chosenTile.SetTile(validTiles[GlobalRandom.DefaultRNG.RandomIndex(validTiles)]);
 
+        return true;
     }
-
-
 }
