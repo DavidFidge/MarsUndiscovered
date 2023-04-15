@@ -22,7 +22,7 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<PreviousWorldBuilderStepRequest>
     {
         private readonly WorldBuilderOptionsView _worldBuilderOptionsView;
-        
+
         protected Panel LeftPanel;
 
         public WorldBuilderView(

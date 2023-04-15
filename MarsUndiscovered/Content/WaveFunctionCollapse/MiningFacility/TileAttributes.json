@@ -1,0 +1,19 @@
+{
+  "Tiles": {
+    "Floor": {
+      "Symmetry": "X",
+      "Weight": 1,
+      "Adapters": "AAA"
+    },
+    "Corner": {
+      "Symmetry": "L",
+      "Weight": 1,
+      "Adapters": "AAA,ABA"
+    },
+    "StraightWall": {
+      "Symmetry": "I",
+      "Weight": 1,
+      "Adapters": "ABA, AAA"
+    }
+  }
+}
