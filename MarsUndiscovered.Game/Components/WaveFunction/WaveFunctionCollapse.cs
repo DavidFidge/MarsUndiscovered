@@ -26,21 +26,27 @@ public class WaveFunctionCollapse
         var tileAttributes = contentManager.Load<TileAttributes>("WaveFunctionCollapse/MiningFacility/TileAttributes.json",
             new JsonContentLoader());
 
-        foreach (var asset in assetsList)
+        var textures = assetsList
+            .Where(a => a.StartsWith("WaveFunctionCollapse/MiningFacility") && !a.EndsWith(".json"))
+            .ToDictionary(
+                a => a.Split("/").Last().Replace(".png", ""),
+                a => contentManager.Load<Texture2D>(a));
+
+        CreateTiles(textures, tileAttributes);
+    }
+
+    public void CreateTiles(Dictionary<string, Texture2D> textures, TileAttributes tileAttributes)
+    {
+        foreach (var texture in textures)
         {
-            if (asset.StartsWith("WaveFunctionCollapse/MiningFacility") && !asset.EndsWith(".json"))
+            var tile = new TileContent
             {
-                var name = asset.Split("/").Last().Replace(".png", "");
+                Name = texture.Key,
+                Texture = texture.Value,
+                Attributes = tileAttributes.Tiles[texture.Key]
+            };
 
-                var tile = new TileContent
-                {
-                    Name = name,
-                    Texture = contentManager.Load<Texture2D>(asset),
-                    Attributes = tileAttributes.Tiles[name],
-                };
-
-                _tiles.AddRange(tile.ProcessTiles());
-            }
+            _tiles.AddRange(tile.ProcessTiles());
         }
     }
 
