@@ -70,15 +70,19 @@ public class WaveFunctionCollapse
 
         foreach (var tileResult in CurrentState)
         {
-            tileResult.SetNeighbours(CurrentState, _mapWidth - 1, _mapHeight - 1);
+            tileResult.SetNeighbours(CurrentState, _mapWidth, _mapHeight);
         }
     }
 
-    public bool NextStep()
+    public NextStepResult NextStep()
     {
         var entropy = CurrentState
+            .Where(t => !t.IsCollapsed)
             .OrderBy(t => t.Entropy)
             .ToList();
+
+        if (!entropy.Any())
+            return NextStepResult.Complete(); 
 
         entropy = entropy.TakeWhile(e => e.Entropy == entropy.First().Entropy).ToList();
 
@@ -99,10 +103,31 @@ public class WaveFunctionCollapse
         }
 
         if (!validTiles.Any())
-            return false;
+            return NextStepResult.Failed();
 
         chosenTile.SetTile(validTiles[GlobalRandom.DefaultRNG.RandomIndex(validTiles)]);
 
-        return true;
+        return NextStepResult.Continue();
+    }
+}
+
+public class NextStepResult
+{
+    public bool IsComplete { get; set; }
+    public bool IsFailed { get; set; }
+    
+    public static NextStepResult Complete()
+    {
+        return new NextStepResult {IsComplete = true};
+    }
+    
+    public static NextStepResult Failed()
+    {
+        return new NextStepResult {IsFailed = true};
+    }
+    
+    public static NextStepResult Continue()
+    {
+        return new NextStepResult();
     }
 }

@@ -176,12 +176,46 @@ public class WaveFunctionCollapseTests : BaseGraphicsTest
                 tile,
                 null,
                 tile.Point
-                    .Neighbours(1, 1)
+                    .Neighbours(1, 1, AdjacencyRule.Types.Cardinals)
                     .Select(p => waveFunctionCollapse.CurrentState.First(t => t.Point == p))
                     .ToArray(),
                 int.MaxValue,
                 false);
         }
+    }
+    
+    [TestMethod]
+    public void Should_Process_Next_Step()
+    {
+        // Arrange
+        var waveFunctionCollapse = new WaveFunctionCollapse();
+
+        var textures = new Dictionary<string, Texture2D>
+        {
+            { "Floor", _floorTexture }
+        };
+
+        waveFunctionCollapse.CreateTiles(textures, _tileAttributes);
+        waveFunctionCollapse.Initialise(2, 2);
+
+        // Act
+        waveFunctionCollapse.NextStep();
+
+        // Assert
+        Assert.AreEqual(4, waveFunctionCollapse.CurrentState.Length);
+        
+        var tileResults = waveFunctionCollapse.CurrentState
+            .Where(c => c.IsCollapsed)
+            .ToList();
+        
+        Assert.AreEqual(1, tileResults.Count);
+        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[0].Tile);
+
+        var otherTiles = waveFunctionCollapse.CurrentState.Except(tileResults).ToList();
+        
+        Assert.AreEqual(3, otherTiles.Count);
+        Assert.AreEqual(2, otherTiles.Where(t => t.Entropy == Int32.MaxValue - 1).Count());
+        Assert.AreEqual(1, otherTiles.Where(t => t.Entropy == Int32.MaxValue).Count());
     }
 
     private void AssertTileResult(TileResult tileResult, Tile expectedTile, TileResult[] expectedNeighbours,

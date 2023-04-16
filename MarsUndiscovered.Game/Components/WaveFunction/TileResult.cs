@@ -21,7 +21,7 @@ public class TileResult
     public void SetNeighbours(TileResult[] tiles, int maxWidth, int maxHeight)
     {
         Neighbours = Point
-            .Neighbours(maxWidth, maxHeight)
+            .Neighbours(maxWidth - 1, maxHeight - 1, AdjacencyRule.Types.Cardinals)
             .Select(n => tiles[n.ToIndex(maxWidth)])
             .ToList();
     }
