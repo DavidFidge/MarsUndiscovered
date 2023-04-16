@@ -43,10 +43,12 @@ namespace MarsUndiscovered.UserInterface.Views
         private void AddContentPanelContent(Panel contentPanel)
         {
             new Button("World Builder")
+                .Anchor(Anchor.AutoCenter)
                 .SendOnClick<WorldBuilderRequest>(Mediator)
                 .AddTo(contentPanel);
 
             new Button("Wave Function Collapse")
+                .Anchor(Anchor.AutoCenter)
                 .SendOnClick<WaveFunctionCollapseRequest>(Mediator)
                 .AddTo(contentPanel);
         }

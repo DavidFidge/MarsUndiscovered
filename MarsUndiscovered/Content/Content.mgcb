@@ -1594,11 +1594,6 @@
 /processor:TextureProcessor
 /build:WaveFunctionCollapse/MiningFacility/Floor.png
 
-#begin WaveFunctionCollapse/MiningFacility/Floor.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:WaveFunctionCollapse/MiningFacility/Floor.png
-
 #begin WaveFunctionCollapse/MiningFacility/Wall.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -99,9 +99,9 @@ public class WaveFunctionCollapseTests : BaseGraphicsTest
         Assert.AreEqual(4, tiles.Count);
 
         AssertTile(tiles[0], "AAA,AAA,ABA,ABA", _floorTexture);
-        AssertTile(tiles[1], "ABA,AAA,AAA,ABA", _floorTexture, expectedRotation: (float)Math.PI / 4);
-        AssertTile(tiles[2], "ABA,ABA,AAA,AAA", _floorTexture, expectedRotation: (float)Math.PI / 2);
-        AssertTile(tiles[3], "AAA,ABA,ABA,AAA", _floorTexture, expectedRotation: (float)-Math.PI / 4);
+        AssertTile(tiles[1], "ABA,AAA,AAA,ABA", _floorTexture, expectedRotation: (float)Math.PI / 2);
+        AssertTile(tiles[2], "ABA,ABA,AAA,AAA", _floorTexture, expectedRotation: (float)Math.PI);
+        AssertTile(tiles[3], "AAA,ABA,ABA,AAA", _floorTexture, expectedRotation: (float)-Math.PI / 2);
     }
 
     [TestMethod]
@@ -124,7 +124,7 @@ public class WaveFunctionCollapseTests : BaseGraphicsTest
         Assert.AreEqual(2, tiles.Count);
 
         AssertTile(tiles[0], "ABA,CCC,ABA,CCC", _floorTexture);
-        AssertTile(tiles[1], "CCC,ABA,CCC,ABA", _floorTexture, expectedRotation: (float)Math.PI / 4);
+        AssertTile(tiles[1], "CCC,ABA,CCC,ABA", _floorTexture, expectedRotation: (float)Math.PI / 2);
     }
 
     [TestMethod]

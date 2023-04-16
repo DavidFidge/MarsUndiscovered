@@ -21,6 +21,7 @@ namespace MarsUndiscovered.UserInterface.Views
 {
     public class TitleView : BaseMarsUndiscoveredView<TitleViewModel, TitleData>,
         IRequestHandler<OptionsButtonClickedRequest>,
+        IRequestHandler<DeveloperToolsButtonClickedRequest>,
         IRequestHandler<CloseOptionsViewRequest>,
         IRequestHandler<CloseDeveloperToolsViewRequest>,
         IRequestHandler<CustomGameSeedRequest>,
@@ -123,6 +124,11 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(CloseOptionsViewRequest request, CancellationToken cancellationToken)
         {
             return HideChildView(_optionsView, _titleMenuPanel);
+        }
+
+        public Task<Unit> Handle(DeveloperToolsButtonClickedRequest request, CancellationToken cancellationToken)
+        {
+            return ShowChildView(_developerToolsView, _titleMenuPanel);
         }
 
         public Task<Unit> Handle(CloseDeveloperToolsViewRequest request, CancellationToken cancellationToken)

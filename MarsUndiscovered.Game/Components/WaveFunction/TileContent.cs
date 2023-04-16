@@ -40,9 +40,9 @@ public class TileContent
 
                 var rotation = i switch
                 {
-                    1 => (float)Math.PI / 4,
-                    2 => (float)Math.PI / 2,
-                    3 => (float)-Math.PI / 4,
+                    1 => (float)Math.PI / 2,
+                    2 => (float)Math.PI,
+                    3 => (float)-Math.PI / 2,
                     _ => 0f
                 };
 
@@ -61,7 +61,7 @@ public class TileContent
                 .Select((d, i) => new { Direction = d, Index = i})
                 .ToDictionary(d => d.Direction, d => (Adapter)adapterStrings[GoRogue.MathHelpers.WrapAround(d.Index - 1,directions.Count)]);
 
-            tiles.Add(new TileChoice(this, adapters, rotation: (float)Math.PI / 4));
+            tiles.Add(new TileChoice(this, adapters, rotation: (float)Math.PI / 2));
         }
 
         return tiles;
