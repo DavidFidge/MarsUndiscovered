@@ -11,15 +11,11 @@ namespace MarsUndiscovered.Game.Components.WaveFunction;
 
 public class WaveFunctionCollapse
 {
-    private readonly List<Tile> _tiles = new();
+    private readonly List<TileChoice> _tiles = new();
     private int _mapWidth;
     private int _mapHeight;
     public TileResult[] CurrentState { get; private set; }
-    public List<Tile> Tiles => _tiles;
-
-    public WaveFunctionCollapse()
-    {
-    }
+    public List<TileChoice> Tiles => _tiles;
 
     public void CreateTiles(ContentManager contentManager)
     {
@@ -51,7 +47,7 @@ public class WaveFunctionCollapse
         }
     }
 
-    public void Initialise(int mapWidth, int mapHeight)
+    public void Reset(int mapWidth, int mapHeight)
     {
         _mapHeight = mapHeight;
         _mapWidth = mapWidth;
@@ -98,7 +94,7 @@ public class WaveFunctionCollapse
             }
             else
             {
-                validTiles = validTiles.Where(t => t.CanAdaptTo(chosenTile, neighbour)).ToList();
+                validTiles = validTiles.Where(t => t.CanAdaptTo(t, chosenTile.Point, neighbour)).ToList();
             }
         }
 
@@ -108,26 +104,5 @@ public class WaveFunctionCollapse
         chosenTile.SetTile(validTiles[GlobalRandom.DefaultRNG.RandomIndex(validTiles)]);
 
         return NextStepResult.Continue();
-    }
-}
-
-public class NextStepResult
-{
-    public bool IsComplete { get; set; }
-    public bool IsFailed { get; set; }
-    
-    public static NextStepResult Complete()
-    {
-        return new NextStepResult {IsComplete = true};
-    }
-    
-    public static NextStepResult Failed()
-    {
-        return new NextStepResult {IsFailed = true};
-    }
-    
-    public static NextStepResult Continue()
-    {
-        return new NextStepResult();
     }
 }

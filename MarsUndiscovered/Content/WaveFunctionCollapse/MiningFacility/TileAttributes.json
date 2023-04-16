@@ -6,11 +6,11 @@
       "Adapters": "AAA,AAA,AAA,AAA"
     },
     "Corner": {
-      "Symmetry": "L",
+      "Symmetry": "^",
       "Weight": 1,
       "Adapters": "AAA,AAA,ABA,ABA"
     },
-    "StraightWall": {
+    "Wall": {
       "Symmetry": "I",
       "Weight": 1,
       "Adapters": "ABA,AAA,ABA,AAA"

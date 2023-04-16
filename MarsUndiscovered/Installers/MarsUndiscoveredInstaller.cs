@@ -58,6 +58,7 @@ namespace MarsUndiscovered.Installers
             RegisterOptionsView(container, store);
             RegisterVideoOptionsView(container, store);
             RegisterGameOptionsView(container, store);
+            RegisterDeveloperToolsView(container, store);
             RegisterInGameOptionsView(container, store);
             RegisterInReplayOptionsView(container, store);
             RegisterWorldBuilderOptionsView(container, store);
@@ -65,6 +66,7 @@ namespace MarsUndiscovered.Installers
             RegisterGameView(container, store);
             RegisterReplayView(container, store);
             RegisterWorldBuilderView(container, store);
+            RegisterWaveFunctionCollapseView(container, store);
             RegisterSaveGameView(container, store);
             RegisterInventoryGameView(container, store);
             RegisterInventoryReplayView(container, store);
@@ -245,6 +247,18 @@ namespace MarsUndiscovered.Installers
             );
         }
 
+        private void RegisterDeveloperToolsView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+
+                Component.For<DeveloperToolsViewModel>()
+                    .ImplementedBy<DeveloperToolsViewModel>(),
+
+                Component.For<DeveloperToolsView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, DeveloperToolsKeyboardHandler>())
+            );
+        }
+
         private void RegisterGameView(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
@@ -279,6 +293,17 @@ namespace MarsUndiscovered.Installers
                     .DependsOn(Dependency.OnComponent<IMouseHandler, WorldBuilderViewMouseHandler>()),
 
                 Component.For<WorldBuilderViewModel>()
+            );
+        }
+
+        private void RegisterWaveFunctionCollapseView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+                Component.For<WaveFunctionCollapseView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, WaveFunctionCollapseViewKeyboardHandler>())
+                    .DependsOn(Dependency.OnComponent<IMouseHandler, NullMouseHandler>()),
+
+                Component.For<WaveFunctionCollapseViewModel>()
             );
         }
 

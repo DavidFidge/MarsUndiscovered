@@ -64,13 +64,13 @@ public class WaveFunctionCollapseTests : BaseGraphicsTest
                     {
                         Symmetry = "I",
                         Weight = 1,
-                        Adapters = "ABA,AAA,ABA,AAA"
+                        Adapters = "ABA,CCC,ABA,CCC"
                     }
                 },
                 {
                     "Corner", new TileAttribute
                     {
-                        Symmetry = "L",
+                        Symmetry = "^",
                         Weight = 1,
                         Adapters = "AAA,AAA,ABA,ABA"
                     }
@@ -123,8 +123,8 @@ public class WaveFunctionCollapseTests : BaseGraphicsTest
 
         Assert.AreEqual(2, tiles.Count);
 
-        AssertTile(tiles[0], "ABA,AAA,ABA,AAA", _floorTexture);
-        AssertTile(tiles[1], "AAA,ABA,AAA,ABA", _floorTexture, expectedRotation: (float)Math.PI / 4);
+        AssertTile(tiles[0], "ABA,CCC,ABA,CCC", _floorTexture);
+        AssertTile(tiles[1], "CCC,ABA,CCC,ABA", _floorTexture, expectedRotation: (float)Math.PI / 4);
     }
 
     [TestMethod]
@@ -165,7 +165,7 @@ public class WaveFunctionCollapseTests : BaseGraphicsTest
         waveFunctionCollapse.CreateTiles(textures, _tileAttributes);
 
         // Act
-        waveFunctionCollapse.Initialise(2, 2);
+        waveFunctionCollapse.Reset(2, 2);
 
         // Assert
         Assert.AreEqual(4, waveFunctionCollapse.CurrentState.Length);
@@ -183,7 +183,7 @@ public class WaveFunctionCollapseTests : BaseGraphicsTest
                 false);
         }
     }
-    
+
     [TestMethod]
     public void Should_Process_Next_Step()
     {
@@ -196,39 +196,226 @@ public class WaveFunctionCollapseTests : BaseGraphicsTest
         };
 
         waveFunctionCollapse.CreateTiles(textures, _tileAttributes);
-        waveFunctionCollapse.Initialise(2, 2);
+        waveFunctionCollapse.Reset(2, 2);
 
         // Act
-        waveFunctionCollapse.NextStep();
+        var result = waveFunctionCollapse.NextStep();
 
         // Assert
         Assert.AreEqual(4, waveFunctionCollapse.CurrentState.Length);
+        Assert.IsFalse(result.IsComplete);
+        Assert.IsFalse(result.IsFailed);
         
         var tileResults = waveFunctionCollapse.CurrentState
             .Where(c => c.IsCollapsed)
             .ToList();
-        
+
         Assert.AreEqual(1, tileResults.Count);
-        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[0].Tile);
+        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[0].TileChoice);
 
         var otherTiles = waveFunctionCollapse.CurrentState.Except(tileResults).ToList();
-        
+
         Assert.AreEqual(3, otherTiles.Count);
         Assert.AreEqual(2, otherTiles.Where(t => t.Entropy == Int32.MaxValue - 1).Count());
         Assert.AreEqual(1, otherTiles.Where(t => t.Entropy == Int32.MaxValue).Count());
+
+        CollectionAssert.AreEquivalent(tileResults[0].Neighbours, otherTiles.Where(t => t.Entropy == Int32.MaxValue - 1).ToList());
     }
 
-    private void AssertTileResult(TileResult tileResult, Tile expectedTile, TileResult[] expectedNeighbours,
+    [TestMethod]
+    public void Should_Process_Two_Steps()
+    {
+        // Arrange
+        var waveFunctionCollapse = new WaveFunctionCollapse();
+
+        var textures = new Dictionary<string, Texture2D>
+        {
+            { "Floor", _floorTexture }
+        };
+
+        waveFunctionCollapse.CreateTiles(textures, _tileAttributes);
+        waveFunctionCollapse.Reset(2, 2);
+
+        // Act
+        waveFunctionCollapse.NextStep();
+        var result = waveFunctionCollapse.NextStep();
+
+        // Assert
+        Assert.AreEqual(4, waveFunctionCollapse.CurrentState.Length);
+        Assert.IsFalse(result.IsComplete);
+        Assert.IsFalse(result.IsFailed);
+        
+        var tileResults = waveFunctionCollapse.CurrentState
+            .Where(c => c.IsCollapsed)
+            .ToList();
+
+        Assert.AreEqual(2, tileResults.Count);
+        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[0].TileChoice);
+        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[1].TileChoice);
+
+        var otherTiles = waveFunctionCollapse.CurrentState.Except(tileResults).ToList();
+
+        Assert.AreEqual(2, otherTiles.Count);
+        Assert.AreEqual(2, otherTiles.Where(t => t.Entropy == Int32.MaxValue - 1).Count());
+    }
+
+    [TestMethod]
+    public void Should_Process_Three_Steps()
+    {
+        // Arrange
+        var waveFunctionCollapse = new WaveFunctionCollapse();
+
+        var textures = new Dictionary<string, Texture2D>
+        {
+            { "Floor", _floorTexture }
+        };
+
+        waveFunctionCollapse.CreateTiles(textures, _tileAttributes);
+        waveFunctionCollapse.Reset(2, 2);
+
+        // Act
+        waveFunctionCollapse.NextStep();
+        waveFunctionCollapse.NextStep();
+        var result = waveFunctionCollapse.NextStep();
+
+        // Assert
+        Assert.AreEqual(4, waveFunctionCollapse.CurrentState.Length);
+        Assert.IsFalse(result.IsComplete);
+        Assert.IsFalse(result.IsFailed);
+
+        var tileResults = waveFunctionCollapse.CurrentState
+            .Where(c => c.IsCollapsed)
+            .ToList();
+
+        Assert.AreEqual(3, tileResults.Count);
+        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[0].TileChoice);
+        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[1].TileChoice);
+        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[2].TileChoice);
+
+        var otherTiles = waveFunctionCollapse.CurrentState.Except(tileResults).ToList();
+
+        Assert.AreEqual(1, otherTiles.Count);
+        Assert.AreEqual(1, otherTiles.Where(t => t.Entropy == Int32.MaxValue - 2).Count());
+    }
+
+    [TestMethod]
+    public void Should_Process_Four_Steps()
+    {
+        // Arrange
+        var waveFunctionCollapse = new WaveFunctionCollapse();
+
+        var textures = new Dictionary<string, Texture2D>
+        {
+            { "Floor", _floorTexture }
+        };
+
+        waveFunctionCollapse.CreateTiles(textures, _tileAttributes);
+        waveFunctionCollapse.Reset(2, 2);
+
+        // Act
+        waveFunctionCollapse.NextStep();
+        waveFunctionCollapse.NextStep();
+        waveFunctionCollapse.NextStep();
+        var result = waveFunctionCollapse.NextStep();
+
+        // Assert
+        Assert.AreEqual(4, waveFunctionCollapse.CurrentState.Length);
+        Assert.IsFalse(result.IsComplete);
+        Assert.IsFalse(result.IsFailed);
+
+        var tileResults = waveFunctionCollapse.CurrentState
+            .Where(c => c.IsCollapsed)
+            .ToList();
+
+        Assert.AreEqual(4, tileResults.Count);
+        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[0].TileChoice);
+        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[1].TileChoice);
+        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[2].TileChoice);
+        Assert.AreEqual(waveFunctionCollapse.Tiles[0], tileResults[3].TileChoice);
+
+        var otherTiles = waveFunctionCollapse.CurrentState.Except(tileResults).ToList();
+
+        Assert.AreEqual(0, otherTiles.Count);
+    }
+
+    [TestMethod]
+    public void Should_Complete_After_All_Steps_Done()
+    {
+        // Arrange
+        var waveFunctionCollapse = new WaveFunctionCollapse();
+
+        var textures = new Dictionary<string, Texture2D>
+        {
+            { "Floor", _floorTexture }
+        };
+
+        waveFunctionCollapse.CreateTiles(textures, _tileAttributes);
+        waveFunctionCollapse.Reset(2, 2);
+
+        // Act
+        waveFunctionCollapse.NextStep();
+        waveFunctionCollapse.NextStep();
+        waveFunctionCollapse.NextStep();
+        waveFunctionCollapse.NextStep();
+        var result = waveFunctionCollapse.NextStep();
+
+        // Assert
+        Assert.IsTrue(result.IsComplete);
+    }
+
+    [TestMethod]
+    public void Should_Fail_If_No_Valid_Tiles()
+    {
+        // Arrange
+        var waveFunctionCollapse = new WaveFunctionCollapse();
+        var failingTexture = new Texture2D(GraphicsDevice, 3, 3);
+
+        var textures = new Dictionary<string, Texture2D>
+        {
+            { "FailingTexture", failingTexture }
+        };
+
+        var tileAttributes = new TileAttributes
+        {
+            Tiles = new Dictionary<string, TileAttribute>
+            {
+                {
+                    "FailingTexture", new TileAttribute
+                    {
+                        Symmetry = "X",
+                        Weight = 1,
+                        Adapters = "ABC,DEF,GHI,JKL"
+                    }
+                }
+            }
+        };
+
+        waveFunctionCollapse.CreateTiles(textures, tileAttributes);
+        waveFunctionCollapse.Reset(2, 1);
+
+        // Act
+        var result1 = waveFunctionCollapse.NextStep();
+        var result2 = waveFunctionCollapse.NextStep();
+
+        // Assert
+        Assert.IsFalse(result1.IsFailed);
+        Assert.IsFalse(result1.IsComplete);
+
+        Assert.IsTrue(result2.IsFailed);
+        Assert.IsFalse(result2.IsComplete);
+    }
+
+    private void AssertTileResult(TileResult tileResult, TileChoice expectedTileChoice, TileResult[] expectedNeighbours,
         int expectedEntropy, bool expectedCollapsed)
     {
-        Assert.AreEqual(expectedTile, tileResult.Tile);
+        Assert.AreEqual(expectedTileChoice, tileResult.TileChoice);
         CollectionAssert.AreEquivalent(expectedNeighbours, tileResult.Neighbours);
         Assert.AreEqual(expectedEntropy, tileResult.Entropy);
         Assert.AreEqual(expectedCollapsed, tileResult.IsCollapsed);
     }
 
     private void AssertTile(
-        Tile tile,
+        TileChoice tileChoice,
         string expectedAdapters,
         Texture2D expectedTexture,
         SpriteEffects expectedSpriteEffect = SpriteEffects.None,
@@ -236,13 +423,13 @@ public class WaveFunctionCollapseTests : BaseGraphicsTest
     {
         var adapters = expectedAdapters.Split(",");
 
-        Assert.AreEqual(adapters[0], tile.Adapters[Direction.Up].Pattern);
-        Assert.AreEqual(adapters[1], tile.Adapters[Direction.Right].Pattern);
-        Assert.AreEqual(adapters[2], tile.Adapters[Direction.Down].Pattern);
-        Assert.AreEqual(adapters[3], tile.Adapters[Direction.Left].Pattern);
+        Assert.AreEqual(adapters[0], tileChoice.Adapters[Direction.Up].Pattern);
+        Assert.AreEqual(adapters[1], tileChoice.Adapters[Direction.Right].Pattern);
+        Assert.AreEqual(adapters[2], tileChoice.Adapters[Direction.Down].Pattern);
+        Assert.AreEqual(adapters[3], tileChoice.Adapters[Direction.Left].Pattern);
 
-        Assert.AreEqual(expectedTexture, tile.Texture);
-        Assert.AreEqual(expectedSpriteEffect, tile.SpriteEffects);
-        Assert.AreEqual(expectedRotation, tile.Rotation);
+        Assert.AreEqual(expectedTexture, tileChoice.Texture);
+        Assert.AreEqual(expectedSpriteEffect, tileChoice.SpriteEffects);
+        Assert.AreEqual(expectedRotation, tileChoice.Rotation);
     }
 }

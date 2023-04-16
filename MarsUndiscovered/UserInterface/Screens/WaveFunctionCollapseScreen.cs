@@ -1,12 +1,5 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-using FrigidRogue.MonoGame.Core.View;
-
-using MarsUndiscovered.Messages;
+﻿using FrigidRogue.MonoGame.Core.View;
 using MarsUndiscovered.UserInterface.Views;
-
-using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Screens
 {

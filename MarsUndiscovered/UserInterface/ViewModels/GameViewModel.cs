@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Extensions;
-using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using GoRogue.Pathing;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Messages;

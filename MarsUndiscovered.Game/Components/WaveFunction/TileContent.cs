@@ -9,9 +9,9 @@ public class TileContent
     public TileAttribute Attributes { get; set; }
     public Texture2D Texture { get; set; }
 
-    public List<Tile> CreateTiles()
+    public List<TileChoice> CreateTiles()
     {
-        var tiles = new List<Tile>();
+        var tiles = new List<TileChoice>();
         var adapterStrings = Attributes.Adapters.Split(",").Select(a => a.Trim()).ToList();
 
         var directions = new List<Direction>
@@ -24,10 +24,13 @@ public class TileContent
 
         if (Attributes.Symmetry == "X")
         {
-            var adapters = directions.ToDictionary(d => d, d => (Adapter)adapterStrings[0]);
-            tiles.Add(new Tile(this, adapters));
+            var adapters = directions
+                .Select((d, index) => new { Direction = d, Index = index })
+                .ToDictionary(d => d.Direction, d => (Adapter)adapterStrings[d.Index]);
+
+            tiles.Add(new TileChoice(this, adapters));
         }
-        else if (Attributes.Symmetry == "L")
+        else if (Attributes.Symmetry == "^")
         {
             for (var i = 0; i < 4; i++)
             {
@@ -43,7 +46,7 @@ public class TileContent
                     _ => 0f
                 };
 
-                tiles.Add(new Tile(this, adapters, rotation: rotation));
+                tiles.Add(new TileChoice(this, adapters, rotation: rotation));
             }
         }
         else if (Attributes.Symmetry == "I")
@@ -52,13 +55,13 @@ public class TileContent
                 .Select((d, i) => new { Direction = d, Index = i})
                 .ToDictionary(d => d.Direction, d => (Adapter)adapterStrings[d.Index]);
 
-            tiles.Add(new Tile(this, adapters));
+            tiles.Add(new TileChoice(this, adapters));
 
             adapters = directions
                 .Select((d, i) => new { Direction = d, Index = i})
                 .ToDictionary(d => d.Direction, d => (Adapter)adapterStrings[GoRogue.MathHelpers.WrapAround(d.Index - 1,directions.Count)]);
 
-            tiles.Add(new Tile(this, adapters, rotation: (float)Math.PI / 4));
+            tiles.Add(new TileChoice(this, adapters, rotation: (float)Math.PI / 4));
         }
 
         return tiles;

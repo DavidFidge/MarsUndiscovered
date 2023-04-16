@@ -1584,6 +1584,26 @@
 /processorParam:TextureFormat=Color
 /build:Images/TitleText.png
 
+#begin WaveFunctionCollapse/MiningFacility/Corner.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:WaveFunctionCollapse/MiningFacility/Corner.png
+
+#begin WaveFunctionCollapse/MiningFacility/Floor.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:WaveFunctionCollapse/MiningFacility/Floor.png
+
+#begin WaveFunctionCollapse/MiningFacility/Floor.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:WaveFunctionCollapse/MiningFacility/Floor.png
+
+#begin WaveFunctionCollapse/MiningFacility/Wall.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:WaveFunctionCollapse/MiningFacility/Wall.png
+
 #begin Tiles/BlackOpsDefender_1.png
 /importer:TextureImporter
 /processor:TextureProcessor

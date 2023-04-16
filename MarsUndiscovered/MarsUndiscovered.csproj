@@ -16,6 +16,9 @@
     <None Update="Content\Animations\ShipAiRadioComms.sf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Content\WaveFunctionCollapse\MiningFacility\TileAttributes.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
@@ -23,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
+    <MonoGameContentReference Include="Content\Content.npl" />
   </ItemGroup>
   <ItemGroup>
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
@@ -64,6 +68,13 @@
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
+  
+<!--  <Target Name="Delete Content" BeforeTargets="BeforeBuild">-->
+<!--    <ItemGroup>-->
+<!--      <ContentToDelete Include="Content\bin\Windows\Content\Content.xnb" />-->
+<!--    </ItemGroup>-->
+<!--    <Delete Files="@(ContentToDelete)" />-->
+<!--  </Target>-->
 
   <Target Name="CleanPublish" BeforeTargets="GetCopyToPublishDirectoryItems">
     <ItemGroup>

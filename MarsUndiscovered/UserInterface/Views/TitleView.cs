@@ -22,6 +22,7 @@ namespace MarsUndiscovered.UserInterface.Views
     public class TitleView : BaseMarsUndiscoveredView<TitleViewModel, TitleData>,
         IRequestHandler<OptionsButtonClickedRequest>,
         IRequestHandler<CloseOptionsViewRequest>,
+        IRequestHandler<CloseDeveloperToolsViewRequest>,
         IRequestHandler<CustomGameSeedRequest>,
         IRequestHandler<CancelCustomGameSeedRequest>,
         IRequestHandler<OpenLoadGameViewRequest>,
@@ -33,6 +34,7 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly CustomGameSeedView _customGameSeedView;
         private readonly LoadGameView _loadGameView;
         private readonly LoadReplayView _loadReplayView;
+        private readonly DeveloperToolsView _developerToolsView;
 
         private Panel _titleMenuPanel;
 
@@ -43,7 +45,8 @@ namespace MarsUndiscovered.UserInterface.Views
             OptionsView optionsView,
             CustomGameSeedView customGameSeedView,
             LoadGameView loadGameView,
-            LoadReplayView loadReplayView
+            LoadReplayView loadReplayView,
+            DeveloperToolsView developerToolsView
             )
             : base(titleViewModel)
         {
@@ -51,6 +54,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _customGameSeedView = customGameSeedView;
             _loadGameView = loadGameView;
             _loadReplayView = loadReplayView;
+            _developerToolsView = developerToolsView;
         }
 
         protected override void InitializeInternal()
@@ -92,10 +96,11 @@ namespace MarsUndiscovered.UserInterface.Views
             new Button("Exit")
                 .SendOnClick<QuitToDesktopRequest>(Mediator)
                 .AddTo(_titleMenuPanel);
-            
-            new Button("World Builder")
-                .SendOnClick<WorldBuilderRequest>(Mediator)
-                .AddTo(_titleMenuPanel);
+
+            SetupChildPanelWithButton<DeveloperToolsButtonClickedRequest, DeveloperToolsViewModel, DeveloperToolsData>(
+                _titleMenuPanel,
+                "Developer Tools",
+                _developerToolsView);
 
             _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
         }
@@ -118,6 +123,11 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(CloseOptionsViewRequest request, CancellationToken cancellationToken)
         {
             return HideChildView(_optionsView, _titleMenuPanel);
+        }
+
+        public Task<Unit> Handle(CloseDeveloperToolsViewRequest request, CancellationToken cancellationToken)
+        {
+            return HideChildView(_developerToolsView, _titleMenuPanel);
         }
 
         public Task<Unit> Handle(OpenLoadGameViewRequest request, CancellationToken cancellationToken)

@@ -8,8 +8,8 @@ public class TileResult
     public List<TileResult> Neighbours { get; private set; }
     public Point Point { get; }
     public int Index { get; }
-    public bool IsCollapsed => Tile != null;
-    public Tile Tile { get; set; }
+    public bool IsCollapsed => TileChoice != null;
+    public TileChoice TileChoice { get; set; }
     public int Entropy { get; set; } = Int32.MaxValue;
 
     public TileResult(Point point, int maxWidth)
@@ -26,8 +26,8 @@ public class TileResult
             .ToList();
     }
 
-    public void SetTile(Tile tile)
+    public void SetTile(TileChoice tileChoice)
     {
-        Tile = tile;
+        TileChoice = tileChoice;
     }
 }
