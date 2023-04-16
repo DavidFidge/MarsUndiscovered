@@ -11,10 +11,11 @@ namespace MarsUndiscovered.Game.Components.WaveFunction;
 
 public class WaveFunctionCollapse
 {
-    private List<Tile> _tiles = new();
+    private readonly List<Tile> _tiles = new();
     private int _mapWidth;
     private int _mapHeight;
-    public TileResult[] CurrentState { get; private set; } 
+    public TileResult[] CurrentState { get; private set; }
+    public List<Tile> Tiles => _tiles;
 
     public WaveFunctionCollapse()
     {
@@ -46,7 +47,7 @@ public class WaveFunctionCollapse
                 Attributes = tileAttributes.Tiles[texture.Key]
             };
 
-            _tiles.AddRange(tile.ProcessTiles());
+            _tiles.AddRange(tile.CreateTiles());
         }
     }
 
@@ -65,6 +66,11 @@ public class WaveFunctionCollapse
 
                 CurrentState[point.ToIndex(mapWidth)] = new TileResult(point, mapWidth);
             }
+        }
+
+        foreach (var tileResult in CurrentState)
+        {
+            tileResult.SetNeighbours(CurrentState, _mapWidth - 1, _mapHeight - 1);
         }
     }
 

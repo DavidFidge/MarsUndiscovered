@@ -3,17 +3,17 @@
     "Floor": {
       "Symmetry": "X",
       "Weight": 1,
-      "Adapters": "AAA"
+      "Adapters": "AAA,AAA,AAA,AAA"
     },
     "Corner": {
       "Symmetry": "L",
       "Weight": 1,
-      "Adapters": "AAA,ABA"
+      "Adapters": "AAA,AAA,ABA,ABA"
     },
     "StraightWall": {
       "Symmetry": "I",
       "Weight": 1,
-      "Adapters": "ABA, AAA"
+      "Adapters": "ABA,AAA,ABA,AAA"
     }
   }
 }

@@ -10,14 +10,16 @@ public class Tile
     public double Weight => _tileContent.Attributes.Weight;
     public Texture2D Texture => _tileContent.Texture;
 
-    public SpriteEffects SpriteEffects = SpriteEffects.None;
-    public float Rotation = 0f; 
-    public Dictionary<Direction, Adapter> Adapters { get; set; } = new();
+    public SpriteEffects SpriteEffects;
+    public float Rotation; 
+    public Dictionary<Direction, Adapter> Adapters { get; set; }
 
-    public Tile(TileContent tileContent, Dictionary<Direction, Adapter> adapters)
+    public Tile(TileContent tileContent, Dictionary<Direction, Adapter> adapters, SpriteEffects spriteEffects = SpriteEffects.None, float rotation = 0f)
     {
         _tileContent = tileContent;
         Adapters = adapters;
+        SpriteEffects = spriteEffects;
+        Rotation = rotation;
     }
 
     public bool CanAdaptTo(TileResult firstTile, TileResult secondTile)
