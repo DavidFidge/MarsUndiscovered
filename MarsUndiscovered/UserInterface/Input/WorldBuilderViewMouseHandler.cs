@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input
 {
-    public class WorldBuilderViewMouseHandler : BaseGameMouseHandler
+    public class WorldBuilderViewMouseHandler : BaseGameViewMouseHandler
     {
         public WorldBuilderViewMouseHandler(IStopwatchProvider stopwatchProvider) : base(stopwatchProvider)
         {

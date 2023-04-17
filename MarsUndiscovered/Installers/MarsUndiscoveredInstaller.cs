@@ -156,7 +156,6 @@ namespace MarsUndiscovered.Installers
                     .BasedOn<IKeyboardHandler>() // Only covers dependencies asking for IKeyboardHandler, does not cover if they ask for specific class type e.g. see RegisterGameView
                     .Unless(s => typeof(GlobalKeyboardHandler).IsAssignableFrom(s))
                     .ConfigureFor<NullKeyboardHandler>(c => c.IsDefault())
-                    .ConfigureFor<GameViewKeyboardHandler>(c => c.DependsOn(Dependency.OnComponent<ICameraMovement, CameraMovement>()))
                     .WithServiceDefaultInterfaces(),
 
                 Component.For<GlobalKeyboardHandler>()
@@ -300,7 +299,7 @@ namespace MarsUndiscovered.Installers
         {
             container.Register(
                 Component.For<WaveFunctionCollapseView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, WaveFunctionCollapseViewKeyboardHandler>())
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, WaveFunctionCollapseKeyboardHandler>())
                     .DependsOn(Dependency.OnComponent<IMouseHandler, NullMouseHandler>()),
 
                 Component.For<WaveFunctionCollapseViewModel>()

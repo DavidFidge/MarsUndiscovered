@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input
 {
-    public class WaveFunctionCollapseViewKeyboardHandler : BaseGameViewKeyboardHandler
+    public class WaveFunctionCollapseKeyboardHandler : BaseGameViewKeyboardHandler
     {
         public override void HandleKeyboardKeyDown(Keys[] keysDown, Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
