@@ -12,8 +12,5 @@ namespace MarsUndiscovered
         
         [Option('w', "WorldBuilder", Required = false, HelpText = "Goes to world builder immediately, skipping the title screen")]
         public bool WorldBuilder { get; set; }
-
-        [Option('f', "WaveFunctionCollapse", Required = false, HelpText = "Goes to wave function collapse tool immediately, skipping the title screen")]
-        public bool WaveFunctionCollapse { get; set; }
     }
 }

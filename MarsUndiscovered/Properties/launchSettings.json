@@ -4,10 +4,6 @@
       "commandName": "Project",
       "commandLineArgs": "--WorldBuilder"
     },
-    "Wave Function Collapse": {
-      "commandName": "Project",
-      "commandLineArgs": "--WaveFunctionCollapse"
-    },
     "Mars Undiscovered": {
       "commandName": "Project",
       "commandLineArgs": ""

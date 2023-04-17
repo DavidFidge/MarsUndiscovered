@@ -46,11 +46,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Anchor(Anchor.AutoCenter)
                 .SendOnClick<WorldBuilderRequest>(Mediator)
                 .AddTo(contentPanel);
-
-            new Button("Wave Function Collapse")
-                .Anchor(Anchor.AutoCenter)
-                .SendOnClick<WaveFunctionCollapseRequest>(Mediator)
-                .AddTo(contentPanel);
         }
     }
 }

@@ -33,6 +33,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Extended.Tweening"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarsUndiscovered.Game", "MarsUndiscovered.Game\MarsUndiscovered.Game.csproj", "{066DA915-0B39-488E-B14E-19DB034D970C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrigidRogue.WaveFunctionCollapse", "..\WaveFunctionCollapse\FrigidRogue.WaveFunctionCollapse\FrigidRogue.WaveFunctionCollapse.csproj", "{7DEF305C-4EBD-4923-B5D3-1823E80010E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrigidRogue.WaveFunctionCollapse.Tests", "..\WaveFunctionCollapse\FrigidRogue.WaveFunctionCollapse.Tests\FrigidRogue.WaveFunctionCollapse.Tests.csproj", "{29D3219A-DC49-4B10-9CAF-2EB499E7CEB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +103,14 @@ Global
 		{066DA915-0B39-488E-B14E-19DB034D970C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{066DA915-0B39-488E-B14E-19DB034D970C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{066DA915-0B39-488E-B14E-19DB034D970C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DEF305C-4EBD-4923-B5D3-1823E80010E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DEF305C-4EBD-4923-B5D3-1823E80010E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DEF305C-4EBD-4923-B5D3-1823E80010E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DEF305C-4EBD-4923-B5D3-1823E80010E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29D3219A-DC49-4B10-9CAF-2EB499E7CEB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29D3219A-DC49-4B10-9CAF-2EB499E7CEB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29D3219A-DC49-4B10-9CAF-2EB499E7CEB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29D3219A-DC49-4B10-9CAF-2EB499E7CEB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
