@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FrigidRogue.MonoGame.Core.Extensions;
+using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 using FrigidRogue.MonoGame.Core.View.Extensions;
@@ -17,8 +17,10 @@ namespace MarsUndiscovered.UserInterface.Views
     public class WaveFunctionCollapseView : BaseMarsUndiscoveredView<WaveFunctionCollapseViewModel, WaveFunctionCollapseData>,
         IRequestHandler<NextStepRequest>,
         IRequestHandler<MewMapRequest>,
+        IRequestHandler<PlayContinuouslyRequest>,
         IRequestHandler<PlayUntilCompleteRequest>
     {
+        private readonly IGameTimeService _gameTimeService;
         private Panel _leftPanel;
         private Panel _mapPanel;
         private SpriteBatch _spriteBatch;
@@ -26,10 +28,16 @@ namespace MarsUndiscovered.UserInterface.Views
         private int _mapHeight;
         private int _mapWidth;
         private bool _playUntilComplete;
+        private bool _playContinuously;
+        private TimeSpan? _dateTimeFinished;
+        private TimeSpan _secondsForNextIteration = TimeSpan.FromSeconds(2);
 
-        public WaveFunctionCollapseView(WaveFunctionCollapseViewModel waveFunctionCollapseViewModel)
+        public WaveFunctionCollapseView(
+            WaveFunctionCollapseViewModel waveFunctionCollapseViewModel,
+            IGameTimeService gameTimeService)
             : base(waveFunctionCollapseViewModel)
         {
+            _gameTimeService = gameTimeService;
         }
 
         protected override void InitializeInternal()
@@ -60,33 +68,48 @@ namespace MarsUndiscovered.UserInterface.Views
                 .SendOnClick<PlayUntilCompleteRequest>(Mediator)
                 .AddTo(_leftPanel);
 
+            new Button("Play Continuously")
+                .SendOnClick<PlayContinuouslyRequest>(Mediator)
+                .AddTo(_leftPanel);
+
             new Button("Exit")
-                .SendOnClick<QuitToTitleRequest>(Mediator)
+                .SendOnClick<QuitToTitleRequest>(request => { ResetPlayContinuously(); }, Mediator)
                 .AddTo(_leftPanel);
 
             RootPanel.AddChild(_leftPanel);
             RootPanel.AddChild(_mapPanel);
         }
 
+        private void ResetPlayContinuously()
+        {
+            _playContinuously = false;
+            _playUntilComplete = false;
+            _dateTimeFinished = null;
+            _gameTimeService.Reset();
+            _gameTimeService.Start();
+        }
+
         public void LoadWaveFunctionCollapse()
         {
+            ResetPlayContinuously();
+
             _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
 
             _waveFunctionCollapse = new WaveFunctionCollapse();
             _waveFunctionCollapse.CreateTiles(GameProvider.Game.Content);
 
-            _mapWidth = 40;
-            _mapHeight = 40;
+            _mapWidth = 30;
+            _mapHeight = 30;
 
             _waveFunctionCollapse.Reset(_mapWidth, _mapHeight);
         }
 
         public override void Draw()
         {
-            var tileSize = new Vector2(30, 30);
-            var drawOrigin = new Vector2(800, 0) + tileSize;
+            var tileSize = new Vector2(60, 60);
+            var drawOrigin = new Vector2(1000, 100) + tileSize;
 
-            _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
+            _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, null);
 
             var tiles = _waveFunctionCollapse.CurrentState;
 
@@ -116,18 +139,40 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(NextStepRequest request, CancellationToken cancellationToken)
         {
+            ResetPlayContinuously();
+
             _waveFunctionCollapse.NextStep();
             return Unit.Task;
         }
 
         public Task<Unit> Handle(PlayUntilCompleteRequest request, CancellationToken cancellationToken)
         {
+            _playContinuously = false;
             _playUntilComplete = !_playUntilComplete;
+
+            if (!_playUntilComplete)
+                ResetPlayContinuously();
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(PlayContinuouslyRequest request, CancellationToken cancellationToken)
+        {
+            _playUntilComplete = false;
+            _playContinuously = !_playContinuously;
+
+            if (!_playContinuously)
+                ResetPlayContinuously();
+
             return Unit.Task;
         }
 
         public Task<Unit> Handle(MewMapRequest request, CancellationToken cancellationToken)
         {
+            _playContinuously = false;
+            _playUntilComplete = false;
+            _dateTimeFinished = null;
+
             _waveFunctionCollapse.Reset(_mapWidth, _mapHeight);
 
             return Unit.Task;
@@ -135,16 +180,22 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public override void Update()
         {
-            if (_playUntilComplete)
+            if (!_dateTimeFinished.HasValue && (_playUntilComplete || _playContinuously))
             {
                 var result = _waveFunctionCollapse.NextStep();
 
                 if (result.IsComplete)
-                {
                     _playUntilComplete = false;
-                }
-                else if (result.IsFailed)
+
+                if (result.IsComplete || result.IsFailed)
+                    _dateTimeFinished = _gameTimeService.GameTime.TotalRealTime;
+            }
+
+            if (_dateTimeFinished.HasValue)
+            {
+                if (_gameTimeService.GameTime.TotalGameTime - _dateTimeFinished > _secondsForNextIteration)
                 {
+                    _dateTimeFinished = null;
                     _waveFunctionCollapse.Reset(_mapWidth, _mapHeight);
                 }
             }

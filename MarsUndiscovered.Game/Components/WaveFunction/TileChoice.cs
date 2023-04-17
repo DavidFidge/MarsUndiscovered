@@ -7,7 +7,7 @@ namespace MarsUndiscovered.Game.Components.WaveFunction;
 public class TileChoice
 {
     private TileContent _tileContent;
-    public double Weight => _tileContent.Attributes.Weight;
+    public int Weight => _tileContent.Attributes.Weight;
     public Texture2D Texture => _tileContent.Texture;
 
     public SpriteEffects SpriteEffects;

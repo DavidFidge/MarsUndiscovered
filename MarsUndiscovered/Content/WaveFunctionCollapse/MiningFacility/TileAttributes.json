@@ -2,7 +2,7 @@
   "Tiles": {
     "Floor": {
       "Symmetry": "X",
-      "Weight": 1,
+      "Weight": 8,
       "Adapters": "AAA,AAA,AAA,AAA"
     },
     "Corner": {
@@ -12,7 +12,7 @@
     },
     "Wall": {
       "Symmetry": "I",
-      "Weight": 1,
+      "Weight": 4,
       "Adapters": "ABA,AAA,ABA,AAA"
     }
   }

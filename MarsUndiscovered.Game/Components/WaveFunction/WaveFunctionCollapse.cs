@@ -101,7 +101,22 @@ public class WaveFunctionCollapse
         if (!validTiles.Any())
             return NextStepResult.Failed();
 
-        chosenTile.SetTile(validTiles[GlobalRandom.DefaultRNG.RandomIndex(validTiles)]);
+        var sumWeights = validTiles.Sum(t => t.Weight);
+
+        var randomNumber = GlobalRandom.DefaultRNG.NextInt(0, sumWeights);
+
+        var i = 0;
+        while (randomNumber > 0)
+        {
+            randomNumber -= validTiles[i].Weight;
+
+            if (randomNumber < 0)
+                break;
+
+            i++;
+        }
+
+        chosenTile.SetTile(validTiles[i]);
 
         return NextStepResult.Continue();
     }

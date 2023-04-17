@@ -41,6 +41,7 @@ namespace MarsUndiscovered
         private bool _isExiting;
         private bool _startNewGameFromCommandLine = false;
         private bool _startWorldBuilderFromCommandLine = false;
+        private bool _startWaveFunctionCollapseFromCommandLine = false;
         private bool _showFps = false;
 
         public CustomGraphicsDeviceManager CustomGraphicsDeviceManager { get; }
@@ -91,6 +92,8 @@ namespace MarsUndiscovered
                 _startNewGameFromCommandLine = true;
             else if (_options.WorldBuilder)
                 _startWorldBuilderFromCommandLine = true;
+            else if (_options.WaveFunctionCollapse)
+                _startWaveFunctionCollapseFromCommandLine = true;
 
             EffectCollection = new EffectCollection(_gameProvider);
 
@@ -234,6 +237,11 @@ namespace MarsUndiscovered
             {
                 _mediator.Send(new WorldBuilderRequest());
                 _startWorldBuilderFromCommandLine = false;
+            }
+            else if (_startWaveFunctionCollapseFromCommandLine && _options.WaveFunctionCollapse)
+            {
+                _mediator.Send(new WaveFunctionCollapseRequest());
+                _startWaveFunctionCollapseFromCommandLine = false;
             }
 
             _gameTimeService.Update(gameTime);
