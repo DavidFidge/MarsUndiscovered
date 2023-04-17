@@ -48,6 +48,8 @@ namespace MarsUndiscovered.UserInterface.Views
                     0,
                     RenderTargetUsage.PreserveContents
                 );
+
+                _viewModel.MapViewModel.SetMapEntityTexture(_renderTarget);
             }
         }
         
@@ -69,12 +71,10 @@ namespace MarsUndiscovered.UserInterface.Views
             
             foreach (var tile in drawableTiles)
                 tile.SpriteBatchDraw(_spriteBatch);
-            
-            _spriteBatch.End();
-            
-            Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
-            _viewModel.MapViewModel.SetMapEntityTexture(_renderTarget);
+            _spriteBatch.End();
+
+            Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
             Game.GraphicsDevice.SetRenderTargets(oldRenderTargets);
 
