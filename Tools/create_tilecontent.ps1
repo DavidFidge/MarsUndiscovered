@@ -29,11 +29,8 @@ Get-ChildItem "$FolderPath\*.png" -Recurse | ForEach-Object {
         }        
     }
 
-    write-output "#begin $outputPath"
     write-output "/importer:TextureImporter"
     write-output "/processor:TextureProcessor"
     write-output "/build:$outputPath"
     write-output ""
 }
-
-Remove-Item "C:\dev\MarsUndiscovered\MarsUndiscovered\Content\bin\Windows\Content\Content.xnb"
