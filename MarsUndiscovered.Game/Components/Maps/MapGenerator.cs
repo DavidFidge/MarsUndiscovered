@@ -92,13 +92,13 @@ namespace MarsUndiscovered.Game.Components.Maps
 
                         if (s)
                         {
-                            var floor = gameObjectFactory.CreateFloor();
+                            var floor = gameObjectFactory.CreateGameObject<Floor>();
                             floor.Index = index;
                             gameObject = floor;
                         }
                         else
                         {
-                            var wall = gameObjectFactory.CreateWall();
+                            var wall = gameObjectFactory.CreateGameObject<Wall>();
                             wall.Index = index;
                             gameObject = wall;
                         }

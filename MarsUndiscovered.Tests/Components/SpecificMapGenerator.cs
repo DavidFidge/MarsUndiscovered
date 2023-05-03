@@ -19,7 +19,7 @@ namespace MarsUndiscovered.Tests.Components
 
             _terrainChooser = ((p) =>
             {
-                var terrain = wallPoints.Contains(p) ? (Terrain)_gameObjectFactory.CreateWall() : _gameObjectFactory.CreateFloor();
+                var terrain = wallPoints.Contains(p) ? (Terrain)_gameObjectFactory.CreateGameObject<Wall>() : _gameObjectFactory.CreateGameObject<Floor>();
                 terrain.Index = index++;
                 return terrain;
             });

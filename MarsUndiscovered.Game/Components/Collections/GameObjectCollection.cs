@@ -1,15 +1,22 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
-
+using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Components
 {
-    public abstract class GameObjectCollection<T, TState> : Dictionary<uint, T>, ISaveable
+    public class GameObjectCollection<T, TState> : Dictionary<uint, T>, ISaveable
         where T : IMarsGameObject, IMementoState<TState>
         where TState : GameObjectSaveData
     {
+        protected readonly IGameObjectFactory _gameObjectFactory;
+
+        public GameObjectCollection(IGameObjectFactory gameObjectFactory)
+        {
+            _gameObjectFactory = gameObjectFactory;
+        }
+
         public virtual void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var gameObjectSaveData = Values
@@ -39,6 +46,9 @@ namespace MarsUndiscovered.Game.Components
         {
         }
 
-        protected abstract T Create(uint id);
+        protected virtual T Create(uint id)
+        {
+            return _gameObjectFactory.CreateGameObject<T>(id);
+        }
     }
 }

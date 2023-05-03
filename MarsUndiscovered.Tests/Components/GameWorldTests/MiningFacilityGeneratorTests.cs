@@ -43,8 +43,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var miningFacilityCollection = new MiningFacilityCollection(gameObjectFactory);
 
-            gameObjectFactory.CreateMiningFacility().Returns(_ => new MiningFacility(testGameWorld, index++));
-            gameObjectFactory.CreateFloor().Returns(_ => new Floor(testGameWorld, index++));
+            gameObjectFactory.CreateGameObject<MiningFacility>().Returns(_ => new MiningFacility(testGameWorld, index++));
+            gameObjectFactory.CreateGameObject<Floor>().Returns(_ => new Floor(testGameWorld, index++));
 
             var miningFacilityGenerator = new MiningFacilityGenerator();
             

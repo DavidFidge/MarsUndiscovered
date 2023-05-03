@@ -41,7 +41,7 @@ namespace MarsUndiscovered.Game.Components.Maps
                 if (item.Char == 'X')
                     continue; // This is a blank square, so no ship part, but we still want to clear out any nearby walls otherwise the map may have unreachable spots
 
-                var ship = gameObjectFactory.CreateShip()
+                var ship = gameObjectFactory.CreateGameObject<Ship>()
                     .PositionedAt(item.Point)
                     .WithShipPart(item.Char);
 

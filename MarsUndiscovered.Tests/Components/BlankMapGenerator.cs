@@ -28,7 +28,7 @@ namespace MarsUndiscovered.Tests.Components
         {
             var arrayView = new ArrayView<IGameObject>(mapDimensions.X, mapDimensions.Y);
 
-            arrayView.ApplyOverlay(_ => _gameObjectFactory.CreateFloor());
+            arrayView.ApplyOverlay(_ => _gameObjectFactory.CreateGameObject<Floor>());
 
             var wallsFloors = arrayView.ToArray();
 

@@ -43,8 +43,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var shipCollection = new ShipCollection(gameObjectFactory);
 
-            gameObjectFactory.CreateShip().Returns(_ => new Ship(testGameWorld, index++));
-            gameObjectFactory.CreateFloor().Returns(_ => new Floor(testGameWorld, index++));
+            gameObjectFactory.CreateGameObject<Ship>().Returns(_ => new Ship(testGameWorld, index++));
+            gameObjectFactory.CreateGameObject<Floor>().Returns(_ => new Floor(testGameWorld, index++));
 
             var shipGenerator = new ShipGenerator();
             

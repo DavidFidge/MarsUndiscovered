@@ -54,7 +54,7 @@ namespace MarsUndiscovered.Game.Components.Maps
             map.CreateFloor(position, gameObjectFactory);
 
             var mapExit = gameObjectFactory
-                .CreateMapExit()
+                .CreateGameObject<MapExit>()
                 .PositionedAt(position)
                 .WithDestination(destinationMapExit)
                 .WithLandingPosition(landingPosition)

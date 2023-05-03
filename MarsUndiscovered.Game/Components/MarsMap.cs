@@ -122,7 +122,7 @@ namespace MarsUndiscovered.Game.Components
             if (!DestroyFloor(position))
                 return null;
 
-            wall = gameObjectFactory.CreateWall();
+            wall = gameObjectFactory.CreateGameObject<Wall>();
             wall.Position = position;
             wall.Index = position.ToIndex(Width);
             Walls.Add(wall);
@@ -142,7 +142,7 @@ namespace MarsUndiscovered.Game.Components
             if (!DestroyWall(position))
                 return null;
 
-            floor = gameObjectFactory.CreateFloor();
+            floor = gameObjectFactory.CreateGameObject<Floor>();
             floor.Position = position;
             floor.Index = position.ToIndex(Width);
             Floors.Add(floor);

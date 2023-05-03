@@ -35,8 +35,8 @@ namespace MarsUndiscovered.Tests.Components
                 arrayView.ApplyOverlay(p =>
                 {
                     var terrain = p.Y > mapDimensions.Y - 5
-                        ? (Terrain)_gameObjectFactory.CreateWall()
-                        : _gameObjectFactory.CreateFloor();
+                        ? (Terrain)_gameObjectFactory.CreateGameObject<Wall>()
+                        : _gameObjectFactory.CreateGameObject<Floor>();
                     terrain.Index = index++;
                     return terrain;
                 });
@@ -52,7 +52,7 @@ namespace MarsUndiscovered.Tests.Components
             {
                 var arrayView = new ArrayView<IGameObject>(mapDimensions.X, mapDimensions.Y);
 
-                arrayView.ApplyOverlay(_ => _gameObjectFactory.CreateFloor());
+                arrayView.ApplyOverlay(_ => _gameObjectFactory.CreateGameObject<Floor>());
 
                 var wallsFloors = arrayView.ToArray();
 

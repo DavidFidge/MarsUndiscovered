@@ -12,7 +12,7 @@ namespace MarsUndiscovered.Game.Components.Maps
                 return null;
 
             var item = gameObjectFactory
-                .CreateItem()
+                .CreateGameObject<Item>()
                 .WithItemType(spawnItemParams.ItemType);
 
             if (spawnItemParams.Inventory == null)

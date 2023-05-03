@@ -25,7 +25,7 @@ namespace MarsUndiscovered.Game.Components
     public class GameWorld : BaseComponent, IGameWorld, ISaveable
     {
         public Guid GameId { get; private set; }
-        public Player Player { get; private set; }
+        public Player Player { get; set; }
         public IMorgue Morgue { get; set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public IGameTimeService GameTimeService { get; set; }
@@ -98,10 +98,11 @@ namespace MarsUndiscovered.Game.Components
 
             Logger.Debug("Generating game world");
 
-            var mapLevel1 = CreateLevel1();
+            var levelGenerator = new LevelGenerator(this);
+            var mapLevel1 = levelGenerator.CreateLevel1();
             Maps.CurrentMap = mapLevel1;
 
-            CreateLevel2(mapLevel1);
+            levelGenerator.CreateLevel2(mapLevel1);
             
             Inventory = new Inventory(this);
             
@@ -117,7 +118,7 @@ namespace MarsUndiscovered.Game.Components
         {
             Reset();
             Morgue.GameStarted();
-            
+
             seed ??= MakeSeed();
 
             Seed = seed.Value;
@@ -131,7 +132,7 @@ namespace MarsUndiscovered.Game.Components
             var map = MapGenerator.MarsMap;
             
             Player = GameObjectFactory
-                .CreatePlayer()
+                .CreateGameObject<Player>()
                 .PositionedAt(new Point(map.Width / 2,
                     map.Height - 2 -
                     (Constants.ShipOffset -
@@ -144,105 +145,6 @@ namespace MarsUndiscovered.Game.Components
 
             ResetFieldOfView();
             GameTimeService.Start();
-        }
-
-        private MarsMap CreateLevel2(MarsMap mapLevel1)
-        {
-            MapGenerator.CreateOutdoorMap(this, GameObjectFactory);
-            AddMapToGame(MapGenerator.MarsMap);
-            var mapLevel2 = MapGenerator.MarsMap;
-
-            SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("Roach"));
-            SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("RepairDroid"));
-            SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("TeslaTurret"));
-
-            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.MagnesiumPipe));
-            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.MagnesiumPipe));
-            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.IronSpike));
-            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.IronSpike));
-            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.ShieldGenerator));
-            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.ShieldGenerator));
-            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.HealingBots));
-            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.HealingBots));
-            SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.ShipRepairParts));
-
-            var mapExit2 = SpawnMapExit(new SpawnMapExitParams().OnMap(mapLevel2.Id).WithDirection(Direction.Up));
-
-            if (mapExit2 != null)
-            {
-                var miningFacilityPointsOnMap1 = MiningFacilities.Values
-                    .Where(m => ((MarsMap)m.CurrentMap).Id == mapLevel1.Id)
-                    .Select(m => m.Position)
-                    .GroupBy(m => m.Y)
-                    .MaxBy(m => m.Key)
-                    .ToList();
-                
-                var mapExit1 = SpawnMapExit(
-                    new SpawnMapExitParams()
-                        .OnMap(mapLevel1.Id)
-                        .ToMapExit(mapExit2.ID)
-                        .WithDirection(Direction.Down)
-                        .AtFreeSpotNextTo(mapLevel1, miningFacilityPointsOnMap1)
-                );
-
-                mapExit2.Destination = mapExit1;
-            }
-
-            return mapLevel2;
-        }
-
-        private MarsMap CreateLevel1()
-        {
-            MapGenerator.CreateOutdoorMap(this, GameObjectFactory);
-            AddMapToGame(MapGenerator.MarsMap);
-            var map = MapGenerator.MarsMap;
-            
-            ShipGenerator.CreateShip(GameObjectFactory, map, Ships);
-            MiningFacilityGenerator.CreateMiningFacility(GameObjectFactory, map, MiningFacilities);
-            
-            Player = GameObjectFactory
-                .CreatePlayer()
-                .PositionedAt(new Point(map.Width / 2,
-                    map.Height - 2 -
-                    (Constants.ShipOffset -
-                     1))) // Start off underneath the ship, extra -1 for the current ship design as there's a blank space on the bottom line
-                .AddToMap(map);
-
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Black Ops Defender")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Black Ops Sniper")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Crazed Foreman")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Crazed Miner")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Eldritch Worm")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Flame Turret")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Megalith Carrier")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Megalith Chucker")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Missile Turret")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Nirgal Bomber")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Nirgal Rebel")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Phasmid Hunter")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Repair Droid")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Roach")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Spiral Borer")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Steam Elemental")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Tentacle Horror")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Tesla Turret")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Tunnel Borer")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Werewolf")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Yendorian Grunt")).OnMap(map.Id));
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Yendorian Master")).OnMap(map.Id));
-            
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).OnMap(map.Id));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).OnMap(map.Id));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).OnMap(map.Id));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).OnMap(map.Id));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).OnMap(map.Id));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).OnMap(map.Id));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).OnMap(map.Id));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).OnMap(map.Id));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).OnMap(map.Id));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).OnMap(map.Id));
-
-            return map;
         }
 
         public ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step, WorldGenerationTypeParams worldGenerationTypeParams)
@@ -275,7 +177,7 @@ namespace MarsUndiscovered.Game.Components
                 return new ProgressiveWorldGenerationResult { Seed = Seed, IsFinalStep = false};
 
             Player = GameObjectFactory
-                .CreatePlayer()
+                .CreateGameObject<Player>()
                 .PositionedAt(GlobalRandom.DefaultRNG.RandomPosition(CurrentMap, MapHelpers.EmptyPointOnFloor))
                 .AddToMap(CurrentMap);
 
@@ -295,7 +197,7 @@ namespace MarsUndiscovered.Game.Components
             LastMonstersInView = MonstersInView;
         }
 
-        private MarsMap AddMapToGame(MarsMap marsMap)
+        public MarsMap AddMapToGame(MarsMap marsMap)
         {
             var terrain = GameObjects
                 .Values
@@ -707,7 +609,7 @@ namespace MarsUndiscovered.Game.Components
             Inventory = new Inventory(this);
             Inventory.LoadState(saveGameService, gameWorld);
 
-            Player = GameObjectFactory.CreatePlayer(playerSaveData.State.Id);
+            Player = GameObjectFactory.CreateGameObject<Player>(playerSaveData.State.Id);
             Player.LoadState(saveGameService, gameWorld);
             
             Maps.LoadState(saveGameService, gameWorld);

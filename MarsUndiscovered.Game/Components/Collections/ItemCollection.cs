@@ -5,16 +5,8 @@ namespace MarsUndiscovered.Game.Components
 {
     public class ItemCollection : GameObjectCollection<Item, ItemSaveData>
     {
-        private readonly IGameObjectFactory _gameObjectFactory;
-
-        public ItemCollection(IGameObjectFactory gameObjectFactory)
+        public ItemCollection(IGameObjectFactory gameObjectFactory) : base(gameObjectFactory)
         {
-            _gameObjectFactory = gameObjectFactory;
-        }
-
-        protected override Item Create(uint id)
-        {
-            return _gameObjectFactory.CreateItem(id);
         }
 
         public List<Item> RechargeItems()

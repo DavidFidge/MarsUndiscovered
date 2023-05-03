@@ -9,7 +9,7 @@ namespace MarsUndiscovered.Game.Components.Maps
         public Monster SpawnMonster(SpawnMonsterParams spawnMonsterParams, IGameObjectFactory gameObjectFactory, MarsMap map, MonsterCollection monsterCollection)
         {
             var monster = gameObjectFactory
-                .CreateMonster()
+                .CreateGameObject<Monster>()
                 .WithBreed(spawnMonsterParams.Breed);
 
             if (monster.IsWallTurret)

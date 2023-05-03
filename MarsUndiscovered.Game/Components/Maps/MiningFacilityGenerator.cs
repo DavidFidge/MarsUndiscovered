@@ -49,7 +49,7 @@ namespace MarsUndiscovered.Game.Components.Maps
                 if (item.Char == 'X')
                     continue; // This is a blank square, so no miningFacility part, but we still want to clear out any nearby walls otherwise the map may have unreachable spots
 
-                var miningFacility = gameObjectFactory.CreateMiningFacility()
+                var miningFacility = gameObjectFactory.CreateGameObject<MiningFacility>()
                     .PositionedAt(item.Point)
                     .WithMiningFacilitySection(item.Char);
 
