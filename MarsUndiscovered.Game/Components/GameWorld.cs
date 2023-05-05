@@ -89,11 +89,10 @@ namespace MarsUndiscovered.Game.Components
 
             LevelGenerator.Initialise(this);
             LevelGenerator.CreateLevels();
-            Maps.CurrentMap = Maps.First();
 
             Inventory = new Inventory(this);
 
-            _radioComms.CreateGameStartMessages(Ships.First().Value, _messageLog);
+            _radioComms.CreateGameStartMessages(_messageLog, Player);
 
             ResetFieldOfView();
         }
@@ -483,22 +482,18 @@ namespace MarsUndiscovered.Game.Components
             return loadGameResult;
         }
 
-        bool IGameWorld.ExecuteNextReplayCommand()
-        {
-            return ExecuteNextReplayCommand();
-        }
-
-        public bool ExecuteNextReplayCommand()
+        public ReplayCommandResult ExecuteNextReplayCommand()
         {
             if (_replayHistoricalCommandIndex < _replayHistoricalCommands.Length)
             {
                 var command = _replayHistoricalCommands[_replayHistoricalCommandIndex++];
-                ExecuteCommand(command).ToList();
+                var commandResults = ExecuteCommand(command).ToList();
+                var replayCommandResult = new ReplayCommandResult(commandResults);
 
-                return true;
+                return replayCommandResult;
             }
 
-            return false;
+            return ReplayCommandResult.NoMoreCommands();
         }
 
         public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
@@ -513,23 +508,23 @@ namespace MarsUndiscovered.Game.Components
             MapExits.LoadState(saveGameService, gameWorld);
             Ships.LoadState(saveGameService, gameWorld);
             MiningFacilities.LoadState(saveGameService, gameWorld);
-            _messageLog.LoadState(saveGameService, gameWorld);
-            _radioComms.LoadState(saveGameService, gameWorld);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
-            
+
             // Inventory must be loaded before player as player recalculates attacks based on inventory
             Inventory = new Inventory(this);
             Inventory.LoadState(saveGameService, gameWorld);
 
             Player = GameObjectFactory.CreateGameObject<Player>(playerSaveData.State.Id);
             Player.LoadState(saveGameService, gameWorld);
-            
+
+            _messageLog.LoadState(saveGameService, gameWorld);
+            _radioComms.LoadState(saveGameService, gameWorld);
+
             Maps.LoadState(saveGameService, gameWorld);
             GameTimeService.LoadState(saveGameService);
-            
             HistoricalCommands.LoadState(saveGameService, gameWorld);
-            
+
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
             SetLoadState(gameWorldSaveData);
             GameTimeService.Start();
@@ -706,16 +701,19 @@ namespace MarsUndiscovered.Game.Components
 
         public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
         {
+            spawnMonsterParams.MapId = CurrentMap.Id;
             GameWorldDebug.SpawnMonster(spawnMonsterParams);
         }
 
         public void SpawnItem(SpawnItemParams spawnItemParams)
         {
+            spawnItemParams.MapId = CurrentMap.Id;
             GameWorldDebug.SpawnItem(spawnItemParams);
         }
 
         public void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
         {
+            spawnMapExitParams.MapId = CurrentMap.Id;
             GameWorldDebug.SpawnMapExit(spawnMapExitParams);
         }
     }

@@ -65,10 +65,7 @@ namespace MarsUndiscovered.Tests.Components
 
         protected void NewGameWithCustomMapNoMonstersNoItems(IMapGenerator mapGenerator = null)
         {
-            mapGenerator ??= new BlankMapGenerator(
-                _gameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
+            mapGenerator ??= new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
             _gameWorld.LevelGenerator.MapGenerator = mapGenerator;
 
@@ -91,12 +88,16 @@ namespace MarsUndiscovered.Tests.Components
 
         protected void NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(IMapGenerator mapGenerator = null)
         {
-            mapGenerator ??= new BlankMapGenerator(
-                _gameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
+            SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
-            _gameWorld.LevelGenerator.MapGenerator = mapGenerator;
+            _gameWorld.NewGame();
+        }
+
+        protected void SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(GameWorld gameWorld, IMapGenerator mapGenerator = null)
+        {
+            mapGenerator ??= new BlankMapGenerator(gameWorld.GameObjectFactory);
+
+            gameWorld.LevelGenerator.MapGenerator = mapGenerator;
 
             var blankMonsterGenerator = new BlankMonsterGenerator(
                 Container.Resolve<IMonsterGenerator>()
@@ -113,17 +114,13 @@ namespace MarsUndiscovered.Tests.Components
             var blankShipGenerator = new BlankShipGenerator();
             var blankMiningFacilityGenerator = new BlankMiningFacilityGenerator();
 
-            _gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
-            _gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
-            _gameWorld.LevelGenerator.MapExitGenerator = blankMapExitGenerator;
-            _gameWorld.LevelGenerator.ShipGenerator = blankShipGenerator;
-            _gameWorld.LevelGenerator.MiningFacilityGenerator = blankMiningFacilityGenerator;
-
-            _gameWorld.NewGame();
-
-
+            gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
+            gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
+            gameWorld.LevelGenerator.MapExitGenerator = blankMapExitGenerator;
+            gameWorld.LevelGenerator.ShipGenerator = blankShipGenerator;
+            gameWorld.LevelGenerator.MiningFacilityGenerator = blankMiningFacilityGenerator;
         }
-        
+
         protected Item SpawnItemAndEquip(ItemType itemType)
         {
             var item = SpawnItemAndAddToInventory(itemType);

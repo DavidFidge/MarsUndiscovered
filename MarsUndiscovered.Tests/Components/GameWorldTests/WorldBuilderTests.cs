@@ -11,7 +11,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void ProgressiveWorldGeneration_Should_Perform_First_Step_Of_Map_Creation_And_Leave_Map_Unpopulated()
         {
             // Arrange
-            var mapGenerator = new HalfWallsToBlankMapGenerator(_gameWorld.GameObjectFactory, Container.Resolve<IMapGenerator>());
+            var mapGenerator = new HalfWallsToBlankMapGenerator(_gameWorld.GameObjectFactory);
 
             // Act
             ProgressiveWorldGenerationWithCustomMap(mapGenerator);
@@ -34,7 +34,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void ProgressiveWorldGeneration_Should_Perform_Second_Step_Of_Map_Creation_And_Complete_Map_But_Leave_It_Unpopulated()
         {
             // Arrange
-            var mapGenerator = new HalfWallsToBlankMapGenerator(_gameWorld.GameObjectFactory, Container.Resolve<IMapGenerator>());
+            var mapGenerator = new HalfWallsToBlankMapGenerator(_gameWorld.GameObjectFactory);
 
             ProgressiveWorldGenerationWithCustomMap(mapGenerator);
             
@@ -61,10 +61,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void ProgressiveWorldGeneration_Should_Populate_Map()
         {
             // Arrange
-            var mapGenerator = new HalfWallsToBlankMapGenerator(_gameWorld.GameObjectFactory, Container.Resolve<IMapGenerator>());
+            var mapGenerator = new HalfWallsToBlankMapGenerator(_gameWorld.GameObjectFactory);
 
             ProgressiveWorldGenerationWithCustomMap(mapGenerator);
-            
+
             var seed = _gameWorld.Seed;
 
             // Act

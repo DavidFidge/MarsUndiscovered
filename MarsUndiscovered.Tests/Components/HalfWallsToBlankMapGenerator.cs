@@ -10,7 +10,7 @@ namespace MarsUndiscovered.Tests.Components
 {
     public class HalfWallsToBlankMapGenerator : BaseTestMapGenerator
     {
-        public HalfWallsToBlankMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator) : base(gameObjectFactory, originalMapGenerator)
+        public HalfWallsToBlankMapGenerator(IGameObjectFactory gameObjectFactory) : base(gameObjectFactory)
         {
         }
 

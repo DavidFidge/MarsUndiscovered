@@ -11,12 +11,9 @@ namespace MarsUndiscovered.Tests.Components
         public Point BasicMapDimensions { get; set; } = new Point(20, 20);
         public Point OutdoorMapDimensions { get; set; } = new Point(70, 85);
 
-        public IMapGenerator OriginalMapGenerator { get; private set; }
-
-        protected BaseTestMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator)
+        protected BaseTestMapGenerator(IGameObjectFactory gameObjectFactory)
         {
             _gameObjectFactory = gameObjectFactory;
-            OriginalMapGenerator = originalMapGenerator;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace MarsUndiscovered.Tests.Components
     {
         private readonly Func<Point, IGameObject> _terrainChooser;
 
-        public SpecificMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator, IList<Point> wallPoints) : base(gameObjectFactory, originalMapGenerator)
+        public SpecificMapGenerator(IGameObjectFactory gameObjectFactory, IList<Point> wallPoints) : base(gameObjectFactory)
         {
             var index = 0;
 

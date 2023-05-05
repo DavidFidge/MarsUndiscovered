@@ -15,7 +15,7 @@ namespace MarsUndiscovered.Interfaces
         SpriteFont UiRegularFont { get; set; }
 
         void LoadContent();
-        SpriteSheet GetRadioCommsSpriteSheet(IGameObject gameObject);
+        SpriteSheet GetRadioCommsSpriteSheet(RadioCommsTypes radioCommsType);
         IMapTileTexture GetMapTileTexture(TileGraphicType tileGraphicType);
         IMapTileTexture GetMapTileTexture(Breed breed);
         IMapTileTexture GetMapTileTexture(ItemType itemType);

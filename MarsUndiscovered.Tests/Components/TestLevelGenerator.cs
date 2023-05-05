@@ -23,10 +23,7 @@ namespace MarsUndiscovered.Tests.Components
             _gameWorld = gameWorld;
             _originalLevelGenerator = _gameWorld.LevelGenerator;
 
-            _mapGenerator = mapGenerator ?? new BlankMapGenerator(
-                _gameWorld.GameObjectFactory,
-                container.Resolve<IMapGenerator>()
-            );
+            _mapGenerator = mapGenerator ?? new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
             MonsterGenerator = _originalLevelGenerator.MonsterGenerator;
             ItemGenerator = _originalLevelGenerator.ItemGenerator;

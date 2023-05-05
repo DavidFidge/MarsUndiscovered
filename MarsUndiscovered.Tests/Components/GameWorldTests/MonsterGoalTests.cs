@@ -114,10 +114,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Move_Traverse_Out_Of_Caves_After_Traversing_In_Using_GoalMapWander()
         {
             // Arrange
-            var mapGenerator = new BlankMapGenerator(
-                _gameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
+            var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
             mapGenerator.OutdoorMapDimensions = new Point(15, 5);
             
@@ -238,10 +235,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Two_Monsters_Should_Not_Get_Stuck()
         {
             // Arrange
-            var mapGenerator = new BlankMapGenerator(
-                _gameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
+            var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
             mapGenerator.OutdoorMapDimensions = new Point(4, 7);
             
@@ -308,10 +302,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Move_Towards_Unexplored_Region_Point_1_0()
         {
             // Arrange
-            var mapGenerator = new BlankMapGenerator(
-                _gameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
+            var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
             mapGenerator.OutdoorMapDimensions = new Point(4, 5);
             
@@ -355,10 +346,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void First_Movement_Is_Up_Instead_Of_Diagonal_For_Deeper_Path()
         {
             // Arrange
-            var mapGenerator = new BlankMapGenerator(
-                _gameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
+            var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
             mapGenerator.OutdoorMapDimensions = new Point(4, 5);
             
@@ -417,10 +405,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Recalculate_Field_Of_View_When_All_Tiles_Seen_After_Reaching_End()
         {
             // Arrange
-            var mapGenerator = new BlankMapGenerator(
-                _gameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
+            var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
             mapGenerator.OutdoorMapDimensions = new Point(5, 5);
             
@@ -498,10 +483,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Progress_On_Path_Towards_Unexplored_Region()
         {
             // Arrange
-            var mapGenerator = new BlankMapGenerator(
-                _gameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
+            var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
             mapGenerator.OutdoorMapDimensions = new Point(4, 5);
             
@@ -635,10 +617,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Move_Traverse_Out_Of_Caves_After_Traversing_In()
         {
             // Arrange
-            var mapGenerator = new BlankMapGenerator(
-                _gameWorld.GameObjectFactory,
-                Container.Resolve<IMapGenerator>()
-            );
+            var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
             mapGenerator.OutdoorMapDimensions = new Point(15, 5);
             

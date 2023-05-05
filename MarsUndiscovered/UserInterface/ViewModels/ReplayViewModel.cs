@@ -26,10 +26,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public bool ExecuteNextReplayCommand()
         {
-            var wasCommandExecuted = GameWorldEndpoint.ExecuteNextReplayCommand();
+            FinishAnimations();
+            var replayCommandResult = GameWorldEndpoint.ExecuteNextReplayCommand();
 
-            if (!wasCommandExecuted)
+            if (!replayCommandResult.HasMoreCommands)
                 return false;
+
+            QueueAnimations(replayCommandResult.CommandResults);
 
             TurnNumber++;
             MapViewModel.RecentreMap();

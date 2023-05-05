@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.Pathing;
 using MarsUndiscovered.Game.Components;
@@ -37,22 +38,23 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void Move(Direction direction)
         {
-            if (Animations.Any())
-                return;
-
+            FinishAnimations();
             var commandResult = GameWorldEndpoint.MoveRequest(direction);
-            QueueAnimations(commandResult);
-            MapViewModel.RecentreMap();
-            Mediator.Publish(new RefreshViewNotification());
+            AfterTurnExecuted(commandResult);
         }
 
         public AutoExploreResult AutoExplore()
         {
             var result = GameWorldEndpoint.AutoExploreRequest();
-            QueueAnimations(result.CommandResults);
+            AfterTurnExecuted(result.CommandResults);
+            return result;
+        }
+
+        private void AfterTurnExecuted(IList<CommandResult> commandResults)
+        {
+            QueueAnimations(commandResults);
             MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
-            return result;
         }
 
         public Path GetPathToDestination(Ray pointerRay)
@@ -74,11 +76,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             var result = GameWorldEndpoint.MoveRequest(path);
 
-            QueueAnimations(result);
-            
-            MapViewModel.RecentreMap();
-            Mediator.Publish(new RefreshViewNotification());
-            
+            AfterTurnExecuted(result);
+
             if (result.IsEmpty())
                 return true;
 

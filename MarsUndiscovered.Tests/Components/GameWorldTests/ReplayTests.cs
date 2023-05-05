@@ -12,25 +12,12 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
     [TestClass]
     public class ReplayTests : BaseGameWorldIntegrationTests
     {
-        private HalfWallsGenerator _halfWallsGenerator;
-
         [TestInitialize]
         public override void Setup()
         {
             base.Setup();
 
-            // Currently some walls are needed for spawning turrets. Should be able to remove this in the future once proper
-            // monster generation is implemented.
-            _halfWallsGenerator = new HalfWallsGenerator(_gameWorld.GameObjectFactory, _gameWorld.MapGenerator);
-
-            Container.Register(
-
-                Component.For<IMapGenerator>()
-                    .ImplementedBy<HalfWallsGenerator>()
-                    .IsDefault()
-            );
-
-            NewGameWithCustomMap(_halfWallsGenerator);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
         }
 
         [TestMethod]
@@ -45,6 +32,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Act
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
 
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
@@ -65,6 +53,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SaveGame("TestReplay", true);
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
 
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
@@ -73,11 +62,15 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var result = newGameWorld.ExecuteNextReplayCommand();
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.IsTrue(result.HasMoreCommands);
             Assert.AreNotSame(_gameWorld, newGameWorld);
             Assert.AreEqual(1, newGameWorld.HistoricalCommands.Count());
             Assert.AreEqual(1, newGameWorld.HistoricalCommands.WalkCommands.Count);
             Assert.AreEqual(new Point(0, 1), newGameWorld.Player.Position);
+
+            Assert.AreEqual(2, result.CommandResults.Count);
+            Assert.AreEqual(newGameWorld.HistoricalCommands.WalkCommands.First().CommandResult, result.CommandResults.First());
+            Assert.AreEqual(newGameWorld.HistoricalCommands.WalkCommands.First().CommandResult.SubsequentCommands.First().CommandResult, result.CommandResults.Skip(1).First());
         }
 
         [TestMethod]
@@ -91,6 +84,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SaveGame("TestReplay", true);
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
 
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
@@ -115,6 +109,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SaveGame("TestReplay", true);
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
 
             newGameWorld.LoadReplay("TestReplay");
 
@@ -124,7 +119,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var result = newGameWorld.ExecuteNextReplayCommand();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.IsFalse(result.HasMoreCommands);
             Assert.AreNotSame(_gameWorld, newGameWorld);
             Assert.AreEqual(0, newGameWorld.HistoricalCommands.Count());
             Assert.AreEqual(0, newGameWorld.HistoricalCommands.WalkCommands.Count);

@@ -80,8 +80,9 @@ public class LevelGenerator : ILevelGenerator
     {
         MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory);
         _gameWorld.AddMapToGame(MapGenerator.Map);
+        _gameWorld.Maps.CurrentMap = MapGenerator.Map;
         var map = MapGenerator.Map;
-        
+
         ShipGenerator.CreateShip(_gameWorld.GameObjectFactory, map, _gameWorld.Ships);
         MiningFacilityGenerator.CreateMiningFacility(_gameWorld.GameObjectFactory, map, _gameWorld.MiningFacilities);
         
@@ -149,6 +150,7 @@ public class LevelGenerator : ILevelGenerator
         }
 
         _gameWorld.AddMapToGame(MapGenerator.Map);
+        _gameWorld.Maps.CurrentMap = MapGenerator.Map;
 
         if (!MapGenerator.IsComplete || step <= MapGenerator.Steps)
             return new ProgressiveWorldGenerationResult { Seed = seed, IsFinalStep = false};

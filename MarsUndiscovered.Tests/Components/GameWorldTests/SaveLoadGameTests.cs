@@ -5,6 +5,7 @@ using MarsUndiscovered.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SadRogue.Primitives;
+using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
@@ -172,10 +173,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var maps = _gameWorld.Maps.ToList();
 
-            _gameWorld.Player.Position = new Point(0, 0);
+            var playerPosition = GlobalRandom.DefaultRNG.RandomPosition(maps[0], MapHelpers.EmptyPointOnFloor);
+            var monsterPosition1 = GlobalRandom.DefaultRNG.RandomPosition(maps[0], MapHelpers.EmptyPointOnFloor);
+            var monsterPosition2 = GlobalRandom.DefaultRNG.RandomPosition(maps[1], MapHelpers.EmptyPointOnFloor);
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[0].Id).WithBreed("Roach").AtPosition(new Point(2, 2)));
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[1].Id).WithBreed("Roach").AtPosition(new Point(2, 2)));
+            _gameWorld.Player.Position = playerPosition;
+            _gameWorld.GameWorldDebug.SpawnMonster(new SpawnMonsterParams().OnMap(maps[0].Id).WithBreed("Roach").AtPosition(monsterPosition1));
+            _gameWorld.GameWorldDebug.SpawnMonster(new SpawnMonsterParams().OnMap(maps[1].Id).WithBreed("Roach").AtPosition(monsterPosition2));
 
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 
@@ -199,9 +203,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(newGameMonsterMap1.CurrentMap, newGameMaps[0]);
             Assert.AreEqual(newGameMonsterMap2.CurrentMap, newGameMaps[1]);
 
-            Assert.IsNotNull(newGameMaps[0].GetObjectAt<Monster>(2, 2));
-            Assert.IsNotNull(newGameMaps[1].GetObjectAt<Monster>(2, 2));
-            Assert.AreNotSame(newGameMaps[0].GetObjectAt<Monster>(2, 2), newGameMaps[1].GetObjectAt<Monster>(2, 2));
+            Assert.IsNotNull(newGameMaps[0].GetObjectAt<Monster>(monsterPosition1));
+            Assert.IsNotNull(newGameMaps[1].GetObjectAt<Monster>(monsterPosition2));
+            Assert.AreNotSame(newGameMaps[0].GetObjectAt<Monster>(monsterPosition1), newGameMaps[1].GetObjectAt<Monster>(monsterPosition2));
         }
 
         [TestMethod]

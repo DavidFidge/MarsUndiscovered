@@ -150,7 +150,7 @@ namespace MarsUndiscovered.Game.Components
             return GameWorld.GetPlayerPosition();
         }
 
-        public bool ExecuteNextReplayCommand()
+        public ReplayCommandResult ExecuteNextReplayCommand()
         {
             return GameWorld.ExecuteNextReplayCommand();
         }

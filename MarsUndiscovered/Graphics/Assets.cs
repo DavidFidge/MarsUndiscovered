@@ -390,12 +390,13 @@ public class Assets : IAssets
             .ToArray();
     }
 
-    public SpriteSheet GetRadioCommsSpriteSheet(IGameObject gameObject)
+    public SpriteSheet GetRadioCommsSpriteSheet(RadioCommsTypes radioCommsType)
     {
-        return gameObject switch
+        return radioCommsType switch
         {
-            Ship => ShipAiRadioComms,
-            Item { ItemType: ShipRepairParts } => ShipAiRadioComms,
+            RadioCommsTypes.StartGame1 => ShipAiRadioComms,
+            RadioCommsTypes.StartGame2 => ShipAiRadioComms,
+            RadioCommsTypes.PickupShipParts => ShipAiRadioComms,
             _ => null
         };
     }

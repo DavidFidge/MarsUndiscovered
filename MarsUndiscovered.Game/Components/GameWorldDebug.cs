@@ -19,14 +19,11 @@ namespace MarsUndiscovered.Game.Components
 
         public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
         {
-            spawnMonsterParams.MapId = _gameWorld.CurrentMap.Id;
             MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Monsters);
         }
 
         public void SpawnItem(SpawnItemParams spawnItemParams)
         {
-            spawnItemParams.MapId = _gameWorld.CurrentMap.Id;
-
             if (spawnItemParams.IntoPlayerInventory)
                 spawnItemParams.Inventory = _gameWorld.Inventory;
 
@@ -35,8 +32,6 @@ namespace MarsUndiscovered.Game.Components
 
         public void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
         {
-            spawnMapExitParams.MapId = _gameWorld.CurrentMap.Id;
-
             MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
         }
     }

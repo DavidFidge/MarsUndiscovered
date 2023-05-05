@@ -41,7 +41,7 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> MoveRequest(Path path);
         AutoExploreResult AutoExploreRequest();
         Point GetPlayerPosition();
-        bool ExecuteNextReplayCommand();
+        ReplayCommandResult ExecuteNextReplayCommand();
         void AfterProgressiveWorldGeneration();
         Task SendPendingMorgues();
         void SnapshotMorgue(string username, bool uploadMorgueFiles);

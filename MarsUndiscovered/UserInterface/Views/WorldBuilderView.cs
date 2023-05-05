@@ -83,7 +83,7 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(BuildWorldRequest request, CancellationToken cancellationToken)
         {
             _viewModel.BuildWorld(request.WorldGenerationTypeParams);
-            UpdateMapRenderTargetSize(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
+            UpdateMapRenderTarget(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
             
             return Unit.Task;
         }
