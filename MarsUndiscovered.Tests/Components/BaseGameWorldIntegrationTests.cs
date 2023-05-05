@@ -30,31 +30,17 @@ namespace MarsUndiscovered.Tests.Components
 
         protected void NewGameWithCustomMap(IMapGenerator mapGenerator = null)
         {
-            if (mapGenerator == null)
-            {
-                mapGenerator = new BlankMapGenerator(
-                    _gameWorld.GameObjectFactory,
-                    Container.Resolve<IMapGenerator>()
-                );
-            }
-
-            _gameWorld.MapGenerator = mapGenerator;
+            var levelGenerator = new TestLevelGenerator(_gameWorld, Container, mapGenerator);
+            _gameWorld.LevelGenerator = levelGenerator;
 
             _gameWorld.NewGame();
         }
         
         protected void ProgressiveWorldGenerationWithCustomMap(IMapGenerator mapGenerator = null)
         {
-            if (mapGenerator == null)
-            {
-                mapGenerator = new BlankMapGenerator(
-                    _gameWorld.GameObjectFactory,
-                    Container.Resolve<IMapGenerator>()
-                );
-            }
+            var levelGenerator = new TestLevelGenerator(_gameWorld, Container, mapGenerator);
 
-            _gameWorld.MapGenerator = mapGenerator;
-
+            _gameWorld.LevelGenerator = levelGenerator;
             _gameWorld.ProgressiveWorldGeneration(null, 1, new WorldGenerationTypeParams(MapType.Outdoor));
         }
 
@@ -68,24 +54,23 @@ namespace MarsUndiscovered.Tests.Components
                 Container.Resolve<IItemGenerator>()
             );
 
-            _gameWorld.MonsterGenerator = blankMonsterGenerator;
-            _gameWorld.ItemGenerator = blankItemGenerator;
+            _gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
+            _gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
 
             _gameWorld.NewGame();
 
-            _gameWorld.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
-            _gameWorld.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
+            _gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
+            _gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
         }
 
         protected void NewGameWithCustomMapNoMonstersNoItems(IMapGenerator mapGenerator = null)
         {
-            if (mapGenerator == null)
-            {
-                mapGenerator = new BlankMapGenerator(
-                    _gameWorld.GameObjectFactory,
-                    Container.Resolve<IMapGenerator>()
-                );
-            }
+            mapGenerator ??= new BlankMapGenerator(
+                _gameWorld.GameObjectFactory,
+                Container.Resolve<IMapGenerator>()
+            );
+
+            _gameWorld.LevelGenerator.MapGenerator = mapGenerator;
 
             var blankMonsterGenerator = new BlankMonsterGenerator(
                 Container.Resolve<IMonsterGenerator>()
@@ -95,29 +80,48 @@ namespace MarsUndiscovered.Tests.Components
                 Container.Resolve<IItemGenerator>()
             );
 
-            _gameWorld.MapGenerator = mapGenerator;
-            _gameWorld.MonsterGenerator = blankMonsterGenerator;
-            _gameWorld.ItemGenerator = blankItemGenerator;
+            _gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
+            _gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
 
             _gameWorld.NewGame();
 
-            _gameWorld.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
-            _gameWorld.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
+            _gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
+            _gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
         }
 
         protected void NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(IMapGenerator mapGenerator = null)
         {
-            if (mapGenerator == null)
-            {
-                mapGenerator = new BlankMapGenerator(
-                    _gameWorld.GameObjectFactory,
-                    Container.Resolve<IMapGenerator>()
-                );
-            }
-            
-            _gameWorld.MapGenerator = mapGenerator;
-            
-            _gameWorld.NewBlankGame();
+            mapGenerator ??= new BlankMapGenerator(
+                _gameWorld.GameObjectFactory,
+                Container.Resolve<IMapGenerator>()
+            );
+
+            _gameWorld.LevelGenerator.MapGenerator = mapGenerator;
+
+            var blankMonsterGenerator = new BlankMonsterGenerator(
+                Container.Resolve<IMonsterGenerator>()
+            );
+
+            var blankItemGenerator = new BlankItemGenerator(
+                Container.Resolve<IItemGenerator>()
+            );
+
+            var blankMapExitGenerator = new BlankMapExitGenerator(
+                Container.Resolve<IMapExitGenerator>()
+            );
+
+            var blankShipGenerator = new BlankShipGenerator();
+            var blankMiningFacilityGenerator = new BlankMiningFacilityGenerator();
+
+            _gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
+            _gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
+            _gameWorld.LevelGenerator.MapExitGenerator = blankMapExitGenerator;
+            _gameWorld.LevelGenerator.ShipGenerator = blankShipGenerator;
+            _gameWorld.LevelGenerator.MiningFacilityGenerator = blankMiningFacilityGenerator;
+
+            _gameWorld.NewGame();
+
+
         }
         
         protected Item SpawnItemAndEquip(ItemType itemType)

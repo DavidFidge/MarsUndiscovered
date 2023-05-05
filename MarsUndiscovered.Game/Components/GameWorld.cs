@@ -12,7 +12,6 @@ using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Game.Components.SaveData;
-using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Game.ViewMessages;
 using Microsoft.Xna.Framework.Input;
 
@@ -24,6 +23,7 @@ namespace MarsUndiscovered.Game.Components
 {
     public class GameWorld : BaseComponent, IGameWorld, ISaveable
     {
+        public ILevelGenerator LevelGenerator { get; set; }
         public Guid GameId { get; private set; }
         public Player Player { get; set; }
         public IMorgue Morgue { get; set; }
@@ -32,12 +32,8 @@ namespace MarsUndiscovered.Game.Components
         public ICommandFactory CommandFactory { get; set; }
         public IGameTurnService GameTurnService { get; set; }
         public ISaveGameService SaveGameService { get; set; }
-        public IMapGenerator MapGenerator { get; set; }
-        public IMonsterGenerator MonsterGenerator { get; set; }
-        public IItemGenerator ItemGenerator { get; set; }
-        public IShipGenerator ShipGenerator { get; set; }
-        public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
-        public IMapExitGenerator MapExitGenerator { get; set; }
+        public IGameWorldDebug GameWorldDebug { get; set; }
+
         public WallCollection Walls { get; private set; }
         public FloorCollection Floors { get; private set; }
         public MonsterCollection Monsters { get; private set; }
@@ -87,34 +83,22 @@ namespace MarsUndiscovered.Game.Components
 
         public void NewGame(ulong? seed = null)
         {
-            Reset();
-            Morgue.GameStarted();
-            
-            seed ??= MakeSeed();
-
-            Seed = seed.Value;
-
-            GlobalRandom.DefaultRNG = new MizuchiRandom(seed.Value);
+            ResetForNewGame(seed);
 
             Logger.Debug("Generating game world");
 
-            var levelGenerator = new LevelGenerator(this);
-            var mapLevel1 = levelGenerator.CreateLevel1();
-            Maps.CurrentMap = mapLevel1;
+            LevelGenerator.Initialise(this);
+            LevelGenerator.CreateLevels();
+            Maps.CurrentMap = Maps.First();
 
-            levelGenerator.CreateLevel2(mapLevel1);
-            
             Inventory = new Inventory(this);
-            
+
             _radioComms.CreateGameStartMessages(Ships.First().Value, _messageLog);
 
             ResetFieldOfView();
-            GameTimeService.Start();
         }
-        
-        // Currently used for unit tests. Level generation could be factored out to strategies in the future, then this
-        // may be able to be changed.
-        public void NewBlankGame(ulong? seed = null)
+
+        private void ResetForNewGame(ulong? seed)
         {
             Reset();
             Morgue.GameStarted();
@@ -125,68 +109,22 @@ namespace MarsUndiscovered.Game.Components
 
             GlobalRandom.DefaultRNG = new MizuchiRandom(seed.Value);
 
-            Logger.Debug("Generating game world");
-            
-            MapGenerator.CreateOutdoorMap(this, GameObjectFactory);
-            AddMapToGame(MapGenerator.MarsMap);
-            var map = MapGenerator.MarsMap;
-            
-            Player = GameObjectFactory
-                .CreateGameObject<Player>()
-                .PositionedAt(new Point(map.Width / 2,
-                    map.Height - 2 -
-                    (Constants.ShipOffset -
-                     1))) // Start off underneath the ship, extra -1 for the current ship design as there's a blank space on the bottom line
-                .AddToMap(map);
-            
-            Maps.CurrentMap = map;
-            
             Inventory = new Inventory(this);
 
-            ResetFieldOfView();
+            GameTimeService.Reset();
             GameTimeService.Start();
         }
 
         public ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step, WorldGenerationTypeParams worldGenerationTypeParams)
         {
-            Reset();
-            
-            seed ??= MakeSeed();
-
-            Seed = seed.Value;
-
-            GlobalRandom.DefaultRNG = new MizuchiRandom(seed.Value);
+            ResetForNewGame(seed);
 
             Logger.Debug("Generating world in world builder");
 
-            switch (worldGenerationTypeParams.MapType)
-            {
-                case MapType.Outdoor:
-                    MapGenerator.CreateOutdoorMap(this, GameObjectFactory, step);
-                    break;
-                case MapType.Mine:
-                    MapGenerator.CreateMineMap(this, GameObjectFactory, step);
-                    break;
-            }
-            
-            AddMapToGame(MapGenerator.MarsMap);
+            LevelGenerator.Initialise(this);
+             var result = LevelGenerator.CreateProgressive(Seed, step, worldGenerationTypeParams);
 
-            Maps.CurrentMap = MapGenerator.MarsMap;
-
-            if (!MapGenerator.IsComplete || step <= MapGenerator.Steps)
-                return new ProgressiveWorldGenerationResult { Seed = Seed, IsFinalStep = false};
-
-            Player = GameObjectFactory
-                .CreateGameObject<Player>()
-                .PositionedAt(GlobalRandom.DefaultRNG.RandomPosition(CurrentMap, MapHelpers.EmptyPointOnFloor))
-                .AddToMap(CurrentMap);
-
-            Inventory = new Inventory(this);
-
-            SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Roach")));
-            SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
-            
-            return new ProgressiveWorldGenerationResult { Seed = Seed, IsFinalStep = true };
+             return result;
         }
         
         protected void ResetFieldOfView()
@@ -197,12 +135,12 @@ namespace MarsUndiscovered.Game.Components
             LastMonstersInView = MonstersInView;
         }
 
-        public MarsMap AddMapToGame(MarsMap marsMap)
+        public void AddMapToGame(MarsMap marsMap)
         {
             var terrain = GameObjects
                 .Values
                 .OfType<Terrain>()
-                .Where(g => Equals(g.CurrentMap, MapGenerator.MarsMap))
+                .Where(g => Equals(g.CurrentMap, marsMap))
                 .ToList();
 
             foreach (var wall in terrain.OfType<Wall>())
@@ -211,9 +149,7 @@ namespace MarsUndiscovered.Game.Components
             foreach (var floor in terrain.OfType<Floor>())
                 Floors.Add(floor.ID, floor);
 
-            Maps.Add(MapGenerator.MarsMap);
-
-            return MapGenerator.MarsMap;
+            Maps.Add(marsMap);
         }
 
         private void Reset()
@@ -233,6 +169,7 @@ namespace MarsUndiscovered.Game.Components
             _autoExploreGoalMap = new AutoExploreGoalMap();
 
             GameObjectFactory.Initialise(this);
+            GameWorldDebug.Initialise(this);
         }
 
         public void UpdateFieldOfView(bool partialUpdate = true)
@@ -471,30 +408,6 @@ namespace MarsUndiscovered.Game.Components
         public IGridView<double?> GetGoalMap()
         {
             return Monsters.First().Value.GetGoalMap();
-        }
-
-        public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
-        {
-            var map = spawnMonsterParams.MapId.HasValue ? Maps.First(m => m.Id == spawnMonsterParams.MapId) : CurrentMap;
-
-            MonsterGenerator.SpawnMonster(spawnMonsterParams, GameObjectFactory, map, Monsters);
-        }
-
-        public void SpawnItem(SpawnItemParams spawnItemParams)
-        {
-            var map = spawnItemParams.MapId.HasValue ? Maps.First(m => m.Id == spawnItemParams.MapId) : CurrentMap;
-            
-            if (spawnItemParams.IntoPlayerInventory)
-                spawnItemParams.Inventory = Inventory;
-
-            ItemGenerator.SpawnItem(spawnItemParams, GameObjectFactory, map, Items);
-        }
-
-        public MapExit SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
-        {
-            var map = spawnMapExitParams.MapId.HasValue ? Maps.First(m => m.Id == spawnMapExitParams.MapId) : CurrentMap;
-
-            return MapExitGenerator.SpawnMapExit(spawnMapExitParams, GameObjectFactory, map, MapExits);
         }
 
         public void CreateWall(Point position)
@@ -789,6 +702,21 @@ namespace MarsUndiscovered.Game.Components
             {
                 monster.Regenerate();
             }
+        }
+
+        public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
+        {
+            GameWorldDebug.SpawnMonster(spawnMonsterParams);
+        }
+
+        public void SpawnItem(SpawnItemParams spawnItemParams)
+        {
+            GameWorldDebug.SpawnItem(spawnItemParams);
+        }
+
+        public void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
+        {
+            GameWorldDebug.SpawnMapExit(spawnMapExitParams);
         }
     }
 }

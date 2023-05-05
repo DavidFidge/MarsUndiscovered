@@ -16,7 +16,7 @@ namespace MarsUndiscovered.Tests.Components
         public Monster SpawnMonster(
             SpawnMonsterParams spawnMonsterParams,
             IGameObjectFactory gameObjectFactory,
-            MarsMap map,
+            MapCollection maps,
             MonsterCollection monsterCollection
         )
         {

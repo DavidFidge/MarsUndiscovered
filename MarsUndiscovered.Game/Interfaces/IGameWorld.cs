@@ -7,6 +7,7 @@ using GoRogue.Pathing;
 
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Dto;
+using MarsUndiscovered.Game.Components.Maps;
 using Microsoft.Xna.Framework.Input;
 
 using SadRogue.Primitives;
@@ -32,8 +33,10 @@ namespace MarsUndiscovered.Interfaces
         ItemCollection Items { get; }
         Inventory Inventory { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
+        ILevelGenerator LevelGenerator { get; set; }
         Guid GameId { get; }
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
+        void SpawnMapExit(SpawnMapExitParams spawnMapExitParams);
         LoadGameResult LoadReplay(string saveGameName);
         bool ExecuteNextReplayCommand();
         IList<MonsterStatus> GetStatusOfMonstersInView();

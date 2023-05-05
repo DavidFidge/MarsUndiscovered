@@ -7,7 +7,7 @@ namespace MarsUndiscovered.Game.Components
 {
     public abstract class BaseSpawnGameObjectParams
     {
-        public Guid? MapId { get; set; }
+        public Guid MapId { get; set; }
         public Point? Position { get; set; }
         public Point? AvoidPosition { get; set; }
         public uint AvoidPositionRange { get; set; }

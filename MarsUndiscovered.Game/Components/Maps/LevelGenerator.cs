@@ -1,64 +1,40 @@
-﻿using MarsUndiscovered.Game.Components.Factories;
+﻿using GoRogue.Random;
 using MarsUndiscovered.Game.Extensions;
 using SadRogue.Primitives;
+using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components.Maps;
 
-public class LevelGenerator
+public class LevelGenerator : ILevelGenerator
 {
-    private readonly IMapGenerator _mapGenerator;
-    GameWorld GameWorld { get; set; }
+    private GameWorld _gameWorld;
     public IMapGenerator MapGenerator { get; set; }
     public IMonsterGenerator MonsterGenerator { get; set; }
     public IItemGenerator ItemGenerator { get; set; }
     public IShipGenerator ShipGenerator { get; set; }
     public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
     public IMapExitGenerator MapExitGenerator { get; set; }
-    public IGameObjectFactory GameObjectFactory { get; set; }
 
-    public LevelGenerator(GameWorld gameWorld)
+    private void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
     {
-        GameWorld = gameWorld;
-
-        _mapGenerator = gameWorld.MapGenerator;
-        MonsterGenerator = gameWorld.MonsterGenerator;
-        ItemGenerator = gameWorld.ItemGenerator;
-        MapExitGenerator = gameWorld.MapExitGenerator;
-        ShipGenerator = gameWorld.ShipGenerator;
-        MiningFacilityGenerator = gameWorld.MiningFacilityGenerator;
-        MapGenerator = gameWorld.MapGenerator;
-        GameObjectFactory = gameWorld.GameObjectFactory;
+        MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Monsters);
     }
 
-    public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
+    private void SpawnItem(SpawnItemParams spawnItemParams)
     {
-        var map = spawnMonsterParams.MapId.HasValue ? GameWorld.Maps.First(m => m.Id == spawnMonsterParams.MapId) : _mapGenerator.MarsMap;
-
-        MonsterGenerator.SpawnMonster(spawnMonsterParams, GameObjectFactory, map, GameWorld.Monsters);
+        ItemGenerator.SpawnItem(spawnItemParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Items);
     }
 
-    public void SpawnItem(SpawnItemParams spawnItemParams)
+    private MapExit SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
     {
-        var map = spawnItemParams.MapId.HasValue ? GameWorld.Maps.First(m => m.Id == spawnItemParams.MapId) : _mapGenerator.MarsMap;
-            
-        if (spawnItemParams.IntoPlayerInventory)
-            spawnItemParams.Inventory = GameWorld.Inventory;
-
-        ItemGenerator.SpawnItem(spawnItemParams, GameObjectFactory, map, GameWorld.Items);
+        return MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
     }
 
-    public MapExit SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
+    private MarsMap CreateLevel2(MarsMap mapLevel1)
     {
-        var map = spawnMapExitParams.MapId.HasValue ? GameWorld.Maps.First(m => m.Id == spawnMapExitParams.MapId) : _mapGenerator.MarsMap;
-
-        return MapExitGenerator.SpawnMapExit(spawnMapExitParams, GameObjectFactory, map, GameWorld.MapExits);
-    }
-
-    public MarsMap CreateLevel2(MarsMap mapLevel1)
-    {
-        _mapGenerator.CreateOutdoorMap(GameWorld, GameWorld.GameObjectFactory);
-        GameWorld.AddMapToGame(_mapGenerator.MarsMap);
-        var mapLevel2 = _mapGenerator.MarsMap;
+        MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory);
+        _gameWorld.AddMapToGame(MapGenerator.Map);
+        var mapLevel2 = MapGenerator.Map;
         mapLevel2.Level = 2;
 
         SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("Roach"));
@@ -79,7 +55,7 @@ public class LevelGenerator
 
         if (mapExit2 != null)
         {
-            var miningFacilityPointsOnMap1 = GameWorld.MiningFacilities.Values
+            var miningFacilityPointsOnMap1 = _gameWorld.MiningFacilities.Values
                 .Where(m => ((MarsMap)m.CurrentMap).Id == mapLevel1.Id)
                 .Select(m => m.Position)
                 .GroupBy(m => m.Y)
@@ -100,16 +76,16 @@ public class LevelGenerator
         return mapLevel2;
     }
 
-    public MarsMap CreateLevel1()
+    private MarsMap CreateLevel1()
     {
-        MapGenerator.CreateOutdoorMap(GameWorld, GameObjectFactory);
-        GameWorld.AddMapToGame(MapGenerator.MarsMap);
-        var map = MapGenerator.MarsMap;
+        MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory);
+        _gameWorld.AddMapToGame(MapGenerator.Map);
+        var map = MapGenerator.Map;
         
-        ShipGenerator.CreateShip(GameObjectFactory, map, GameWorld.Ships);
-        MiningFacilityGenerator.CreateMiningFacility(GameObjectFactory, map, GameWorld.MiningFacilities);
+        ShipGenerator.CreateShip(_gameWorld.GameObjectFactory, map, _gameWorld.Ships);
+        MiningFacilityGenerator.CreateMiningFacility(_gameWorld.GameObjectFactory, map, _gameWorld.MiningFacilities);
         
-        GameWorld.Player = GameObjectFactory
+        _gameWorld.Player = _gameWorld.GameObjectFactory
             .CreateGameObject<Player>()
             .PositionedAt(new Point(map.Width / 2,
                 map.Height - 2 -
@@ -152,5 +128,41 @@ public class LevelGenerator
         SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).OnMap(map.Id));
 
         return map;
+    }
+
+    public void CreateLevels()
+    {
+        var level1Map = CreateLevel1();
+        CreateLevel2(level1Map);
+    }
+
+    public ProgressiveWorldGenerationResult CreateProgressive(ulong seed, int step, WorldGenerationTypeParams worldGenerationTypeParams)
+    {
+        switch (worldGenerationTypeParams.MapType)
+        {
+            case MapType.Outdoor:
+                MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, step);
+                break;
+            case MapType.Mine:
+                MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory, step);
+                break;
+        }
+
+        _gameWorld.AddMapToGame(MapGenerator.Map);
+
+        if (!MapGenerator.IsComplete || step <= MapGenerator.Steps)
+            return new ProgressiveWorldGenerationResult { Seed = seed, IsFinalStep = false};
+
+        _gameWorld.Player = _gameWorld.GameObjectFactory
+            .CreateGameObject<Player>()
+            .PositionedAt(GlobalRandom.DefaultRNG.RandomPosition(MapGenerator.Map, MapHelpers.EmptyPointOnFloor))
+            .AddToMap(MapGenerator.Map);
+
+        return new ProgressiveWorldGenerationResult { Seed = seed, IsFinalStep = true };
+    }
+
+    public void Initialise(GameWorld gameWorld)
+    {
+        _gameWorld = gameWorld;
     }
 }

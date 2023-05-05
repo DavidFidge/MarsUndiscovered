@@ -1,12 +1,13 @@
 ﻿using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Game.ViewMessages;
+using NGenerics.Sorting;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {
     public class ItemGenerator : BaseGameObjectGenerator, IItemGenerator
     {
-        public Item SpawnItem(SpawnItemParams spawnItemParams, IGameObjectFactory gameObjectFactory, MarsMap map, ItemCollection itemCollection)
+        public Item SpawnItem(SpawnItemParams spawnItemParams, IGameObjectFactory gameObjectFactory, MapCollection maps, ItemCollection itemCollection)
         {
             if (spawnItemParams.ItemType == null)
                 return null;
@@ -17,6 +18,8 @@ namespace MarsUndiscovered.Game.Components.Maps
 
             if (spawnItemParams.Inventory == null)
             {
+                var map = maps.Single(m => m.Id == spawnItemParams.MapId);
+
                 item.PositionedAt(GetPosition(spawnItemParams, map))
                     .AddToMap(map);
             }

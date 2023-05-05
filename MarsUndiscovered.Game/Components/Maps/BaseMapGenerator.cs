@@ -6,7 +6,7 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public abstract class BaseMapGenerator : BaseComponent, IMapGenerator
     {
-        public MarsMap MarsMap { get; set; }
+        public MarsMap Map { get; set; }
         public int Steps { get; set; }
         public bool IsComplete { get; set; }
 

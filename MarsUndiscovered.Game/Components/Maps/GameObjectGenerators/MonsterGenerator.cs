@@ -6,8 +6,10 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public class MonsterGenerator : BaseGameObjectGenerator, IMonsterGenerator
     {
-        public Monster SpawnMonster(SpawnMonsterParams spawnMonsterParams, IGameObjectFactory gameObjectFactory, MarsMap map, MonsterCollection monsterCollection)
+        public Monster SpawnMonster(SpawnMonsterParams spawnMonsterParams, IGameObjectFactory gameObjectFactory, MapCollection maps, MonsterCollection monsterCollection)
         {
+            var map = maps.Single(m => m.Id == spawnMonsterParams.MapId);
+
             var monster = gameObjectFactory
                 .CreateGameObject<Monster>()
                 .WithBreed(spawnMonsterParams.Breed);

@@ -110,12 +110,12 @@ namespace MarsUndiscovered.Game.Components.Maps
             var walls = wallsFloors.ToArray().OfType<Wall>().ToList();
             var floors = wallsFloors.ToArray().OfType<Floor>().ToList();
 
-            MarsMap = CreateMap(gameWorld, walls, floors, generator.Context.Width, generator.Context.Height);
+            Map = CreateMap(gameWorld, walls, floors, generator.Context.Width, generator.Context.Height);
         }
 
         private void Clear()
         {
-            MarsMap = null;
+            Map = null;
             IsComplete = false;
             Steps = 0;
         }

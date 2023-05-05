@@ -6,5 +6,6 @@ namespace MarsUndiscovered.Interfaces
     {
         void SpawnItem(SpawnItemParams spawnItemParams);
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
+        void SpawnMapExit(SpawnMapExitParams spawnMapExitParams);
     }
 }

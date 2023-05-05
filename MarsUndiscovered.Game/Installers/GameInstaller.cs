@@ -34,22 +34,32 @@ namespace MarsUndiscovered.Game.Installers
                     .ImplementedBy<HttpClientWrapper>(),
 
                 Component.For<IMapGenerator>()
-                    .ImplementedBy<MapGenerator>(),
+                    .ImplementedBy<MapGenerator>()
+                    .LifestyleTransient(),
+
+                Component.For<ILevelGenerator>()
+                    .ImplementedBy<LevelGenerator>()
+                    .LifestyleTransient(),
 
                 Component.For<IMonsterGenerator>()
-                    .ImplementedBy<MonsterGenerator>(),
+                    .ImplementedBy<MonsterGenerator>()
+                    .LifestyleTransient(),
 
                 Component.For<IItemGenerator>()
-                    .ImplementedBy<ItemGenerator>(),
+                    .ImplementedBy<ItemGenerator>()
+                    .LifestyleTransient(),
 
                 Component.For<IShipGenerator>()
-                    .ImplementedBy<ShipGenerator>(),
+                    .ImplementedBy<ShipGenerator>()
+                    .LifestyleTransient(),
                 
                 Component.For<IMiningFacilityGenerator>()
-                    .ImplementedBy<MiningFacilityGenerator>(),
+                    .ImplementedBy<MiningFacilityGenerator>()
+                    .LifestyleTransient(),
 
                 Component.For<IMapExitGenerator>()
-                    .ImplementedBy<MapExitGenerator>(),
+                    .ImplementedBy<MapExitGenerator>()
+                    .LifestyleTransient(),
 
                 Classes.FromAssemblyContaining<IGameCamera>()
                     .BasedOn<IGameCamera>()
@@ -57,6 +67,10 @@ namespace MarsUndiscovered.Game.Installers
 
                 Component.For<IGameWorldEndpoint, IGameWorldConsoleCommandEndpoint>()
                     .ImplementedBy<GameWorldEndpoint>(),
+
+                Component.For<IGameWorldDebug>()
+                    .ImplementedBy<GameWorldDebug>()
+                    .LifestyleTransient(),
 
                 Component.For<IGameWorld>()
                     .ImplementedBy<GameWorld>()
@@ -71,13 +85,15 @@ namespace MarsUndiscovered.Game.Installers
                     .LifestyleTransient(),
                 
                 Component.For<IMorgue>()
-                    .ImplementedBy<Morgue>(),
+                    .ImplementedBy<Morgue>()
+                    .LifestyleTransient(),
                 
                 Component.For<IMorgueWebService>()
                     .ImplementedBy<MorgueWebService>(),
                 
                 Component.For<IMorgueFileWriter>()
                     .ImplementedBy<MorgueFileWriter>()
+                    .LifestyleTransient()
             );
         }
 

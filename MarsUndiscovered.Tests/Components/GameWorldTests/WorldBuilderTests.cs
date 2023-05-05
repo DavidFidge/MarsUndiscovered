@@ -19,7 +19,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             Assert.AreEqual(1, mapGenerator.Steps);
             Assert.IsFalse(mapGenerator.IsComplete);
-            Assert.AreSame(_gameWorld.CurrentMap, mapGenerator.MarsMap);
+            Assert.AreSame(_gameWorld.CurrentMap, mapGenerator.Map);
             Assert.IsNotNull(_gameWorld.CurrentMap);
             Assert.AreEqual(mapGenerator.OutdoorMapDimensions.X, _gameWorld.CurrentMap.Width);
             Assert.AreEqual(mapGenerator.OutdoorMapDimensions.Y, _gameWorld.CurrentMap.Height);
@@ -46,7 +46,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             Assert.AreEqual(2, mapGenerator.Steps);
             Assert.IsTrue(mapGenerator.IsComplete);
-            Assert.AreSame(_gameWorld.CurrentMap, mapGenerator.MarsMap);
+            Assert.AreSame(_gameWorld.CurrentMap, mapGenerator.Map);
             Assert.IsNotNull(_gameWorld.CurrentMap);
             Assert.AreEqual(mapGenerator.OutdoorMapDimensions.X, _gameWorld.CurrentMap.Width);
             Assert.AreEqual(mapGenerator.OutdoorMapDimensions.Y, _gameWorld.CurrentMap.Height);
@@ -73,7 +73,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             Assert.AreEqual(2, mapGenerator.Steps);
             Assert.IsTrue(mapGenerator.IsComplete);
-            Assert.AreSame(_gameWorld.CurrentMap, mapGenerator.MarsMap);
+            Assert.AreSame(_gameWorld.CurrentMap, mapGenerator.Map);
             Assert.AreEqual(mapGenerator.OutdoorMapDimensions.X, _gameWorld.CurrentMap.Width);
             Assert.AreEqual(mapGenerator.OutdoorMapDimensions.Y, _gameWorld.CurrentMap.Height);
             Assert.IsNotNull(_gameWorld.CurrentMap);

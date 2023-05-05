@@ -55,7 +55,7 @@ namespace MarsUndiscovered.Game.Components.Maps
 
                 miningFacilityCollection.Add(miningFacility.ID, miningFacility);
 
-                map.AddEntity(miningFacility);               
+                map.AddEntity(miningFacility);
             }
         }
     }

@@ -18,15 +18,16 @@ namespace MarsUndiscovered.Game.Components.Maps
         public MapExit SpawnMapExit(
             SpawnMapExitParams spawnMapExitParams,
             IGameObjectFactory gameObjectFactory,
-            MarsMap map,
+            MapCollection maps,
             MapExitCollection mapExitCollection
         )
         {
+            var map = maps.Single(m => m.Id == spawnMapExitParams.MapId);
+
             MapExit destinationMapExit = null;
 
-            if (spawnMapExitParams.DestinationMapExitId != null) 
-                destinationMapExit =
-                    (MapExit)gameObjectFactory.GameObjects[spawnMapExitParams.DestinationMapExitId.Value];
+            if (spawnMapExitParams.DestinationMapExitId != null)
+                destinationMapExit = mapExitCollection[spawnMapExitParams.DestinationMapExitId.Value];
 
             var position = spawnMapExitParams.Position != null
                 ? GetPosition(spawnMapExitParams, map)
