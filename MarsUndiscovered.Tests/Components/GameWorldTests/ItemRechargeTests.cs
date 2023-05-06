@@ -10,7 +10,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void When_Next_Turn_Occurs_Current_Recharge_Should_Not_Drop_Below_Zero()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
             var item = _gameWorld.Items.Values.Last();
@@ -27,7 +27,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Items_Should_Spawn_Fully_Charged()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             
             // Act
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
@@ -41,7 +41,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void ResetRechargeDelay_Should_Reset_Item_To_Uncharged()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
             var item = _gameWorld.Items.Values.Last();
  
@@ -57,7 +57,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void FullRecharge_Should_Fully_Recharge_Item()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
             var item = _gameWorld.Items.Values.Last();
             item.ResetRechargeDelay();
@@ -73,7 +73,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void When_Next_Turn_Occurs_Item_Recharge_Delay_Should_Be_Decremented()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
             var item = _gameWorld.Items.Values.Last();
@@ -91,7 +91,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void When_Item_Has_Charged_A_Message_Is_Logged()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
             var item = _gameWorld.Items.Values.Last();

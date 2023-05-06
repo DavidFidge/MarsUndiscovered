@@ -11,7 +11,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Add_Item_To_Inventory_And_Assign_It_Letter_A()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
 
@@ -35,7 +35,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Not_Add_Duplicate_Items()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
 
@@ -60,7 +60,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Remove_Item_From_Inventory()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -79,7 +79,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Add_Two_Non_Groupable_Items_To_Inventory()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item1 = _gameWorld.Items.Values.First();
@@ -110,7 +110,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Add_Two_Groupable_Items_To_Inventory()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
             var item1 = _gameWorld.Items.Values.First();
@@ -139,7 +139,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Remove_Groupable_Item_From_Inventory()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -158,7 +158,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Remove_Groupable_Item_When_Multiple_In_Group()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
             var item1 = _gameWorld.Items.Values.First();
@@ -186,7 +186,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Get_Item_By_Key()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -203,7 +203,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Return_Null_If_Assignment_Does_Not_Exist()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -219,7 +219,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Assign_New_Key_When_Destination_Key_Not_Assigned()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -238,7 +238,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Assign_New_Key_When_Destination_Key_Is_Already_Assigned()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item1 = _gameWorld.Items.Values.First();
@@ -259,7 +259,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Not_Assign_Non_Alpha_Key()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -276,7 +276,7 @@ namespace MarsUndiscovered.Tests.Components
         public void GetInventoryItems_Should_Return_InventoryItems_For_Each_Key()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
@@ -309,7 +309,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Equip_Weapon()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -326,7 +326,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Should_Unequip_Weapon()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -344,7 +344,7 @@ namespace MarsUndiscovered.Tests.Components
         public void Removing_An_Item_From_Inventory_Should_Also_Unequip_Weapon()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -362,7 +362,7 @@ namespace MarsUndiscovered.Tests.Components
         public void CanEquip_Weapon_Should_Return_True()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -378,7 +378,7 @@ namespace MarsUndiscovered.Tests.Components
         public void CanEquip_NonEquippable_ItemType_Should_Return_False()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -394,7 +394,7 @@ namespace MarsUndiscovered.Tests.Components
         public void CanEquip_Weapon_Should_Return_False_If_Already_Equipped()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -411,7 +411,7 @@ namespace MarsUndiscovered.Tests.Components
         public void CanUnequip_Weapon_Should_Return_True()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);
@@ -428,7 +428,7 @@ namespace MarsUndiscovered.Tests.Components
         public void CanUnequip_Weapon_Should_Return_False_When_Not_Equipped()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             var item = _gameWorld.Items.Values.First();
             _gameWorld.Inventory.Add(item);

@@ -16,7 +16,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void LineAttackCommand_Should_Deduct_Health_Of_Targets_Along_A_Path()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
@@ -27,7 +27,7 @@ namespace MarsUndiscovered.Tests.Commands
             var monster1HealthBefore = monster1.Health;
             var monster2HealthBefore = monster2.Health;
 
-            var item = SpawnItemAndAddToInventory(ItemType.IronSpike);
+            var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.IronSpike);
             item.LineAttack.DamageRange = new Range<int>(1, 1);
             _gameWorld.Inventory.Equip(item);
 
@@ -54,7 +54,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void LineAttackCommand_Should_Deduct_Health_Of_Target_When_Target_Is_Two_Spaces_Away()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 2)));
@@ -62,7 +62,7 @@ namespace MarsUndiscovered.Tests.Commands
 
             var monsterHealthBefore = monster.Health;
             
-            var item = SpawnItemAndAddToInventory(ItemType.IronSpike);
+            var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.IronSpike);
             item.LineAttack.DamageRange = new Range<int>(1, 1);
             _gameWorld.Inventory.Equip(item);
             

@@ -20,7 +20,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Move_Towards_Closest_Unexplored_Region_GoalMapWander()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(2, 0);
             var wallPosition1 = new Point(1, 1);
@@ -58,7 +58,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Move_Traverse_Out_Of_Caves_Using_GoalMapWander()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             
@@ -118,7 +118,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             mapGenerator.OutdoorMapDimensions = new Point(15, 5);
             
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(mapGenerator);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             _gameWorld.Player.Position = new Point(0, 0);
             
@@ -193,7 +193,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Monsters_Should_Update_Field_Of_View_Before_Calculating_Goals_Using_GoalMapWander()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(10, 10);
 
@@ -239,7 +239,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             mapGenerator.OutdoorMapDimensions = new Point(4, 7);
             
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(mapGenerator);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
             
             // ..#@
             // .###
@@ -306,7 +306,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             mapGenerator.OutdoorMapDimensions = new Point(4, 5);
             
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(mapGenerator);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
             
             // ..#@
             // P###
@@ -350,7 +350,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             mapGenerator.OutdoorMapDimensions = new Point(4, 5);
             
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(mapGenerator);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
             
             // .PE@
             // P###
@@ -409,7 +409,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             mapGenerator.OutdoorMapDimensions = new Point(5, 5);
             
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(mapGenerator);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
             
             // ...#@    .P.#@
             // .#.##    P#M##
@@ -487,7 +487,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             mapGenerator.OutdoorMapDimensions = new Point(4, 5);
             
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(mapGenerator);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             // ..#@
             // .###
@@ -523,7 +523,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Not_Move_If_Cannot_Find_Unexplored_Path()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 3);
             
@@ -562,7 +562,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Move_Traverse_Out_Of_Caves()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             
@@ -621,7 +621,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             mapGenerator.OutdoorMapDimensions = new Point(15, 5);
             
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(mapGenerator);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             _gameWorld.Player.Position = new Point(0, 3);
             
@@ -695,7 +695,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Move_Towards_Player_When_Player_Is_Seen()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(2, 0);
             var wallPosition1 = new Point(1, 5);
@@ -726,7 +726,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Attack_Player_When_Adjacent_To_Player()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(1, 1);
 
@@ -751,7 +751,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Monsters_Should_Stop_Acting_When_Player_Dies()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
@@ -777,7 +777,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Turrets_Should_Not_Move()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(3, 3);
             var wallPosition1 = new Point(1, 1);
@@ -803,7 +803,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Turrets_Should_Shoot_At_Player_When_Player_Is_Seen()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(3, 3);
             var wallPosition1 = new Point(1, 1);

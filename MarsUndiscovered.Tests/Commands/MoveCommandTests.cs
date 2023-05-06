@@ -17,7 +17,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void MoveCommand_Should_Move_GameObject()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
 
             var commandFactory = Container.Resolve<ICommandFactory>();
@@ -39,7 +39,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void MoveCommand_Should_Create_Subsequent_Command_To_Pick_Up_Object()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             var newPosition = new Point(0, 1);
 
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(newPosition));

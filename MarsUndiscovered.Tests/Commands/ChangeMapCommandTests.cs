@@ -16,7 +16,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ChangeMapCommand_Should_Change_Map()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             var oldMap = _gameWorld.CurrentMap;
             _gameWorld.Player.Position = new Point(0, 0);
 
@@ -45,7 +45,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ChangeMapCommand_Should_Change_Map_And_Put_Player_In_Square_Close_To_Landing_Position_When_Landing_Position_Is_Not_Walkable()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(new SpecificMapGenerator(_gameWorld.GameObjectFactory, new List<Point> { new Point(0, 0) }));
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld, new SpecificMapGenerator(_gameWorld.GameObjectFactory, new List<Point> { new Point(0, 0) }));
             var oldMap = _gameWorld.CurrentMap;
             _gameWorld.Player.Position = new Point(0, 1);
 

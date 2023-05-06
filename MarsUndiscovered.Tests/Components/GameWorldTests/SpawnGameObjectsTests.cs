@@ -40,7 +40,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Spawn_Immobile_Monster_On_Wall()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             var wallPosition = new Point(1, 1);
             _gameWorld.CreateWall(wallPosition);

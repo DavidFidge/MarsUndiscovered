@@ -28,23 +28,15 @@ namespace MarsUndiscovered.Tests.Components
             _gameWorld = (TestGameWorld)Container.Resolve<IGameWorld>();
         }
 
-        protected void NewGameWithCustomMap(IMapGenerator mapGenerator = null)
+        protected void ProgressiveWorldGenerationWithCustomMap(GameWorld gameWorld, IMapGenerator mapGenerator = null)
         {
-            var levelGenerator = new TestLevelGenerator(_gameWorld, Container, mapGenerator);
-            _gameWorld.LevelGenerator = levelGenerator;
+            var levelGenerator = new TestLevelGenerator(gameWorld, mapGenerator);
 
-            _gameWorld.NewGame();
-        }
-        
-        protected void ProgressiveWorldGenerationWithCustomMap(IMapGenerator mapGenerator = null)
-        {
-            var levelGenerator = new TestLevelGenerator(_gameWorld, Container, mapGenerator);
-
-            _gameWorld.LevelGenerator = levelGenerator;
-            _gameWorld.ProgressiveWorldGeneration(null, 1, new WorldGenerationTypeParams(MapType.Outdoor));
+            gameWorld.LevelGenerator = levelGenerator;
+            gameWorld.ProgressiveWorldGeneration(null, 1, new WorldGenerationTypeParams(MapType.Outdoor));
         }
 
-        protected void NewGameWithNoMonstersNoItems()
+        protected void NewGameWithNoMonstersNoItems(GameWorld gameWorld)
         {
             var blankMonsterGenerator = new BlankMonsterGenerator(
                 Container.Resolve<IMonsterGenerator>()
@@ -54,50 +46,52 @@ namespace MarsUndiscovered.Tests.Components
                 Container.Resolve<IItemGenerator>()
             );
 
-            _gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
-            _gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
+            gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
+            gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
 
-            _gameWorld.NewGame();
+            gameWorld.NewGame();
 
-            _gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
-            _gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
+            gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
+            gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
         }
 
-        protected void NewGameWithCustomMapNoMonstersNoItems(IMapGenerator mapGenerator = null)
-        {
-            mapGenerator ??= new BlankMapGenerator(_gameWorld.GameObjectFactory);
-
-            _gameWorld.LevelGenerator.MapGenerator = mapGenerator;
-
-            var blankMonsterGenerator = new BlankMonsterGenerator(
-                Container.Resolve<IMonsterGenerator>()
-            );
-
-            var blankItemGenerator = new BlankItemGenerator(
-                Container.Resolve<IItemGenerator>()
-            );
-
-            _gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
-            _gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
-
-            _gameWorld.NewGame();
-
-            _gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
-            _gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
-        }
-
-        protected void NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(IMapGenerator mapGenerator = null)
-        {
-            SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            _gameWorld.NewGame();
-        }
-
-        protected void SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(GameWorld gameWorld, IMapGenerator mapGenerator = null)
+        protected void NewGameWithCustomMapNoMonstersNoItems(GameWorld gameWorld, IMapGenerator mapGenerator = null, ILevelGenerator levelGenerator = null)
         {
             mapGenerator ??= new BlankMapGenerator(gameWorld.GameObjectFactory);
 
-            gameWorld.LevelGenerator.MapGenerator = mapGenerator;
+            levelGenerator ??= new TestLevelGenerator(gameWorld, mapGenerator);
+            gameWorld.LevelGenerator = levelGenerator;
+
+            var blankMonsterGenerator = new BlankMonsterGenerator(
+                Container.Resolve<IMonsterGenerator>()
+            );
+
+            var blankItemGenerator = new BlankItemGenerator(
+                Container.Resolve<IItemGenerator>()
+            );
+
+            gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
+            gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
+
+            gameWorld.NewGame();
+
+            gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
+            gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
+        }
+
+        protected void NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(GameWorld gameWorld, IMapGenerator mapGenerator = null, ILevelGenerator levelGenerator = null)
+        {
+            SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(gameWorld, mapGenerator, levelGenerator);
+
+            gameWorld.NewGame();
+        }
+
+        protected void SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(GameWorld gameWorld, IMapGenerator mapGenerator = null, ILevelGenerator levelGenerator = null)
+        {
+            mapGenerator ??= new BlankMapGenerator(gameWorld.GameObjectFactory);
+
+            levelGenerator ??= new TestLevelGenerator(gameWorld, mapGenerator);
+            gameWorld.LevelGenerator = levelGenerator;
 
             var blankMonsterGenerator = new BlankMonsterGenerator(
                 Container.Resolve<IMonsterGenerator>()
@@ -121,19 +115,19 @@ namespace MarsUndiscovered.Tests.Components
             gameWorld.LevelGenerator.MiningFacilityGenerator = blankMiningFacilityGenerator;
         }
 
-        protected Item SpawnItemAndEquip(ItemType itemType)
+        protected Item SpawnItemAndEquip(GameWorld gameWorld, ItemType itemType)
         {
-            var item = SpawnItemAndAddToInventory(itemType);
-            _gameWorld.Inventory.Equip(item);
+            var item = SpawnItemAndAddToInventory(_gameWorld, itemType);
+            gameWorld.Inventory.Equip(item);
             return item;
         }
         
-        protected Item SpawnItemAndAddToInventory(ItemType itemType)
+        protected Item SpawnItemAndAddToInventory(GameWorld gameWorld, ItemType itemType)
         {
-            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(itemType).AtPosition(_gameWorld.Player.Position));
-            var item = _gameWorld.Items.Last().Value;
-            _gameWorld.Inventory.Add(item);
-            _gameWorld.CurrentMap.RemoveEntity(item);
+            gameWorld.SpawnItem(new SpawnItemParams().WithItemType(itemType).AtPosition(gameWorld.Player.Position));
+            var item = gameWorld.Items.Last().Value;
+            gameWorld.Inventory.Add(item);
+            gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
             return item;
         }

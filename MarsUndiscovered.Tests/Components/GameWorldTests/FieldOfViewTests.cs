@@ -12,7 +12,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void GetStatusOfMonstersInView_Should_Return_Monster_Statuses()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
@@ -30,7 +30,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void GetStatusOfMonstersInView_Should_Return_Monster_Statuses_In_Visual_Range()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.Player.VisualRange = 1;
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
@@ -48,7 +48,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void GetStatusOfMonstersInView_Should_Return_Monsters_In_Field_Of_View_Only()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             var wallPosition = new Point(1, 1);
             _gameWorld.CreateWall(wallPosition);
@@ -69,7 +69,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void HasBeenSeen_Should_Be_False_For_Unseen_Tiles()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition = new Point(1, 1);
             _gameWorld.CreateWall(wallPosition);
@@ -91,7 +91,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void HasBeenSeen_Should_Be_False_For_Unseen_Tiles_Should_Keep_GameObjects_That_Were_Last_Seen_There()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition = new Point(1, 1);

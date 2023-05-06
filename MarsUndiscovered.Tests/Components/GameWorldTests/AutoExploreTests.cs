@@ -12,7 +12,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Move_Towards_Unknown_Space()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
@@ -43,7 +43,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Prioritise_Picking_Up_Undropped_Items()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
@@ -73,7 +73,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Ignore_Items_That_Have_Been_Picked_Up_Prior()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.VisualRange = 1000;
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
@@ -105,7 +105,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Go_To_Exit_When_Map_Explored()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.VisualRange = 1000;
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
@@ -143,7 +143,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Not_Go_To_Exit_When_Fallback_To_Map_Exit_Is_False()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.VisualRange = 1000;
             _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
@@ -173,7 +173,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Not_Move_If_Stuck_In_Walls()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
 
@@ -203,7 +203,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Not_Get_Stuck_On_Wall()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.VisualRange = 1000;
             _gameWorld.Player.Position = new Point(0, 0);
 
@@ -246,7 +246,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Stay_Still_If_No_Place_To_Explore()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             var playerPosition = new Point(0, 0);
 
@@ -278,7 +278,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Attack_Adjacent_Monsters_Before_Exploring()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             var playerPosition = new Point(0, 0);
             _gameWorld.Player.Position = playerPosition;
@@ -309,7 +309,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Stop_Movement_If_Attacked_By_Lightning()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.VisualRange = 1000;
 
             var playerPosition = new Point(3, 3);
@@ -337,7 +337,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Stop_Movement_When_New_Monsters_Come_Into_View()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             var playerPosition = new Point(0, 10);
             _gameWorld.Player.Position = playerPosition;
@@ -362,7 +362,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Not_Stop_Movement_When_Existing_Monsters_Are_In_View()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             var playerPosition = new Point(0, 10);
             _gameWorld.Player.Position = playerPosition;
@@ -388,7 +388,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Not_Stop_Movement_When_Existing_Monster_Goes_Out_Of_View()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             var playerPosition = new Point(0, 10);
             _gameWorld.Player.Position = playerPosition;

@@ -17,7 +17,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             base.Setup();
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
         }
 
         [TestMethod]

@@ -60,7 +60,7 @@ public class RadioCommsTests : BaseGameWorldIntegrationTests
     public void Picking_Up_Ship_Parts_Adds_RadioComms()
     {
         // Arrange
-        NewGameWithCustomMapNoMonstersNoItems();
+        NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
         var itemPosition = new Point(0, 1);
 
         _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShipRepairParts).AtPosition(itemPosition));

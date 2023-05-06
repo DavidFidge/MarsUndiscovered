@@ -8,6 +8,7 @@ namespace MarsUndiscovered.Game.Components.Maps;
 public class LevelGenerator : ILevelGenerator
 {
     private GameWorld _gameWorld;
+
     public IMapGenerator MapGenerator { get; set; }
     public IMonsterGenerator MonsterGenerator { get; set; }
     public IItemGenerator ItemGenerator { get; set; }
@@ -30,50 +31,29 @@ public class LevelGenerator : ILevelGenerator
         return MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
     }
 
-    private MarsMap CreateLevel2(MarsMap mapLevel1)
+    private void CreateMapExitToNextMap(MarsMap map)
     {
-        MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory);
-        _gameWorld.AddMapToGame(MapGenerator.Map);
-        var mapLevel2 = MapGenerator.Map;
-        mapLevel2.Level = 2;
+        SpawnMapExit(
+            new SpawnMapExitParams()
+                .OnMap(map.Id)
+                .WithDirection(Direction.Down)
+        );
+    }
 
-        SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("Roach"));
-        SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("RepairDroid"));
-        SpawnMonster(new SpawnMonsterParams().OnMap(mapLevel2.Id).WithBreed("TeslaTurret"));
+    private void CreateMapExitToPreviousMap(MarsMap currentMap, MarsMap previousMap)
+    {
+        var mapExit = SpawnMapExit(new SpawnMapExitParams()
+            .OnMap(currentMap.Id)
+            .WithDirection(Direction.Up));
 
-        SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.MagnesiumPipe));
-        SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.MagnesiumPipe));
-        SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.IronSpike));
-        SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.IronSpike));
-        SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.ShieldGenerator));
-        SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.ShieldGenerator));
-        SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.HealingBots));
-        SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.HealingBots));
-        SpawnItem(new SpawnItemParams().OnMap(mapLevel2.Id).WithItemType(ItemType.ShipRepairParts));
+        LinkMapExit(previousMap, mapExit);
+    }
 
-        var mapExit2 = SpawnMapExit(new SpawnMapExitParams().OnMap(mapLevel2.Id).WithDirection(Direction.Up));
-
-        if (mapExit2 != null)
-        {
-            var miningFacilityPointsOnMap1 = _gameWorld.MiningFacilities.Values
-                .Where(m => ((MarsMap)m.CurrentMap).Id == mapLevel1.Id)
-                .Select(m => m.Position)
-                .GroupBy(m => m.Y)
-                .MaxBy(m => m.Key)
-                .ToList();
-            
-            var mapExit1 = SpawnMapExit(
-                new SpawnMapExitParams()
-                    .OnMap(mapLevel1.Id)
-                    .ToMapExit(mapExit2.ID)
-                    .WithDirection(Direction.Down)
-                    .AtFreeSpotNextTo(mapLevel1, miningFacilityPointsOnMap1)
-            );
-
-            mapExit2.Destination = mapExit1;
-        }
-
-        return mapLevel2;
+    private void LinkMapExit(MarsMap previousMap, MapExit mapExit)
+    {
+        var previousMapExit = _gameWorld.MapExits.Values.First(me => Equals(me.CurrentMap, previousMap) && me.Direction == Direction.Down);
+        mapExit.Destination = previousMapExit;
+        previousMapExit.Destination = mapExit;
     }
 
     private MarsMap CreateLevel1()
@@ -85,7 +65,21 @@ public class LevelGenerator : ILevelGenerator
 
         ShipGenerator.CreateShip(_gameWorld.GameObjectFactory, map, _gameWorld.Ships);
         MiningFacilityGenerator.CreateMiningFacility(_gameWorld.GameObjectFactory, map, _gameWorld.MiningFacilities);
-        
+
+        var miningFacilityPoints = _gameWorld.MiningFacilities.Values
+            .Where(m => ((MarsMap)m.CurrentMap).Id == map.Id)
+            .Select(m => m.Position)
+            .GroupBy(m => m.Y)
+            .MaxBy(m => m.Key)
+            .ToList();
+
+        SpawnMapExit(
+            new SpawnMapExitParams()
+                .OnMap(map.Id)
+                .WithDirection(Direction.Down)
+                .AtFreeSpotNextTo(map, miningFacilityPoints)
+            );
+
         _gameWorld.Player = _gameWorld.GameObjectFactory
             .CreateGameObject<Player>()
             .PositionedAt(new Point(map.Width / 2,
@@ -131,10 +125,38 @@ public class LevelGenerator : ILevelGenerator
         return map;
     }
 
+    private MarsMap CreateLevel2(MarsMap previousMap)
+    {
+        MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory);
+        _gameWorld.AddMapToGame(MapGenerator.Map);
+        var map = MapGenerator.Map;
+        map.Level = 2;
+
+        CreateMapExitToPreviousMap(map, previousMap);
+        CreateMapExitToNextMap(map);
+
+        return map;
+    }
+
+    private MarsMap CreateLevel3(MarsMap previousMap)
+    {
+        MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory);
+        _gameWorld.AddMapToGame(MapGenerator.Map);
+        var map = MapGenerator.Map;
+        map.Level = 3;
+
+        SpawnItem(new SpawnItemParams().OnMap(map.Id).WithItemType(ItemType.ShipRepairParts));
+
+        CreateMapExitToPreviousMap(map, previousMap);
+
+        return map;
+    }
+
     public void CreateLevels()
     {
         var level1Map = CreateLevel1();
-        CreateLevel2(level1Map);
+        var level2Map = CreateLevel2(level1Map);
+        CreateLevel3(level2Map);
     }
 
     public ProgressiveWorldGenerationResult CreateProgressive(ulong seed, int step, WorldGenerationTypeParams worldGenerationTypeParams)
