@@ -15,5 +15,8 @@ namespace MarsUndiscovered.Game.Components.Maps
 
         public abstract void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory,
             int? upToStep = null);
+
+        public abstract void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory,
+            int? upToStep = null);
     }
 }

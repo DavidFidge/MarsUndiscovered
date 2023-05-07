@@ -10,5 +10,6 @@ namespace MarsUndiscovered.Game.Components.Maps
         bool IsComplete { get; set; }
         void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null);
         void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null);
+        void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null);
     }
 }

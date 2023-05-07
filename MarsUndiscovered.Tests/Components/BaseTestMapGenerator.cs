@@ -1,5 +1,6 @@
 ﻿using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
+using MarsUndiscovered.Interfaces;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Components
@@ -14,6 +15,11 @@ namespace MarsUndiscovered.Tests.Components
         protected BaseTestMapGenerator(IGameObjectFactory gameObjectFactory)
         {
             _gameObjectFactory = gameObjectFactory;
+        }
+
+        public override void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory,
+            int? upToStep = null)
+        {
         }
     }
 }

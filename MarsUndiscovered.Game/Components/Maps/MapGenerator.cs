@@ -1,22 +1,20 @@
-﻿using GoRogue.GameFramework;
+﻿using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
-using GoRogue.MapGeneration.ConnectionPointSelectors;
-using GoRogue.MapGeneration.Steps;
-using GoRogue.MapGeneration.TunnelCreators;
 using GoRogue.Random;
 
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
-using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {
     public class MapGenerator : BaseMapGenerator
     {
+        public IGameProvider GameProvider { get; set; }
+
         public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
         {
             Clear();
@@ -32,12 +30,14 @@ namespace MarsUndiscovered.Game.Components.Maps
             var fillProbability = GlobalRandom.DefaultRNG.NextUInt(40, 60);
             var cutoffBigAreaFill = 3;
 
-            var generationSteps = OutdoorGeneneration(
+            var outdoorGeneration = new OutdoorGeneration(
                 null,
                 (ushort)fillProbability,
                 5,
                 cutoffBigAreaFill
                 );
+
+            var generationSteps = new GenerationStep[] { outdoorGeneration };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
@@ -55,7 +55,21 @@ namespace MarsUndiscovered.Game.Components.Maps
                 GlobalRandom.DefaultRNG.NextInt(height - 5, height + 5)
                 );
 
-            var generationSteps = MineGeneration();
+            var generationSteps = new GenerationStep[] { new MineWorkerGeneration() };
+
+            ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
+        }
+
+        public override void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        {
+            Clear();
+
+            var width = 30;
+            var height = 30;
+
+            var generator = new Generator(width, height);
+
+            var generationSteps = new GenerationStep[] { new MiningFacilityGeneration() };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
@@ -127,58 +141,6 @@ namespace MarsUndiscovered.Game.Components.Maps
             map.ApplyTerrainOverlay(walls, floors);
 
             return map;
-        }
-
-        private static IEnumerable<GenerationStep> MineGeneration(IEnhancedRandom rng = null)
-        {
-            rng ??= GlobalRandom.DefaultRNG;
-
-            yield return new MineWorkerGeneration { RNG = rng };
-        }
-
-        private static IEnumerable<GenerationStep> OutdoorGeneneration(
-            IEnhancedRandom rng = null,
-            ushort fillProbability = 60,
-            int totalIterations = 7,
-            int cutoffBigAreaFill = 2,
-            Distance distanceCalculation = null,
-            IConnectionPointSelector connectionPointSelector = null,
-            ITunnelCreator tunnelCreationMethod = null)
-        {
-            rng ??= GlobalRandom.DefaultRNG;
-            Distance dist = distanceCalculation ?? Distance.Manhattan;
-            connectionPointSelector ??= new RandomConnectionPointSelector(rng);
-            tunnelCreationMethod ??= new DirectLineTunnelCreator(dist);
-
-            // 1. Randomly fill the map with walls/floors
-            yield return new RandomViewFill
-            {
-                FillProbability = fillProbability,
-                RNG = rng,
-                ExcludePerimeterPoints = false
-            };
-
-            // 2. Smooth the map into areas with the cellular automata algorithm
-            yield return new CellularAutomataOutdoorGenerator
-            {
-                AreaAdjacencyRule = dist,
-                TotalIterations = totalIterations,
-                CutoffBigAreaFill = cutoffBigAreaFill,
-            };
-
-            // 3. Find all unique areas
-            yield return new AreaFinder
-            {
-                AdjacencyMethod = dist
-            };
-
-            // 4. Connect areas by connecting each area to its closest neighbor
-            yield return new ClosestMapAreaConnection
-            {
-                ConnectionPointSelector = connectionPointSelector,
-                DistanceCalc = dist,
-                TunnelCreator = tunnelCreationMethod
-            };
         }
     }
 }
