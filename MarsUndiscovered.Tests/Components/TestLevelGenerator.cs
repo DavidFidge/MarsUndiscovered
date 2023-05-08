@@ -1,5 +1,4 @@
-﻿using Castle.Windsor;
-using MarsUndiscovered.Game.Components;
+﻿using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Game.Extensions;
 using SadRogue.Primitives;
@@ -18,8 +17,12 @@ namespace MarsUndiscovered.Tests.Components
         public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
         public IMapExitGenerator MapExitGenerator { get; set; }
 
-        public TestLevelGenerator(GameWorld gameWorld, IMapGenerator mapGenerator)
+        public Point OutdoorMapSize { get; set; }
+
+        public TestLevelGenerator(GameWorld gameWorld, IMapGenerator mapGenerator, int mapWidth, int mapHeight)
         {
+            OutdoorMapSize = new Point(mapWidth, mapHeight);
+
             _gameWorld = gameWorld;
             _originalLevelGenerator = _gameWorld.LevelGenerator;
 
@@ -39,7 +42,7 @@ namespace MarsUndiscovered.Tests.Components
 
         private MarsMap CreateLevel1()
         {
-            MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory);
+            MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, OutdoorMapSize.X, OutdoorMapSize.Y);
             _gameWorld.AddMapToGame(MapGenerator.Map);
             _gameWorld.Maps.CurrentMap = MapGenerator.Map;
 
@@ -58,7 +61,7 @@ namespace MarsUndiscovered.Tests.Components
 
         private void CreateLevel2(MarsMap previousMap)
         {
-            MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory);
+            MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, OutdoorMapSize.X, OutdoorMapSize.Y);
             _gameWorld.AddMapToGame(MapGenerator.Map);
             CreateMapExitToPreviousMap(MapGenerator.Map, previousMap);
         }

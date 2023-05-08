@@ -58,7 +58,7 @@ public class LevelGenerator : ILevelGenerator
 
     private MarsMap CreateLevel1()
     {
-        MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory);
+        MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60);
         _gameWorld.AddMapToGame(MapGenerator.Map);
         _gameWorld.Maps.CurrentMap = MapGenerator.Map;
         var map = MapGenerator.Map;
@@ -127,7 +127,7 @@ public class LevelGenerator : ILevelGenerator
 
     private MarsMap CreateLevel2(MarsMap previousMap)
     {
-        MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory);
+        MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, 50, 50);
         _gameWorld.AddMapToGame(MapGenerator.Map);
         var map = MapGenerator.Map;
         map.Level = 2;
@@ -140,7 +140,7 @@ public class LevelGenerator : ILevelGenerator
 
     private MarsMap CreateLevel3(MarsMap previousMap)
     {
-        MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory);
+        MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory, 50, 50);
         _gameWorld.AddMapToGame(MapGenerator.Map);
         var map = MapGenerator.Map;
         map.Level = 3;
@@ -164,10 +164,13 @@ public class LevelGenerator : ILevelGenerator
         switch (worldGenerationTypeParams.MapType)
         {
             case MapType.Outdoor:
-                MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, step);
+                MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, step, 50, 50);
                 break;
             case MapType.Mine:
-                MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory, step);
+                MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory, step, 50, 50);
+                break;
+            case MapType.MiningFacility:
+                MapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, step, 50, 50);
                 break;
         }
 

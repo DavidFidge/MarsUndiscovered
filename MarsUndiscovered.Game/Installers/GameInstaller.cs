@@ -14,10 +14,13 @@ using FrigidRogue.MonoGame.Core.Graphics.Terrain;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
 using FrigidRogue.MonoGame.Core.UserInterface;
-
+using FrigidRogue.WaveFunctionCollapse;
+using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
+using FrigidRogue.WaveFunctionCollapse.Renderers;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
+using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Components.Maps;
 
 namespace MarsUndiscovered.Game.Installers
@@ -93,7 +96,16 @@ namespace MarsUndiscovered.Game.Installers
                 
                 Component.For<IMorgueFileWriter>()
                     .ImplementedBy<MorgueFileWriter>()
-                    .LifestyleTransient()
+                    .LifestyleTransient(),
+
+                Component.For<IWaveFunctionCollapseGeneratorPasses>()
+                    .ImplementedBy<WaveFunctionCollapseGeneratorPasses>(),
+
+                Component.For<IWaveFunctionCollapseGeneratorPassesRenderer>()
+                    .ImplementedBy<GameWorldWaveFunctionCollapseGeneratorPassesRenderer>(),
+
+                Component.For<IWaveFunctionCollapseGeneratorPassesContentLoader>()
+                    .ImplementedBy<GameWorldWaveFunctionCollapseGeneratorPassesContentLoader>()
             );
         }
 

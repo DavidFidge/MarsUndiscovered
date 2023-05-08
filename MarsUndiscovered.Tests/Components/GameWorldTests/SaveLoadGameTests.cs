@@ -1,9 +1,6 @@
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using SadRogue.Primitives;
 using ShaiRandom.Generators;
 

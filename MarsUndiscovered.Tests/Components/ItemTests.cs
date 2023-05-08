@@ -1,9 +1,6 @@
 ﻿using FrigidRogue.TestInfrastructure;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using NSubstitute;
 
 namespace MarsUndiscovered.Tests.Components

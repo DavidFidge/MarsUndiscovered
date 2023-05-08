@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace MarsUndiscovered.Tests.Components.GameWorldTests
+﻿namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
     [TestClass]
     public class GameWorldTests : BaseGameWorldIntegrationTests

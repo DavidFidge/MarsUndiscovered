@@ -63,6 +63,10 @@ namespace MarsUndiscovered.UserInterface.Views
             new Button("Build New Mine World")
                 .SendOnClick(Mediator, new BuildWorldRequest { WorldGenerationTypeParams = new WorldGenerationTypeParams(MapType.Mine)})
                 .AddTo(LeftPanel);
+
+            new Button("Build New Mining Facility")
+                .SendOnClick(Mediator, new BuildWorldRequest { WorldGenerationTypeParams = new WorldGenerationTypeParams(MapType.MiningFacility)})
+                .AddTo(LeftPanel);
      
             new Button("Next Step")
                 .SendOnClick<NextWorldBuilderStepRequest>(Mediator)
@@ -84,7 +88,7 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _viewModel.BuildWorld(request.WorldGenerationTypeParams);
             UpdateMapRenderTarget(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
-            
+
             return Unit.Task;
         }
 

@@ -1,7 +1,6 @@
 ﻿using FrigidRogue.MonoGame.Core.Graphics.Quads;
 using FrigidRogue.TestInfrastructure;
 using MarsUndiscovered.Graphics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.Tests.Graphics;

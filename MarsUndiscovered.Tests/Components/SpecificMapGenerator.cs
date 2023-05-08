@@ -25,26 +25,32 @@ namespace MarsUndiscovered.Tests.Components
             });
         }
 
-        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
-            GenerateSpecificMap(gameWorld, OutdoorMapDimensions);
+            GenerateSpecificMap(gameWorld, width, height);
         }
 
-        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
-            GenerateSpecificMap(gameWorld, BasicMapDimensions);
+            GenerateSpecificMap(gameWorld, width, height);
         }
 
-        private void GenerateSpecificMap(IGameWorld gameWorld, Point mapDimensions)
+        public override void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height,
+            int? upToStep = null)
         {
-            var arrayView = new ArrayView<IGameObject>(mapDimensions.X, mapDimensions.Y);
+            GenerateSpecificMap(gameWorld, width, height);
+        }
+
+        private void GenerateSpecificMap(IGameWorld gameWorld, int width, int height)
+        {
+            var arrayView = new ArrayView<IGameObject>(width, height);
 
             arrayView.ApplyOverlay(_terrainChooser);
 
             var wallsFloors = arrayView.ToArray();
 
             Map = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
-                wallsFloors.OfType<Floor>().ToList(), mapDimensions.X, mapDimensions.Y);
+                wallsFloors.OfType<Floor>().ToList(), width, height);
             
             Steps = 1;
             IsComplete = true;

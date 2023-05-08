@@ -10,13 +10,10 @@ namespace MarsUndiscovered.Game.Components.Maps
         public int Steps { get; set; }
         public bool IsComplete { get; set; }
 
-        public abstract void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory,
-            int? upToStep = null);
+        public abstract void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null);
 
-        public abstract void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory,
-            int? upToStep = null);
+        public abstract void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null);
 
-        public abstract void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory,
-            int? upToStep = null);
+        public abstract void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null);
     }
 }

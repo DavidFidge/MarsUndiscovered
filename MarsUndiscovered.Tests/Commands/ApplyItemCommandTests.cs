@@ -4,9 +4,6 @@ using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Commands

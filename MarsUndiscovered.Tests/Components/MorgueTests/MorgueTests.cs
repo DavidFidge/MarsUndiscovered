@@ -2,7 +2,6 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Serilog.Events;

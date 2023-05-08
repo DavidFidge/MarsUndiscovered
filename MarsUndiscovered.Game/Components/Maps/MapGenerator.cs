@@ -1,4 +1,6 @@
-﻿using FrigidRogue.MonoGame.Core.Interfaces.Components;
+﻿using FrigidRogue.WaveFunctionCollapse;
+using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
+using FrigidRogue.WaveFunctionCollapse.Renderers;
 using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
 using GoRogue.Random;
@@ -13,18 +15,28 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public class MapGenerator : BaseMapGenerator
     {
-        public IGameProvider GameProvider { get; set; }
+        private readonly IWaveFunctionCollapseGeneratorPasses _waveFunctionCollapseGeneratorPasses;
+        private readonly IWaveFunctionCollapseGeneratorPassesContentLoader _waveFunctionCollapseGeneratorPassesContentLoader;
+        private readonly IWaveFunctionCollapseGeneratorPassesRenderer _waveFunctionCollapseGeneratorPassesRenderer;
 
-        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public MapGenerator(
+            IWaveFunctionCollapseGeneratorPasses waveFunctionCollapseGeneratorPasses,
+            IWaveFunctionCollapseGeneratorPassesContentLoader waveFunctionCollapseGeneratorPassesContentLoader,
+            IWaveFunctionCollapseGeneratorPassesRenderer waveFunctionCollapseGeneratorPassesRenderer
+            )
+        {
+            _waveFunctionCollapseGeneratorPasses = waveFunctionCollapseGeneratorPasses;
+            _waveFunctionCollapseGeneratorPassesContentLoader = waveFunctionCollapseGeneratorPassesContentLoader;
+            _waveFunctionCollapseGeneratorPassesRenderer = waveFunctionCollapseGeneratorPassesRenderer;
+        }
+
+        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
             Clear();
 
-            var width = 70;
-            var height = 6000 / width;
-
             var generator = new Generator(
                 width,
-                GlobalRandom.DefaultRNG.NextInt(height - 5, height + 5)
+                height
                 );
 
             var fillProbability = GlobalRandom.DefaultRNG.NextUInt(40, 60);
@@ -42,17 +54,13 @@ namespace MarsUndiscovered.Game.Components.Maps
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
 
-        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
             Clear();
 
-            var width = GlobalRandom.DefaultRNG.NextInt(35, 55);
-
-            var height = 2000 / width;
-
             var generator = new Generator(
                 width,
-                GlobalRandom.DefaultRNG.NextInt(height - 5, height + 5)
+                GlobalRandom.DefaultRNG.NextInt(width, height)
                 );
 
             var generationSteps = new GenerationStep[] { new MineWorkerGeneration() };
@@ -60,16 +68,20 @@ namespace MarsUndiscovered.Game.Components.Maps
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
 
-        public override void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
             Clear();
 
-            var width = 30;
-            var height = 30;
-
             var generator = new Generator(width, height);
 
-            var generationSteps = new GenerationStep[] { new MiningFacilityGeneration() };
+            var generationSteps = new GenerationStep[]
+            {
+                new MiningFacilityGeneration(
+                    _waveFunctionCollapseGeneratorPasses,
+                    _waveFunctionCollapseGeneratorPassesContentLoader,
+                    _waveFunctionCollapseGeneratorPassesRenderer
+                )
+            };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
@@ -99,7 +111,7 @@ namespace MarsUndiscovered.Game.Components.Maps
             }
 
             var wallsFloors = generator.Context
-                .GetFirst<ArrayView<bool>>()
+                .GetFirst<ArrayView<bool>>("WallFloor")
                 .ToArrayView((s, index) =>
                     {
                         IGameObject gameObject;

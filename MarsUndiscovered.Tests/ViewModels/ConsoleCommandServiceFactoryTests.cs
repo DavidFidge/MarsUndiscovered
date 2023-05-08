@@ -2,8 +2,6 @@
 using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.TestInfrastructure;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace MarsUndiscovered.Tests.ViewModels
 {
     [TestClass]

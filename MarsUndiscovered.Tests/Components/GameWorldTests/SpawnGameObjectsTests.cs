@@ -1,6 +1,4 @@
 ﻿using MarsUndiscovered.Game.Components;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests

@@ -2,8 +2,6 @@ using Castle.MicroKernel.Registration;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Interfaces;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Components
@@ -30,7 +28,7 @@ namespace MarsUndiscovered.Tests.Components
 
         protected void ProgressiveWorldGenerationWithCustomMap(GameWorld gameWorld, IMapGenerator mapGenerator = null)
         {
-            var levelGenerator = new TestLevelGenerator(gameWorld, mapGenerator);
+            var levelGenerator = new TestLevelGenerator(gameWorld, mapGenerator, 60, 60);
 
             gameWorld.LevelGenerator = levelGenerator;
             gameWorld.ProgressiveWorldGeneration(null, 1, new WorldGenerationTypeParams(MapType.Outdoor));
@@ -59,7 +57,7 @@ namespace MarsUndiscovered.Tests.Components
         {
             mapGenerator ??= new BlankMapGenerator(gameWorld.GameObjectFactory);
 
-            levelGenerator ??= new TestLevelGenerator(gameWorld, mapGenerator);
+            levelGenerator ??= new TestLevelGenerator(gameWorld, mapGenerator, 60, 60);
             gameWorld.LevelGenerator = levelGenerator;
 
             var blankMonsterGenerator = new BlankMonsterGenerator(
@@ -90,7 +88,7 @@ namespace MarsUndiscovered.Tests.Components
         {
             mapGenerator ??= new BlankMapGenerator(gameWorld.GameObjectFactory);
 
-            levelGenerator ??= new TestLevelGenerator(gameWorld, mapGenerator);
+            levelGenerator ??= new TestLevelGenerator(gameWorld, mapGenerator, 60, 60);
             gameWorld.LevelGenerator = levelGenerator;
 
             var blankMonsterGenerator = new BlankMonsterGenerator(

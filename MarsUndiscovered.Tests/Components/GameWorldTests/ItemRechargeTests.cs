@@ -1,5 +1,4 @@
 ﻿using MarsUndiscovered.Game.Components;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {

@@ -3,7 +3,6 @@ using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Interfaces;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SadRogue.Primitives.GridViews;
 

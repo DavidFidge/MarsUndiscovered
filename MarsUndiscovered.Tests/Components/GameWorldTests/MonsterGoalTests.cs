@@ -4,8 +4,6 @@ using GoRogue.Random;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using NGenerics.Extensions;
 
 using SadRogue.Primitives;
@@ -116,8 +114,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Arrange
             var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
-            mapGenerator.OutdoorMapDimensions = new Point(15, 5);
-            
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             _gameWorld.Player.Position = new Point(0, 0);
@@ -237,10 +233,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Arrange
             var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
-            mapGenerator.OutdoorMapDimensions = new Point(4, 7);
-            
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-            
+            var levelGenerator = new TestLevelGenerator(_gameWorld, mapGenerator, 4, 7);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator, levelGenerator);
+
             // ..#@
             // .###
             // ....
@@ -304,10 +299,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Arrange
             var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
-            mapGenerator.OutdoorMapDimensions = new Point(4, 5);
-            
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-            
+            var levelGenerator = new TestLevelGenerator(_gameWorld, mapGenerator, 4, 5);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator, levelGenerator);
+
             // ..#@
             // P###
             // .P..
@@ -348,10 +342,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Arrange
             var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
-            mapGenerator.OutdoorMapDimensions = new Point(4, 5);
-            
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-            
+            var levelGenerator = new TestLevelGenerator(_gameWorld, mapGenerator, 4, 5);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator, levelGenerator);
+
             // .PE@
             // P###
             // .P..
@@ -407,10 +400,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Arrange
             var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
-            mapGenerator.OutdoorMapDimensions = new Point(5, 5);
-            
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-            
+            var levelGenerator = new TestLevelGenerator(_gameWorld, mapGenerator, 5, 5);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator, levelGenerator);
+
             // ...#@    .P.#@
             // .#.##    P#M##
             // .#### => ?####
@@ -485,9 +477,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Arrange
             var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
-            mapGenerator.OutdoorMapDimensions = new Point(4, 5);
-            
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            var levelGenerator = new TestLevelGenerator(_gameWorld, mapGenerator, 4, 5);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator, levelGenerator);
 
             // ..#@
             // .###
@@ -619,9 +610,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Arrange
             var mapGenerator = new BlankMapGenerator(_gameWorld.GameObjectFactory);
 
-            mapGenerator.OutdoorMapDimensions = new Point(15, 5);
-            
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            var levelGenerator = new TestLevelGenerator(_gameWorld, mapGenerator, 15, 5);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator, levelGenerator);
 
             _gameWorld.Player.Position = new Point(0, 3);
             
