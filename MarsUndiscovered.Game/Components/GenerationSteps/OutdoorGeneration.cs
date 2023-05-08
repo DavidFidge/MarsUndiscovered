@@ -15,7 +15,7 @@ using Rectangle = SadRogue.Primitives.Rectangle;
 
 namespace MarsUndiscovered.Game.Components.GenerationSteps
 {
-    public class OutdoorGeneration : GenerationStep
+    public class OutdoorGeneration
     {
         private ushort _fillProbability;
         private int _totalIterations;
@@ -26,18 +26,13 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
 
         public IEnhancedRandom RNG { get; set; } = GlobalRandom.DefaultRNG;
 
-        /// <summary>
-        /// Creates a new outdoor map
-        /// </summary>
-        /// <param name="name">The name of the generation step.  Defaults to <see cref="Outdoor" />.</param>
-        public OutdoorGeneration(string name = null, 
+        public OutdoorGeneration( 
             ushort fillProbability = 60,
             int totalIterations = 7,
             int cutoffBigAreaFill = 2,
             Distance distanceCalculation = null,
             IConnectionPointSelector connectionPointSelector = null,
             ITunnelCreator tunnelCreationMethod = null)
-            : base(name)
         {
             _fillProbability = fillProbability;
             _totalIterations = totalIterations;
@@ -47,8 +42,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             _tunnelCreationMethod = tunnelCreationMethod;
         }
 
-        /// <inheritdoc/>
-        protected override IEnumerator<object> OnPerform(GenerationContext generationContext)
+        public IEnumerable<GenerationStep> GetSteps()
         {
             Distance dist = _distanceCalculation ?? Distance.Manhattan;
             _connectionPointSelector ??= new RandomConnectionPointSelector(RNG);
