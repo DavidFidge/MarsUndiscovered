@@ -50,9 +50,27 @@ public class MiningFacilityGeneration : GenerationStep
 
     protected override IEnumerator<object> OnPerform(GenerationContext generationContext)
     {
-        _waveFunctionCollapseGeneratorPasses.LoadContent(_contentLoader, "MiningFacility");
-        _waveFunctionCollapseGeneratorPasses.MapOptions.MapWidth = generationContext.Width;
-        _waveFunctionCollapseGeneratorPasses.MapOptions.MapHeight = generationContext.Height;
+        _waveFunctionCollapseGeneratorPasses.LoadContent(_contentLoader, "Maps/MiningFacility");
+
+        if (generationContext.Width % _waveFunctionCollapseGeneratorPasses.TileWidth != 0)
+        {
+            throw new ArgumentException(
+                "Map width must be a multiple of the tile width of the passes - each pixel in the tile width represents one map unit so map width passed in gets divided by the texture tile size to make this happen..",
+                nameof(generationContext.Width));
+        }
+
+        if (generationContext.Height % _waveFunctionCollapseGeneratorPasses.TileHeight != 0)
+        {
+            throw new ArgumentException(
+                "Map height must be a multiple of the tile height of the passes - each pixel in the tile height represents one map unit so map height passed in gets divided by the texture tile size to make this happen.",
+                nameof(generationContext.Height));
+        }
+
+        var mapWidth = generationContext.Width / _waveFunctionCollapseGeneratorPasses.TileWidth;
+        var mapHeight = generationContext.Height / _waveFunctionCollapseGeneratorPasses.TileHeight;
+
+        _waveFunctionCollapseGeneratorPasses.MapOptions.MapWidth = mapWidth;
+        _waveFunctionCollapseGeneratorPasses.MapOptions.MapHeight = mapHeight;
         _waveFunctionCollapseGeneratorPasses.CreatePasses();
         _waveFunctionCollapseGeneratorPasses.ExecuteUntilSuccess();
 

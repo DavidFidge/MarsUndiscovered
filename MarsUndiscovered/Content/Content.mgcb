@@ -1393,18 +1393,6 @@
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:WaveFunctionCollapse/MiningFacility/Corner.png
-
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:WaveFunctionCollapse/MiningFacility/Floor.png
-
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:WaveFunctionCollapse/MiningFacility/Wall.png
-
-/importer:TextureImporter
-/processor:TextureProcessor
 /build:Tiles/BlackOpsDefender_1.png
 
 /importer:TextureImporter
@@ -1631,7 +1619,43 @@
 /processor:TextureProcessor
 /build:Tiles/YendorianMaster_2.png
 
-# add new tiles automatically using tools\create_tilecontent.ps1
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Maps/MiningFacility/Corner.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Maps/MiningFacility/Floor.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Maps/MiningFacility/FloorInside.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Maps/MiningFacility/FloorOutside.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Maps/MiningFacility/Reserve.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Maps/MiningFacility/ReserveCorner.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Maps/MiningFacility/ReserveSide.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Maps/MiningFacility/ReverseCorner.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Maps/MiningFacility/Wall.png
+
+# add new tiles automatically using tools\create-tilecontent.ps1
 # Note - when adding new tiles, must delete Content.xnb file as noted below.
 
 # Since MonoGame 3.8, pipeline cannot import its own mgcb files as resources so we have to reference a dummy file instead.

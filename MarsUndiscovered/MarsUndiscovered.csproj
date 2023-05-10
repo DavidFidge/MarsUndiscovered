@@ -16,9 +16,6 @@
     <None Update="Content\Animations\ShipAiRadioComms.sf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Content\WaveFunctionCollapse\MiningFacility\TileAttributes.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
@@ -65,6 +62,10 @@
     <Content Include="appsettings.Production.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+    <None Remove="Content\WaveFunctionCollapse\MiningFacility\Rules.json" />
+    <Content Include="Content\Maps\MiningFacility\Rules.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

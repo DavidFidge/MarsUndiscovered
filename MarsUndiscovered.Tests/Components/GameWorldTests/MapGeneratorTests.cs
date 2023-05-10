@@ -1,4 +1,6 @@
-﻿using FrigidRogue.WaveFunctionCollapse;
+﻿using FrigidRogue.MonoGame.Core.Extensions;
+using FrigidRogue.WaveFunctionCollapse;
+using FrigidRogue.WaveFunctionCollapse.Options;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
 using MarsUndiscovered.Game.Components.Maps;
 using Microsoft.Xna.Framework;
@@ -23,15 +25,12 @@ public class MapGeneratorTests : BaseGraphicsGameWorldIntegrationTests
     }
 
     [TestMethod]
-    public void Should_C()
+    public void Should_CreateMiningFacilityMap()
     {
         // Arrange
         var texture2D = new Texture2D(GraphicsDevice, 3, 3);
 
-        var colours = new Color[9];
-
-        for (var i = 0; i < colours.Length; i++)
-            colours[i] = Color.White;
+        var colours = new Color[9].InitialiseWith(Color.White);
 
         colours[3] = Color.Black;
         colours[4] = Color.Black;
@@ -39,9 +38,15 @@ public class MapGeneratorTests : BaseGraphicsGameWorldIntegrationTests
 
         texture2D.SetData(colours);
 
+        var mapOptions = new MapOptions(0, 0);
+        _waveFunctionCollapseGeneratorPasses.MapOptions.Returns(mapOptions);
+
         _waveFunctionCollapseGeneratorPasses
             .RenderToTexture2D(Arg.Any<IWaveFunctionCollapseGeneratorPassesRenderer>())
             .Returns(texture2D);
+
+        _waveFunctionCollapseGeneratorPasses.TileWidth.Returns(3);
+        _waveFunctionCollapseGeneratorPasses.TileHeight.Returns(3);
 
         // Act
         _mapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, 3, 3);
@@ -51,8 +56,8 @@ public class MapGeneratorTests : BaseGraphicsGameWorldIntegrationTests
 
         Assert.AreEqual(3, map.Walls.Count);
 
-        Assert.AreEqual(new SadRogue.Primitives.Point(1, 0), map.Walls[3].Position);
-        Assert.AreEqual(new SadRogue.Primitives.Point(1, 1), map.Walls[4].Position);
-        Assert.AreEqual(new SadRogue.Primitives.Point(1, 2), map.Walls[5].Position);
+        Assert.AreEqual(new SadRogue.Primitives.Point(0, 1), map.Walls[0].Position);
+        Assert.AreEqual(new SadRogue.Primitives.Point(1, 1), map.Walls[1].Position);
+        Assert.AreEqual(new SadRogue.Primitives.Point(2, 1), map.Walls[2].Position);
     }
 }

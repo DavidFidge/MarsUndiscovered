@@ -43,13 +43,12 @@ namespace MarsUndiscovered.Game.Components.Maps
             var cutoffBigAreaFill = 3;
 
             var outdoorGeneration = new OutdoorGeneration(
-                null,
                 (ushort)fillProbability,
                 5,
                 cutoffBigAreaFill
                 );
 
-            var generationSteps = outdoorGeneration;
+            var generationSteps = outdoorGeneration.GetSteps();
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }

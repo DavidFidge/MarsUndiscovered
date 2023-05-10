@@ -58,7 +58,7 @@ public class LevelGenerator : ILevelGenerator
 
     private MarsMap CreateLevel1()
     {
-        MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60);
+        MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, 70, 70);
         _gameWorld.AddMapToGame(MapGenerator.Map);
         _gameWorld.Maps.CurrentMap = MapGenerator.Map;
         var map = MapGenerator.Map;
@@ -164,13 +164,13 @@ public class LevelGenerator : ILevelGenerator
         switch (worldGenerationTypeParams.MapType)
         {
             case MapType.Outdoor:
-                MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, step, 50, 50);
+                MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, 70, 70, step);
                 break;
             case MapType.Mine:
-                MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory, step, 50, 50);
+                MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60, step);
                 break;
             case MapType.MiningFacility:
-                MapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, step, 50, 50);
+                MapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60, step);
                 break;
         }
 

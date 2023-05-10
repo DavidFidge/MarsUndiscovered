@@ -3,12 +3,12 @@ using System.Text;
 
 using GoRogue.FOV;
 using GoRogue.Pathing;
-
+using Microsoft.Xna.Framework.Graphics;
 using SadRogue.Primitives;
 
 using Serilog;
 using Serilog.Events;
-
+using Color = Microsoft.Xna.Framework.Color;
 using Path = System.IO.Path;
 
 namespace MarsUndiscovered.Game.Components
@@ -125,6 +125,11 @@ namespace MarsUndiscovered.Game.Components
             {
                 logger.Debug(line);
             }
+        }
+
+        public static StringBuilder DumpTexture(Texture2D texture, int width, Dictionary<Color, char> colourToChar)
+        {
+
         }
 
         private static StringBuilder DumpMap(MarsMap map)
