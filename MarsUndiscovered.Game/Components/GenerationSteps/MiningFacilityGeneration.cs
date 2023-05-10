@@ -3,7 +3,7 @@ using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
 using GoRogue.MapGeneration;
 using GoRogue.Random;
-using SadRogue.Primitives;
+using Microsoft.Xna.Framework;
 using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
 
@@ -79,7 +79,7 @@ public class MiningFacilityGeneration : GenerationStep
         var data = new Color[texture2D.Width * texture2D.Height];
 
         texture2D.GetData(data);
-
+        
         var wallFloors = data.Select(c => c.Equals(Color.Black) ? false : true).ToArray();
 
         generationContext.GetFirstOrNew<ISettableGridView<bool>>(

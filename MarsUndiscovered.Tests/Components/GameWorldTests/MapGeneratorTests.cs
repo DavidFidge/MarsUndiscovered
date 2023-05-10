@@ -30,7 +30,7 @@ public class MapGeneratorTests : BaseGraphicsGameWorldIntegrationTests
         // Arrange
         var texture2D = new Texture2D(GraphicsDevice, 3, 3);
 
-        var colours = new Color[9].InitialiseWith(Color.White);
+        var colours = new Color[9].Initialise(() => Color.White);
 
         colours[3] = Color.Black;
         colours[4] = Color.Black;
