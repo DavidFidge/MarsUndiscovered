@@ -3,7 +3,9 @@
 public enum TileGraphicType
 {
     Wall,
+    WallMiningFacility,
     Floor,
+    FloorMiningFacility,
     Player,
     PlayerDead,
     MapExitDown,
@@ -21,5 +23,6 @@ public enum TileGraphicType
     FieldOfViewUnrevealedTexture,
     FieldOfViewHasBeenSeenTexture,
     Monster,
-    Feature
+    Ship,
+    MiningFacility
 }

@@ -6,7 +6,6 @@ using MarsUndiscovered.Interfaces;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.View.Extensions;
-using GoRogue.GameFramework;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.UserInterface.Data;
 using Microsoft.Xna.Framework;
@@ -22,6 +21,7 @@ public class Assets : IAssets
     // Alpha comes first, then reverse the hex if copying from Paint.NET
     // In Breeds.csv there is no alpha and the hex can by copied directly
     public static Color WallColor = new Color(0xFF244BB6);
+    public static Color WallMiningFacilityColor = new Color(0xFF777777);
     public static Color UserInterfaceColor = new Color(0xFF1E0097);
 
     public SpriteFont UiRegularFont { get; set; }
@@ -78,7 +78,7 @@ public class Assets : IAssets
             WallColor
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Wall, wall);
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Wall.ToString(), wall);
         AddGraphicalMapTileTexture(assetsList, TileGraphicType.Wall,
             $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Wall)}");
 
@@ -406,19 +406,9 @@ public class Assets : IAssets
         return _currentMapTileGraphics.GetMapTileTexture(tileGraphicType);
     }
 
-    public IMapTileTexture GetMapTileTexture(Breed breed)
+    public IMapTileTexture GetMapTileTexture(string key)
     {
-        return _currentMapTileGraphics.GetMapTileTexture(breed);
-    }
-
-    public IMapTileTexture GetMapTileTexture(ItemType itemType)
-    {
-        return _currentMapTileGraphics.GetMapTileTexture(itemType);
-    }
-
-    public IMapTileTexture GetMapTileTexture(TileGraphicFeatureType tileGraphicFeatureType, char c)
-    {
-        return _currentMapTileGraphics.GetMapTileTexture(tileGraphicFeatureType, c);
+        return _currentMapTileGraphics.GetMapTileTexture(key);
     }
 
     // For use with ad-hoc requests to get an individual tile texture.
@@ -434,18 +424,9 @@ public class Assets : IAssets
     // Do not use for drawing a map as it does not come from a texture atlas.
     // Current use case is for drawing an image in the inventory. Could consider changing
     // it to use texture atlases and animations later and removing this method.
-    public Texture2D GetStaticTexture(Breed breed)
+    public Texture2D GetStaticTexture(string key)
     {
-        return _currentMapTileGraphics.GetStaticTexture(breed);
-    }
-
-    // For use with ad-hoc requests to get an individual tile texture.
-    // Do not use for drawing a map as it does not come from a texture atlas.
-    // Current use case is for drawing an image in the inventory. Could consider changing
-    // it to use texture atlases and animations later and removing this method.
-    public Texture2D GetStaticTexture(ItemType itemType)
-    {
-        return _currentMapTileGraphics.GetStaticTexture(itemType);
+        return _currentMapTileGraphics.GetStaticTexture(key);
     }
 
     public void Update()
