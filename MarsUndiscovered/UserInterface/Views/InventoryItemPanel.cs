@@ -126,7 +126,7 @@ public class InventoryItemPanel : Panel
         _key.CalcTextActualRectWithWrap();
         this.Height(_key.GetTextDestRect().Height);
 
-        _itemImage.Texture = _assets.GetStaticTexture(_inventoryItem.ItemType);
+        _itemImage.Texture = _assets.GetStaticTexture(_inventoryItem.ItemType.ToString());
         _itemImage.Size((int)Size.Y, (int)Size.Y);
 
         _description.Text = _inventoryItem.ItemDescription;

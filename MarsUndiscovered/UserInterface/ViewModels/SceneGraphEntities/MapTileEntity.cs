@@ -56,25 +56,25 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void SetShip(char shipPart)
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileGraphicFeatureType.Ship, shipPart);
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Ship, shipPart.ToString());
             IsVisible = true;
         }
         
         public void SetMiningFacility(char miningFacilityPart)
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileGraphicFeatureType.MiningFacility, miningFacilityPart);
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.MiningFacility, miningFacilityPart.ToString());
             IsVisible = true;
         }
 
         public void SetItem(ItemType itemType)
         {
-            MapTileTexture = Assets.GetMapTileTexture(itemType);
+            MapTileTexture = Assets.GetMapTileTexture(itemType.ToString());
             IsVisible = true;
         }
 
         public void SetMonster(Breed breed)
         {
-            MapTileTexture = Assets.GetMapTileTexture(breed);
+            MapTileTexture = Assets.GetMapTileTexture(breed.ToString());
             IsVisible = true;
         }
 

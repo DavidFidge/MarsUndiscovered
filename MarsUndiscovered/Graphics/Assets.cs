@@ -79,9 +79,11 @@ public class Assets : IAssets
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Wall.ToString(), wall);
-        AddGraphicalMapTileTexture(assetsList, TileGraphicType.Wall,
-            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Wall)}");
-
+        _graphicalMapTileGraphics.AddMapTileTextures(
+            TileGraphicType.Wall.ToString(),
+            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.Wall.ToString()}")
+        );
+        
         var floor = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
@@ -91,9 +93,11 @@ public class Assets : IAssets
             Color.Tan
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Floor, floor);
-        AddGraphicalMapTileTexture(assetsList, TileGraphicType.Floor,
-            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Floor)}");
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Floor.ToString(), floor);
+        _graphicalMapTileGraphics.AddMapTileTextures(
+            TileGraphicType.Floor.ToString(),
+            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.Floor.ToString()}")
+        );
 
         var mapExitDown = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -105,7 +109,7 @@ public class Assets : IAssets
             Color.SaddleBrown
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MapExitDown, mapExitDown);
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MapExitDown.ToString(), mapExitDown);
 
         var mapExitUp = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -117,7 +121,7 @@ public class Assets : IAssets
             Color.SaddleBrown
         );
         
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MapExitUp, mapExitUp);
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MapExitUp.ToString(), mapExitUp);
 
         var shipPartChars = "{_-`.+|( ";
 
@@ -133,7 +137,7 @@ public class Assets : IAssets
                 Color.Black
             );
 
-            _asciiMapTileGraphics.AddMapTileTextures(TileGraphicFeatureType.Ship, ch, shipPart);
+            _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.Ship}{ch}", shipPart);
         }
 
         var miningFacilitySectionChars = @"_()|#-`'.+:\/= ";
@@ -150,7 +154,7 @@ public class Assets : IAssets
                 Color.Black
             );
 
-            _asciiMapTileGraphics.AddMapTileTextures(TileGraphicFeatureType.MiningFacility, ch, miningFacilitySection);
+            _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.MiningFacility}{ch}", miningFacilitySection);
         }
 
         var weapon = new MapTileTexture(
@@ -162,9 +166,11 @@ public class Assets : IAssets
             _itemColour
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Weapon, weapon);
-        AddGraphicalMapTileTexture(assetsList, TileGraphicType.Weapon,
-            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Weapon)}");
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Weapon.ToString(), weapon);
+        _graphicalMapTileGraphics.AddMapTileTextures(
+            TileGraphicType.Weapon.ToString(),
+            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.Weapon.ToString()}")
+        );;
 
         var gadget = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -175,9 +181,11 @@ public class Assets : IAssets
             _itemColour
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Gadget, gadget);
-        AddGraphicalMapTileTexture(assetsList, TileGraphicType.Gadget,
-            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Gadget)}");
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Gadget.ToString(), gadget);
+        _graphicalMapTileGraphics.AddMapTileTextures(
+            TileGraphicType.Gadget.ToString(),
+            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.Gadget.ToString()}")
+        );
 
         var nanoFlask = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -188,10 +196,12 @@ public class Assets : IAssets
             _itemColour
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.NanoFlask, nanoFlask);
-        AddGraphicalMapTileTexture(assetsList, TileGraphicType.NanoFlask,
-            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.NanoFlask)}");
-
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.NanoFlask.ToString(), nanoFlask);
+        _graphicalMapTileGraphics.AddMapTileTextures(
+            TileGraphicType.NanoFlask.ToString(),
+            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.NanoFlask.ToString()}")
+        );
+        
         var shipRepairParts = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
@@ -201,9 +211,12 @@ public class Assets : IAssets
             _itemColour
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.ShipRepairParts, shipRepairParts);
-        AddGraphicalMapTileTexture(assetsList, TileGraphicType.ShipRepairParts,
-            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.ShipRepairParts)}");
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.ShipRepairParts.ToString(), shipRepairParts);
+        
+        _graphicalMapTileGraphics.AddMapTileTextures(
+            TileGraphicType.ShipRepairParts.ToString(),
+            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.ShipRepairParts.ToString()}")
+        );
 
         var player = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -214,9 +227,12 @@ public class Assets : IAssets
             Color.Yellow
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Player, player);
-        AddGraphicalMapTileTexture(assetsList, TileGraphicType.Player,
-            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.Player)}");
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Player.ToString(), player);
+        
+        _graphicalMapTileGraphics.AddMapTileTextures(
+            TileGraphicType.Player.ToString(),
+            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.Player.ToString()}")
+        );
 
         var playerDead = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -227,10 +243,12 @@ public class Assets : IAssets
             Color.Gray
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.PlayerDead, playerDead);
-        AddGraphicalMapTileTexture(assetsList, TileGraphicType.PlayerDead,
-            $"{tilesPrefix}/{Enum.GetName(TileGraphicType.PlayerDead)}");
-
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.PlayerDead.ToString(), playerDead);
+        _graphicalMapTileGraphics.AddMapTileTextures(
+            TileGraphicType.PlayerDead.ToString(),
+            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.PlayerDead.ToString()}")
+        );
+        
         foreach (var breed in Breed.Breeds)
         {
             var monster = new MapTileTexture(
@@ -243,8 +261,12 @@ public class Assets : IAssets
                 breed.Value.BackgroundColour
             );
 
-            _asciiMapTileGraphics.AddMapTileTextures(breed.Value, monster);
-            AddGraphicalMapTileTexture(assetsList, breed.Value, $"{tilesPrefix}/{breed.Key}");
+            _asciiMapTileGraphics.AddMapTileTextures(breed.Value.ToString(), monster);
+            
+            _graphicalMapTileGraphics.AddMapTileTextures(
+                breed.Value.ToString(),
+                GetTileAssets(assetsList, $"{tilesPrefix}/{breed.Key}")
+            );
         }
 
         var fieldOfViewUnrevealedTexture = new MapTileTexture(
@@ -254,7 +276,7 @@ public class Assets : IAssets
             Color.Black
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.FieldOfViewUnrevealedTexture,
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.FieldOfViewUnrevealedTexture.ToString(),
             fieldOfViewUnrevealedTexture);
 
         var fieldOfViewHasBeenSeenTexture = new MapTileTexture(
@@ -264,7 +286,7 @@ public class Assets : IAssets
             Color.Black.WithTransparency(0.8f)
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.FieldOfViewHasBeenSeenTexture,
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.FieldOfViewHasBeenSeenTexture.ToString(),
             fieldOfViewHasBeenSeenTexture);
 
         var mouseHover = new MapTileTexture(
@@ -274,7 +296,7 @@ public class Assets : IAssets
             new Color(Color.LightYellow, 0.75f)
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MouseHover, mouseHover);
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MouseHover.ToString(), mouseHover);
 
         var lightning = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -283,7 +305,7 @@ public class Assets : IAssets
             new Color(Color.White, 1f)
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Lightning, lightning);
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Lightning.ToString(), lightning);
 
         var lineAttackNorthSouth = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -294,7 +316,7 @@ public class Assets : IAssets
             _lineAttackColour
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.LineAttackNorthSouth, lineAttackNorthSouth);
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.LineAttackNorthSouth.ToString(), lineAttackNorthSouth);
 
         var lineAttackEastWest = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -305,7 +327,7 @@ public class Assets : IAssets
             _lineAttackColour
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.LineAttackEastWest, lineAttackEastWest);
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.LineAttackEastWest.ToString(), lineAttackEastWest);
 
         var lineAttackNorthEastSouthWest = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
@@ -316,7 +338,7 @@ public class Assets : IAssets
             _lineAttackColour
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.LineAttackNorthEastSouthWest,
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.LineAttackNorthEastSouthWest.ToString(),
             lineAttackNorthEastSouthWest);
 
         var lineAttackNorthWestSouthEast = new MapTileTexture(
@@ -328,7 +350,7 @@ public class Assets : IAssets
             _lineAttackColour
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.LineAttackNorthWestSouthEast,
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.LineAttackNorthWestSouthEast.ToString(),
             lineAttackNorthWestSouthEast);
 
         GoalMapTileTexture = new GoalMapTileTexture(
@@ -355,22 +377,6 @@ public class Assets : IAssets
         _currentMapTileGraphics = tileGraphicOptions.UseAsciiTiles
             ? _asciiMapTileGraphics
             : _graphicalMapTileGraphics;
-    }
-
-    private void AddGraphicalMapTileTexture(string[] assetsList, TileGraphicType tileGraphicType, string tileAssetPattern)
-    {
-        _graphicalMapTileGraphics.AddMapTileTextures(
-            tileGraphicType,
-            GetTileAssets(assetsList, tileAssetPattern)
-        );
-    }
-
-    private void AddGraphicalMapTileTexture(string[] assetsList, Breed breed, string tileAssetPattern)
-    {
-        _graphicalMapTileGraphics.AddMapTileTextures(
-            breed,
-            GetTileAssets(assetsList, tileAssetPattern)
-        );
     }
 
     private MapTileTexture[] GetTileAssets(string[] assetsList, string pattern)
@@ -403,7 +409,12 @@ public class Assets : IAssets
 
     public IMapTileTexture GetMapTileTexture(TileGraphicType tileGraphicType)
     {
-        return _currentMapTileGraphics.GetMapTileTexture(tileGraphicType);
+        return _currentMapTileGraphics.GetMapTileTexture(tileGraphicType.ToString());
+    }
+
+    public IMapTileTexture GetMapTileTexture(TileGraphicType tileGraphicType, string additionalKey)
+    {
+        return _currentMapTileGraphics.GetMapTileTexture($"{tileGraphicType.ToString()}{additionalKey}");
     }
 
     public IMapTileTexture GetMapTileTexture(string key)

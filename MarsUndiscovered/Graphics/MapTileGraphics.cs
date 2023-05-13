@@ -103,11 +103,6 @@ public class MapTileGraphics
         }
     }
 
-    public IMapTileTexture GetMapTileTexture(TileGraphicType tileGraphicType)
-    {
-        return GetMapTileTexture(tileGraphicType.ToString());
-    }
-
     public IMapTileTexture GetMapTileTexture(string tileKey)
     {
         return _mapTileTextures.ContainsKey(tileKey)
