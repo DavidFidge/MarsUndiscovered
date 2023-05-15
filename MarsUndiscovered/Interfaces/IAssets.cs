@@ -16,9 +16,7 @@ namespace MarsUndiscovered.Interfaces
 
         void LoadContent();
         SpriteSheet GetRadioCommsSpriteSheet(RadioCommsTypes radioCommsType);
-        IMapTileTexture GetMapTileTexture(TileGraphicType tileGraphicType);
-        IMapTileTexture GetMapTileTexture(TileGraphicType tileGraphicType, string additionalKey);
-        Texture2D GetStaticTexture(TileGraphicType tileGraphicType);
+        IMapTileTexture GetMapTileTexture(string tileKey);
         Texture2D GetStaticTexture(string key);
         void Update();
         void SetTileGraphicOptions(TileGraphicOptions tileGraphicOptions);

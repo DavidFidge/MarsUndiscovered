@@ -2,6 +2,8 @@
 {
     public abstract class Gadget : ItemType
     {
+        public override char AsciiCharacter => (char)237;
+
         protected abstract int RechargeDelay { get; }
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)

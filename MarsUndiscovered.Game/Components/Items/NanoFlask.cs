@@ -2,6 +2,8 @@
 {
     public abstract class NanoFlask : ItemType
     {
+        public override char AsciiCharacter => (char)0x9a;
+
         public override bool GroupsInInventory => true;
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery,

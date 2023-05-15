@@ -2,6 +2,8 @@
 {
     public abstract class Weapon : ItemType
     {
+        public override char AsciiCharacter => (char)0x18;
+
         public override string GetAbstractTypeDescription()
         {
             return "Weapon";

@@ -12,6 +12,7 @@ namespace MarsUndiscovered.Game.Components
         public virtual bool GroupsInInventory { get; } = false;
 
         public abstract string Name { get; }
+        public abstract char AsciiCharacter { get; }
 
         public virtual void ApplyProperties(Item item)
         {
@@ -22,7 +23,7 @@ namespace MarsUndiscovered.Game.Components
         {
             item.EnchantmentLevel = 0;
         }
-
+        
         static ItemType()
         {
             ItemTypes = new Dictionary<string, ItemType>();

@@ -2,6 +2,8 @@
 {
     public class ShipRepairParts : VictoryItemType
     {
+        public override char AsciiCharacter => '&';
+
         public override string Name => nameof(ShipRepairParts);
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery,

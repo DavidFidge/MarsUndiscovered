@@ -36,7 +36,6 @@ public class Assets : IAssets
     private readonly IGameOptionsStore _gameOptionsStore;
     private readonly IGameTimeService _gameTimeService;
 
-    private Color _itemColour = Color.Yellow;
     private Color _lineAttackColour = Color.LightGray;
     
     private MapTileGraphics _asciiMapTileGraphics;
@@ -105,7 +104,7 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             '>',
-            _itemColour,
+            Color.Yellow,
             Color.SaddleBrown
         );
 
@@ -117,7 +116,7 @@ public class Assets : IAssets
             Constants.TileHeight,
             MapBitmapFont,
             '<',
-            _itemColour,
+            Color.Yellow,
             Color.SaddleBrown
         );
         
@@ -156,8 +155,10 @@ public class Assets : IAssets
 
             _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.MiningFacility}{ch}", miningFacilitySection);
         }
+        
+        var itemTypes = ItemType.ItemTypes
 
-        var weapon = new MapTileTexture(
+        var itemTypes = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
             Constants.TileHeight,
@@ -170,54 +171,8 @@ public class Assets : IAssets
         _graphicalMapTileGraphics.AddMapTileTextures(
             TileGraphicType.Weapon.ToString(),
             GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.Weapon.ToString()}")
-        );;
-
-        var gadget = new MapTileTexture(
-            _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
-            MapBitmapFont,
-            (char)237,
-            _itemColour
-        );
-
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Gadget.ToString(), gadget);
-        _graphicalMapTileGraphics.AddMapTileTextures(
-            TileGraphicType.Gadget.ToString(),
-            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.Gadget.ToString()}")
-        );
-
-        var nanoFlask = new MapTileTexture(
-            _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
-            MapBitmapFont,
-            (char)0x9a,
-            _itemColour
-        );
-
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.NanoFlask.ToString(), nanoFlask);
-        _graphicalMapTileGraphics.AddMapTileTextures(
-            TileGraphicType.NanoFlask.ToString(),
-            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.NanoFlask.ToString()}")
         );
         
-        var shipRepairParts = new MapTileTexture(
-            _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
-            MapBitmapFont,
-            '&',
-            _itemColour
-        );
-
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.ShipRepairParts.ToString(), shipRepairParts);
-        
-        _graphicalMapTileGraphics.AddMapTileTextures(
-            TileGraphicType.ShipRepairParts.ToString(),
-            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.ShipRepairParts.ToString()}")
-        );
-
         var player = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
@@ -261,10 +216,10 @@ public class Assets : IAssets
                 breed.Value.BackgroundColour
             );
 
-            _asciiMapTileGraphics.AddMapTileTextures(breed.Value.ToString(), monster);
+            _asciiMapTileGraphics.AddMapTileTextures(breed.Key, monster);
             
             _graphicalMapTileGraphics.AddMapTileTextures(
-                breed.Value.ToString(),
+                breed.Key,
                 GetTileAssets(assetsList, $"{tilesPrefix}/{breed.Key}")
             );
         }
@@ -407,28 +362,9 @@ public class Assets : IAssets
         };
     }
 
-    public IMapTileTexture GetMapTileTexture(TileGraphicType tileGraphicType)
-    {
-        return _currentMapTileGraphics.GetMapTileTexture(tileGraphicType.ToString());
-    }
-
-    public IMapTileTexture GetMapTileTexture(TileGraphicType tileGraphicType, string additionalKey)
-    {
-        return _currentMapTileGraphics.GetMapTileTexture($"{tileGraphicType.ToString()}{additionalKey}");
-    }
-
     public IMapTileTexture GetMapTileTexture(string key)
     {
         return _currentMapTileGraphics.GetMapTileTexture(key);
-    }
-
-    // For use with ad-hoc requests to get an individual tile texture.
-    // Do not use for drawing a map as it does not come from a texture atlas.
-    // Current use case is for drawing an image in the inventory. Could consider changing
-    // it to use texture atlases and animations later and removing this method.
-    public Texture2D GetStaticTexture(TileGraphicType tileGraphicType)
-    {
-        return _currentMapTileGraphics.GetStaticTexture(tileGraphicType);
     }
 
     // For use with ad-hoc requests to get an individual tile texture.
