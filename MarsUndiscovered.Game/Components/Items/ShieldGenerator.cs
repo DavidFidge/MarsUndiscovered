@@ -22,7 +22,7 @@ namespace MarsUndiscovered.Game.Components
 
         public override string GetTypeDescription()
         {
-            return $"Shield Generator {GetAbstractTypeDescription()}";
+            return $"Shield Generator {GetAbstractTypeName()}";
         }
 
         protected override int RechargeDelay => 300;

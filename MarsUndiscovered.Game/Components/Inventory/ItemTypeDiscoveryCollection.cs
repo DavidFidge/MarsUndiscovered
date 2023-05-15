@@ -98,7 +98,7 @@ public class ItemTypeDiscoveryCollection : Dictionary<ItemType, ItemTypeDiscover
         if (itemTypeDiscovery == null)
             return null;
         
-        return $"{itemTypeDiscovery.UndiscoveredName} {itemType.GetAbstractTypeDescription()}";
+        return $"{itemTypeDiscovery.UndiscoveredName} {itemType.GetAbstractTypeName()}";
     }
     
     public string GetUndiscoveredDescription(Item item)

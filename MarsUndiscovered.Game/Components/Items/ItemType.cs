@@ -45,7 +45,7 @@ namespace MarsUndiscovered.Game.Components
 
         public abstract string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true);
         public abstract string GetTypeDescription();
-        public abstract string GetAbstractTypeDescription();
+        public abstract string GetAbstractTypeName();
 
         protected string GetEnchantText(Item item)
         {

@@ -22,14 +22,14 @@ namespace MarsUndiscovered.Game.Components
                 return base.GetDescription(item, itemDiscovery, itemTypeDiscovery, quantity, includePrefix);
 
             if (quantity > 1)
-                return $"{(includePrefix ? $"{quantity.ToString()} " : "")}{GetAbstractTypeDescription()}{(includePrefix ? "s" : "")} of Healing Bots";
+                return $"{(includePrefix ? $"{quantity.ToString()} " : "")}{GetAbstractTypeName()}{(includePrefix ? "s" : "")} of Healing Bots";
 
             return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}";
         }
 
         public override string GetTypeDescription()
         {
-            return $"{GetAbstractTypeDescription()} of Healing Bots";
+            return $"{GetAbstractTypeName()} of Healing Bots";
         }
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)

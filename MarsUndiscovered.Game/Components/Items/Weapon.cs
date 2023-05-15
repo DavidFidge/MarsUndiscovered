@@ -4,9 +4,9 @@
     {
         public override char AsciiCharacter => (char)0x18;
 
-        public override string GetAbstractTypeDescription()
+        public override string GetAbstractTypeName()
         {
-            return "Weapon";
+            return nameof(Weapon);
         }
         
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
@@ -15,7 +15,7 @@
             var status = includeStatus && item.IsEquipped ? " (equipped)" : "";
             
             if (itemTypeDiscovery is { IsItemTypeDiscovered: false })
-                return $"{(includePrefix ? "An " : "")}Unknown {GetAbstractTypeDescription()}{status}";
+                return $"{(includePrefix ? "An " : "")}Unknown {GetAbstractTypeName()}{status}";
                
             if (!itemDiscovery.IsEnchantLevelDiscovered)
                 return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}{status}";
@@ -25,7 +25,7 @@
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)
         {
-            return $"A {GetAbstractTypeDescription()}";
+            return $"A {GetAbstractTypeName()}";
         }
 
         protected string GetPropertiesUnknownText()

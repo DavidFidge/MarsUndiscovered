@@ -156,23 +156,28 @@ public class Assets : IAssets
             _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.MiningFacility}{ch}", miningFacilitySection);
         }
         
-        var itemTypes = ItemType.ItemTypes
+        var itemTypes = ItemType.ItemTypes.Values
+            .GroupBy(i => i.AsciiCharacter)
+            .Select(g => g.First()).ToList();
 
-        var itemTypes = new MapTileTexture(
-            _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
-            MapBitmapFont,
-            (char)0x18,
-            _itemColour
-        );
+        foreach (var itemType in itemTypes)
+        {
+            var itemTypeMapTileTextures = new MapTileTexture(
+                _gameProvider.Game.GraphicsDevice,
+                Constants.TileWidth,
+                Constants.TileHeight,
+                MapBitmapFont,
+                itemType.AsciiCharacter,
+                Color.Yellow
+            );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Weapon.ToString(), weapon);
-        _graphicalMapTileGraphics.AddMapTileTextures(
-            TileGraphicType.Weapon.ToString(),
-            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.Weapon.ToString()}")
-        );
-        
+            _asciiMapTileGraphics.AddMapTileTextures(itemType.GetAbstractTypeName(), itemTypeMapTileTextures);
+            _graphicalMapTileGraphics.AddMapTileTextures(
+                itemType.GetAbstractTypeName(),
+                GetTileAssets(assetsList, $"{tilesPrefix}/{itemType.GetAbstractTypeName()}")
+            );
+        }
+
         var player = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,

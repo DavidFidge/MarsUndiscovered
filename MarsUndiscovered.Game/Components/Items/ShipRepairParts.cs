@@ -17,6 +17,11 @@
             return "Ship Repair Parts";
         }
 
+        public override string GetAbstractTypeName()
+        {
+            return nameof(ShipRepairParts);
+        }
+
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)
         {
             return

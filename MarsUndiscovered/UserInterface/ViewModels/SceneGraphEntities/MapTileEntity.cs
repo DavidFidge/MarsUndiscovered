@@ -68,7 +68,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void SetItem(ItemType itemType)
         {
-            MapTileTexture = Assets.GetMapTileTexture(itemType.Name);
+            MapTileTexture = Assets.GetMapTileTexture(itemType.GetAbstractTypeName());
             IsVisible = true;
         }
 

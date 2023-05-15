@@ -10,11 +10,11 @@
             ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
             if (!includePrefix)
-                return $"{itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeDescription()}";
+                return $"{itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeName()}";
             
             if (!itemTypeDiscovery.IsItemTypeDiscovered)
             {
-                var description = $"{GetQuantityText(quantity, itemTypeDiscovery)} {itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeDescription()}";
+                var description = $"{GetQuantityText(quantity, itemTypeDiscovery)} {itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeName()}";
 
                 return quantity > 1 ? $"{description}s" : description;
             }
@@ -22,9 +22,9 @@
             return null;
         }
 
-        public override string GetAbstractTypeDescription()
+        public override string GetAbstractTypeName()
         {
-            return "NanoFlask";
+            return nameof(NanoFlask);
         }
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)
