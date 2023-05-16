@@ -8,6 +8,8 @@ namespace MarsUndiscovered.Game.Components
 {
     public class Floor : Terrain, IMementoState<FloorSaveData>
     {
+        public FloorType FloorType { get; set; }
+
         public Floor(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
         }
@@ -17,6 +19,7 @@ namespace MarsUndiscovered.Game.Components
             var memento = new Memento<FloorSaveData>(new FloorSaveData());
 
             base.PopulateSaveState(memento.State);
+            memento.State.FloorTypeName = FloorType.Name;
 
             return memento;
         }
@@ -24,6 +27,7 @@ namespace MarsUndiscovered.Game.Components
         public void SetLoadState(IMemento<FloorSaveData> memento)
         {
             base.PopulateLoadState(memento.State);
+            FloorType = FloorType.FloorTypes[memento.State.FloorTypeName];
         }
     }
 }

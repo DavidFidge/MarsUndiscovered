@@ -1,8 +1,16 @@
-﻿namespace MarsUndiscovered.Game.Components
+﻿using Microsoft.Xna.Framework;
+
+namespace MarsUndiscovered.Game.Components
 {
     public abstract class NanoFlask : ItemType
     {
-        public override char AsciiCharacter => (char)0x9a;
+        private char _asciiCharacter = (char)0x9a;
+
+        public override char AsciiCharacter
+        {
+            get => _asciiCharacter;
+            set => _asciiCharacter = value;
+        }
 
         public override bool GroupsInInventory => true;
 

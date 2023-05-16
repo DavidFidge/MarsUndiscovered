@@ -1,10 +1,16 @@
-﻿namespace MarsUndiscovered.Game.Components
+﻿using Microsoft.Xna.Framework;
+
+namespace MarsUndiscovered.Game.Components
 {
     public class ShipRepairParts : VictoryItemType
     {
-        public override char AsciiCharacter => '&';
+        private char _asciiCharacter = '&';
 
-        public override string Name => nameof(ShipRepairParts);
+        public override char AsciiCharacter
+        {
+            get => _asciiCharacter;
+            set => _asciiCharacter = value;
+        }
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
             ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)

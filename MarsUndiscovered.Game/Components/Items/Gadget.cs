@@ -1,8 +1,16 @@
-﻿namespace MarsUndiscovered.Game.Components
+﻿using Microsoft.Xna.Framework;
+
+namespace MarsUndiscovered.Game.Components
 {
     public abstract class Gadget : ItemType
     {
-        public override char AsciiCharacter => (char)237;
+        private char _asciiCharacter = (char)237;
+
+        public override char AsciiCharacter
+        {
+            get => _asciiCharacter;
+            set => _asciiCharacter = value;
+        }
 
         protected abstract int RechargeDelay { get; }
 

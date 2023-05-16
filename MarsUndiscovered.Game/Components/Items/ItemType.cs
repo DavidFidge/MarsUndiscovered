@@ -1,6 +1,8 @@
+using Microsoft.Xna.Framework;
+
 namespace MarsUndiscovered.Game.Components
 {
-    public abstract class ItemType
+    public abstract class ItemType : GameObjectType
     {
         public static Dictionary<string, ItemType> ItemTypes;
         public static ShieldGenerator ShieldGenerator = new ShieldGenerator();
@@ -9,10 +11,28 @@ namespace MarsUndiscovered.Game.Components
         public static HealingBots HealingBots = new HealingBots();
         public static ShipRepairParts ShipRepairParts = new ShipRepairParts();
 
-        public virtual bool GroupsInInventory { get; } = false;
+        private Color _foregroundColour = Color.Yellow;
+        private Color? _backgroundColour = null;
 
-        public abstract string Name { get; }
-        public abstract char AsciiCharacter { get; }
+        public override string Name
+        {
+            get => GetType().Name;
+            set { }
+        }
+
+        public override Color ForegroundColour
+        {
+            get => _foregroundColour;
+            set => _foregroundColour = value;
+        }
+
+        public override Color? BackgroundColour
+        {
+            get => _backgroundColour;
+            set => _backgroundColour = value;
+        }
+
+        public virtual bool GroupsInInventory { get; } = false;
 
         public virtual void ApplyProperties(Item item)
         {
@@ -28,11 +48,11 @@ namespace MarsUndiscovered.Game.Components
         {
             ItemTypes = new Dictionary<string, ItemType>();
 
-            ItemTypes.Add(nameof(ShieldGenerator), ShieldGenerator);
-            ItemTypes.Add(nameof(MagnesiumPipe), MagnesiumPipe);
-            ItemTypes.Add(nameof(IronSpike), IronSpike);
-            ItemTypes.Add(nameof(HealingBots), HealingBots);
-            ItemTypes.Add(nameof(ShipRepairParts), ShipRepairParts);
+            ItemTypes.Add(ShieldGenerator.Name, ShieldGenerator);
+            ItemTypes.Add(MagnesiumPipe.Name, MagnesiumPipe);
+            ItemTypes.Add(IronSpike.Name, IronSpike);
+            ItemTypes.Add(HealingBots.Name, HealingBots);
+            ItemTypes.Add(ShipRepairParts.Name, ShipRepairParts);
         }
 
         public static ItemType GetItemType(string itemType)

@@ -1,8 +1,16 @@
-﻿namespace MarsUndiscovered.Game.Components
+﻿using Microsoft.Xna.Framework;
+
+namespace MarsUndiscovered.Game.Components
 {
     public abstract class Weapon : ItemType
     {
-        public override char AsciiCharacter => (char)0x18;
+        private char _asciiCharacter = (char)0x18;
+
+        public override char AsciiCharacter
+        {
+            get => _asciiCharacter;
+            set => _asciiCharacter = value;
+        }
 
         public override string GetAbstractTypeName()
         {

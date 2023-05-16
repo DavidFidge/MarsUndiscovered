@@ -8,6 +8,7 @@ namespace MarsUndiscovered.Game.Components
 {
     public class Wall : Terrain, IMementoState<WallSaveData>
     {
+        public WallType WallType { get; set; }
         public Wall(IGameWorld gameWorld, uint id) : base(gameWorld, id, false, false)
         {
         }
@@ -18,12 +19,15 @@ namespace MarsUndiscovered.Game.Components
 
             base.PopulateSaveState(memento.State);
 
+            memento.State.WallTypeName = WallType.Name;
+
             return memento;
         }
 
         public void SetLoadState(IMemento<WallSaveData> memento)
         {
             base.PopulateLoadState(memento.State);
+            WallType = WallType.WallTypes[memento.State.WallTypeName];
         }
     }
 }

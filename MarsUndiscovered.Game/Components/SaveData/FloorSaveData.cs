@@ -2,5 +2,6 @@
 {
     public class FloorSaveData : TerrainSaveData
     {
+        public string FloorTypeName { get; set; }
     }
 }

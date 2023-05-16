@@ -168,7 +168,8 @@ public class Assets : IAssets
                 Constants.TileHeight,
                 MapBitmapFont,
                 itemType.AsciiCharacter,
-                Color.Yellow
+                itemType.ForegroundColour,
+                itemType.BackgroundColour
             );
 
             _asciiMapTileGraphics.AddMapTileTextures(itemType.GetAbstractTypeName(), itemTypeMapTileTextures);
