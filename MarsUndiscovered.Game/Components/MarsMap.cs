@@ -112,7 +112,7 @@ namespace MarsUndiscovered.Game.Components
             }
         }
 
-        public Wall CreateWall(Point position, IGameObjectFactory gameObjectFactory)
+        public Wall CreateWall(WallType wallType, Point position, IGameObjectFactory gameObjectFactory)
         {
             var wall = GetTerrainAt<Wall>(position);
 
@@ -132,7 +132,7 @@ namespace MarsUndiscovered.Game.Components
             return wall;
         }
 
-        public Floor CreateFloor(Point position, IGameObjectFactory gameObjectFactory)
+        public Floor CreateFloor(FloorType floorType, Point position, IGameObjectFactory gameObjectFactory)
         {
             var floor = GetTerrainAt<Floor>(position);
 

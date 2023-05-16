@@ -11,18 +11,11 @@ namespace MarsUndiscovered.Tests.Components
 {
     public class SpecificMapGenerator : BaseTestMapGenerator
     {
-        private readonly Func<Point, IGameObject> _terrainChooser;
+        private readonly HashSet<Point> _wallPoints;
 
         public SpecificMapGenerator(IGameObjectFactory gameObjectFactory, IList<Point> wallPoints) : base(gameObjectFactory)
         {
-            var index = 0;
-
-            _terrainChooser = ((p) =>
-            {
-                var terrain = wallPoints.Contains(p) ? (Terrain)_gameObjectFactory.CreateGameObject<Wall>() : _gameObjectFactory.CreateGameObject<Floor>();
-                terrain.Index = index++;
-                return terrain;
-            });
+            _wallPoints = wallPoints.ToHashSet();
         }
 
         public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
@@ -45,7 +38,27 @@ namespace MarsUndiscovered.Tests.Components
         {
             var arrayView = new ArrayView<IGameObject>(width, height);
 
-            arrayView.ApplyOverlay(_terrainChooser);
+            for (var index = 0; index < arrayView.Count; index++)
+            {
+                var point = Point.FromIndex(index, width);
+                Terrain terrain;
+
+                if (_wallPoints.Contains(point))
+                {
+                    var wall = _gameObjectFactory.CreateGameObject<Wall>();
+                    wall.WallType = WallType.RockWall;
+                    terrain = wall;
+                }
+                else
+                {
+                    var floor = _gameObjectFactory.CreateGameObject<Floor>();
+                    floor.FloorType = FloorType.RockFloor;
+                    terrain = floor;
+                }
+                
+                terrain.Index = index;
+                arrayView[index] = terrain;
+            }
 
             var wallsFloors = arrayView.ToArray();
 

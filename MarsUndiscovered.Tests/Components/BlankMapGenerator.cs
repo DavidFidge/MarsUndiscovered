@@ -38,6 +38,7 @@ namespace MarsUndiscovered.Tests.Components
                 var floor = _gameObjectFactory.CreateGameObject<Floor>();
                 floor.FloorType = FloorType.RockFloor;
                 floor.Index = index;
+                arrayView[index] = floor;
             }
 
            var wallsFloors = arrayView.ToArray();

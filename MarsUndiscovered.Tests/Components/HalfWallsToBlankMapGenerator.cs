@@ -37,22 +37,25 @@ namespace MarsUndiscovered.Tests.Components
 
                 for (var index = 0; index < arrayView.Count; index++)
                 {
-                    var terrain = p.Y > height - 5
+                    var y = index / width;
+                    Terrain terrain;
+
+                    if (y > height - 5)
+                    {
+                        var wall = _gameObjectFactory.CreateGameObject<Wall>();
+                        wall.WallType = WallType.RockWall;
+                        terrain = wall;
+                    }
+                    else
+                    {
+                        var floor = _gameObjectFactory.CreateGameObject<Floor>();
+                        floor.FloorType = FloorType.RockFloor;
+                        terrain = floor;
+                    }
                     
-                    var floor = _gameObjectFactory.CreateGameObject<Floor>();
-                    floor.FloorType = FloorType.RockFloor;
-                    floor.Index = index;
+                    terrain.Index = index;
+                    arrayView[index] = terrain;
                 }
-
-
-                arrayView.ApplyOverlay(p =>
-                {
-                    var terrain = p.Y > height - 5
-                        ? (Terrain)_gameObjectFactory.CreateGameObject<Wall>()
-                        : _gameObjectFactory.CreateGameObject<Floor>();
-                    terrain.Index = index++;
-                    return terrain;
-                });
 
                 var wallsFloors = arrayView.ToArray();
 
@@ -65,7 +68,12 @@ namespace MarsUndiscovered.Tests.Components
             {
                 var arrayView = new ArrayView<IGameObject>(width, height);
 
-                arrayView.ApplyOverlay(_ => _gameObjectFactory.CreateGameObject<Floor>());
+                for (var index = 0; index < arrayView.Count; index++)
+                {
+                    var floor = _gameObjectFactory.CreateGameObject<Floor>();
+                    floor.FloorType = FloorType.RockFloor;
+                    floor.Index = index;
+                }
 
                 var wallsFloors = arrayView.ToArray();
 
