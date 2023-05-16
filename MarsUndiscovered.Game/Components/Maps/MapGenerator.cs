@@ -1,13 +1,11 @@
 ﻿using FrigidRogue.WaveFunctionCollapse;
 using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
-using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
 using GoRogue.Random;
 
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.GenerationSteps;
-using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
 using SadRogue.Primitives.GridViews;
 
@@ -15,6 +13,10 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public class MapGenerator : BaseMapGenerator
     {
+        public static string WallFloorTag = "WallFloor";
+        public static string TunnelTag = "Tunnel";
+        public static string WallFloorTypeTag = "WallFloorType";
+        
         private readonly IWaveFunctionCollapseGeneratorPasses _waveFunctionCollapseGeneratorPasses;
         private readonly IWaveFunctionCollapseGeneratorPassesContentLoader _waveFunctionCollapseGeneratorPassesContentLoader;
         private readonly IWaveFunctionCollapseGeneratorPassesRenderer _waveFunctionCollapseGeneratorPassesRenderer;
@@ -62,7 +64,7 @@ namespace MarsUndiscovered.Game.Components.Maps
                 GlobalRandom.DefaultRNG.NextInt(width, height)
                 );
 
-            var generationSteps = new GenerationStep[] { new MineWorkerGeneration() };
+            var generationSteps = new GenerationStep[] { new MineWorkerGeneration(), new WallFloorTypeConverterGenerator() };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
@@ -110,30 +112,41 @@ namespace MarsUndiscovered.Game.Components.Maps
             }
 
             var wallsFloors = generator.Context
-                .GetFirst<ArrayView<bool>>("WallFloor")
-                .ToArrayView((s, index) =>
-                    {
-                        IGameObject gameObject;
+                .GetFirst<ArrayView<GameObjectType>>(WallFloorTypeTag);
+                
+             var walls = new List<Wall>(wallsFloors.Count);   
+             var floors = new List<Floor>(wallsFloors.Count);
 
-                        if (s)
-                        {
-                            var floor = gameObjectFactory.CreateGameObject<Floor>();
-                            floor.Index = index;
-                            gameObject = floor;
-                        }
-                        else
-                        {
-                            var wall = gameObjectFactory.CreateGameObject<Wall>();
-                            wall.Index = index;
-                            gameObject = wall;
-                        }
+             for (var index = 0; index < wallsFloors.Count; index++)
+             {
+                 var wallFloor = wallsFloors[index];
 
-                        return gameObject;
-                    }
-                );
+                 Terrain terrain;
 
-            var walls = wallsFloors.ToArray().OfType<Wall>().ToList();
-            var floors = wallsFloors.ToArray().OfType<Floor>().ToList();
+                 switch (wallFloor)
+                 {
+                     case WallType wallType:
+                     {
+                         var wall = gameObjectFactory.CreateGameObject<Wall>();
+                         terrain = wall;
+                         wall.WallType = wallType;
+                         walls.Add(wall);
+                         break;
+                     }
+                     case FloorType floorType:
+                     {
+                         var floor = gameObjectFactory.CreateGameObject<Floor>();
+                         terrain = floor;
+                         floor.FloorType = floorType;
+                         floors.Add(floor);
+                         break;
+                     }
+                     default:
+                         throw new Exception("Unknown wall/floor type");
+                 }
+
+                 terrain.Index = index;
+             }
 
             Map = CreateMap(gameWorld, walls, floors, generator.Context.Width, generator.Context.Height);
         }

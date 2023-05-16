@@ -35,7 +35,15 @@ namespace MarsUndiscovered.Tests.Components
             {
                 var arrayView = new ArrayView<IGameObject>(width, height);
 
-                var index = 0;
+                for (var index = 0; index < arrayView.Count; index++)
+                {
+                    var terrain = p.Y > height - 5
+                    
+                    var floor = _gameObjectFactory.CreateGameObject<Floor>();
+                    floor.FloorType = FloorType.RockFloor;
+                    floor.Index = index;
+                }
+
 
                 arrayView.ApplyOverlay(p =>
                 {

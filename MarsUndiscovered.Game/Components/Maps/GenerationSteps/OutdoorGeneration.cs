@@ -77,6 +77,9 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                 DistanceCalc = dist,
                 TunnelCreator = _tunnelCreationMethod
             };
+
+            // 5. Convert bool ArrayView to wall floor types
+            yield return new WallFloorTypeConverterGenerator();
         }
     }
 }

@@ -47,7 +47,7 @@ namespace MarsUndiscovered.Game.Components
 
         public void ApplyTerrainOverlay(IEnumerable<Wall> walls, IEnumerable<Floor> floors)
         {
-            Debug.Assert(floors.Any() || walls.Any(), "Walls and/or Floors must be populated");
+            Debug.Assert(floors != null && walls != null, "Walls and/or Floors must not be null");
 
             Walls = walls.Where(w => !w.IsDestroyed).ToList();
             Floors = floors.Where(w => !w.IsDestroyed).ToList();

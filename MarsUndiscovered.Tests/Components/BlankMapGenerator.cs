@@ -33,9 +33,14 @@ namespace MarsUndiscovered.Tests.Components
         {
             var arrayView = new ArrayView<IGameObject>(width, height);
 
-            arrayView.ApplyOverlay(_ => _gameObjectFactory.CreateGameObject<Floor>());
+            for (var index = 0; index < arrayView.Count; index++)
+            {
+                var floor = _gameObjectFactory.CreateGameObject<Floor>();
+                floor.FloorType = FloorType.RockFloor;
+                floor.Index = index;
+            }
 
-            var wallsFloors = arrayView.ToArray();
+           var wallsFloors = arrayView.ToArray();
 
             Map = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
                 wallsFloors.OfType<Floor>().ToList(), width, height);
