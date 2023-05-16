@@ -52,7 +52,7 @@ namespace MarsUndiscovered.Game.Components.Maps
                 }
             }
 
-            map.CreateFloor(position, gameObjectFactory);
+            map.CreateFloor(FloorType.BlankFloor, position, gameObjectFactory);
 
             var mapExit = gameObjectFactory
                 .CreateGameObject<MapExit>()

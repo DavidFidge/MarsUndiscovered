@@ -41,7 +41,7 @@ namespace MarsUndiscovered.Game.Components.Maps
 
             foreach (var item in mapTemplate)
             {
-                map.CreateFloor(item.Point, gameObjectFactory);
+                map.CreateFloor(FloorType.BlankFloor, item.Point, gameObjectFactory);
 
                 if (map.GetObjectsAt(item.Point).Any(o => o is not Floor))
                     throw new Exception("CreateMiningFacility must be done as the first object creation steps");

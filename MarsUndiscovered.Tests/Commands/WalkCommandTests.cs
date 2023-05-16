@@ -44,11 +44,12 @@ namespace MarsUndiscovered.Tests.Commands
         public void WalkCommand_Should_Return_NoMove_Result_For_Wall()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            var wallPosition = new Point(1, 0);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             _gameWorld.Player.Position = new Point(0, 0);
-            var wallPosition = new Point(1, 0);
-            _gameWorld.CreateWall(wallPosition);
 
             // Act
             _gameWorld.MoveRequest(Direction.Right);
@@ -106,12 +107,13 @@ namespace MarsUndiscovered.Tests.Commands
         public void WalkCommand_Player_Into_Monster_On_Wall_Should_Attack()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            var wallPosition = new Point(0, 1);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld, mapGenerator);
 
             _gameWorld.Player.Position = new Point(0, 0);
 
-            var wallPosition = new Point(0, 1);
-            _gameWorld.CreateWall(wallPosition);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition));
 
             var monster = _gameWorld.Monsters.Values.First();
@@ -231,11 +233,12 @@ namespace MarsUndiscovered.Tests.Commands
         public void Should_Walk_To_Position_And_Stop_At_Wall_With_NoMove()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            var wallPosition = new Point(2, 2);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             _gameWorld.Player.Position = new Point(0, 0);
-
-            _gameWorld.CreateWall(new Point(2, 2));
 
             var path = _gameWorld.GetPathToPlayer(new Point(2, 2));
 
@@ -257,11 +260,12 @@ namespace MarsUndiscovered.Tests.Commands
         public void Should_Perform_NonMove_If_MoveDestination_Is_Wall_And_Only_One_Square()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            var wallPosition = new Point(1, 1);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             _gameWorld.Player.Position = new Point(0, 0);
-
-            _gameWorld.CreateWall(new Point(1, 1));
 
             var path = _gameWorld.GetPathToPlayer(new Point(1, 1));
 

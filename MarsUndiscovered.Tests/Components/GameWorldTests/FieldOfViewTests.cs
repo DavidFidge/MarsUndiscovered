@@ -10,7 +10,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void GetStatusOfMonstersInView_Should_Return_Monster_Statuses()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
@@ -28,7 +28,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void GetStatusOfMonstersInView_Should_Return_Monster_Statuses_In_Visual_Range()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.VisualRange = 1;
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
@@ -46,10 +46,12 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void GetStatusOfMonstersInView_Should_Return_Monsters_In_Field_Of_View_Only()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
-
             var wallPosition = new Point(1, 1);
-            _gameWorld.CreateWall(wallPosition);
+
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)));
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 2)));
@@ -67,10 +69,11 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void HasBeenSeen_Should_Be_False_For_Unseen_Tiles()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition = new Point(1, 1);
-            _gameWorld.CreateWall(wallPosition);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            _gameWorld.Player.Position = new Point(0, 0);
 
             // Act
             _gameWorld.TestResetFieldOfView();
@@ -89,11 +92,12 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void HasBeenSeen_Should_Be_False_For_Unseen_Tiles_Should_Keep_GameObjects_That_Were_Last_Seen_There()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            var wallPosition = new Point(1, 1);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             _gameWorld.Player.Position = new Point(0, 0);
-            var wallPosition = new Point(1, 1);
-            _gameWorld.CreateWall(wallPosition);
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)));
             var monster = _gameWorld.Monsters.First().Value;

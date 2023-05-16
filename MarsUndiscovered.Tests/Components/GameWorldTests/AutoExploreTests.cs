@@ -10,16 +10,14 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Move_Towards_Unknown_Space()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
             var wallPosition2 = new Point(1, 1);
             var wallPosition3 = new Point(1, 2);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3 });
 
-            _gameWorld.CreateWall(wallPosition1);
-            _gameWorld.CreateWall(wallPosition2);
-            _gameWorld.CreateWall(wallPosition3);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+
+            _gameWorld.Player.Position = new Point(0, 0);
 
             _gameWorld.TestResetFieldOfView();
 
@@ -41,17 +39,16 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Prioritise_Picking_Up_Undropped_Items()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
             var wallPosition2 = new Point(1, 1);
             var wallPosition3 = new Point(1, 2);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3 });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+
+            _gameWorld.Player.Position = new Point(0, 0);
             var itemPosition = new Point(0, 5);
 
-            _gameWorld.CreateWall(wallPosition1);
-            _gameWorld.CreateWall(wallPosition2);
-            _gameWorld.CreateWall(wallPosition3);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(itemPosition));
 
             _gameWorld.TestResetFieldOfView();
@@ -71,17 +68,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Ignore_Items_That_Have_Been_Picked_Up_Prior()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.VisualRange = 1000;
-            _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
             var wallPosition2 = new Point(1, 1);
             var wallPosition3 = new Point(1, 2);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3 });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            _gameWorld.Player.VisualRange = 1000;
+            _gameWorld.Player.Position = new Point(0, 0);
+
             var itemPosition = new Point(0, 5);
 
-            _gameWorld.CreateWall(wallPosition1);
-            _gameWorld.CreateWall(wallPosition2);
-            _gameWorld.CreateWall(wallPosition3);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(itemPosition));
             _gameWorld.Items.Values.First().HasBeenDropped = true;
 
@@ -103,17 +100,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Go_To_Exit_When_Map_Explored()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.VisualRange = 1000;
-            _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
             var wallPosition2 = new Point(1, 1);
             var wallPosition3 = new Point(1, 2);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3 });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            _gameWorld.Player.VisualRange = 1000;
+            _gameWorld.Player.Position = new Point(0, 0);
+
             var mapExitPosition = new Point(0, 5);
 
-            _gameWorld.CreateWall(wallPosition1);
-            _gameWorld.CreateWall(wallPosition2);
-            _gameWorld.CreateWall(wallPosition3);
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
             _gameWorld.TestResetFieldOfView();
 
@@ -141,17 +138,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Not_Go_To_Exit_When_Fallback_To_Map_Exit_Is_False()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.VisualRange = 1000;
-            _gameWorld.Player.Position = new Point(0, 0);
             var wallPosition1 = new Point(1, 0);
             var wallPosition2 = new Point(1, 1);
             var wallPosition3 = new Point(1, 2);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3 });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            _gameWorld.Player.VisualRange = 1000;
+            _gameWorld.Player.Position = new Point(0, 0);
+
             var mapExitPosition = new Point(0, 5);
 
-            _gameWorld.CreateWall(wallPosition1);
-            _gameWorld.CreateWall(wallPosition2);
-            _gameWorld.CreateWall(wallPosition3);
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
             _gameWorld.TestResetFieldOfView();
 
@@ -171,9 +168,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Not_Move_If_Stuck_In_Walls()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            var wallPositions = new List<Point>();
 
             for (var y = 0; y < 2; y++)
             {
@@ -182,9 +177,15 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                     var point = new Point(x, y);
 
                     if (point != new Point(0, 0))
-                        _gameWorld.CreateWall(new Point(x, y));
+                        wallPositions.Add(new Point(x, y));
                 }
             }
+
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, wallPositions);
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+
+            _gameWorld.Player.Position = new Point(0, 0);
 
             _gameWorld.TestResetFieldOfView();
 
@@ -201,17 +202,21 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Not_Get_Stuck_On_Wall()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.VisualRange = 1000;
-            _gameWorld.Player.Position = new Point(0, 0);
+            var wallPositions = new List<Point>();
 
             for (var y = 1; y < 6; y++)
             {
                 for (var x = 1; x < 6; x++)
                 {
-                    _gameWorld.CreateWall(new Point(x, y));
+                    wallPositions.Add(new Point(x, y));
                 }
             }
+
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, wallPositions);
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            _gameWorld.Player.VisualRange = 1000;
+            _gameWorld.Player.Position = new Point(0, 0);
 
             _gameWorld.TestResetFieldOfView();
 
@@ -244,21 +249,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Stay_Still_If_No_Place_To_Explore()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            var playerPosition = new Point(0, 0);
-
-            _gameWorld.Player.Position = playerPosition;
-
             var wallPosition1 = new Point(1, 0);
             var wallPosition2 = new Point(1, 1);
             var wallPosition3 = new Point(1, 2);
             var wallPosition4 = new Point(0, 2);
 
-            _gameWorld.CreateWall(wallPosition1);
-            _gameWorld.CreateWall(wallPosition2);
-            _gameWorld.CreateWall(wallPosition3);
-            _gameWorld.CreateWall(wallPosition4);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3, wallPosition4 });
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+
+            var playerPosition = new Point(0, 0);
+
+            _gameWorld.Player.Position = playerPosition;
 
             _gameWorld.TestResetFieldOfView();
 
@@ -276,18 +277,22 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Attack_Adjacent_Monsters_Before_Exploring()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            var playerPosition = new Point(0, 0);
-            _gameWorld.Player.Position = playerPosition;
+            var wallPositions = new List<Point>();
 
             for (var y = 1; y < 6; y++)
             {
                 for (var x = 1; x < 6; x++)
                 {
-                    _gameWorld.CreateWall(new Point(x, y));
+                    wallPositions.Add(new Point(x, y));
                 }
             }
+
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, wallPositions);
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+
+            var playerPosition = new Point(0, 0);
+            _gameWorld.Player.Position = playerPosition;
 
             var monsterPosition = new Point(1, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(monsterPosition));
@@ -307,16 +312,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Stop_Movement_If_Attacked_By_Lightning()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            var wallPosition = new Point(0, 0);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
             _gameWorld.Player.VisualRange = 1000;
 
             var playerPosition = new Point(3, 3);
             _gameWorld.Player.Position = playerPosition;
 
-            var wallPosition = new Point(0, 0);
             var mapExitPosition = new Point(5, 5);
 
-            _gameWorld.CreateWall(wallPosition);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition));
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
             _gameWorld.TestResetFieldOfView();
@@ -335,16 +341,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Stop_Movement_When_New_Monsters_Come_Into_View()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            var wallPosition = new Point(0, 1);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             var playerPosition = new Point(0, 10);
             _gameWorld.Player.Position = playerPosition;
 
             var monsterPosition = new Point(0, 0);
-            var wallPosition = new Point(0, 1);
             var mapExitPosition = new Point(5, 10);
 
-            _gameWorld.CreateWall(wallPosition);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(monsterPosition));
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
             _gameWorld.TestResetFieldOfView();
@@ -360,16 +367,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Not_Stop_Movement_When_Existing_Monsters_Are_In_View()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            var wallPosition = new Point(0, 1);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             var playerPosition = new Point(0, 10);
             _gameWorld.Player.Position = playerPosition;
 
             var monsterPosition = new Point(0, 0);
-            var wallPosition = new Point(0, 1);
             var mapExitPosition = new Point(5, 10);
 
-            _gameWorld.CreateWall(wallPosition);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(monsterPosition));
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
             _gameWorld.TestResetFieldOfView();
@@ -386,16 +394,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void AutoExplore_Should_Not_Stop_Movement_When_Existing_Monster_Goes_Out_Of_View()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            var wallPosition = new Point(0, 1);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             var playerPosition = new Point(0, 10);
             _gameWorld.Player.Position = playerPosition;
 
             var monsterPosition = new Point(0, 0);
-            var wallPosition = new Point(0, 1);
             var mapExitPosition = new Point(5, 10);
 
-            _gameWorld.CreateWall(wallPosition);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(monsterPosition));
             _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(Direction.Down));
             _gameWorld.TestResetFieldOfView();

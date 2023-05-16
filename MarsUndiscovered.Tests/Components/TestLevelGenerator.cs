@@ -19,6 +19,8 @@ namespace MarsUndiscovered.Tests.Components
 
         public Point OutdoorMapSize { get; set; }
 
+        public Point PlayerPosition { get; set; } = Point.None;
+
         public TestLevelGenerator(GameWorld gameWorld, IMapGenerator mapGenerator, int mapWidth, int mapHeight)
         {
             OutdoorMapSize = new Point(mapWidth, mapHeight);
@@ -46,12 +48,17 @@ namespace MarsUndiscovered.Tests.Components
             _gameWorld.AddMapToGame(MapGenerator.Map);
             _gameWorld.Maps.CurrentMap = MapGenerator.Map;
 
-            _gameWorld.Player = _gameWorld.GameObjectFactory
-                .CreateGameObject<Player>()
-                .PositionedAt(new Point(MapGenerator.Map.Width / 2,
+            if (PlayerPosition == Point.None)
+            {
+                PlayerPosition = new Point(MapGenerator.Map.Width / 2,
                     MapGenerator.Map.Height - 2 -
                     (Constants.ShipOffset -
-                     1))) // Start off underneath the ship, extra -1 for the current ship design as there's a blank space on the bottom line
+                     1)); // Start off underneath the ship, extra -1 for the current ship design as there's a blank space on the bottom line
+            }
+
+            _gameWorld.Player = _gameWorld.GameObjectFactory
+                .CreateGameObject<Player>()
+                .PositionedAt(PlayerPosition)
                 .AddToMap(MapGenerator.Map);
 
             CreateMapExitToNextMap(MapGenerator.Map);

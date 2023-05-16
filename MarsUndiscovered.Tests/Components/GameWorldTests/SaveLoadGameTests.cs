@@ -124,11 +124,11 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_MapSeenTiles()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            var wallPosition = new Point(1, 1);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             _gameWorld.Player.Position = new Point(0, 0);
-            var wallPosition = new Point(1, 1);
-            _gameWorld.CreateWall(wallPosition);
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)));
             var monster = _gameWorld.Monsters.First().Value;

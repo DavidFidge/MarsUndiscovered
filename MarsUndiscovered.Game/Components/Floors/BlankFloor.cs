@@ -3,11 +3,11 @@ using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.Game.Components;
 
-public class MiningFacilityFloor : FloorType
+public class BlankFloor : FloorType
 {
-    private char _asciiCharacter = '#';
+    private char _asciiCharacter = ' ';
     private Color _foregroundColour =  Color.Black;
-    private Color? _backgroundColour = new Color(0xFF777777);
+    private Color? _backgroundColour = null;
 
     public override char AsciiCharacter
     {

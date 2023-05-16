@@ -411,25 +411,25 @@ namespace MarsUndiscovered.Game.Components
 
         public void CreateWall(Point position)
         {
-            CurrentMap.CreateWall(position, GameObjectFactory);
+            CurrentMap.CreateWall(WallType.RockWall, position, GameObjectFactory);
             UpdateFieldOfView();
         }
 
         public void CreateFloor(Point position)
         {
-            CurrentMap.CreateFloor(position, GameObjectFactory);
+            CurrentMap.CreateFloor(FloorType.BlankFloor, position, GameObjectFactory);
             UpdateFieldOfView();
         }
         
         public void CreateWall(int x, int y)
         {
-            CurrentMap.CreateWall(new Point(x, y), GameObjectFactory);
+            CurrentMap.CreateWall(WallType.RockWall, new Point(x, y), GameObjectFactory);
             UpdateFieldOfView();
         }
 
         public void CreateFloor(int x, int y)
         {
-            CurrentMap.CreateFloor(new Point(x, y), GameObjectFactory);
+            CurrentMap.CreateFloor(FloorType.BlankFloor, new Point(x, y), GameObjectFactory);
             UpdateFieldOfView();
         }
 

@@ -125,6 +125,7 @@ namespace MarsUndiscovered.Game.Components
             wall = gameObjectFactory.CreateGameObject<Wall>();
             wall.Position = position;
             wall.Index = position.ToIndex(Width);
+            wall.WallType = wallType;
             Walls.Add(wall);
             _gameWorld.Walls.Add(wall.ID, wall);
 
@@ -145,6 +146,7 @@ namespace MarsUndiscovered.Game.Components
             floor = gameObjectFactory.CreateGameObject<Floor>();
             floor.Position = position;
             floor.Index = position.ToIndex(Width);
+            floor.FloorType = floorType;
             Floors.Add(floor);
             _gameWorld.Floors.Add(floor.ID, floor);
 
