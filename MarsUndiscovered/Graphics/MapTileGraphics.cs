@@ -31,7 +31,8 @@ public class MapTileGraphics
 
     public void AddMapTileTextures(string key, params MapTileTexture[] mapTileTextureFrames)
     {
-        _rawMapTileTextures.Add(key, mapTileTextureFrames.ToList());
+        if (mapTileTextureFrames.Any())
+            _rawMapTileTextures.Add(key, mapTileTextureFrames.ToList());
     }
 
     public void Build(GraphicsDevice graphicsDevice)

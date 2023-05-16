@@ -314,14 +314,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             if (floor != null)
             {
-                _terrainTiles[point].SetFloor();
+                _terrainTiles[point].SetFloor(((Floor)floor).FloorType);
                 return;
             }
 
             var wall = gameObjects.FirstOrDefault(go => go is Wall);
 
             if (wall != null)
-                _terrainTiles[point].SetWall();
+                _terrainTiles[point].SetWall(((Wall)wall).WallType);
         }
 
         private void DebugUpdateTileGoalMap()

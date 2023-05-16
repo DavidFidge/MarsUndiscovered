@@ -20,8 +20,6 @@ public class Assets : IAssets
 {
     // Alpha comes first, then reverse the hex if copying from Paint.NET
     // In Breeds.csv there is no alpha and the hex can by copied directly
-    public static Color WallColor = new Color(0xFF244BB6);
-    public static Color WallMiningFacilityColor = new Color(0xFF777777);
     public static Color UserInterfaceColor = new Color(0xFF1E0097);
 
     public SpriteFont UiRegularFont { get; set; }
@@ -67,36 +65,43 @@ public class Assets : IAssets
         var assetsList = _gameProvider.Game.Content.Load<string[]>("Content");
         var tilesPrefix = "tiles";
 
-        var wall = new MapTileTexture(
-            _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
-            MapBitmapFont,
-            '#',
-            Color.White,
-            WallColor
-        );
+        foreach (var wallType in WallType.WallTypes)
+        {
+            var wall = new MapTileTexture(
+                _gameProvider.Game.GraphicsDevice,
+                Constants.TileWidth,
+                Constants.TileHeight,
+                MapBitmapFont,
+                wallType.Value.AsciiCharacter,
+                wallType.Value.ForegroundColour,
+                wallType.Value.BackgroundColour
+            );
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Wall.ToString(), wall);
-        _graphicalMapTileGraphics.AddMapTileTextures(
-            TileGraphicType.Wall.ToString(),
-            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.Wall.ToString()}")
-        );
-        
-        var floor = new MapTileTexture(
-            _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
-            MapBitmapFont,
-            (char)0xfa,
-            Color.Tan
-        );
+            _asciiMapTileGraphics.AddMapTileTextures(wallType.Key, wall);
+            _graphicalMapTileGraphics.AddMapTileTextures(
+                wallType.Key,
+                GetTileAssets(assetsList, $"{tilesPrefix}/{wallType.Key}")
+            );
+        }
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Floor.ToString(), floor);
-        _graphicalMapTileGraphics.AddMapTileTextures(
-            TileGraphicType.Floor.ToString(),
-            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.Floor.ToString()}")
-        );
+        foreach (var floorType in FloorType.FloorTypes)
+        {
+            var floor = new MapTileTexture(
+                _gameProvider.Game.GraphicsDevice,
+                Constants.TileWidth,
+                Constants.TileHeight,
+                MapBitmapFont,
+                floorType.Value.AsciiCharacter,
+                floorType.Value.ForegroundColour,
+                floorType.Value.BackgroundColour
+            );
+
+            _asciiMapTileGraphics.AddMapTileTextures(floorType.Key, floor);
+            _graphicalMapTileGraphics.AddMapTileTextures(
+                floorType.Key,
+                GetTileAssets(assetsList, $"{tilesPrefix}/{floorType.Key}")
+            );
+        }
 
         var mapExitDown = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,

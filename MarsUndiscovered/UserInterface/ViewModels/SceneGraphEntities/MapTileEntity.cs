@@ -30,15 +30,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             );
         }
 
-        public void SetWall()
+        public void SetWall(WallType wallType)
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Wall.ToString());
+            MapTileTexture = Assets.GetMapTileTexture(wallType.Name);
             IsVisible = true;
         }
 
-        public void SetFloor()
+        public void SetFloor(FloorType floorType)
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Floor.ToString());
+            MapTileTexture = Assets.GetMapTileTexture(floorType.Name);
             IsVisible = true;
         }
 
