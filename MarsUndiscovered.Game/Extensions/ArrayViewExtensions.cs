@@ -36,7 +36,7 @@ namespace MarsUndiscovered.Game.Extensions
         {
             return ToArrayView(list.ToArray(), list.Width, adapter);
         }
-        
+
         public static ArrayView<TResult> ToArrayView<T, TResult>(this IEnumerable<T> list, int width, Func<T, TResult> adapter)
         {
             var gameObjects = list.Select(adapter).ToArray();

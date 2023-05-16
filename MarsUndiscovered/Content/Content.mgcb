@@ -1390,7 +1390,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/TitleText.png
-
 /importer:TextureImporter
 /processor:TextureProcessor
 /build:Tiles/BlackOpsDefender_1.png
@@ -1406,6 +1405,14 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /build:Tiles/BlackOpsSniper_2.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/BlankFloor_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/BlankWall_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1441,10 +1448,6 @@
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Floor_1.png
-
-/importer:TextureImporter
-/processor:TextureProcessor
 /build:Tiles/Gadget_1.png
 
 /importer:TextureImporter
@@ -1466,6 +1469,14 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /build:Tiles/MegalithChucker_2.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/MiningFacilityFloor_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/MiningFacilityWall_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1537,6 +1548,14 @@
 
 /importer:TextureImporter
 /processor:TextureProcessor
+/build:Tiles/RockFloor_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/RockWall_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
 /build:Tiles/ShipRepairParts_1.png
 
 /importer:TextureImporter
@@ -1561,6 +1580,14 @@
 
 /importer:TextureImporter
 /processor:TextureProcessor
+/build:Tiles/StockpileFloor_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/StockpileWall_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
 /build:Tiles/TentacleHorror_1.png
 
 /importer:TextureImporter
@@ -1582,10 +1609,6 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /build:Tiles/TunnelBorer_2.png
-
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Tiles/Wall_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor

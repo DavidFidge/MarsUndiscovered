@@ -33,7 +33,7 @@ namespace MarsUndiscovered.Game.Components.Maps
 
             foreach (var item in mapTemplate)
             {
-                map.CreateFloor(FloorType.BlankFloor, item.Point, gameObjectFactory);
+                map.CreateFloor(FloorType.RockFloor, item.Point, gameObjectFactory);
 
                 if (map.GetObjectsAt(item.Point).Any(o => !(o is Floor)))
                     throw new Exception("CreateShip must be done as the first object creation steps");

@@ -4,9 +4,9 @@ namespace MarsUndiscovered.Game.Components;
 
 public class MiningFacilityFloor : FloorType
 {
-    private char _asciiCharacter = '#';
-    private Color _foregroundColour =  Color.Black;
-    private Color? _backgroundColour = new Color(0xFF777777);
+    private char _asciiCharacter = (char)0xdb;
+    private Color _foregroundColour =  new Color(0xFFB4B4B4);
+    private Color? _backgroundColour = null;
 
     public override char AsciiCharacter
     {

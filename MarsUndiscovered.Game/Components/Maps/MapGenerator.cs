@@ -1,4 +1,5 @@
-﻿using FrigidRogue.WaveFunctionCollapse;
+﻿using System.Windows.Forms;
+using FrigidRogue.WaveFunctionCollapse;
 using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
 using GoRogue.MapGeneration;
@@ -6,6 +7,7 @@ using GoRogue.Random;
 
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.GenerationSteps;
+using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
 using SadRogue.Primitives.GridViews;
 
@@ -112,9 +114,23 @@ namespace MarsUndiscovered.Game.Components.Maps
             }
 
             var wallsFloors = generator.Context
-                .GetFirst<ArrayView<GameObjectType>>(WallFloorTypeTag);
-                
-             var walls = new List<Wall>(wallsFloors.Count);   
+                .GetFirstOrDefault<ArrayView<GameObjectType>>(WallFloorTypeTag);
+
+            if (wallsFloors == null)
+            {
+                if (upToStep == null)
+                    throw new Exception("Generators did not produce an ArrayView of GameObjectType which is not allowed when not in Progressive Mode (upToStep == null)");
+
+                var wallsFloorsBool = generator.Context
+                    .GetFirst<ArrayView<bool>>(WallFloorTag)
+                    .ToArray()
+                    .Select(b => b ? (GameObjectType)WallType.RockWall : FloorType.RockFloor)
+                    .ToArray();
+
+                wallsFloors = new ArrayView<GameObjectType>(wallsFloorsBool, generator.Context.Width);
+            }
+
+             var walls = new List<Wall>(wallsFloors.Count);
              var floors = new List<Floor>(wallsFloors.Count);
 
              for (var index = 0; index < wallsFloors.Count; index++)
