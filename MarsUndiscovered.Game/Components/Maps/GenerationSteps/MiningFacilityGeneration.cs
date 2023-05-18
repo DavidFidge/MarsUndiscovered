@@ -66,6 +66,7 @@ public class MiningFacilityGeneration : GenerationStep
 
         texture2D.GetData(data);
 
+        var miningFacilityFloorArrayView = new ArrayView<bool>(generationContext.Width, generationContext.Height);
         var arrayView = new ArrayView<GameObjectType>(generationContext.Width, generationContext.Height);
 
         for (var index = 0; index < data.Length; index++)
@@ -79,6 +80,7 @@ public class MiningFacilityGeneration : GenerationStep
             else if (data[index].Equals(Color.Blue))
             {
                 gameObjectType = FloorType.MiningFacilityFloor;
+                miningFacilityFloorArrayView[index] = true;
             }
             else if (data[index].Equals(Color.White))
             {
@@ -97,6 +99,7 @@ public class MiningFacilityGeneration : GenerationStep
         }
         
         generationContext.Add(arrayView, MapGenerator.WallFloorTypeTag);
+        generationContext.Add(miningFacilityFloorArrayView, MapGenerator.MiningFacilityFloorTag);
 
         yield return null;
     }

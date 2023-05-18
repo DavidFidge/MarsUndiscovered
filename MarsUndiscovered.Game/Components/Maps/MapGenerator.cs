@@ -3,6 +3,7 @@ using FrigidRogue.WaveFunctionCollapse;
 using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
 using GoRogue.MapGeneration;
+using GoRogue.MapGeneration.Steps;
 using GoRogue.Random;
 
 using MarsUndiscovered.Game.Components.Factories;
@@ -18,6 +19,8 @@ namespace MarsUndiscovered.Game.Components.Maps
         public static string WallFloorTag = "WallFloor";
         public static string TunnelTag = "Tunnel";
         public static string WallFloorTypeTag = "WallFloorType";
+        public static string MiningFacilityFloorTag = "MiningFacilityFloor";
+        public static string MiningFacilityAreaTag = "MiningFacilityArea";
         
         private readonly IWaveFunctionCollapseGeneratorPasses _waveFunctionCollapseGeneratorPasses;
         private readonly IWaveFunctionCollapseGeneratorPassesContentLoader _waveFunctionCollapseGeneratorPassesContentLoader;
@@ -77,13 +80,17 @@ namespace MarsUndiscovered.Game.Components.Maps
 
             var generator = new Generator(width, height);
 
+            var miningFacilityGeneration = new MiningFacilityGeneration(
+                _waveFunctionCollapseGeneratorPasses,
+                _waveFunctionCollapseGeneratorPassesContentLoader,
+                _waveFunctionCollapseGeneratorPassesRenderer
+            );
+
+            var miningFacilityFloorAreaFinder = new AreaFinder(MiningFacilityAreaTag, MiningFacilityFloorTag);
+            
             var generationSteps = new GenerationStep[]
             {
-                new MiningFacilityGeneration(
-                    _waveFunctionCollapseGeneratorPasses,
-                    _waveFunctionCollapseGeneratorPassesContentLoader,
-                    _waveFunctionCollapseGeneratorPassesRenderer
-                )
+                miningFacilityGeneration
             };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
