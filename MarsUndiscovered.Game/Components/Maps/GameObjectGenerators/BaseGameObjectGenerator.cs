@@ -47,7 +47,7 @@ namespace MarsUndiscovered.Game.Components.Maps
                     .ToList();
             }
 
-            return validValues.RandomItem().Position;
+            return GlobalRandom.DefaultRNG.RandomElement(validValues).Position;
         }
     }
 }
