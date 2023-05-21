@@ -1,5 +1,4 @@
-﻿using FrigidRogue.MonoGame.Core.Extensions;
-using GoRogue.MapGeneration;
+﻿using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components.Maps;
@@ -11,32 +10,32 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps;
 
 public class InternalWallsGeneration : GenerationStep
 {
+    private readonly WallType _wallType;
     private readonly int _splitFactor;
     public string StepFilterTag { get; set; }
-    public string AreasComponentTag { get; set; }
-    public string AreaWallsDoorsComponentTag { get; set; }
+    public string AreasComponentTag { get; set; } = MapGenerator.AreasTag;
+    public string AreaWallsDoorsComponentTag { get; set; } = MapGenerator.AreasWallsDoorsComponentTag;
 
     public IEnhancedRandom RNG { get; set; } = GlobalRandom.DefaultRNG;
 
-    public InternalWallsGeneration(string? name = null, int splitFactor = 5, string? areasComponentTag = "Areas",
-        string? stepFilterTag = null)
-        : base(name, (typeof(IGridView<bool>), stepFilterTag))
+    public InternalWallsGeneration(WallType wallType, string? name = null, int splitFactor = 5, string? stepFilterTag = null)
+        : base(name)
     {
+        _wallType = wallType;
         _splitFactor = splitFactor;
-        AreasComponentTag = areasComponentTag; 
         StepFilterTag = stepFilterTag;
     }
 
     protected override IEnumerator<object> OnPerform(GenerationContext context)
     {
-        var wallsFloors = context.GetFirst<GameObjectType>(MapGenerator.WallFloorTypeTag);
-
         var areas = context
             .GetFirstOrNew(() => new ItemList<Area>(), AreasComponentTag)
             .Where(a => String.IsNullOrEmpty(StepFilterTag) || a.Step == StepFilterTag)
             .ToList();
 
         var areaWallsDoors = context.GetFirstOrNew(() => new ItemList<AreaWallsDoors>(), AreaWallsDoorsComponentTag);
+
+        var wallsFloorTypes = context.GetFirst<ArrayView<GameObjectType>>(MapGenerator.WallFloorTypeTag);
 
         foreach (var area in areas.Select(a => a.Item))
         {
@@ -54,8 +53,13 @@ public class InternalWallsGeneration : GenerationStep
                 },
                 Name
                 );
-        }
 
+            foreach (var wall in walls)
+            {
+                wallsFloorTypes[wall.ToIndex(context.Width)] = _wallType;
+            }
+        }
+        
         yield return null;
     }
 

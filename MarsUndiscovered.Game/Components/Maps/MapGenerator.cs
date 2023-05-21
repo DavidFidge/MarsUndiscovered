@@ -17,10 +17,13 @@ namespace MarsUndiscovered.Game.Components.Maps
     public class MapGenerator : BaseMapGenerator
     {
         public static string WallFloorTag = "WallFloor";
-        public static string TunnelTag = "Tunnel";
+        public static string TunnelsTag = "Tunnels";
         public static string WallFloorTypeTag = "WallFloorType";
         public static string MiningFacilityFloorTag = "MiningFacilityFloor";
         public static string MiningFacilityAreaTag = "MiningFacilityArea";
+        public static string DoorsTag = "Doors";
+        public static string AreasTag = "Areas";
+        public static string AreasWallsDoorsComponentTag = "AreasWallsDoors";
         
         private readonly IWaveFunctionCollapseGeneratorPasses _waveFunctionCollapseGeneratorPasses;
         private readonly IWaveFunctionCollapseGeneratorPassesContentLoader _waveFunctionCollapseGeneratorPassesContentLoader;

@@ -36,7 +36,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             // Get or create/add a tunnel list context component
             var tunnelList = generationContext.GetFirstOrNew(
                 () => new ItemList<Area>(),
-                MapGenerator.TunnelTag
+                MapGenerator.TunnelsTag
             );
 
             var veinPoints = GetVeinPoints(generationContext);
