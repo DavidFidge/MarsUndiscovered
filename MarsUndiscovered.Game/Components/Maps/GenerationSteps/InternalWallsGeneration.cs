@@ -18,7 +18,7 @@ public class InternalWallsGeneration : GenerationStep
 
     public IEnhancedRandom RNG { get; set; } = GlobalRandom.DefaultRNG;
 
-    public InternalWallsGeneration(WallType wallType, string? name = null, int splitFactor = 5, string? stepFilterTag = null)
+    public InternalWallsGeneration(WallType wallType, string name = null, int splitFactor = 5, string stepFilterTag = null)
         : base(name)
     {
         _wallType = wallType;
@@ -68,7 +68,7 @@ public class InternalWallsGeneration : GenerationStep
         var splitVertical = area.Bounds.Width > area.Bounds.Height;
         var splitLength = splitVertical ? area.Bounds.Width : area.Bounds.Height;
 
-        if (splitLength <= _splitFactor)
+        if (splitLength < _splitFactor)
             return;
 
         List<Point> newWallPoints;
@@ -93,7 +93,7 @@ public class InternalWallsGeneration : GenerationStep
         var door = RNG.RandomIndex(newWallPoints);
         doors.Add(newWallPoints[door]);
         newWallPoints.RemoveAt(door);
-        
+
         walls.AddRange(newWallPoints);
         
         SplitAreaRecursive(splitArea1, walls, doors);
