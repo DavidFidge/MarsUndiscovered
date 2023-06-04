@@ -102,6 +102,21 @@ public class InternalWallsGeneration : GenerationStep
         else
         {
             // do the same as if condition above but for y
+            var validSplit = new List<int>(area.Bounds.MaxExtentY - area.Bounds.MinExtentY);
+
+            for (var y = area.Bounds.MinExtentY + 1; y <= area.Bounds.MaxExtentY - 1; y++)
+            {
+                var disallowedDoorPointLeft = new Point(area.Bounds.MinExtentX - 1, y);
+                var disallowedDoorPointRight = new Point(area.Bounds.MaxExtentX + 1, y);
+
+                if (!doors.Any(d => d.Equals(disallowedDoorPointLeft) || d.Equals(disallowedDoorPointRight)))
+                {
+                    validSplit.Add(y);
+                }
+            }
+
+            if (validSplit.IsEmpty())
+                return;
             
             var splitPoint = RNG.NextInt(area.Bounds.MinExtentY + 1, area.Bounds.MaxExtentY - 1);
             newWallPoints = area.Where(p => p.Y == splitPoint).ToList();
