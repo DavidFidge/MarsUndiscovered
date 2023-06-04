@@ -2,6 +2,7 @@
 using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components.Maps;
+using NGenerics.Extensions;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
@@ -77,6 +78,22 @@ public class InternalWallsGeneration : GenerationStep
 
         if (splitVertical)
         {
+            var validSplit = new List<int>(area.Bounds.MaxExtentX - area.Bounds.MinExtentX);
+
+            for (var x = area.Bounds.MinExtentX + 1; x <= area.Bounds.MaxExtentX - 1; x++)
+            {
+                var disallowedDoorPointTop = new Point(x, area.Bounds.MinExtentY - 1);
+                var disallowedDoorPointBottom = new Point(x, area.Bounds.MaxExtentY + 1);
+
+                if (!doors.Any(d => d.Equals(disallowedDoorPointTop) || d.Equals(disallowedDoorPointBottom)))
+                {
+                    validSplit.Add(x);
+                }
+            }
+
+            if (validSplit.IsEmpty())
+                return;
+            
             var splitPoint = RNG.NextInt(area.Bounds.MinExtentX + 1, area.Bounds.MaxExtentX - 1);
             newWallPoints = area.Where(p => p.X == splitPoint).ToList();
             splitArea1 = new Area(area.Where(p => p.X < splitPoint));
@@ -84,6 +101,8 @@ public class InternalWallsGeneration : GenerationStep
         }
         else
         {
+            // do the same as if condition above but for y
+            
             var splitPoint = RNG.NextInt(area.Bounds.MinExtentY + 1, area.Bounds.MaxExtentY - 1);
             newWallPoints = area.Where(p => p.Y == splitPoint).ToList();
             splitArea1 = new Area(area.Where(p => p.Y < splitPoint));
