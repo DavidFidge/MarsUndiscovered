@@ -20,9 +20,9 @@ public class InternalWallsGenerationTests : BaseTest
         // Arrange
         var expectedResults = new[]
         {
-            ".#..",
-            ".D..",
-            ".#..",
+            "..#.",
+            "..#.",
+            "..D."
         };
 
         var mapTemplate = new MapTemplate(expectedResults);
@@ -30,16 +30,13 @@ public class InternalWallsGenerationTests : BaseTest
         var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, null, 4);
         var context = new GenerationContext(expectedResults[0].Length, expectedResults.Length);
 
-        var random = Substitute.For<IEnhancedRandom>();
-        internalWallsGeneration.RNG = random;
+        var random = new KnownSeriesRandom(new[]
+        {
+            1, // vertical split 
+            2 // Door
+        });
         
-        // Point at which to split
-        random
-            .NextInt(Arg.Any<int>(), Arg.Any<int>())
-            .Returns(1);
-
-        // Index for door
-        random.NextInt(Arg.Any<int>()).Returns(1);
+        internalWallsGeneration.RNG = random;
         
         var wallsFloorTypes = context.GetFirstOrNew<ArrayView<GameObjectType>>(
             () => new ArrayView<GameObjectType>(context.Width, context.Height),
@@ -96,16 +93,13 @@ public class InternalWallsGenerationTests : BaseTest
         var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, null, 4);
         var context = new GenerationContext(expectedResults[0].Length, expectedResults.Length);
 
-        var random = Substitute.For<IEnhancedRandom>();
-        internalWallsGeneration.RNG = random;
+        var random = new KnownSeriesRandom(new[]
+        {
+            0, // Horizontal split 
+            1 // Door on horizontal split
+        });
         
-        // Point at which to split
-        random
-            .NextInt(Arg.Any<int>(), Arg.Any<int>())
-            .Returns(1);
-
-        // Index for door
-        random.NextInt(Arg.Any<int>()).Returns(1);
+        internalWallsGeneration.RNG = random;
         
         var wallsFloorTypes = context.GetFirstOrNew<ArrayView<GameObjectType>>(
             () => new ArrayView<GameObjectType>(context.Width, context.Height),
@@ -162,16 +156,17 @@ public class InternalWallsGenerationTests : BaseTest
         var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, null, 4);
         var context = new GenerationContext(expectedResults[0].Length, expectedResults.Length);
 
-        var random = Substitute.For<IEnhancedRandom>();
-        internalWallsGeneration.RNG = random;
+        var random = new KnownSeriesRandom(new[]
+        {
+            0, // Horizontal split 
+            1, // Door on horizontal split
+            0, // y = 0 split
+            0, // Door on y = 0 split,
+            0, // y > 1 split
+            1 // Door on y > 1 split
+        });
         
-        // Point at which to split
-        random
-            .NextInt(Arg.Any<int>(), Arg.Any<int>())
-            .Returns(1);
-
-        // Index for door
-        random.NextInt(Arg.Any<int>()).Returns(1);
+        internalWallsGeneration.RNG = random;
         
         var wallsFloorTypes = context.GetFirstOrNew<ArrayView<GameObjectType>>(
             () => new ArrayView<GameObjectType>(context.Width, context.Height),
@@ -225,19 +220,17 @@ public class InternalWallsGenerationTests : BaseTest
 
         var mapTemplate = new MapTemplate(expectedResults);
 
-        var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, null, 4);
+        // Set split factor to 1 so that it will try to split vertically after doing horizontal split
+        var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, null, 1);
         var context = new GenerationContext(expectedResults[0].Length, expectedResults.Length);
 
-        var random = Substitute.For<IEnhancedRandom>();
+        var random = new KnownSeriesRandom(new[]
+        {
+            0, // Horizontal split 
+            1 // Door on horizontal split
+        });
+            
         internalWallsGeneration.RNG = random;
-        
-        // Point at which to split
-        random
-            .NextInt(Arg.Any<int>(), Arg.Any<int>())
-            .Returns(1);
-
-        // Index for door
-        random.NextInt(Arg.Any<int>()).Returns(1);
         
         var wallsFloorTypes = context.GetFirstOrNew<ArrayView<GameObjectType>>(
             () => new ArrayView<GameObjectType>(context.Width, context.Height),

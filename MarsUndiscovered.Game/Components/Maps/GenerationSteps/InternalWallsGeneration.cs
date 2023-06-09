@@ -94,7 +94,8 @@ public class InternalWallsGeneration : GenerationStep
             if (validSplit.IsEmpty())
                 return;
             
-            var splitPoint = RNG.NextInt(area.Bounds.MinExtentX + 1, area.Bounds.MaxExtentX - 1);
+            var splitPoint = RNG.RandomElement(validSplit);
+
             newWallPoints = area.Where(p => p.X == splitPoint).ToList();
             splitArea1 = new Area(area.Where(p => p.X < splitPoint));
             splitArea2 = new Area(area.Where(p => p.X > splitPoint));
@@ -117,8 +118,9 @@ public class InternalWallsGeneration : GenerationStep
 
             if (validSplit.IsEmpty())
                 return;
+
+            var splitPoint = RNG.RandomElement(validSplit);
             
-            var splitPoint = RNG.NextInt(area.Bounds.MinExtentY + 1, area.Bounds.MaxExtentY - 1);
             newWallPoints = area.Where(p => p.Y == splitPoint).ToList();
             splitArea1 = new Area(area.Where(p => p.Y < splitPoint));
             splitArea2 = new Area(area.Where(p => p.Y > splitPoint));
