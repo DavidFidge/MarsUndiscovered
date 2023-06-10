@@ -21,6 +21,7 @@ public class Assets : IAssets
     // Alpha comes first, then reverse the hex if copying from Paint.NET
     // In Breeds.csv there is no alpha and the hex can by copied directly
     public static Color UserInterfaceColor = new Color(0xFF1E0097);
+    private const string _tilesPrefix = "tiles";
 
     public SpriteFont UiRegularFont { get; set; }
     public SpriteSheet ShipAiRadioComms { get; set; }
@@ -63,44 +64,29 @@ public class Assets : IAssets
         ShipAiRadioComms =
             _gameProvider.Game.Content.Load<SpriteSheet>("animations/ShipAiRadioComms.sf", new JsonContentLoader());
         var assetsList = _gameProvider.Game.Content.Load<string[]>("Content");
-        var tilesPrefix = "tiles";
 
         foreach (var wallType in WallType.WallTypes)
         {
-            var wall = new MapTileTexture(
-                _gameProvider.Game.GraphicsDevice,
-                Constants.TileWidth,
-                Constants.TileHeight,
-                MapBitmapFont,
-                wallType.Value.AsciiCharacter,
-                wallType.Value.ForegroundColour,
-                wallType.Value.BackgroundColour
-            );
-
-            _asciiMapTileGraphics.AddMapTileTextures(wallType.Key, wall);
-            _graphicalMapTileGraphics.AddMapTileTextures(
-                wallType.Key,
-                GetTileAssets(assetsList, $"{tilesPrefix}/{wallType.Key}")
-            );
+            CreateGameObjectTypeGraphics(wallType.Value, assetsList, wallType.Key);
         }
 
         foreach (var floorType in FloorType.FloorTypes)
         {
-            var floor = new MapTileTexture(
-                _gameProvider.Game.GraphicsDevice,
-                Constants.TileWidth,
-                Constants.TileHeight,
-                MapBitmapFont,
-                floorType.Value.AsciiCharacter,
-                floorType.Value.ForegroundColour,
-                floorType.Value.BackgroundColour
-            );
+            CreateGameObjectTypeGraphics(floorType.Value, assetsList, floorType.Key);
+        }
+        
+        foreach (var doorType in DoorType.DoorTypes)
+        {
+            CreateGameObjectTypeGraphics(doorType.Value, assetsList, doorType.Key);
+        }
+        
+        var itemTypes = ItemType.ItemTypes.Values
+            .GroupBy(i => i.AsciiCharacter)
+            .Select(g => g.First()).ToList();
 
-            _asciiMapTileGraphics.AddMapTileTextures(floorType.Key, floor);
-            _graphicalMapTileGraphics.AddMapTileTextures(
-                floorType.Key,
-                GetTileAssets(assetsList, $"{tilesPrefix}/{floorType.Key}")
-            );
+        foreach (var itemType in itemTypes)
+        {
+            CreateGameObjectTypeGraphics(itemType, assetsList, itemType.GetAbstractTypeName());
         }
 
         var mapExitDown = new MapTileTexture(
@@ -161,29 +147,6 @@ public class Assets : IAssets
             _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.MiningFacility}{ch}", miningFacilitySection);
         }
         
-        var itemTypes = ItemType.ItemTypes.Values
-            .GroupBy(i => i.AsciiCharacter)
-            .Select(g => g.First()).ToList();
-
-        foreach (var itemType in itemTypes)
-        {
-            var itemTypeMapTileTextures = new MapTileTexture(
-                _gameProvider.Game.GraphicsDevice,
-                Constants.TileWidth,
-                Constants.TileHeight,
-                MapBitmapFont,
-                itemType.AsciiCharacter,
-                itemType.ForegroundColour,
-                itemType.BackgroundColour
-            );
-
-            _asciiMapTileGraphics.AddMapTileTextures(itemType.GetAbstractTypeName(), itemTypeMapTileTextures);
-            _graphicalMapTileGraphics.AddMapTileTextures(
-                itemType.GetAbstractTypeName(),
-                GetTileAssets(assetsList, $"{tilesPrefix}/{itemType.GetAbstractTypeName()}")
-            );
-        }
-
         var player = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             Constants.TileWidth,
@@ -197,7 +160,7 @@ public class Assets : IAssets
         
         _graphicalMapTileGraphics.AddMapTileTextures(
             TileGraphicType.Player.ToString(),
-            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.Player.ToString()}")
+            GetTileAssets(assetsList, $"{_tilesPrefix}/{TileGraphicType.Player.ToString()}")
         );
 
         var playerDead = new MapTileTexture(
@@ -212,7 +175,7 @@ public class Assets : IAssets
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.PlayerDead.ToString(), playerDead);
         _graphicalMapTileGraphics.AddMapTileTextures(
             TileGraphicType.PlayerDead.ToString(),
-            GetTileAssets(assetsList, $"{tilesPrefix}/{TileGraphicType.PlayerDead.ToString()}")
+            GetTileAssets(assetsList, $"{_tilesPrefix}/{TileGraphicType.PlayerDead.ToString()}")
         );
         
         foreach (var breed in Breed.Breeds)
@@ -231,7 +194,7 @@ public class Assets : IAssets
             
             _graphicalMapTileGraphics.AddMapTileTextures(
                 breed.Key,
-                GetTileAssets(assetsList, $"{tilesPrefix}/{breed.Key}")
+                GetTileAssets(assetsList, $"{_tilesPrefix}/{breed.Key}")
             );
         }
 
@@ -333,6 +296,25 @@ public class Assets : IAssets
         var gameOptionsData = _gameOptionsStore.GetFromStore<GameOptionsData>();
 
         SetTileGraphicOptions(new TileGraphicOptions(gameOptionsData.State));
+    }
+    
+    private void CreateGameObjectTypeGraphics<T>(T gameObjectType, string[] assetsList, string assetKey) where T : GameObjectType
+    {
+        var wall = new MapTileTexture(
+            _gameProvider.Game.GraphicsDevice,
+            Constants.TileWidth,
+            Constants.TileHeight,
+            MapBitmapFont,
+            gameObjectType.AsciiCharacter,
+            gameObjectType.ForegroundColour,
+            gameObjectType.BackgroundColour
+        );
+
+        _asciiMapTileGraphics.AddMapTileTextures(assetKey, wall);
+        _graphicalMapTileGraphics.AddMapTileTextures(
+            assetKey,
+            GetTileAssets(assetsList, $"{_tilesPrefix}/{assetKey}")
+        );
     }
 
     public void SetTileGraphicOptions(TileGraphicOptions tileGraphicOptions)

@@ -10,10 +10,6 @@ using Castle.Windsor;
 
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
-using FrigidRogue.MonoGame.Core.Graphics.Terrain;
-using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
-using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
-using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.WaveFunctionCollapse;
 using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
 using FrigidRogue.WaveFunctionCollapse.Renderers;

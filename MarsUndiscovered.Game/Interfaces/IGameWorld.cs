@@ -29,6 +29,7 @@ namespace MarsUndiscovered.Interfaces
         ulong Seed { get; }
         WallCollection Walls { get; }
         FloorCollection Floors { get; }
+        DoorCollection Doors { get; }
         MonsterCollection Monsters { get; }
         ItemCollection Items { get; }
         Inventory Inventory { get; }

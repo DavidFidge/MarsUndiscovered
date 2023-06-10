@@ -43,8 +43,8 @@ namespace MarsUndiscovered.Tests.Components
 
            var wallsFloors = arrayView.ToArray();
 
-            Map = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
-                wallsFloors.OfType<Floor>().ToList(), width, height);
+           Map = MapGenerator.CreateMap(gameWorld, width, height)
+               .WithTerrain(wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
 
             Steps = 1;
             IsComplete = true;

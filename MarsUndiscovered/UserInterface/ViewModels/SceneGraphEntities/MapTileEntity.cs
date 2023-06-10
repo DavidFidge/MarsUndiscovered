@@ -41,6 +41,12 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             MapTileTexture = Assets.GetMapTileTexture(floorType.Name);
             IsVisible = true;
         }
+        
+        public void SetDoor(DoorType doorType)
+        {
+            MapTileTexture = Assets.GetMapTileTexture(doorType.Name);
+            IsVisible = true;
+        }
 
         public void SetPlayer(Player player)
         {

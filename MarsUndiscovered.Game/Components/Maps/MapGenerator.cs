@@ -3,6 +3,7 @@ using FrigidRogue.WaveFunctionCollapse;
 using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
 using GoRogue.MapGeneration;
+using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.MapGeneration.Steps;
 using GoRogue.Random;
 
@@ -23,7 +24,7 @@ namespace MarsUndiscovered.Game.Components.Maps
         public static string MiningFacilityAreaTag = "MiningFacilityArea";
         public static string DoorsTag = "Doors";
         public static string AreasTag = "Areas";
-        public static string AreasWallsDoorsComponentTag = "AreasWallsDoors";
+        public static string AreasWallsDoorsTag = "AreasWallsDoors";
         
         private readonly IWaveFunctionCollapseGeneratorPasses _waveFunctionCollapseGeneratorPasses;
         private readonly IWaveFunctionCollapseGeneratorPassesContentLoader _waveFunctionCollapseGeneratorPassesContentLoader;
@@ -89,11 +90,15 @@ namespace MarsUndiscovered.Game.Components.Maps
                 _waveFunctionCollapseGeneratorPassesRenderer
             );
 
-            var miningFacilityFloorAreaFinder = new AreaFinder(MiningFacilityAreaTag, MiningFacilityFloorTag);
-            
+            var miningFacilityAreaFinder = new AreaFinder(MiningFacilityAreaTag, MiningFacilityFloorTag);
+            var internalWallsGeneration = new InternalWallsGeneration(WallType.MiningFacilityWall, DoorType.DefaultDoor);
+            internalWallsGeneration.AreasStepFilterTag = MiningFacilityAreaTag;
+
             var generationSteps = new GenerationStep[]
             {
-                miningFacilityGeneration
+                miningFacilityGeneration,
+                miningFacilityAreaFinder,
+                internalWallsGeneration
             };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
@@ -173,8 +178,24 @@ namespace MarsUndiscovered.Game.Components.Maps
 
                  terrain.Index = index;
              }
+             
+             var doorTypes = generator.Context
+                 .GetFirstOrNew(() => new ItemList<GameObjectTypePosition<DoorType>>(), DoorsTag);
 
-            Map = CreateMap(gameWorld, walls, floors, generator.Context.Width, generator.Context.Height);
+             var doors = new List<Door>(doorTypes.Count());
+             
+             foreach (var doorType in doorTypes.Items)
+             {
+                 var door = gameObjectFactory.CreateGameObject<Door>();
+                 door.DoorType = doorType.GameObjectType;
+                 door.Position = doorType.Position;
+                 
+                 doors.Add(door);
+             }
+
+             Map = CreateMap(gameWorld, generator.Context.Width, generator.Context.Height)
+                .WithTerrain(walls, floors)
+                .WithDoors(doors);
         }
 
         private void Clear()
@@ -184,12 +205,10 @@ namespace MarsUndiscovered.Game.Components.Maps
             Steps = 0;
         }
 
-        public static MarsMap CreateMap(IGameWorld gameWorld, IList<Wall> walls, IList<Floor> floors, int mapWidth, int mapHeight)
+        public static MarsMap CreateMap(IGameWorld gameWorld, int mapWidth, int mapHeight)
         {
             var map = new MarsMap(gameWorld, mapWidth, mapHeight);
-
-            map.ApplyTerrainOverlay(walls, floors);
-
+            
             return map;
         }
     }

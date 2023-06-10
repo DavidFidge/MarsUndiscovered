@@ -32,13 +32,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var wallsFloors = arrayView.ToArray();
             
-            var map = MapGenerator.CreateMap(
-                testGameWorld,
-                wallsFloors.OfType<Wall>().ToList(),
-                wallsFloors.OfType<Floor>().ToList(),
-                70,
-                50
-                );
+            var map = MapGenerator.CreateMap(testGameWorld, 70, 50)
+                .WithTerrain(wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
 
             var shipCollection = new ShipCollection(gameObjectFactory);
 

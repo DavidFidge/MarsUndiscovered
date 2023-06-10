@@ -45,7 +45,7 @@ namespace MarsUndiscovered.Game.Components
             SeenTiles = SeenTile.CreateArrayViewFromMap(this);
         }
 
-        public void ApplyTerrainOverlay(IEnumerable<Wall> walls, IEnumerable<Floor> floors)
+        public MarsMap WithTerrain(IEnumerable<Wall> walls, IEnumerable<Floor> floors)
         {
             Debug.Assert(floors != null && walls != null, "Walls and/or Floors must not be null");
 
@@ -58,6 +58,13 @@ namespace MarsUndiscovered.Game.Components
                 .ToArrayView(Width);
 
             ApplyTerrainOverlay(wallsFloors);
+
+            return this;
+        }
+
+        public MarsMap WithDoors(IEnumerable<Door> doors)
+        {
+            return this;
         }
 
         public IList<IGameObject> LastSeenGameObjectsAtPosition(Point position)
@@ -224,7 +231,7 @@ namespace MarsUndiscovered.Game.Components
 
             var terrain = gameObjectsOnMap.OfType<Terrain>().ToList();
 
-            ApplyTerrainOverlay(terrain.OfType<Wall>(), terrain.OfType<Floor>());
+            WithTerrain(terrain.OfType<Wall>(), terrain.OfType<Floor>());
 
             var nonTerrainObjects = gameObjectsOnMap.Except(terrain);
 

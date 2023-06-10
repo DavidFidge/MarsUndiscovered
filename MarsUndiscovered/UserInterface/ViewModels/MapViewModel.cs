@@ -309,6 +309,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
                 return;
             }
+            
+            var door = gameObjects.FirstOrDefault(go => go is Door);
+
+            if (door != null)
+            {
+                _terrainTiles[point].SetDoor(((Door)door).DoorType);
+                return;
+            }
 
             var floor = gameObjects.FirstOrDefault(go => go is Floor);
 

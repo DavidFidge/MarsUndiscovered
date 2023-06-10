@@ -36,6 +36,7 @@ namespace MarsUndiscovered.Game.Components
 
         public WallCollection Walls { get; private set; }
         public FloorCollection Floors { get; private set; }
+        public DoorCollection Doors { get; private set; }
         public MonsterCollection Monsters { get; private set; }
         public ItemCollection Items { get; private set; }
         public MapExitCollection MapExits { get; private set; }
@@ -141,12 +142,21 @@ namespace MarsUndiscovered.Game.Components
                 .OfType<Terrain>()
                 .Where(g => Equals(g.CurrentMap, marsMap))
                 .ToList();
+            
+            var doors = GameObjects
+                .Values
+                .OfType<Door>()
+                .Where(g => Equals(g.CurrentMap, marsMap))
+                .ToList();
 
             foreach (var wall in terrain.OfType<Wall>())
                 Walls.Add(wall.ID, wall);
 
             foreach (var floor in terrain.OfType<Floor>())
                 Floors.Add(floor.ID, floor);
+            
+            foreach (var door in doors)
+                Doors.Add(door.ID, door);
 
             Maps.Add(marsMap);
         }
@@ -158,6 +168,7 @@ namespace MarsUndiscovered.Game.Components
             Morgue.Reset();
             Walls = new WallCollection(GameObjectFactory);
             Floors = new FloorCollection(GameObjectFactory);
+            Doors = new DoorCollection(GameObjectFactory);
             Monsters = new MonsterCollection(GameObjectFactory);
             Items = new ItemCollection(GameObjectFactory);
             MapExits = new MapExitCollection(GameObjectFactory);
@@ -503,6 +514,7 @@ namespace MarsUndiscovered.Game.Components
             GameObjectFactory.LoadState(saveGameService, gameWorld);
             Walls.LoadState(saveGameService, gameWorld);
             Floors.LoadState(saveGameService, gameWorld);
+            Doors.LoadState(saveGameService, gameWorld);
             Monsters.LoadState(saveGameService, gameWorld);
             Items.LoadState(saveGameService, gameWorld);
             MapExits.LoadState(saveGameService, gameWorld);
@@ -536,6 +548,7 @@ namespace MarsUndiscovered.Game.Components
             GameObjectFactory.SaveState(saveGameService, gameWorld);
             Walls.SaveState(saveGameService, gameWorld);
             Floors.SaveState(saveGameService, gameWorld);
+            Doors.SaveState(saveGameService, gameWorld);
             Monsters.SaveState(saveGameService, gameWorld);
             Items.SaveState(saveGameService, gameWorld);
             MapExits.SaveState(saveGameService, gameWorld);

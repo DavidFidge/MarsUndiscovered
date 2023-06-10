@@ -27,7 +27,7 @@ public class InternalWallsGenerationTests : BaseTest
 
         var mapTemplate = new MapTemplate(expectedResults);
 
-        var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, null, 4);
+        var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, DoorType.DefaultDoor, null, 4);
         var context = new GenerationContext(expectedResults[0].Length, expectedResults.Length);
 
         var random = new KnownSeriesRandom(new[]
@@ -90,7 +90,7 @@ public class InternalWallsGenerationTests : BaseTest
 
         var mapTemplate = new MapTemplate(expectedResults);
 
-        var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, null, 4);
+        var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, DoorType.DefaultDoor, null, 4);
         var context = new GenerationContext(expectedResults[0].Length, expectedResults.Length);
 
         var random = new KnownSeriesRandom(new[]
@@ -153,7 +153,7 @@ public class InternalWallsGenerationTests : BaseTest
 
         var mapTemplate = new MapTemplate(expectedResults);
 
-        var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, null, 4);
+        var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, DoorType.DefaultDoor, null, 4);
         var context = new GenerationContext(expectedResults[0].Length, expectedResults.Length);
 
         var random = new KnownSeriesRandom(new[]
@@ -221,7 +221,7 @@ public class InternalWallsGenerationTests : BaseTest
         var mapTemplate = new MapTemplate(expectedResults);
 
         // Set split factor to 1 so that it will try to split vertically after doing horizontal split
-        var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, null, 1);
+        var internalWallsGeneration = new InternalWallsGeneration(WallType.RockWall, DoorType.DefaultDoor, null, 1);
         var context = new GenerationContext(expectedResults[0].Length, expectedResults.Length);
 
         var random = new KnownSeriesRandom(new[]

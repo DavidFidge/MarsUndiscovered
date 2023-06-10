@@ -12,52 +12,67 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps;
 public class InternalWallsGeneration : GenerationStep
 {
     private readonly WallType _wallType;
+    private readonly DoorType _doorType;
     private readonly int _splitFactor;
-    public string StepFilterTag { get; set; }
     public string AreasComponentTag { get; set; } = MapGenerator.AreasTag;
-    public string AreaWallsDoorsComponentTag { get; set; } = MapGenerator.AreasWallsDoorsComponentTag;
+    public string AreasStepFilterTag { get; set; } = null;
+    public string AreaWallsDoorsTag { get; set; } = MapGenerator.AreasWallsDoorsTag;
+    public string DoorsTag { get; set; } = MapGenerator.DoorsTag;
 
     public IEnhancedRandom RNG { get; set; } = GlobalRandom.DefaultRNG;
 
-    public InternalWallsGeneration(WallType wallType, string name = null, int splitFactor = 5, string stepFilterTag = null)
+    public InternalWallsGeneration(WallType wallType, DoorType doorType, string name = null, int splitFactor = 5)
         : base(name)
     {
         _wallType = wallType;
+        _doorType = doorType;
         _splitFactor = splitFactor;
-        StepFilterTag = stepFilterTag;
     }
 
     protected override IEnumerator<object> OnPerform(GenerationContext context)
     {
         var areas = context
             .GetFirstOrNew(() => new ItemList<Area>(), AreasComponentTag)
-            .Where(a => String.IsNullOrEmpty(StepFilterTag) || a.Step == StepFilterTag)
+            .Where(a => String.IsNullOrEmpty(AreasStepFilterTag) || a.Step == AreasStepFilterTag)
             .ToList();
 
-        var areaWallsDoors = context.GetFirstOrNew(() => new ItemList<AreaWallsDoors>(), AreaWallsDoorsComponentTag);
+        var areaWallsDoors = context.GetFirstOrNew(() => new ItemList<AreaWallsDoors>(), AreaWallsDoorsTag);
+        var doors = context.GetFirstOrNew(() => new ItemList<GameObjectTypePosition<DoorType>>(), MapGenerator.DoorsTag);
 
         var wallsFloorTypes = context.GetFirst<ArrayView<GameObjectType>>(MapGenerator.WallFloorTypeTag);
 
+        if (!areas.Any())
+        {
+            // If no pre-existing area has been found then just use the whole map
+            var area = new Area(wallsFloorTypes.Bounds().Positions());
+            areas.Add(new ItemStepPair<Area>(area, String.Empty));
+        }
+
         foreach (var area in areas.Select(a => a.Item))
         {
-            var doors = new List<Point>();
-            var walls = new List<Point>();
+            var newDoors = new List<Point>();
+            var newWalls = new List<Point>();
 
-            SplitAreaRecursive(area, walls, doors);
+            SplitAreaRecursive(area, newWalls, newDoors);
 
             areaWallsDoors.Add(
                 new AreaWallsDoors
                 {
                     Area = area,
-                    Walls = walls,
-                    Doors = doors
+                    Walls = newWalls,
+                    Doors = newDoors
                 },
                 Name
                 );
 
-            foreach (var wall in walls)
+            foreach (var wall in newWalls)
             {
                 wallsFloorTypes[wall.ToIndex(context.Width)] = _wallType;
+            }
+            
+            foreach (var door in newDoors)
+            {
+                doors.Add(new GameObjectTypePosition<DoorType>(_doorType, door), Name);
             }
         }
         
