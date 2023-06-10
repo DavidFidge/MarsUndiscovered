@@ -64,6 +64,12 @@ namespace MarsUndiscovered.Game.Components
 
         public MarsMap WithDoors(IEnumerable<Door> doors)
         {
+            foreach (var door in doors)
+            {
+                // TODO fix - crashes when adding
+                // AddEntity(door);
+            }
+
             return this;
         }
 
