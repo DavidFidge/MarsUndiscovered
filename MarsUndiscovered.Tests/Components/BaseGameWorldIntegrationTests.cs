@@ -1,8 +1,13 @@
+using System.ComponentModel.Design;
 using Castle.MicroKernel.Registration;
+using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Interfaces;
-using SadRogue.Primitives;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.Tests.Components
 {
@@ -10,6 +15,7 @@ namespace MarsUndiscovered.Tests.Components
     public abstract class BaseGameWorldIntegrationTests : BaseIntegrationTest
     {
         protected TestGameWorld _gameWorld;
+        protected IGameProvider _gameProvider;
 
         [TestInitialize]
         public override void Setup()
@@ -24,6 +30,29 @@ namespace MarsUndiscovered.Tests.Components
                 );
 
             _gameWorld = (TestGameWorld)Container.Resolve<IGameWorld>();
+            _gameProvider = Container.Resolve<IGameProvider>();
+
+            var testGame = new TestGame();
+            _gameProvider.Game = testGame;
+            
+            var services = new ServiceContainer();
+            var graphicsService = new TestGraphicsDeviceService();
+            services.AddService(typeof(IGraphicsDeviceService), graphicsService);
+            
+            testGame.Content = new ContentManager(services, "Content");
+            testGame.GraphicsDevice = graphicsService.GraphicsDevice;
+
+            var gameServiceContainer = new GameServiceContainer();
+            gameServiceContainer.AddService(graphicsService);
+            
+            testGame.Services = gameServiceContainer;
+        }
+        
+        [TestCleanup]
+        public override void TearDown()
+        {
+            base.TearDown();
+            _gameProvider.Game.Dispose();
         }
 
         protected void ProgressiveWorldGenerationWithCustomMap(GameWorld gameWorld, IMapGenerator mapGenerator = null)

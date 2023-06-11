@@ -35,7 +35,15 @@ namespace MarsUndiscovered.Game.Components
         public int MapHeight => _mapHeight;
 
         public MarsMap(IGameWorld gameWorld, int mapWidth, int mapHeight)
-            : base(mapWidth, mapHeight, 3, Distance.Chebyshev, null, UInt32.MaxValue, 1, 0)
+            : base(
+                mapWidth,
+                mapHeight,
+                4,
+                Distance.Chebyshev,
+                null,
+                UInt32.MaxValue,
+                2, // Terrain and Door layers can block transparency
+                0)
         {
             Id = Guid.NewGuid();
             Level = 1;
@@ -66,8 +74,7 @@ namespace MarsUndiscovered.Game.Components
         {
             foreach (var door in doors)
             {
-                // TODO fix - crashes when adding
-                // AddEntity(door);
+                AddEntity(door);
             }
 
             return this;
@@ -238,7 +245,7 @@ namespace MarsUndiscovered.Game.Components
             var terrain = gameObjectsOnMap.OfType<Terrain>().ToList();
 
             WithTerrain(terrain.OfType<Wall>(), terrain.OfType<Floor>());
-
+                       
             var nonTerrainObjects = gameObjectsOnMap.Except(terrain);
 
             foreach (var nonTerrainObject in nonTerrainObjects)

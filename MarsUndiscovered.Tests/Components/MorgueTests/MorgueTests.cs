@@ -192,7 +192,7 @@ ENEMIES DEFEATED
 --------------------------------------------------------------------------------
 No enemies were defeated
 ";
-
+            
             // Act
             _morgue.SnapshotMorgueExportData(_gameWorld, "Username12345!@#$%", true);
 

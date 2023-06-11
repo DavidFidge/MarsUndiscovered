@@ -610,7 +610,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(4, 1)));
 
             var monster = _gameWorld.Monsters.Values.First();
-            monster.VisualRange = 2;
+            monster.VisualRange = 4;
 
             _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();

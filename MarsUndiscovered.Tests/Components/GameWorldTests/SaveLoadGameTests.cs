@@ -28,6 +28,15 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(_gameWorld.Seed, newGameWorld.Seed);
             Assert.AreEqual(_gameWorld.GameObjectFactory.LastId, newGameWorld.GameObjectFactory.LastId);
 
+            var gameWorldObjectsByType = _gameWorld.GameObjects
+                .GroupBy(go => go.Value.GetType())
+                .ToDictionary(g => g.Key, g => g.ToList());
+            
+            var newGameWorldObjectsByType = newGameWorld.GameObjects
+                .GroupBy(go => go.Value.GetType())
+                .ToDictionary(g => g.Key, g => g.ToList());
+            
+            Assert.AreEqual(gameWorldObjectsByType.Count, newGameWorldObjectsByType.Count);
             Assert.AreEqual(_gameWorld.GameObjects.Count, newGameWorld.GameObjects.Count);
             Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<MarsGameObject>().Count(), newGameWorld.GameObjects.Values.OfType<MarsGameObject>().Count());
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Monster>().Count());

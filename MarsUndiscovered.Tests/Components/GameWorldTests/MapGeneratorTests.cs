@@ -10,7 +10,7 @@ using NSubstitute;
 namespace MarsUndiscovered.Tests.Components.GameWorldTests;
 
 [TestClass]
-public class MapGeneratorTests : BaseGraphicsGameWorldIntegrationTests
+public class MapGeneratorTests : BaseGameWorldIntegrationTests
 {
     private MapGenerator _mapGenerator;
     private IWaveFunctionCollapseGeneratorPasses _waveFunctionCollapseGeneratorPasses;
@@ -28,7 +28,7 @@ public class MapGeneratorTests : BaseGraphicsGameWorldIntegrationTests
     public void Should_CreateMiningFacilityMap()
     {
         // Arrange
-        var texture2D = new Texture2D(GraphicsDevice, 3, 3);
+        var texture2D = new Texture2D(_gameProvider.Game.GraphicsDevice, 3, 3);
 
         var colours = new Color[9].Initialise(() => Color.White);
 
