@@ -21,6 +21,7 @@ namespace MarsUndiscovered.Game.Components.Maps
         public static string TunnelsTag = "Tunnels";
         public static string WallFloorTypeTag = "WallFloorType";
         public static string MiningFacilityAreaTag = "MiningFacilityArea";
+        public static string MiningFacilityAreaWithPerimeterTag = "MiningFacilityAreaWithPerimeterTag";
         public static string DoorsTag = "Doors";
         public static string AreasTag = "Areas";
         public static string AreasWallsDoorsTag = "AreasWallsDoors";
@@ -90,6 +91,8 @@ namespace MarsUndiscovered.Game.Components.Maps
             );
 
             var miningFacilityAreaFinder = new GenericAreaFinder<GameObjectType>((t) => t == FloorType.MiningFacilityFloor, MiningFacilityAreaTag, WallFloorTypeTag, areasComponentTag: AreasTag);
+            
+            var miningFacilityAreaWithPerimeter = new GenericAreaFinder<GameObjectType>((t) => t == FloorType.MiningFacilityFloor || t == WallType.MiningFacilityWall, MiningFacilityAreaWithPerimeterTag, WallFloorTypeTag, areasComponentTag: AreasTag);
 
             var internalWallsGeneration = new InternalWallsGeneration(WallType.MiningFacilityWall, DoorType.DefaultDoor, splitFactor: 10);
             internalWallsGeneration.AreasStepFilterTag = MiningFacilityAreaTag;
@@ -97,12 +100,13 @@ namespace MarsUndiscovered.Game.Components.Maps
             var areaPerimeterDoorGeneration = new AreaPerimeterDoorGeneration(FloorType.MiningFacilityFloor,
                 DoorType.DefaultDoor, minDoors: 1, maxDoors: 4);
 
-            areaPerimeterDoorGeneration.AreasStepFilterTag = MiningFacilityAreaTag;
+            areaPerimeterDoorGeneration.AreasStepFilterTag = MiningFacilityAreaWithPerimeterTag;
             
             var generationSteps = new GenerationStep[]
             {
                 miningFacilityGeneration,
                 miningFacilityAreaFinder,
+                miningFacilityAreaWithPerimeter,
                 internalWallsGeneration,
                 areaPerimeterDoorGeneration
             };

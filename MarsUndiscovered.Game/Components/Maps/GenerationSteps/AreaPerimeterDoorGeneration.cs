@@ -60,36 +60,33 @@ public class AreaPerimeterDoorGeneration : GenerationStep
         var doors = context.GetFirstOrNew(() => new ItemList<GameObjectTypePosition<DoorType>>(), DoorsTag);
 
         var wallsFloorTypes = context.GetFirst<ArrayView<GameObjectType>>(WallFloorTypeTag);
-        
-        var doorsToCreate = RNG.NextInt(_minDoors, _maxDoors + 1);
 
-        if (doorsToCreate > 0)
+        foreach (var area in areas.Select(a => a.Item))
         {
-            foreach (var area in areas.Select(a => a.Item))
+            var validPerimeterPoints = area.PerimeterPositions(AdjacencyRule.EightWay)
+                .Where(p => wallsFloorTypes[p.ToIndex(context.Width)] is WallType)
+                .Where(p => HasNeighbouringFloorVerticallyOrHorizontally(p, wallsFloorTypes, context.Width,
+                    context.Height))
+                .ToList();
+
+            var doorsToCreate = RNG.NextInt(_minDoors, _maxDoors + 1);
+
+            while (doorsToCreate > 0 && validPerimeterPoints.Any())
             {
-                var validPerimeterPoints = area.PerimeterPositions(AdjacencyRule.EightWay)
-                    .Where(p => wallsFloorTypes[p.ToIndex(context.Width)] is WallType)
-                    .Where(p => HasNeighbouringFloorVerticallyOrHorizontally(p, wallsFloorTypes, context.Width,
-                        context.Height))
-                    .ToList();
+                var newDoorIndex = RNG.RandomIndex(validPerimeterPoints);
 
-                while (doorsToCreate > 0 && validPerimeterPoints.Any())
-                {
-                    var newDoorIndex = RNG.RandomIndex(validPerimeterPoints);
+                var newDoorPoint = validPerimeterPoints[newDoorIndex];
 
-                    var newDoorPoint = validPerimeterPoints[newDoorIndex];
+                validPerimeterPoints.RemoveAt(newDoorIndex);
 
-                    validPerimeterPoints.RemoveAt(newDoorIndex);
+                wallsFloorTypes[newDoorPoint.ToIndex(context.Width)] = _floorType;
 
-                    wallsFloorTypes[newDoorPoint.ToIndex(context.Width)] = _floorType;
+                doors.Add(new GameObjectTypePosition<DoorType>(_doorType, newDoorPoint), Name);
 
-                    doors.Add(new GameObjectTypePosition<DoorType>(_doorType, newDoorPoint), Name);
-
-                    doorsToCreate--;
-                }
+                doorsToCreate--;
             }
         }
-
+        
         yield return null;
     }
 }
