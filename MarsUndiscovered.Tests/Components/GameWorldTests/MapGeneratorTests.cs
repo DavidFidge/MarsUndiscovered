@@ -2,10 +2,11 @@
 using FrigidRogue.WaveFunctionCollapse;
 using FrigidRogue.WaveFunctionCollapse.Options;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NSubstitute;
+using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests;
 
@@ -28,14 +29,21 @@ public class MapGeneratorTests : BaseGameWorldIntegrationTests
     public void Should_CreateMiningFacilityMap()
     {
         // Arrange
-        var texture2D = new Texture2D(_gameProvider.Game.GraphicsDevice, 3, 3);
+        var texture2D = new Texture2D(_gameProvider.Game.GraphicsDevice, 5, 5);
 
-        var colours = new Color[9].Initialise(() => Color.White);
+        var colours = new Color[25].Initialise(() => Color.White);
 
-        colours[3] = Color.Black;
-        colours[4] = Color.Black;
-        colours[5] = Color.Black;
+        colours[6] = Color.Black;
+        colours[7] = Color.Black;
+        colours[8] = Color.Black;
+        
+        colours[11] = Color.Black;
+        colours[13] = Color.Black;
 
+        colours[16] = Color.Black;
+        colours[17] = Color.Black;
+        colours[18] = Color.Black;
+        
         texture2D.SetData(colours);
 
         var mapOptions = new MapOptions(0, 0);
@@ -45,19 +53,42 @@ public class MapGeneratorTests : BaseGameWorldIntegrationTests
             .RenderToTexture2D(Arg.Any<IWaveFunctionCollapseGeneratorPassesRenderer>())
             .Returns(texture2D);
 
-        _waveFunctionCollapseGeneratorPasses.TileWidth.Returns(3);
-        _waveFunctionCollapseGeneratorPasses.TileHeight.Returns(3);
+        _waveFunctionCollapseGeneratorPasses.TileWidth.Returns(5);
+        _waveFunctionCollapseGeneratorPasses.TileHeight.Returns(5);
 
         // Act
-        _mapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, 3, 3);
+        _mapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, 5, 5);
 
         // Assert
         var map = _mapGenerator.Map;
 
-        Assert.AreEqual(3, map.Walls.Count);
+        var doors = map.Entities
+            .Select(e => e.Item)
+            .OfType<Door>()
+            .ToList();
+        
+        Assert.AreEqual(8, map.Walls.Count + doors.Count);
 
-        Assert.AreEqual(new SadRogue.Primitives.Point(0, 1), map.Walls[0].Position);
-        Assert.AreEqual(new SadRogue.Primitives.Point(1, 1), map.Walls[1].Position);
-        Assert.AreEqual(new SadRogue.Primitives.Point(2, 1), map.Walls[2].Position);
+        var validWallDoorPositions = new List<Point>
+        {
+            new (1, 1),
+            new (2, 1),
+            new (3, 1),
+            new (1, 2),
+            new (3, 2),
+            new (1, 3),
+            new (2, 3),
+            new (3, 3)
+        };
+        
+        foreach (var wall in map.Walls)
+        {
+            Assert.IsTrue(validWallDoorPositions.Contains(wall.Position));
+        }
+
+        foreach (var door in doors)
+        {
+            Assert.IsTrue(validWallDoorPositions.Contains(door.Position));
+        }
     }
 }
