@@ -89,7 +89,7 @@ namespace MarsUndiscovered.Game.Components.Maps
                 _waveFunctionCollapseGeneratorPassesRenderer
             );
 
-            var miningFacilityAreaFinder = new AreaFinder(MiningFacilityAreaTag, areasComponentTag: AreasTag);
+            var miningFacilityAreaFinder = new GenericAreaFinder<GameObjectType>((t) => t == FloorType.MiningFacilityFloor, MiningFacilityAreaTag, WallFloorTypeTag, areasComponentTag: AreasTag);
 
             var internalWallsGeneration = new InternalWallsGeneration(WallType.MiningFacilityWall, DoorType.DefaultDoor, splitFactor: 10);
             internalWallsGeneration.AreasStepFilterTag = MiningFacilityAreaTag;
