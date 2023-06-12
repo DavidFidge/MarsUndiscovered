@@ -2,14 +2,14 @@
 
 public class RadioCommsPrefab
 {
-    public int Id { get; }
+    public RadioCommsTypes RadioCommsType { get; }
     public string Message { get; }
     public string Source { get; }
 
-    public RadioCommsPrefab(int id, string source, string message)
+    public RadioCommsPrefab(RadioCommsTypes radioCommsType, string source, string message)
     {
         Source = source;
         Message = message;
-        Id = id;
+        RadioCommsType = radioCommsType;
     }
 }

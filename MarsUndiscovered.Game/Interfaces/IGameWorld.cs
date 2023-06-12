@@ -7,6 +7,7 @@ using GoRogue.Pathing;
 
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Dto;
+using MarsUndiscovered.Game.Components.Maps;
 using Microsoft.Xna.Framework.Input;
 
 using SadRogue.Primitives;
@@ -28,14 +29,17 @@ namespace MarsUndiscovered.Interfaces
         ulong Seed { get; }
         WallCollection Walls { get; }
         FloorCollection Floors { get; }
+        DoorCollection Doors { get; }
         MonsterCollection Monsters { get; }
         ItemCollection Items { get; }
         Inventory Inventory { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
+        ILevelGenerator LevelGenerator { get; set; }
         Guid GameId { get; }
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
+        void SpawnMapExit(SpawnMapExitParams spawnMapExitParams);
         LoadGameResult LoadReplay(string saveGameName);
-        bool ExecuteNextReplayCommand();
+        ReplayCommandResult ExecuteNextReplayCommand();
         IList<MonsterStatus> GetStatusOfMonstersInView();
         PlayerStatus GetPlayerStatus();
         Path GetPathToPlayer(Point mapPosition);

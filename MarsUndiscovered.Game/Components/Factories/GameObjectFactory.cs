@@ -36,84 +36,14 @@ namespace MarsUndiscovered.Game.Components.Factories
             _container = container;
         }
 
-        public Player CreatePlayer()
+        public T CreateGameObject<T>() where T : IGameObject
         {
-            return ResolveWithNextId<Player>();
+            return ResolveWithNextId<T>();
         }
 
-        public Player CreatePlayer(uint id)
+        public T CreateGameObject<T>(uint id) where T : IGameObject
         {
-            return ResolveWithGivenId<Player>(id);
-        }
-
-        public Wall CreateWall()
-        {
-            return ResolveWithNextId<Wall>();
-        }
-
-        public Wall CreateWall(uint id)
-        {
-            return ResolveWithGivenId<Wall>(id);
-        }
-
-        public Floor CreateFloor()
-        {
-            return ResolveWithNextId<Floor>();
-        }
-
-        public Floor CreateFloor(uint id)
-        {
-            return ResolveWithGivenId<Floor>(id);
-        }
-
-        public Monster CreateMonster()
-        {
-            return ResolveWithNextId<Monster>();
-        }
-
-        public Monster CreateMonster(uint id)
-        {
-            return ResolveWithGivenId<Monster>(id);
-        }
-
-        public Item CreateItem()
-        {
-            return ResolveWithNextId<Item>();
-        }
-
-        public Item CreateItem(uint id)
-        {
-            return ResolveWithGivenId<Item>(id);
-        }
-
-        public MapExit CreateMapExit()
-        {
-            return ResolveWithNextId<MapExit>();
-        }
-
-        public MapExit CreateMapExit(uint id)
-        {
-            return ResolveWithGivenId<MapExit>(id);
-        }
-
-        public Ship CreateShip()
-        {
-            return ResolveWithNextId<Ship>();
-        }
-
-        public Ship CreateShip(uint id)
-        {
-            return ResolveWithGivenId<Ship>(id);
-        }
-        
-        public MiningFacility CreateMiningFacility()
-        {
-            return ResolveWithNextId<MiningFacility>();
-        }
-
-        public MiningFacility CreateMiningFacility(uint id)
-        {
-            return ResolveWithGivenId<MiningFacility>(id);
+            return ResolveWithGivenId<T>(id);
         }
 
         private T ResolveWithNextId<T>() where T : IGameObject

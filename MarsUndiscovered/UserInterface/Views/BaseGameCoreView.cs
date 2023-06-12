@@ -31,7 +31,7 @@ namespace MarsUndiscovered.UserInterface.Views
             base.InitializeInternal();
         }
 
-        protected void UpdateMapRenderTargetSize(int width, int height)
+        protected void UpdateMapRenderTarget(int width, int height)
         {
             if (width != _mapWidth || height != _mapHeight)
             {
@@ -49,6 +49,8 @@ namespace MarsUndiscovered.UserInterface.Views
                     RenderTargetUsage.PreserveContents
                 );
             }
+
+            _viewModel.MapViewModel.SetMapEntityTexture(_renderTarget);
         }
         
         public override void Draw()
@@ -69,12 +71,10 @@ namespace MarsUndiscovered.UserInterface.Views
             
             foreach (var tile in drawableTiles)
                 tile.SpriteBatchDraw(_spriteBatch);
-            
-            _spriteBatch.End();
-            
-            Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
-            _viewModel.MapViewModel.SetMapEntityTexture(_renderTarget);
+            _spriteBatch.End();
+
+            Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
             Game.GraphicsDevice.SetRenderTargets(oldRenderTargets);
 
@@ -84,6 +84,7 @@ namespace MarsUndiscovered.UserInterface.Views
         public override void Update()
         {
             _gameCamera.Update();
+            _viewModel.UpdateAnimation();
 
             base.Update();
         }
@@ -92,6 +93,14 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             base.Hide();
             _viewModel.IsActive = false;
+        }
+
+        protected override void ViewModelChanged()
+        {
+            if (IsVisible)
+                UpdateMapRenderTarget(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
+
+            base.ViewModelChanged();
         }
     }
 }

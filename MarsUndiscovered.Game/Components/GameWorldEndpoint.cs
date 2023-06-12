@@ -150,7 +150,7 @@ namespace MarsUndiscovered.Game.Components
             return GameWorld.GetPlayerPosition();
         }
 
-        public bool ExecuteNextReplayCommand()
+        public ReplayCommandResult ExecuteNextReplayCommand()
         {
             return GameWorld.ExecuteNextReplayCommand();
         }
@@ -199,6 +199,11 @@ namespace MarsUndiscovered.Game.Components
         public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
         {
             GameWorld.SpawnMonster(spawnMonsterParams);
+        }
+
+        public void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
+        {
+            GameWorld.SpawnMapExit(spawnMapExitParams);
         }
     }
 }

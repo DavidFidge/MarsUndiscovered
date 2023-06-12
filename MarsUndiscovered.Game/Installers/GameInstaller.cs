@@ -10,14 +10,13 @@ using Castle.Windsor;
 
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
-using FrigidRogue.MonoGame.Core.Graphics.Terrain;
-using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
-using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
-using FrigidRogue.MonoGame.Core.UserInterface;
-
+using FrigidRogue.WaveFunctionCollapse;
+using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
+using FrigidRogue.WaveFunctionCollapse.Renderers;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
+using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Components.Maps;
 
 namespace MarsUndiscovered.Game.Installers
@@ -34,22 +33,32 @@ namespace MarsUndiscovered.Game.Installers
                     .ImplementedBy<HttpClientWrapper>(),
 
                 Component.For<IMapGenerator>()
-                    .ImplementedBy<MapGenerator>(),
+                    .ImplementedBy<MapGenerator>()
+                    .LifestyleTransient(),
+
+                Component.For<ILevelGenerator>()
+                    .ImplementedBy<LevelGenerator>()
+                    .LifestyleTransient(),
 
                 Component.For<IMonsterGenerator>()
-                    .ImplementedBy<MonsterGenerator>(),
+                    .ImplementedBy<MonsterGenerator>()
+                    .LifestyleTransient(),
 
                 Component.For<IItemGenerator>()
-                    .ImplementedBy<ItemGenerator>(),
+                    .ImplementedBy<ItemGenerator>()
+                    .LifestyleTransient(),
 
                 Component.For<IShipGenerator>()
-                    .ImplementedBy<ShipGenerator>(),
+                    .ImplementedBy<ShipGenerator>()
+                    .LifestyleTransient(),
                 
                 Component.For<IMiningFacilityGenerator>()
-                    .ImplementedBy<MiningFacilityGenerator>(),
+                    .ImplementedBy<MiningFacilityGenerator>()
+                    .LifestyleTransient(),
 
                 Component.For<IMapExitGenerator>()
-                    .ImplementedBy<MapExitGenerator>(),
+                    .ImplementedBy<MapExitGenerator>()
+                    .LifestyleTransient(),
 
                 Classes.FromAssemblyContaining<IGameCamera>()
                     .BasedOn<IGameCamera>()
@@ -57,6 +66,10 @@ namespace MarsUndiscovered.Game.Installers
 
                 Component.For<IGameWorldEndpoint, IGameWorldConsoleCommandEndpoint>()
                     .ImplementedBy<GameWorldEndpoint>(),
+
+                Component.For<IGameWorldDebug>()
+                    .ImplementedBy<GameWorldDebug>()
+                    .LifestyleTransient(),
 
                 Component.For<IGameWorld>()
                     .ImplementedBy<GameWorld>()
@@ -71,13 +84,24 @@ namespace MarsUndiscovered.Game.Installers
                     .LifestyleTransient(),
                 
                 Component.For<IMorgue>()
-                    .ImplementedBy<Morgue>(),
+                    .ImplementedBy<Morgue>()
+                    .LifestyleTransient(),
                 
                 Component.For<IMorgueWebService>()
                     .ImplementedBy<MorgueWebService>(),
                 
                 Component.For<IMorgueFileWriter>()
                     .ImplementedBy<MorgueFileWriter>()
+                    .LifestyleTransient(),
+
+                Component.For<IWaveFunctionCollapseGeneratorPasses>()
+                    .ImplementedBy<WaveFunctionCollapseGeneratorPasses>(),
+
+                Component.For<IWaveFunctionCollapseGeneratorPassesRenderer>()
+                    .ImplementedBy<GameWorldWaveFunctionCollapseGeneratorPassesRenderer>(),
+
+                Component.For<IWaveFunctionCollapseGeneratorPassesContentLoader>()
+                    .ImplementedBy<GameWorldWaveFunctionCollapseGeneratorPassesContentLoader>()
             );
         }
 

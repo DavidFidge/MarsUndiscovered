@@ -5,16 +5,8 @@ namespace MarsUndiscovered.Game.Components
 {
     public class FloorCollection : GameObjectCollection<Floor, FloorSaveData>
     {
-        private readonly IGameObjectFactory _gameObjectFactory;
-
-        public FloorCollection(IGameObjectFactory gameObjectFactory)
+        public FloorCollection(IGameObjectFactory gameObjectFactory) : base(gameObjectFactory)
         {
-            _gameObjectFactory = gameObjectFactory;
-        }
-
-        protected override Floor Create(uint id)
-        {
-            return _gameObjectFactory.CreateFloor(id);
         }
     }
 }

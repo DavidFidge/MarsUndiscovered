@@ -4,8 +4,6 @@ using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace MarsUndiscovered.Tests.Commands
 {
     [TestClass]
@@ -15,7 +13,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void DeathCommand_On_Monster_Should_Set_IsDead_Flag_And_Remove_From_Map()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach"));
 
             var monster = _gameWorld.Monsters.Values.First();
@@ -41,7 +39,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void DeathCommand_On_Player_Should_Set_IsDead_Flag()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             var commandFactory = Container.Resolve<ICommandFactory>();
 

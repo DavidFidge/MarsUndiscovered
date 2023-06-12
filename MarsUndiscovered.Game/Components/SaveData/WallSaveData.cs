@@ -2,5 +2,6 @@
 {
     public class WallSaveData : TerrainSaveData
     {
+        public string WallTypeName { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input
 {
-    public class ReplayViewMouseHandler : BaseGameMouseHandler
+    public class ReplayViewMouseHandler : BaseGameViewMouseHandler
     {
         public ReplayViewMouseHandler(IStopwatchProvider stopwatchProvider) : base(stopwatchProvider)
         {

@@ -5,7 +5,6 @@ using FrigidRogue.MonoGame.Core.View.Installers;
 using FrigidRogue.TestInfrastructure;
 using MarsUndiscovered.Game.Installers;
 using MarsUndiscovered.Installers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serilog;
 
 namespace MarsUndiscovered.Tests

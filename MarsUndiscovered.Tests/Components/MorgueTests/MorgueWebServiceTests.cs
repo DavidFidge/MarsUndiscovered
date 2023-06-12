@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 using FrigidRogue.TestInfrastructure;
 using MarsUndiscovered.Game.Components;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 #pragma warning disable CS4014
 

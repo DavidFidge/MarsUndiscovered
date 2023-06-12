@@ -33,5 +33,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _radioCommsItems.Clear();
             return radioCommsItems;
         }
+
+        protected void FinishAnimations()
+        {
+            while (Animations.Any())
+            {
+                var animation = Animations.Dequeue();
+                animation.Finish(MapViewModel);
+            }
+        }
     }
 }

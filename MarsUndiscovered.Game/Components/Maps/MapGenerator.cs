@@ -1,61 +1,115 @@
-﻿using GoRogue.GameFramework;
+﻿using System.Windows.Forms;
+using FrigidRogue.WaveFunctionCollapse;
+using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
+using FrigidRogue.WaveFunctionCollapse.Renderers;
 using GoRogue.MapGeneration;
-using GoRogue.MapGeneration.ConnectionPointSelectors;
+using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.MapGeneration.Steps;
-using GoRogue.MapGeneration.TunnelCreators;
 using GoRogue.Random;
 
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
-using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {
     public class MapGenerator : BaseMapGenerator
     {
-        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public static string WallFloorTag = "WallFloor";
+        public static string TunnelsTag = "Tunnels";
+        public static string WallFloorTypeTag = "WallFloorType";
+        public static string MiningFacilityAreaTag = "MiningFacilityArea";
+        public static string MiningFacilityAreaWithPerimeterTag = "MiningFacilityAreaWithPerimeterTag";
+        public static string DoorsTag = "Doors";
+        public static string AreasTag = "Areas";
+        public static string AreasWallsDoorsTag = "AreasWallsDoors";
+        
+        private readonly IWaveFunctionCollapseGeneratorPasses _waveFunctionCollapseGeneratorPasses;
+        private readonly IWaveFunctionCollapseGeneratorPassesContentLoader _waveFunctionCollapseGeneratorPassesContentLoader;
+        private readonly IWaveFunctionCollapseGeneratorPassesRenderer _waveFunctionCollapseGeneratorPassesRenderer;
+
+        public MapGenerator(
+            IWaveFunctionCollapseGeneratorPasses waveFunctionCollapseGeneratorPasses,
+            IWaveFunctionCollapseGeneratorPassesContentLoader waveFunctionCollapseGeneratorPassesContentLoader,
+            IWaveFunctionCollapseGeneratorPassesRenderer waveFunctionCollapseGeneratorPassesRenderer
+            )
+        {
+            _waveFunctionCollapseGeneratorPasses = waveFunctionCollapseGeneratorPasses;
+            _waveFunctionCollapseGeneratorPassesContentLoader = waveFunctionCollapseGeneratorPassesContentLoader;
+            _waveFunctionCollapseGeneratorPassesRenderer = waveFunctionCollapseGeneratorPassesRenderer;
+        }
+
+        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
             Clear();
 
-            var width = 70;
-            var height = 6000 / width;
-
             var generator = new Generator(
                 width,
-                GlobalRandom.DefaultRNG.NextInt(height - 5, height + 5)
+                height
                 );
 
             var fillProbability = GlobalRandom.DefaultRNG.NextUInt(40, 60);
             var cutoffBigAreaFill = 3;
 
-            var generationSteps = OutdoorGeneneration(
-                null,
+            var outdoorGeneration = new OutdoorGeneration(
                 (ushort)fillProbability,
                 5,
                 cutoffBigAreaFill
                 );
 
+            var generationSteps = outdoorGeneration.GetSteps();
+
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
 
-        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
             Clear();
 
-            var width = GlobalRandom.DefaultRNG.NextInt(35, 55);
-
-            var height = 2000 / width;
-
             var generator = new Generator(
                 width,
-                GlobalRandom.DefaultRNG.NextInt(height - 5, height + 5)
+                GlobalRandom.DefaultRNG.NextInt(width, height)
                 );
 
-            var generationSteps = MineGeneration();
+            var generationSteps = new GenerationStep[] { new MineWorkerGeneration(), new WallFloorTypeConverterGenerator() };
+
+            ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
+        }
+
+        public override void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
+        {
+            Clear();
+
+            var generator = new Generator(width, height);
+
+            var miningFacilityGeneration = new MiningFacilityGeneration(
+                _waveFunctionCollapseGeneratorPasses,
+                _waveFunctionCollapseGeneratorPassesContentLoader,
+                _waveFunctionCollapseGeneratorPassesRenderer
+            );
+
+            var miningFacilityAreaFinder = new GenericAreaFinder<GameObjectType>((t) => t == FloorType.MiningFacilityFloor, MiningFacilityAreaTag, WallFloorTypeTag, areasComponentTag: AreasTag);
+            
+            var miningFacilityAreaWithPerimeter = new GenericAreaFinder<GameObjectType>((t) => t == FloorType.MiningFacilityFloor || t == WallType.MiningFacilityWall, MiningFacilityAreaWithPerimeterTag, WallFloorTypeTag, areasComponentTag: AreasTag);
+
+            var internalWallsGeneration = new InternalWallsGeneration(WallType.MiningFacilityWall, DoorType.DefaultDoor, splitFactor: 10);
+            internalWallsGeneration.AreasStepFilterTag = MiningFacilityAreaTag;
+            
+            var areaPerimeterDoorGeneration = new AreaPerimeterDoorGeneration(FloorType.MiningFacilityFloor,
+                DoorType.DefaultDoor, minDoors: 1, maxDoors: 4);
+
+            areaPerimeterDoorGeneration.AreasStepFilterTag = MiningFacilityAreaWithPerimeterTag;
+            
+            var generationSteps = new GenerationStep[]
+            {
+                miningFacilityGeneration,
+                miningFacilityAreaFinder,
+                miningFacilityAreaWithPerimeter,
+                internalWallsGeneration,
+                areaPerimeterDoorGeneration
+            };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
@@ -85,100 +139,87 @@ namespace MarsUndiscovered.Game.Components.Maps
             }
 
             var wallsFloors = generator.Context
-                .GetFirst<ArrayView<bool>>()
-                .ToArrayView((s, index) =>
-                    {
-                        IGameObject gameObject;
+                .GetFirstOrDefault<ArrayView<GameObjectType>>(WallFloorTypeTag);
 
-                        if (s)
-                        {
-                            var floor = gameObjectFactory.CreateFloor();
-                            floor.Index = index;
-                            gameObject = floor;
-                        }
-                        else
-                        {
-                            var wall = gameObjectFactory.CreateWall();
-                            wall.Index = index;
-                            gameObject = wall;
-                        }
+            if (wallsFloors == null)
+            {
+                if (upToStep == null)
+                    throw new Exception("Generators did not produce an ArrayView of GameObjectType which is not allowed when not in Progressive Mode (upToStep == null)");
 
-                        return gameObject;
-                    }
-                );
+                var wallsFloorsBool = generator.Context
+                    .GetFirst<ArrayView<bool>>(WallFloorTag)
+                    .ToArray()
+                    .Select(b => b ? (GameObjectType)WallType.RockWall : FloorType.RockFloor)
+                    .ToArray();
 
-            var walls = wallsFloors.ToArray().OfType<Wall>().ToList();
-            var floors = wallsFloors.ToArray().OfType<Floor>().ToList();
+                wallsFloors = new ArrayView<GameObjectType>(wallsFloorsBool, generator.Context.Width);
+            }
 
-            MarsMap = CreateMap(gameWorld, walls, floors, generator.Context.Width, generator.Context.Height);
+             var walls = new List<Wall>(wallsFloors.Count);
+             var floors = new List<Floor>(wallsFloors.Count);
+
+             for (var index = 0; index < wallsFloors.Count; index++)
+             {
+                 var wallFloor = wallsFloors[index];
+
+                 Terrain terrain;
+
+                 switch (wallFloor)
+                 {
+                     case WallType wallType:
+                     {
+                         var wall = gameObjectFactory.CreateGameObject<Wall>();
+                         terrain = wall;
+                         wall.WallType = wallType;
+                         walls.Add(wall);
+                         break;
+                     }
+                     case FloorType floorType:
+                     {
+                         var floor = gameObjectFactory.CreateGameObject<Floor>();
+                         terrain = floor;
+                         floor.FloorType = floorType;
+                         floors.Add(floor);
+                         break;
+                     }
+                     default:
+                         throw new Exception("Unknown wall/floor type");
+                 }
+
+                 terrain.Index = index;
+             }
+             
+             var doorTypes = generator.Context
+                 .GetFirstOrNew(() => new ItemList<GameObjectTypePosition<DoorType>>(), DoorsTag);
+
+             var doors = new List<Door>(doorTypes.Count());
+             
+             foreach (var doorType in doorTypes.Items)
+             {
+                 var door = gameObjectFactory.CreateGameObject<Door>();
+                 door.DoorType = doorType.GameObjectType;
+                 door.Position = doorType.Position;
+                 
+                 doors.Add(door);
+             }
+
+             Map = CreateMap(gameWorld, generator.Context.Width, generator.Context.Height)
+                .WithTerrain(walls, floors)
+                .WithDoors(doors);
         }
 
         private void Clear()
         {
-            MarsMap = null;
+            Map = null;
             IsComplete = false;
             Steps = 0;
         }
 
-        public static MarsMap CreateMap(IGameWorld gameWorld, IList<Wall> walls, IList<Floor> floors, int mapWidth, int mapHeight)
+        public static MarsMap CreateMap(IGameWorld gameWorld, int mapWidth, int mapHeight)
         {
             var map = new MarsMap(gameWorld, mapWidth, mapHeight);
-
-            map.ApplyTerrainOverlay(walls, floors);
-
+            
             return map;
-        }
-
-        private static IEnumerable<GenerationStep> MineGeneration(IEnhancedRandom rng = null)
-        {
-            rng ??= GlobalRandom.DefaultRNG;
-
-            yield return new MineWorkerGeneration { RNG = rng };
-        }
-
-        private static IEnumerable<GenerationStep> OutdoorGeneneration(
-            IEnhancedRandom rng = null,
-            ushort fillProbability = 60,
-            int totalIterations = 7,
-            int cutoffBigAreaFill = 2,
-            Distance distanceCalculation = null,
-            IConnectionPointSelector connectionPointSelector = null,
-            ITunnelCreator tunnelCreationMethod = null)
-        {
-            rng ??= GlobalRandom.DefaultRNG;
-            Distance dist = distanceCalculation ?? Distance.Manhattan;
-            connectionPointSelector ??= new RandomConnectionPointSelector(rng);
-            tunnelCreationMethod ??= new DirectLineTunnelCreator(dist);
-
-            // 1. Randomly fill the map with walls/floors
-            yield return new RandomViewFill
-            {
-                FillProbability = fillProbability,
-                RNG = rng,
-                ExcludePerimeterPoints = false
-            };
-
-            // 2. Smooth the map into areas with the cellular automata algorithm
-            yield return new CellularAutomataOutdoorGenerator
-            {
-                AreaAdjacencyRule = dist,
-                TotalIterations = totalIterations,
-                CutoffBigAreaFill = cutoffBigAreaFill,
-            };
-
-            // 3. Find all unique areas
-            yield return new AreaFinder
-            {
-                AdjacencyMethod = dist
-            };
-
-            // 4. Connect areas by connecting each area to its closest neighbor
-            yield return new ClosestMapAreaConnection
-            {
-                ConnectionPointSelector = connectionPointSelector,
-                DistanceCalc = dist,
-                TunnelCreator = tunnelCreationMethod
-            };
         }
     }
 }

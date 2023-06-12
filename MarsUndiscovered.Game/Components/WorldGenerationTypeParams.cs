@@ -3,7 +3,8 @@
     public enum MapType
     {
         Mine,
-        Outdoor
+        Outdoor,
+        MiningFacility
     }
     
     public class WorldGenerationTypeParams

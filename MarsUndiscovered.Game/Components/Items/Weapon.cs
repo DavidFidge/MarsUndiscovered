@@ -1,10 +1,20 @@
-﻿namespace MarsUndiscovered.Game.Components
+﻿using Microsoft.Xna.Framework;
+
+namespace MarsUndiscovered.Game.Components
 {
     public abstract class Weapon : ItemType
     {
-        public override string GetAbstractTypeDescription()
+        private char _asciiCharacter = (char)0x18;
+
+        public override char AsciiCharacter
         {
-            return "Weapon";
+            get => _asciiCharacter;
+            set => _asciiCharacter = value;
+        }
+
+        public override string GetAbstractTypeName()
+        {
+            return nameof(Weapon);
         }
         
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
@@ -13,7 +23,7 @@
             var status = includeStatus && item.IsEquipped ? " (equipped)" : "";
             
             if (itemTypeDiscovery is { IsItemTypeDiscovered: false })
-                return $"{(includePrefix ? "An " : "")}Unknown {GetAbstractTypeDescription()}{status}";
+                return $"{(includePrefix ? "An " : "")}Unknown {GetAbstractTypeName()}{status}";
                
             if (!itemDiscovery.IsEnchantLevelDiscovered)
                 return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}{status}";
@@ -23,7 +33,7 @@
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)
         {
-            return $"A {GetAbstractTypeDescription()}";
+            return $"A {GetAbstractTypeName()}";
         }
 
         protected string GetPropertiesUnknownText()

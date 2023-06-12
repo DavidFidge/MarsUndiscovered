@@ -1,6 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Extensions;
 using MarsUndiscovered.Game.Components;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests;
@@ -20,11 +19,11 @@ public class RadioCommsTests : BaseGameWorldIntegrationTests
         // Assert
         Assert.IsTrue(result.First().Message.StartsWith("Welcome to Mars captain!"));
         Assert.AreEqual(RadioComms.ShipAiSource, result.First().Source);
-        Assert.AreSame(_gameWorld.Ships.First().Value, result.First().GameObject);
+        Assert.AreSame(_gameWorld.Player, result.First().GameObject);
             
         Assert.IsTrue(result.Skip(1).First().Message.StartsWith("There's no communications signals"));
         Assert.AreEqual(RadioComms.ShipAiSource, result.Skip(1).First().Source);
-        Assert.AreSame(_gameWorld.Ships.First().Value, result.Skip(1).First().GameObject, "Result of second item should match the FIRST ship item in the game world");
+        Assert.AreSame(_gameWorld.Player, result.Skip(1).First().GameObject);
     }
         
     [TestMethod]
@@ -60,7 +59,7 @@ public class RadioCommsTests : BaseGameWorldIntegrationTests
     public void Picking_Up_Ship_Parts_Adds_RadioComms()
     {
         // Arrange
-        NewGameWithCustomMapNoMonstersNoItems();
+        NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
         var itemPosition = new Point(0, 1);
 
         _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShipRepairParts).AtPosition(itemPosition));

@@ -2,9 +2,6 @@ using FrigidRogue.MonoGame.Core.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Commands
@@ -16,7 +13,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void PickUpItemCommand_On_Item_Should_Pick_Up_Item()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
@@ -39,7 +36,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void PickUpItemCommand_On_Item_Should_Not_Pick_Up_Item_If_Inventory_Is_Full()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
 
             var i = 0;
@@ -72,7 +69,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void PickUpItemCommand_On_Item_Should_Not_Pick_Up_Item_If_Not_Player()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 1);
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 0)));

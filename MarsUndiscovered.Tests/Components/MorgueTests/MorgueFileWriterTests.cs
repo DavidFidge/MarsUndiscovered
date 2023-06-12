@@ -2,7 +2,6 @@
 using System.Reflection;
 using FrigidRogue.TestInfrastructure;
 using MarsUndiscovered.Game.Components;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serilog.Events;
 
 namespace MarsUndiscovered.Tests.Components.MorgueTests;

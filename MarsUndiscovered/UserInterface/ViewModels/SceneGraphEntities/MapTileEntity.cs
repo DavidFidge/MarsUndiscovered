@@ -30,57 +30,63 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             );
         }
 
-        public void SetWall()
+        public void SetWall(WallType wallType)
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Wall);
+            MapTileTexture = Assets.GetMapTileTexture(wallType.Name);
             IsVisible = true;
         }
 
-        public void SetFloor()
+        public void SetFloor(FloorType floorType)
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Floor);
+            MapTileTexture = Assets.GetMapTileTexture(floorType.Name);
+            IsVisible = true;
+        }
+        
+        public void SetDoor(DoorType doorType)
+        {
+            MapTileTexture = Assets.GetMapTileTexture(doorType.Name);
             IsVisible = true;
         }
 
         public void SetPlayer(Player player)
         {
-            MapTileTexture = Assets.GetMapTileTexture(!player.IsDead ? TileGraphicType.Player : TileGraphicType.PlayerDead);
+            MapTileTexture = Assets.GetMapTileTexture(!player.IsDead ? TileGraphicType.Player.ToString() : TileGraphicType.PlayerDead.ToString());
             IsVisible = true;
         }
 
         public void SetMapExit(Direction direction)
         {
-            MapTileTexture = Assets.GetMapTileTexture(direction == Direction.Down ? TileGraphicType.MapExitDown : TileGraphicType.MapExitUp);
+            MapTileTexture = Assets.GetMapTileTexture(direction == Direction.Down ? TileGraphicType.MapExitDown.ToString() : TileGraphicType.MapExitUp.ToString());
             IsVisible = true;
         }
 
         public void SetShip(char shipPart)
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileGraphicFeatureType.Ship, shipPart);
+            MapTileTexture = Assets.GetMapTileTexture($"{TileGraphicType.Ship}{shipPart}");
             IsVisible = true;
         }
         
         public void SetMiningFacility(char miningFacilityPart)
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileGraphicFeatureType.MiningFacility, miningFacilityPart);
+            MapTileTexture = Assets.GetMapTileTexture($"{TileGraphicType.MiningFacility}{miningFacilityPart}");
             IsVisible = true;
         }
 
         public void SetItem(ItemType itemType)
         {
-            MapTileTexture = Assets.GetMapTileTexture(itemType);
+            MapTileTexture = Assets.GetMapTileTexture(itemType.GetAbstractTypeName());
             IsVisible = true;
         }
 
         public void SetMonster(Breed breed)
         {
-            MapTileTexture = Assets.GetMapTileTexture(breed);
+            MapTileTexture = Assets.GetMapTileTexture(breed.NameWithoutSpaces);
             IsVisible = true;
         }
 
         public void SetMouseHover()
         {
-            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.MouseHover);
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.MouseHover.ToString());
             IsVisible = false;
         }
         
@@ -98,7 +104,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void SetLightning(float opacity)
         {
             IsVisible = true;
-            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Lightning);
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Lightning.ToString());
             Opacity = opacity;
         }
         
@@ -112,19 +118,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     break;
                 case Direction.Types.Up:
                 case Direction.Types.Down:
-                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackNorthSouth);
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackNorthSouth.ToString());
                     break;
                 case Direction.Types.UpRight:
                 case Direction.Types.DownLeft:
-                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackNorthEastSouthWest);
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackNorthEastSouthWest.ToString());
                     break;
                 case Direction.Types.Right:
                 case Direction.Types.Left:
-                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackEastWest);
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackEastWest.ToString());
                     break;
                 case Direction.Types.DownRight:
                 case Direction.Types.UpLeft:
-                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackNorthWestSouthEast);
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.LineAttackNorthWestSouthEast.ToString());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

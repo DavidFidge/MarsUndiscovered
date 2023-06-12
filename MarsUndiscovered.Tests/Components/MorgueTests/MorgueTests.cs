@@ -2,7 +2,6 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Serilog.Events;
@@ -193,7 +192,7 @@ ENEMIES DEFEATED
 --------------------------------------------------------------------------------
 No enemies were defeated
 ";
-
+            
             // Act
             _morgue.SnapshotMorgueExportData(_gameWorld, "Username12345!@#$%", true);
 

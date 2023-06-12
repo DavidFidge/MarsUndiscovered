@@ -7,17 +7,17 @@ using MonoGame.Extended;
 
 namespace MarsUndiscovered.Game.Components
 {
-    public class Breed
+    public class Breed : GameObjectType
     {
-        public string Name { get; set;}
+        public override string Name { get; set;}
         public string NameWithoutSpaces { get; set;}
         public string Description { get; set; }
         public int MaxHealth { get; set; }
         public decimal RegenRate { get; set; }
         
-        public char AsciiCharacter { get; set; }
-        public Color ForegroundColour { get; set; }
-        public Color? BackgroundColour { get; set; }
+        public override char AsciiCharacter { get; set; }
+        public override Color ForegroundColour { get; set; }
+        public override Color? BackgroundColour { get; set; }
 
         public bool IsWallTurret { get; set; }
         public bool FriendlyFireAllies { get; set; } = true;

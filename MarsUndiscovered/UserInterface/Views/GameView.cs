@@ -364,7 +364,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 RadioCommsMessage.Text = nextRadioComms.Message;
                 RadioCommsSource.Text = nextRadioComms.Source;
 
-                var radioCommsSpriteSheet = Assets.GetRadioCommsSpriteSheet(nextRadioComms.GameObject);
+                var radioCommsSpriteSheet = Assets.GetRadioCommsSpriteSheet(nextRadioComms.RadioCommsType);
 
                 RadioCommsAnimatedSprite = new AnimatedSprite(radioCommsSpriteSheet);
                 RadioCommsAnimatedSprite.Play("talk");
@@ -400,8 +400,6 @@ namespace MarsUndiscovered.UserInterface.Views
             base.Update();
 
             UpdateRadioCommsAnimation();
-
-            _viewModel.UpdateAnimation();
 
             if (_viewModel.IsAnimating)
                 return;

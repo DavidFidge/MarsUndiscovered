@@ -2,9 +2,6 @@ using FrigidRogue.MonoGame.Core.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Commands
@@ -16,7 +13,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void UnequipItemCommand_Should_Unequip_Weapon()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
@@ -48,7 +45,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void UnequipItemCommand_For_Item_Not_Equipped_Should_Do_Nothing()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;

@@ -17,6 +17,7 @@ using Castle.Windsor;
 
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
+using FrigidRogue.MonoGame.Core.Graphics.Map;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
@@ -58,6 +59,7 @@ namespace MarsUndiscovered.Installers
             RegisterOptionsView(container, store);
             RegisterVideoOptionsView(container, store);
             RegisterGameOptionsView(container, store);
+            RegisterDeveloperToolsView(container, store);
             RegisterInGameOptionsView(container, store);
             RegisterInReplayOptionsView(container, store);
             RegisterWorldBuilderOptionsView(container, store);
@@ -154,7 +156,6 @@ namespace MarsUndiscovered.Installers
                     .BasedOn<IKeyboardHandler>() // Only covers dependencies asking for IKeyboardHandler, does not cover if they ask for specific class type e.g. see RegisterGameView
                     .Unless(s => typeof(GlobalKeyboardHandler).IsAssignableFrom(s))
                     .ConfigureFor<NullKeyboardHandler>(c => c.IsDefault())
-                    .ConfigureFor<GameViewKeyboardHandler>(c => c.DependsOn(Dependency.OnComponent<ICameraMovement, CameraMovement>()))
                     .WithServiceDefaultInterfaces(),
 
                 Component.For<GlobalKeyboardHandler>()
@@ -242,6 +243,18 @@ namespace MarsUndiscovered.Installers
 
                 Component.For<GameOptionsView>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, GameOptionsKeyboardHandler>())
+            );
+        }
+
+        private void RegisterDeveloperToolsView(IWindsorContainer container, IConfigurationStore store)
+        {
+            container.Register(
+
+                Component.For<DeveloperToolsViewModel>()
+                    .ImplementedBy<DeveloperToolsViewModel>(),
+
+                Component.For<DeveloperToolsView>()
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, DeveloperToolsKeyboardHandler>())
             );
         }
 

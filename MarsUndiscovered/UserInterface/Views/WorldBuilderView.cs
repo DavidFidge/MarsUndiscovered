@@ -22,7 +22,7 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<PreviousWorldBuilderStepRequest>
     {
         private readonly WorldBuilderOptionsView _worldBuilderOptionsView;
-        
+
         protected Panel LeftPanel;
 
         public WorldBuilderView(
@@ -63,6 +63,10 @@ namespace MarsUndiscovered.UserInterface.Views
             new Button("Build New Mine World")
                 .SendOnClick(Mediator, new BuildWorldRequest { WorldGenerationTypeParams = new WorldGenerationTypeParams(MapType.Mine)})
                 .AddTo(LeftPanel);
+
+            new Button("Build New Mining Facility")
+                .SendOnClick(Mediator, new BuildWorldRequest { WorldGenerationTypeParams = new WorldGenerationTypeParams(MapType.MiningFacility)})
+                .AddTo(LeftPanel);
      
             new Button("Next Step")
                 .SendOnClick<NextWorldBuilderStepRequest>(Mediator)
@@ -83,8 +87,8 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(BuildWorldRequest request, CancellationToken cancellationToken)
         {
             _viewModel.BuildWorld(request.WorldGenerationTypeParams);
-            UpdateMapRenderTargetSize(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
-            
+            UpdateMapRenderTarget(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
+
             return Unit.Task;
         }
 

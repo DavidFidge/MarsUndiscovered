@@ -1,10 +1,8 @@
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using SadRogue.Primitives;
+using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
@@ -15,7 +13,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game()
         {
             // Arrange
-            NewGameWithNoMonstersNoItems();
+            NewGameWithNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach"));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
@@ -30,6 +28,15 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(_gameWorld.Seed, newGameWorld.Seed);
             Assert.AreEqual(_gameWorld.GameObjectFactory.LastId, newGameWorld.GameObjectFactory.LastId);
 
+            var gameWorldObjectsByType = _gameWorld.GameObjects
+                .GroupBy(go => go.Value.GetType())
+                .ToDictionary(g => g.Key, g => g.ToList());
+            
+            var newGameWorldObjectsByType = newGameWorld.GameObjects
+                .GroupBy(go => go.Value.GetType())
+                .ToDictionary(g => g.Key, g => g.ToList());
+            
+            Assert.AreEqual(gameWorldObjectsByType.Count, newGameWorldObjectsByType.Count);
             Assert.AreEqual(_gameWorld.GameObjects.Count, newGameWorld.GameObjects.Count);
             Assert.AreEqual(_gameWorld.GameObjects.Values.OfType<MarsGameObject>().Count(), newGameWorld.GameObjects.Values.OfType<MarsGameObject>().Count());
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Monster>().Count());
@@ -54,7 +61,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Not_Reset_Seen_RadioCommsItems()
         {
             // Arrange
-            NewGameWithNoMonstersNoItems();
+            NewGameWithNoMonstersNoItems(_gameWorld);
 
             _gameWorld.GetNewRadioCommsItems();
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
@@ -88,13 +95,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_Inventory()
         {
             // Arrange
-            NewGameWithNoMonstersNoItems();
+            NewGameWithNoMonstersNoItems(_gameWorld);
             
-            var item1 = SpawnItemAndAddToInventory(ItemType.MagnesiumPipe);
-            var item2 = SpawnItemAndAddToInventory(ItemType.MagnesiumPipe);
-            var item3 = SpawnItemAndAddToInventory(ItemType.HealingBots);
-            var item4 = SpawnItemAndAddToInventory(ItemType.HealingBots);
-            var item5 = SpawnItemAndEquip(ItemType.IronSpike);
+            var item1 = SpawnItemAndAddToInventory(_gameWorld, ItemType.MagnesiumPipe);
+            var item2 = SpawnItemAndAddToInventory(_gameWorld, ItemType.MagnesiumPipe);
+            var item3 = SpawnItemAndAddToInventory(_gameWorld, ItemType.HealingBots);
+            var item4 = SpawnItemAndAddToInventory(_gameWorld, ItemType.HealingBots);
+            var item5 = SpawnItemAndEquip(_gameWorld, ItemType.IronSpike);
             
             _gameWorld.Inventory.ItemTypeDiscoveries[ItemType.HealingBots].IsItemTypeDiscovered = true;
 
@@ -126,11 +133,11 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_MapSeenTiles()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            var wallPosition = new Point(1, 1);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             _gameWorld.Player.Position = new Point(0, 0);
-            var wallPosition = new Point(1, 1);
-            _gameWorld.CreateWall(wallPosition);
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)));
             var monster = _gameWorld.Monsters.First().Value;
@@ -168,14 +175,17 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_Multiple_Maps()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             var maps = _gameWorld.Maps.ToList();
 
-            _gameWorld.Player.Position = new Point(0, 0);
+            var playerPosition = GlobalRandom.DefaultRNG.RandomPosition(maps[0], MapHelpers.EmptyPointOnFloor);
+            var monsterPosition1 = GlobalRandom.DefaultRNG.RandomPosition(maps[0], MapHelpers.EmptyPointOnFloor);
+            var monsterPosition2 = GlobalRandom.DefaultRNG.RandomPosition(maps[1], MapHelpers.EmptyPointOnFloor);
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[0].Id).WithBreed("Roach").AtPosition(new Point(2, 2)));
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[1].Id).WithBreed("Roach").AtPosition(new Point(2, 2)));
+            _gameWorld.Player.Position = playerPosition;
+            _gameWorld.GameWorldDebug.SpawnMonster(new SpawnMonsterParams().OnMap(maps[0].Id).WithBreed("Roach").AtPosition(monsterPosition1));
+            _gameWorld.GameWorldDebug.SpawnMonster(new SpawnMonsterParams().OnMap(maps[1].Id).WithBreed("Roach").AtPosition(monsterPosition2));
 
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 
@@ -199,16 +209,16 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(newGameMonsterMap1.CurrentMap, newGameMaps[0]);
             Assert.AreEqual(newGameMonsterMap2.CurrentMap, newGameMaps[1]);
 
-            Assert.IsNotNull(newGameMaps[0].GetObjectAt<Monster>(2, 2));
-            Assert.IsNotNull(newGameMaps[1].GetObjectAt<Monster>(2, 2));
-            Assert.AreNotSame(newGameMaps[0].GetObjectAt<Monster>(2, 2), newGameMaps[1].GetObjectAt<Monster>(2, 2));
+            Assert.IsNotNull(newGameMaps[0].GetObjectAt<Monster>(monsterPosition1));
+            Assert.IsNotNull(newGameMaps[1].GetObjectAt<Monster>(monsterPosition2));
+            Assert.AreNotSame(newGameMaps[0].GetObjectAt<Monster>(monsterPosition1), newGameMaps[1].GetObjectAt<Monster>(monsterPosition2));
         }
 
         [TestMethod]
         public void Should_Save_Then_Load_Game_MapExits()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             var maps = _gameWorld.Maps.ToList();
 
@@ -240,7 +250,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_Weapon_LineAttack_Properties_Restored()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             var maps = _gameWorld.Maps.ToList();
 
@@ -268,7 +278,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Retain_Residual_Regen()
         {
             // Arrange
-            NewGameWithNoMonstersNoItems();
+            NewGameWithNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach"));
             _gameWorld.Player.ResidualRegen = 0.1m;
             _gameWorld.Monsters.First().Value.ResidualRegen = 0.2m;

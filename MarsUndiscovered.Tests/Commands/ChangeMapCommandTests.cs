@@ -2,9 +2,6 @@ using FrigidRogue.MonoGame.Core.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Commands
@@ -16,7 +13,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ChangeMapCommand_Should_Change_Map()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             var oldMap = _gameWorld.CurrentMap;
             _gameWorld.Player.Position = new Point(0, 0);
 
@@ -45,7 +42,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ChangeMapCommand_Should_Change_Map_And_Put_Player_In_Square_Close_To_Landing_Position_When_Landing_Position_Is_Not_Walkable()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(new SpecificMapGenerator(_gameWorld.GameObjectFactory, _gameWorld.MapGenerator, new List<Point> { new Point(0, 0) }));
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld, new SpecificMapGenerator(_gameWorld.GameObjectFactory, new List<Point> { new Point(0, 0) }));
             var oldMap = _gameWorld.CurrentMap;
             _gameWorld.Player.Position = new Point(0, 1);
 
@@ -59,7 +56,7 @@ namespace MarsUndiscovered.Tests.Commands
                 for (var x = 0; x < 3; x++)
                 {
                     if (!(x == 0 && y == 0))
-                        _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(x, y)).OnMap(destinationMap.Id));
+                        _gameWorld.GameWorldDebug.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(x, y)).OnMap(destinationMap.Id));
                 }
             }
 

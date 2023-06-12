@@ -63,7 +63,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </Content>
+    <None Remove="Content\WaveFunctionCollapse\MiningFacility\Rules.json" />
+    <Content Include="Content\Maps\MiningFacility\Rules.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
+
+  <Target Name="Delete Content" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <ContentToDelete Include="Content\bin\Windows\Content\Content.xnb" />
+    </ItemGroup>
+    <Delete Files="@(ContentToDelete)" />
+  </Target>
 
   <Target Name="CleanPublish" BeforeTargets="GetCopyToPublishDirectoryItems">
     <ItemGroup>

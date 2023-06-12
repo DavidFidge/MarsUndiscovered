@@ -1,6 +1,4 @@
 ﻿using MarsUndiscovered.Game.Components;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
@@ -40,10 +38,11 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Spawn_Immobile_Monster_On_Wall()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems();
-
             var wallPosition = new Point(1, 1);
-            _gameWorld.CreateWall(wallPosition);
+
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld, mapGenerator);
+
             _gameWorld.Player.Position = new Point(3, 3);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition));
 

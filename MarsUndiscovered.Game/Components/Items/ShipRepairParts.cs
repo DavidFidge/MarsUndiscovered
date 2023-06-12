@@ -1,8 +1,16 @@
-﻿namespace MarsUndiscovered.Game.Components
+﻿using Microsoft.Xna.Framework;
+
+namespace MarsUndiscovered.Game.Components
 {
     public class ShipRepairParts : VictoryItemType
     {
-        public override string Name => nameof(ShipRepairParts);
+        private char _asciiCharacter = '&';
+
+        public override char AsciiCharacter
+        {
+            get => _asciiCharacter;
+            set => _asciiCharacter = value;
+        }
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
             ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
@@ -13,6 +21,11 @@
         public override string GetTypeDescription()
         {
             return "Ship Repair Parts";
+        }
+
+        public override string GetAbstractTypeName()
+        {
+            return nameof(ShipRepairParts);
         }
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)

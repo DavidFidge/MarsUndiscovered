@@ -4,14 +4,14 @@ namespace MarsUndiscovered.Game.Components;
 
 public class RadioCommsEntry
 {
-    public int Id { get; private set; }
+    public RadioCommsTypes RadioCommsType { get; private set; }
     public string Message { get; private set; }
     public string Source { get; private set; }
     public IGameObject GameObject { get; private set; }
 
-    public RadioCommsEntry(int id, string message, string source, IGameObject gameObject)
+    public RadioCommsEntry(RadioCommsTypes radioCommsType, IGameObject gameObject, string message, string source)
     {
-        Id = id;
+        RadioCommsType = radioCommsType;
         Message = message;
         Source = source;
         GameObject = gameObject;

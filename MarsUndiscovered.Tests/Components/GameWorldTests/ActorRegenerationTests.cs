@@ -1,5 +1,4 @@
 ﻿using MarsUndiscovered.Game.Components;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
@@ -11,7 +10,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Increase_Residual_Regen()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 1;
@@ -30,7 +29,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Increase_Health_When_Residual_Regen_Spills()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 1;
@@ -50,7 +49,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Increase_Health_When_Residual_Regen_Spills_For_Regen_Rates_Greater_Than_One()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 1;
@@ -69,7 +68,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Residual_Should_Clear_When_Health_Increases_To_Full()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 99;
@@ -88,7 +87,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Residual_Should_Clear_When_Health_Increases_To_Full_When_Residual_Exists()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 94;
@@ -108,7 +107,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Residual_Should_Not_Increase_When_Health_Is_Full()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 100;
@@ -127,7 +126,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Increase_Residual_Regen_Monsters()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures();
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             

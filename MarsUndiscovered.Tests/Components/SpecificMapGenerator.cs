@@ -11,40 +11,59 @@ namespace MarsUndiscovered.Tests.Components
 {
     public class SpecificMapGenerator : BaseTestMapGenerator
     {
-        private readonly Func<Point, IGameObject> _terrainChooser;
+        private readonly HashSet<Point> _wallPoints;
 
-        public SpecificMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator, IList<Point> wallPoints) : base(gameObjectFactory, originalMapGenerator)
+        public SpecificMapGenerator(IGameObjectFactory gameObjectFactory, IList<Point> wallPoints) : base(gameObjectFactory)
         {
-            var index = 0;
+            _wallPoints = wallPoints.ToHashSet();
+        }
 
-            _terrainChooser = ((p) =>
+        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
+        {
+            GenerateSpecificMap(gameWorld, width, height);
+        }
+
+        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
+        {
+            GenerateSpecificMap(gameWorld, width, height);
+        }
+
+        public override void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height,
+            int? upToStep = null)
+        {
+            GenerateSpecificMap(gameWorld, width, height);
+        }
+
+        private void GenerateSpecificMap(IGameWorld gameWorld, int width, int height)
+        {
+            var arrayView = new ArrayView<IGameObject>(width, height);
+
+            for (var index = 0; index < arrayView.Count; index++)
             {
-                var terrain = wallPoints.Contains(p) ? (Terrain)_gameObjectFactory.CreateWall() : _gameObjectFactory.CreateFloor();
-                terrain.Index = index++;
-                return terrain;
-            });
-        }
+                var point = Point.FromIndex(index, width);
+                Terrain terrain;
 
-        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
-        {
-            GenerateSpecificMap(gameWorld, OutdoorMapDimensions);
-        }
-
-        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
-        {
-            GenerateSpecificMap(gameWorld, BasicMapDimensions);
-        }
-
-        private void GenerateSpecificMap(IGameWorld gameWorld, Point mapDimensions)
-        {
-            var arrayView = new ArrayView<IGameObject>(mapDimensions.X, mapDimensions.Y);
-
-            arrayView.ApplyOverlay(_terrainChooser);
+                if (_wallPoints.Contains(point))
+                {
+                    var wall = _gameObjectFactory.CreateGameObject<Wall>();
+                    wall.WallType = WallType.RockWall;
+                    terrain = wall;
+                }
+                else
+                {
+                    var floor = _gameObjectFactory.CreateGameObject<Floor>();
+                    floor.FloorType = FloorType.RockFloor;
+                    terrain = floor;
+                }
+                
+                terrain.Index = index;
+                arrayView[index] = terrain;
+            }
 
             var wallsFloors = arrayView.ToArray();
 
-            MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
-                wallsFloors.OfType<Floor>().ToList(), mapDimensions.X, mapDimensions.Y);
+            Map = MapGenerator.CreateMap(gameWorld, width, height)
+                .WithTerrain(wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
             
             Steps = 1;
             IsComplete = true;

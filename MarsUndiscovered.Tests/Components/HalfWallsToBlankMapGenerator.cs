@@ -3,61 +3,84 @@ using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Interfaces;
-using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Tests.Components
 {
     public class HalfWallsToBlankMapGenerator : BaseTestMapGenerator
     {
-        public HalfWallsToBlankMapGenerator(IGameObjectFactory gameObjectFactory, IMapGenerator originalMapGenerator) : base(gameObjectFactory, originalMapGenerator)
+        public HalfWallsToBlankMapGenerator(IGameObjectFactory gameObjectFactory) : base(gameObjectFactory)
         {
         }
 
-        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
-            GenerateHalfWallsToBlankMap(gameWorld, OutdoorMapDimensions, upToStep);
+            GenerateHalfWallsToBlankMap(gameWorld, width, height, upToStep);
         }
 
-        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep = null)
+        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
-            GenerateHalfWallsToBlankMap(gameWorld, BasicMapDimensions, upToStep);
+            GenerateHalfWallsToBlankMap(gameWorld, width, height, upToStep);
         }
 
-        private void GenerateHalfWallsToBlankMap(IGameWorld gameWorld, Point mapDimensions, int? upToStep)
+        public override void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height,
+            int? upToStep = null)
+        {
+            GenerateHalfWallsToBlankMap(gameWorld, width, height, upToStep);
+        }
+
+        private void GenerateHalfWallsToBlankMap(IGameWorld gameWorld, int width, int height, int? upToStep)
         {
             if (upToStep != null && upToStep == 1)
             {
-                var arrayView = new ArrayView<IGameObject>(mapDimensions.X, mapDimensions.Y);
+                var arrayView = new ArrayView<IGameObject>(width, height);
 
-                var index = 0;
-
-                arrayView.ApplyOverlay(p =>
+                for (var index = 0; index < arrayView.Count; index++)
                 {
-                    var terrain = p.Y > mapDimensions.Y - 5
-                        ? (Terrain)_gameObjectFactory.CreateWall()
-                        : _gameObjectFactory.CreateFloor();
-                    terrain.Index = index++;
-                    return terrain;
-                });
+                    var y = index / width;
+                    Terrain terrain;
+
+                    if (y > height - 5)
+                    {
+                        var wall = _gameObjectFactory.CreateGameObject<Wall>();
+                        wall.WallType = WallType.RockWall;
+                        terrain = wall;
+                    }
+                    else
+                    {
+                        var floor = _gameObjectFactory.CreateGameObject<Floor>();
+                        floor.FloorType = FloorType.RockFloor;
+                        terrain = floor;
+                    }
+                    
+                    terrain.Index = index;
+                    arrayView[index] = terrain;
+                }
 
                 var wallsFloors = arrayView.ToArray();
 
-                MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
-                    wallsFloors.OfType<Floor>().ToList(), mapDimensions.X, mapDimensions.Y);
+                Map = MapGenerator.CreateMap(gameWorld, width, height)
+                    .WithTerrain(wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
+
                 Steps = 1;
                 IsComplete = false;
             }
             else
             {
-                var arrayView = new ArrayView<IGameObject>(mapDimensions.X, mapDimensions.Y);
+                var arrayView = new ArrayView<IGameObject>(width, height);
 
-                arrayView.ApplyOverlay(_ => _gameObjectFactory.CreateFloor());
+                for (var index = 0; index < arrayView.Count; index++)
+                {
+                    var floor = _gameObjectFactory.CreateGameObject<Floor>();
+                    floor.FloorType = FloorType.RockFloor;
+                    floor.Index = index;
+                    arrayView[index] = floor;
+                }
 
                 var wallsFloors = arrayView.ToArray();
 
-                MarsMap = MapGenerator.CreateMap(gameWorld, wallsFloors.OfType<Wall>().ToList(),
-                    wallsFloors.OfType<Floor>().ToList(), mapDimensions.X, mapDimensions.Y);
+                Map = MapGenerator.CreateMap(gameWorld, width, height)
+                    .WithTerrain(wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
 
                 Steps = 2;
                 IsComplete = true;

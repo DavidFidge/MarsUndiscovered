@@ -3,7 +3,6 @@ using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Interfaces;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SadRogue.Primitives.GridViews;
 
@@ -33,18 +32,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var wallsFloors = arrayView.ToArray();
             
-            var map = MapGenerator.CreateMap(
-                testGameWorld,
-                wallsFloors.OfType<Wall>().ToList(),
-                wallsFloors.OfType<Floor>().ToList(),
-                70,
-                50
-                );
+            var map = MapGenerator.CreateMap(testGameWorld, 70, 50)
+                .WithTerrain(wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
 
             var miningFacilityCollection = new MiningFacilityCollection(gameObjectFactory);
 
-            gameObjectFactory.CreateMiningFacility().Returns(_ => new MiningFacility(testGameWorld, index++));
-            gameObjectFactory.CreateFloor().Returns(_ => new Floor(testGameWorld, index++));
+            gameObjectFactory.CreateGameObject<MiningFacility>().Returns(_ => new MiningFacility(testGameWorld, index++));
+            gameObjectFactory.CreateGameObject<Floor>().Returns(_ => new Floor(testGameWorld, index++));
 
             var miningFacilityGenerator = new MiningFacilityGenerator();
             

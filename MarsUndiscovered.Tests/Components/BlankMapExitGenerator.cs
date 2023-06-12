@@ -16,7 +16,7 @@ namespace MarsUndiscovered.Tests.Components
         public MapExit SpawnMapExit(
             SpawnMapExitParams spawnMapExitParams,
             IGameObjectFactory gameObjectFactory,
-            MarsMap map,
+            MapCollection maps,
             MapExitCollection mapExitCollection
         )
         {

@@ -1,5 +1,6 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics;
+using FrigidRogue.MonoGame.Core.Graphics.Map;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
@@ -308,19 +309,27 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
                 return;
             }
+            
+            var door = gameObjects.FirstOrDefault(go => go is Door);
+
+            if (door != null)
+            {
+                _terrainTiles[point].SetDoor(((Door)door).DoorType);
+                return;
+            }
 
             var floor = gameObjects.FirstOrDefault(go => go is Floor);
 
             if (floor != null)
             {
-                _terrainTiles[point].SetFloor();
+                _terrainTiles[point].SetFloor(((Floor)floor).FloorType);
                 return;
             }
 
             var wall = gameObjects.FirstOrDefault(go => go is Wall);
 
             if (wall != null)
-                _terrainTiles[point].SetWall();
+                _terrainTiles[point].SetWall(((Wall)wall).WallType);
         }
 
         private void DebugUpdateTileGoalMap()
