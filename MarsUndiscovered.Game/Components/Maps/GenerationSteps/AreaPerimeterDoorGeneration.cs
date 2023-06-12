@@ -33,7 +33,7 @@ public class AreaPerimeterDoorGeneration : GenerationStep
     
     private bool HasNeighbouringFloorVerticallyOrHorizontally(Point point, ArrayView<GameObjectType> wallsFloorTypes, int width, int height)
     {
-        var neighbours = point.Neighbours(0, width, 0, height);
+        var neighbours = point.Neighbours(width - 1, height - 1);
         
         if ((neighbours.Contains(point + Direction.Up) && wallsFloorTypes[(point + Direction.Up).ToIndex(width)] is FloorType) &&
             (neighbours.Contains(point + Direction.Down) && wallsFloorTypes[(point + Direction.Down).ToIndex(width)] is FloorType))

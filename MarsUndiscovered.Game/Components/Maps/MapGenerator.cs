@@ -20,7 +20,6 @@ namespace MarsUndiscovered.Game.Components.Maps
         public static string WallFloorTag = "WallFloor";
         public static string TunnelsTag = "Tunnels";
         public static string WallFloorTypeTag = "WallFloorType";
-        public static string MiningFacilityFloorTag = "MiningFacilityFloor";
         public static string MiningFacilityAreaTag = "MiningFacilityArea";
         public static string DoorsTag = "Doors";
         public static string AreasTag = "Areas";
@@ -90,15 +89,22 @@ namespace MarsUndiscovered.Game.Components.Maps
                 _waveFunctionCollapseGeneratorPassesRenderer
             );
 
-            var miningFacilityAreaFinder = new AreaFinder(MiningFacilityAreaTag, MiningFacilityFloorTag);
+            var miningFacilityAreaFinder = new AreaFinder(MiningFacilityAreaTag, areasComponentTag: AreasTag);
+
             var internalWallsGeneration = new InternalWallsGeneration(WallType.MiningFacilityWall, DoorType.DefaultDoor, splitFactor: 10);
             internalWallsGeneration.AreasStepFilterTag = MiningFacilityAreaTag;
+            
+            var areaPerimeterDoorGeneration = new AreaPerimeterDoorGeneration(FloorType.MiningFacilityFloor,
+                DoorType.DefaultDoor, minDoors: 1, maxDoors: 4);
 
+            areaPerimeterDoorGeneration.AreasStepFilterTag = MiningFacilityAreaTag;
+            
             var generationSteps = new GenerationStep[]
             {
                 miningFacilityGeneration,
                 miningFacilityAreaFinder,
-                internalWallsGeneration
+                internalWallsGeneration,
+                areaPerimeterDoorGeneration
             };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
