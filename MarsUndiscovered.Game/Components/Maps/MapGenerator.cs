@@ -4,14 +4,13 @@ using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
-using GoRogue.MapGeneration.Steps;
 using GoRogue.Random;
 
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.GenerationSteps;
-using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
 using SadRogue.Primitives.GridViews;
+using ShaiRandom.Collections;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {
@@ -94,7 +93,11 @@ namespace MarsUndiscovered.Game.Components.Maps
             
             var miningFacilityAreaWithPerimeter = new GenericAreaFinder<GameObjectType>((t) => t == FloorType.MiningFacilityFloor || t == WallType.MiningFacilityWall, MiningFacilityAreaWithPerimeterTag, WallFloorTypeTag, areasComponentTag: AreasTag);
 
-            var internalWallsGeneration = new InternalWallsGeneration(WallType.MiningFacilityWall, DoorType.DefaultDoor, splitFactor: 10);
+            var probabilityTable = new ProbabilityTable<int>(
+                new List<(int item, double weight)> { (1, 5), (2, 1) }
+                );
+
+            var internalWallsGeneration = new InternalWallsGeneration(WallType.MiningFacilityWall, DoorType.DefaultDoor, probabilityTable, splitFactor: 10);
             internalWallsGeneration.AreasStepFilterTag = MiningFacilityAreaTag;
             
             var areaPerimeterDoorGeneration = new AreaPerimeterDoorGeneration(FloorType.MiningFacilityFloor,

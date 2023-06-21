@@ -5,6 +5,7 @@ using MarsUndiscovered.Game.Components.Maps;
 using NGenerics.Extensions;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+using ShaiRandom.Collections;
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components.GenerationSteps;
@@ -13,6 +14,7 @@ public class InternalWallsGeneration : GenerationStep
 {
     private readonly WallType _wallType;
     private readonly DoorType _doorType;
+    private readonly ProbabilityTable<int> _doorProbabilityTable;
     private readonly int _splitFactor;
     public string AreasComponentTag { get; set; } = MapGenerator.AreasTag;
     public string AreasStepFilterTag { get; set; } = null;
@@ -21,16 +23,25 @@ public class InternalWallsGeneration : GenerationStep
 
     public IEnhancedRandom RNG { get; set; } = GlobalRandom.DefaultRNG;
 
-    public InternalWallsGeneration(WallType wallType, DoorType doorType, string name = null, int splitFactor = 5)
+    public InternalWallsGeneration(WallType wallType, DoorType doorType, ProbabilityTable<int> doorProbabilityTable = null, string name = null, int splitFactor = 5)
         : base(name)
     {
         _wallType = wallType;
         _doorType = doorType;
         _splitFactor = splitFactor;
+        _doorProbabilityTable = doorProbabilityTable;
+
+        if (_doorProbabilityTable == null)
+        {
+            var probabilityTable = new ProbabilityTable<int>(new List<(int item, double weight)> { (1, 1) });
+            _doorProbabilityTable = probabilityTable;
+        }
     }
 
     protected override IEnumerator<object> OnPerform(GenerationContext context)
     {
+        _doorProbabilityTable.Random = RNG;
+
         var areas = context
             .GetFirstOrNew(() => new ItemList<Area>(), AreasComponentTag)
             .Where(a => String.IsNullOrEmpty(AreasStepFilterTag) || a.Step == AreasStepFilterTag)
@@ -140,11 +151,19 @@ public class InternalWallsGeneration : GenerationStep
             splitArea1 = new Area(area.Where(p => p.Y < splitPoint));
             splitArea2 = new Area(area.Where(p => p.Y > splitPoint));
         }
-        
-        var door = RNG.RandomIndex(newWallPoints);
-        doors.Add(newWallPoints[door]);
-        newWallPoints.RemoveAt(door);
 
+        var numDoorsToCreate = _doorProbabilityTable.NextItem();
+        
+        for (var i = 0; i < numDoorsToCreate; i++)
+        {
+            if (newWallPoints.IsEmpty())
+                break;
+            
+            var door = RNG.RandomIndex(newWallPoints);
+            doors.Add(newWallPoints[door]);
+            newWallPoints.RemoveAt(door);
+        }
+        
         walls.AddRange(newWallPoints);
         
         SplitAreaRecursive(splitArea1, walls, doors);
