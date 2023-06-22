@@ -97,7 +97,7 @@ namespace MarsUndiscovered.Game.Components.Maps
                 new List<(int item, double weight)> { (1, 5), (2, 1) }
                 );
 
-            var internalWallsGeneration = new InternalWallsGeneration(WallType.MiningFacilityWall, DoorType.DefaultDoor, probabilityTable, splitFactor: 10);
+            var internalWallsGeneration = new InternalWallsGeneration(WallType.MiningFacilityWall, DoorType.DefaultDoor, probabilityTable, splitFactor: 12);
             internalWallsGeneration.AreasStepFilterTag = MiningFacilityAreaTag;
             
             var areaPerimeterDoorGeneration = new AreaPerimeterDoorGeneration(FloorType.MiningFacilityFloor,

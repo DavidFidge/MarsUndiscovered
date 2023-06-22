@@ -58,44 +58,64 @@ public class MiningFacilityGeneration : GenerationStep
         _waveFunctionCollapseGeneratorPasses.MapOptions.MapWidth = mapWidth;
         _waveFunctionCollapseGeneratorPasses.MapOptions.MapHeight = mapHeight;
         _waveFunctionCollapseGeneratorPasses.CreatePasses();
-        _waveFunctionCollapseGeneratorPasses.ExecuteUntilSuccess();
 
-        var texture2D = _waveFunctionCollapseGeneratorPasses.RenderToTexture2D(_renderer);
+        var isRejected = true;
 
-        var data = new Color[texture2D.Width * texture2D.Height];
-
-        texture2D.GetData(data);
-
-        var arrayView = new ArrayView<GameObjectType>(generationContext.Width, generationContext.Height);
-
-        for (var index = 0; index < data.Length; index++)
-        {
-            GameObjectType gameObjectType;
-
-            if (data[index].Equals(Color.Black))
-            {
-                gameObjectType = WallType.MiningFacilityWall;
-            }
-            else if (data[index].Equals(Color.Blue))
-            {
-                gameObjectType = FloorType.MiningFacilityFloor;
-            }
-            else if (data[index].Equals(Color.White))
-            {
-                gameObjectType = FloorType.RockFloor;
-            }
-            else if (data[index].Equals(Color.Red)) 
-            {
-                gameObjectType = WallType.StockpileWall;
-            }
-            else
-            {
-                throw new Exception("Unknown colour in mining facility tiles");
-            }
-            
-            arrayView[index] = gameObjectType;
-        }
+        ArrayView<GameObjectType> arrayView = null;
         
+        while (isRejected)
+        {
+            _waveFunctionCollapseGeneratorPasses.Reset();
+            _waveFunctionCollapseGeneratorPasses.ExecuteUntilSuccess();
+
+            var texture2D = _waveFunctionCollapseGeneratorPasses.RenderToTexture2D(_renderer);
+
+            var data = new Color[texture2D.Width * texture2D.Height];
+
+            texture2D.GetData(data);
+
+            arrayView = new ArrayView<GameObjectType>(generationContext.Width, generationContext.Height);
+
+            var miningFacilityFloorCount = 0;
+            var stockpileWallCount = 0;
+            
+            for (var index = 0; index < data.Length; index++)
+            {
+                GameObjectType gameObjectType;
+
+                if (data[index].Equals(Color.Black))
+                {
+                    gameObjectType = WallType.MiningFacilityWall;
+                }
+                else if (data[index].Equals(Color.Blue))
+                {
+                    gameObjectType = FloorType.MiningFacilityFloor;
+                    miningFacilityFloorCount++;
+                }
+                else if (data[index].Equals(Color.White))
+                {
+                    gameObjectType = FloorType.RockFloor;
+                }
+                else if (data[index].Equals(Color.Red))
+                {
+                    gameObjectType = WallType.StockpileWall;
+                    stockpileWallCount++;
+                }
+                else
+                {
+                    throw new Exception("Unknown colour in mining facility tiles");
+                }
+
+                arrayView[index] = gameObjectType;
+            }
+
+            if (miningFacilityFloorCount / (float)arrayView.Count >= 0.3f &&
+                stockpileWallCount / (float)arrayView.Count >= 0.1f)
+            {
+                isRejected = false;
+            }
+        }
+
         generationContext.Add(arrayView, MapGenerator.WallFloorTypeTag);
 
         yield return null;
