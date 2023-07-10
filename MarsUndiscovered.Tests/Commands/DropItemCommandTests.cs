@@ -41,25 +41,27 @@ namespace MarsUndiscovered.Tests.Commands
             // Arrange
             NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
-            var item1 = _gameWorld.Items.First().Value;
-            _gameWorld.Inventory.Add(item1);
-            _gameWorld.CurrentMap.RemoveEntity(item1);
-            item1.Position = Point.None;
-            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
-            var item2 = _gameWorld.Items.Skip(1).First().Value;
+            var spawnItemParams = new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).IntoPlayerInventory();
+            _gameWorld.SpawnItem(spawnItemParams);
+            var itemInInventory = spawnItemParams.Result;
+
+            spawnItemParams = new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe);
+            _gameWorld.SpawnItem(spawnItemParams);
+            var item2 = spawnItemParams.Result;
+
+            _gameWorld.Player.Position = item2.Position;
 
             var commandFactory = Container.Resolve<ICommandFactory>();
 
             var dropItemCommand = commandFactory.CreateDropItemCommand(_gameWorld);
-            dropItemCommand.Initialise(_gameWorld.Player, item1);
+            dropItemCommand.Initialise(_gameWorld.Player, itemInInventory);
 
             // Act
             var result = dropItemCommand.Execute();
 
             // Assert
             Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
-            Assert.AreNotSame(item1, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
+            Assert.AreNotSame(itemInInventory, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
             Assert.AreSame(item2, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
             Assert.AreEqual("Cannot drop item - there is another item in the way", result.Messages[0]);
         }

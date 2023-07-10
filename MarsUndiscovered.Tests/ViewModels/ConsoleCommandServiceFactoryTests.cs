@@ -1,6 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
-using FrigidRogue.TestInfrastructure;
 
 namespace MarsUndiscovered.Tests.ViewModels
 {

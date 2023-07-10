@@ -12,12 +12,6 @@ namespace MarsUndiscovered.Game.Extensions
             return gameObject;
         }
 
-        public static T PositionedAt<T>(this T gameObject, Func<T, Point> position) where T : MarsGameObject
-        {
-            gameObject.Position = position(gameObject);
-            return gameObject;
-        }
-
         public static T AddToMap<T>(this T gameObject, Map map) where T : MarsGameObject
         {
             map.AddEntity(gameObject);

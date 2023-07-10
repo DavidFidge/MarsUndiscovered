@@ -5,6 +5,7 @@
         public ItemType ItemType { get; set; }
         public Inventory Inventory { get; set; }
         public bool IntoPlayerInventory { get; set; }
+        public Item Result { get; set; }
     }
 
     public static class SpawnItemParamsFluentExtensions

@@ -75,7 +75,8 @@ namespace MarsUndiscovered.Tests.Components
 
         private MapExit SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
         {
-            return MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
+            MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
+            return spawnMapExitParams.Result;
         }
 
         private void CreateMapExitToNextMap(MarsMap map)

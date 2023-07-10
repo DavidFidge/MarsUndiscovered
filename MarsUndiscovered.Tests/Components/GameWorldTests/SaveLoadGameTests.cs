@@ -10,10 +10,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
     public class SaveLoadGameTests : BaseGameWorldIntegrationTests
     {
         [TestMethod]
-        public void Should_Save_Then_Load_Game()
+        public void Should_Save_Then_Load_Game_Specific_Entities()
         {
             // Arrange
-            NewGameWithNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach"));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
@@ -61,7 +61,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Not_Reset_Seen_RadioCommsItems()
         {
             // Arrange
-            NewGameWithNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
 
             _gameWorld.GetNewRadioCommsItems();
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
@@ -95,7 +95,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_Inventory()
         {
             // Arrange
-            NewGameWithNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             
             var item1 = SpawnItemAndAddToInventory(_gameWorld, ItemType.MagnesiumPipe);
             var item2 = SpawnItemAndAddToInventory(_gameWorld, ItemType.MagnesiumPipe);
@@ -278,7 +278,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Retain_Residual_Regen()
         {
             // Arrange
-            NewGameWithNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach"));
             _gameWorld.Player.ResidualRegen = 0.1m;
             _gameWorld.Monsters.First().Value.ResidualRegen = 0.2m;

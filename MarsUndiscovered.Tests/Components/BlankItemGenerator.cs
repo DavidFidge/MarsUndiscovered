@@ -13,14 +13,13 @@ namespace MarsUndiscovered.Tests.Components
             OriginalItemGenerator = originalItemGenerator;
         }
 
-        public Item SpawnItem(
+        public void SpawnItem(
             SpawnItemParams spawnItemParams,
             IGameObjectFactory gameObjectFactory,
             MapCollection maps,
             ItemCollection itemCollection
         )
         {
-            return null;
         }
     }
 }

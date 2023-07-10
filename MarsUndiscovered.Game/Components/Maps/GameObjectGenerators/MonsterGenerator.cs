@@ -1,4 +1,5 @@
 ﻿using MarsUndiscovered.Game.Components.Factories;
+using MarsUndiscovered.Game.Components.Maps.MapPointChoiceRules;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Game.ViewMessages;
 
@@ -6,8 +7,9 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public class MonsterGenerator : BaseGameObjectGenerator, IMonsterGenerator
     {
-        public Monster SpawnMonster(SpawnMonsterParams spawnMonsterParams, IGameObjectFactory gameObjectFactory, MapCollection maps, MonsterCollection monsterCollection)
+        public void SpawnMonster(SpawnMonsterParams spawnMonsterParams, IGameObjectFactory gameObjectFactory, MapCollection maps, MonsterCollection monsterCollection)
         {
+            spawnMonsterParams.Result = null;
             var map = maps.Single(m => m.Id == spawnMonsterParams.MapId);
 
             var monster = gameObjectFactory
@@ -15,9 +17,19 @@ namespace MarsUndiscovered.Game.Components.Maps
                 .WithBreed(spawnMonsterParams.Breed);
 
             if (monster.IsWallTurret)
-                monster.PositionedAt(GetWallPositionAdjacentToFloor(spawnMonsterParams, map));
+            {
+                spawnMonsterParams.MapPointChoiceRules.Add(new WallAdjacentToFloorRule());
+            }
             else
-                monster.PositionedAt(GetPosition(spawnMonsterParams, map));
+            {
+                spawnMonsterParams.MapPointChoiceRules.Add(new EmptyFloorRule());
+            }
+
+            spawnMonsterParams.AssignMap(map);
+
+            var position = GetPosition(spawnMonsterParams, map);
+            
+            monster.PositionedAt(position);
 
             monster.AddToMap(map);
 
@@ -25,7 +37,7 @@ namespace MarsUndiscovered.Game.Components.Maps
 
             Mediator.Publish(new MapTileChangedNotification(monster.Position));
 
-            return monster;
+            spawnMonsterParams.Result = monster;
         }
     }
 }

@@ -2,7 +2,6 @@
 using Castle.Windsor;
 using FrigidRogue.MonoGame.Core.Installers;
 using FrigidRogue.MonoGame.Core.View.Installers;
-using FrigidRogue.TestInfrastructure;
 using MarsUndiscovered.Game.Installers;
 using MarsUndiscovered.Installers;
 using Serilog;
@@ -10,14 +9,15 @@ using Serilog;
 namespace MarsUndiscovered.Tests
 {
     [TestClass]
-    public abstract class BaseIntegrationTest
+    public abstract class BaseIntegrationTest : BaseTest
     {
         protected WindsorContainer Container;
-        protected FakeLogger FakeLogger;
 
         [TestInitialize]
-        public virtual void Setup()
+        public override void Setup()
         {
+            base.Setup();
+            
             Container = new WindsorContainer();
 
             Container.Install(new CoreInstaller());
@@ -25,13 +25,7 @@ namespace MarsUndiscovered.Tests
             Container.Install(new ViewInstaller());
             Container.Install(new MarsUndiscoveredInstaller());
 
-            FakeLogger = new FakeLogger();
             Container.Register(Component.For<ILogger>().Instance(FakeLogger).IsDefault());
-        }
-
-        [TestCleanup]
-        public virtual void TearDown()
-        {
         }
     }
 }

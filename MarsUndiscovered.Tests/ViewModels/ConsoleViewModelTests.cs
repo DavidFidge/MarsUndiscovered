@@ -9,7 +9,6 @@ using FrigidRogue.MonoGame.Core.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Messages;
-using FrigidRogue.TestInfrastructure;
 using NSubstitute;
 
 namespace MarsUndiscovered.Tests.ViewModels

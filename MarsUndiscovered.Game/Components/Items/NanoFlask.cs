@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace MarsUndiscovered.Game.Components
+﻿namespace MarsUndiscovered.Game.Components
 {
     public abstract class NanoFlask : ItemType
     {

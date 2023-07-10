@@ -1,17 +1,11 @@
-﻿using FrigidRogue.MonoGame.Core.Extensions;
-using GoRogue.MapGeneration;
+﻿using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ConnectionPointSelectors;
-using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.MapGeneration.Steps;
 using GoRogue.MapGeneration.TunnelCreators;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components.Maps;
-using NGenerics.DataStructures.General;
 using SadRogue.Primitives;
-using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
-using Point = SadRogue.Primitives.Point;
-using Rectangle = SadRogue.Primitives.Rectangle;
 
 namespace MarsUndiscovered.Game.Components.GenerationSteps
 {

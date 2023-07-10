@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using FrigidRogue.WaveFunctionCollapse;
+﻿using FrigidRogue.WaveFunctionCollapse;
 using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
 using GoRogue.MapGeneration;

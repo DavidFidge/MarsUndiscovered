@@ -110,7 +110,7 @@ namespace MarsUndiscovered.Tests.Commands
             var wallPosition = new Point(0, 1);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld, mapGenerator);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
 
             _gameWorld.Player.Position = new Point(0, 0);
 

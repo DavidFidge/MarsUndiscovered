@@ -13,14 +13,13 @@ namespace MarsUndiscovered.Tests.Components
             OriginalMapExitGenerator = originalMapExitGenerator;
         }
 
-        public MapExit SpawnMapExit(
+        public void SpawnMapExit(
             SpawnMapExitParams spawnMapExitParams,
             IGameObjectFactory gameObjectFactory,
             MapCollection maps,
             MapExitCollection mapExitCollection
         )
         {
-            return null;
         }
     }
 }

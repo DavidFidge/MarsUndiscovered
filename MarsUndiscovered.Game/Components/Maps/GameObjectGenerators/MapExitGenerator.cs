@@ -15,21 +15,23 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public class MapExitGenerator : BaseGameObjectGenerator, IMapExitGenerator
     {
-        public MapExit SpawnMapExit(
+        public void SpawnMapExit(
             SpawnMapExitParams spawnMapExitParams,
             IGameObjectFactory gameObjectFactory,
             MapCollection maps,
             MapExitCollection mapExitCollection
         )
         {
+            spawnMapExitParams.Result = null;
             var map = maps.Single(m => m.Id == spawnMapExitParams.MapId);
-
+            spawnMapExitParams.AssignMap(map);
+            
             MapExit destinationMapExit = null;
 
             if (spawnMapExitParams.DestinationMapExitId != null)
                 destinationMapExit = mapExitCollection[spawnMapExitParams.DestinationMapExitId.Value];
 
-            var position = spawnMapExitParams.Position != null
+            var position = spawnMapExitParams.Position != Point.None
                 ? GetPosition(spawnMapExitParams, map)
                 : GetPointOnWallAwayFromOtherExitPoints(map, mapExitCollection.Values);
 
@@ -66,7 +68,7 @@ namespace MarsUndiscovered.Game.Components.Maps
 
             Mediator.Publish(new MapTileChangedNotification(mapExit.Position));
 
-            return mapExit;
+            spawnMapExitParams.Result = mapExit;
         }
 
         private Point GetPointOnWallAwayFromOtherExitPoints(MarsMap map, IEnumerable<IGameObject> mapExitCollection)

@@ -1,5 +1,4 @@
 ﻿using FrigidRogue.MonoGame.Core.Graphics.Quads;
-using FrigidRogue.TestInfrastructure;
 using MarsUndiscovered.Graphics;
 using Microsoft.Xna.Framework;
 

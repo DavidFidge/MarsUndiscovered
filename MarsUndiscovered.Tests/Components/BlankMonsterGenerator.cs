@@ -13,14 +13,13 @@ namespace MarsUndiscovered.Tests.Components
             OriginalMonsterGenerator = originalMonsterGenerator;
         }
 
-        public Monster SpawnMonster(
+        public void SpawnMonster(
             SpawnMonsterParams spawnMonsterParams,
             IGameObjectFactory gameObjectFactory,
             MapCollection maps,
             MonsterCollection monsterCollection
         )
         {
-            return null;
         }
     }
 }

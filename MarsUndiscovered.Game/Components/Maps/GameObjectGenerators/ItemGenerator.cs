@@ -1,16 +1,18 @@
 ﻿using MarsUndiscovered.Game.Components.Factories;
+using MarsUndiscovered.Game.Components.Maps.MapPointChoiceRules;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Game.ViewMessages;
-using NGenerics.Sorting;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {
     public class ItemGenerator : BaseGameObjectGenerator, IItemGenerator
     {
-        public Item SpawnItem(SpawnItemParams spawnItemParams, IGameObjectFactory gameObjectFactory, MapCollection maps, ItemCollection itemCollection)
+        public void SpawnItem(SpawnItemParams spawnItemParams, IGameObjectFactory gameObjectFactory, MapCollection maps, ItemCollection itemCollection)
         {
+            spawnItemParams.Result = null;
+            
             if (spawnItemParams.ItemType == null)
-                return null;
+                return;
 
             var item = gameObjectFactory
                 .CreateGameObject<Item>()
@@ -19,8 +21,12 @@ namespace MarsUndiscovered.Game.Components.Maps
             if (spawnItemParams.Inventory == null)
             {
                 var map = maps.Single(m => m.Id == spawnItemParams.MapId);
+                spawnItemParams.MapPointChoiceRules.Add(new EmptyFloorRule());
+                spawnItemParams.AssignMap(map);
 
-                item.PositionedAt(GetPosition(spawnItemParams, map))
+                var position = GetPosition(spawnItemParams, map);
+                
+                item.PositionedAt(position)
                     .AddToMap(map);
             }
             else
@@ -33,7 +39,7 @@ namespace MarsUndiscovered.Game.Components.Maps
             if (spawnItemParams.Inventory == null)
                 Mediator.Publish(new MapTileChangedNotification(item.Position));
 
-            return item;
+            spawnItemParams.Result = item;
         }
     }
 }

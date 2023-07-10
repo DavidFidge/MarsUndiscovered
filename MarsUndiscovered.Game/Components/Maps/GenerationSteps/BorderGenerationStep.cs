@@ -1,6 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.MapGeneration;
-using GoRogue.MapGeneration.Steps;
 using MarsUndiscovered.Game.Components.Maps;
 using SadRogue.Primitives.GridViews;
 

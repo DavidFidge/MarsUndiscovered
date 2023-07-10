@@ -14,8 +14,11 @@ namespace MarsUndiscovered.Tests.Commands
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
+            var spawnItemParams = new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe);
+            _gameWorld.SpawnItem(spawnItemParams);
+           
+            _gameWorld.Player.Position = spawnItemParams.Result.Position;
+
             var item = _gameWorld.Items.First().Value;
 
             var commandFactory = Container.Resolve<ICommandFactory>();
@@ -47,9 +50,11 @@ namespace MarsUndiscovered.Tests.Commands
                 i++;
             }
 
-            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
+            var spawnItemParams = new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe);
+            _gameWorld.SpawnItem(spawnItemParams);
+            var item = spawnItemParams.Result;
 
-            var item = _gameWorld.Items.Values.ToList()[i];
+            _gameWorld.Player.Position = item.Position;
 
             var commandFactory = Container.Resolve<ICommandFactory>();
 
@@ -72,11 +77,15 @@ namespace MarsUndiscovered.Tests.Commands
             NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 1);
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 0)));
-            var monster = _gameWorld.Monsters.Values.First();
+            var spawnMonsterParams = new SpawnMonsterParams().WithBreed("Roach");
+            _gameWorld.SpawnMonster(spawnMonsterParams);
+            var monster = spawnMonsterParams.Result;
 
-            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(monster.Position));
-            var item = _gameWorld.Items.First().Value;
+            var spawnItemParams = new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe);
+            _gameWorld.SpawnItem(spawnItemParams);
+            var item = spawnItemParams.Result;
+            monster.Position = item.Position;
+            
             var commandFactory = Container.Resolve<ICommandFactory>();
 
             var pickUpItemCommand = commandFactory.CreatePickUpItemCommand(_gameWorld);

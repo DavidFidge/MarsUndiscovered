@@ -1,6 +1,9 @@
-﻿using GoRogue.Random;
+﻿using FrigidRogue.MonoGame.Core.Components.MapPointChoiceRules;
+using GoRogue.Random;
+using MarsUndiscovered.Game.Components.Maps.MapPointChoiceRules;
 using MarsUndiscovered.Game.Extensions;
 using SadRogue.Primitives;
+using ShaiRandom.Collections;
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components.Maps;
@@ -14,7 +17,7 @@ public class LevelGenerator : ILevelGenerator
     public IShipGenerator ShipGenerator { get; set; }
     public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
     public IMapExitGenerator MapExitGenerator { get; set; }
-
+    
     private void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
     {
         MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Monsters);
@@ -25,9 +28,10 @@ public class LevelGenerator : ILevelGenerator
         ItemGenerator.SpawnItem(spawnItemParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Items);
     }
 
-    private MapExit SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
+    private void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
     {
-        return MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
+        spawnMapExitParams.MapPointChoiceRules.Add(new WallAdjacentToFloorRule());
+        MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
     }
 
     private void CreateMapExitToNextMap(MarsMap map)
@@ -41,11 +45,13 @@ public class LevelGenerator : ILevelGenerator
 
     private void CreateMapExitToPreviousMap(MarsMap currentMap, MarsMap previousMap)
     {
-        var mapExit = SpawnMapExit(new SpawnMapExitParams()
+        var spawnMapExitParams = new SpawnMapExitParams()
             .OnMap(currentMap.Id)
-            .WithDirection(Direction.Up));
+            .WithDirection(Direction.Up);
+        
+        SpawnMapExit(spawnMapExitParams);
 
-        LinkMapExit(previousMap, mapExit);
+        LinkMapExit(previousMap, spawnMapExitParams.Result);
     }
 
     private void LinkMapExit(MarsMap previousMap, MapExit mapExit)
@@ -58,6 +64,7 @@ public class LevelGenerator : ILevelGenerator
     private MarsMap CreateLevel1()
     {
         MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, 70, 70);
+        
         _gameWorld.AddMapToGame(MapGenerator.Map);
         _gameWorld.Maps.CurrentMap = MapGenerator.Map;
         var map = MapGenerator.Map;
@@ -72,12 +79,12 @@ public class LevelGenerator : ILevelGenerator
             .MaxBy(m => m.Key)
             .ToList();
 
-        SpawnMapExit(
-            new SpawnMapExitParams()
-                .OnMap(map.Id)
-                .WithDirection(Direction.Down)
-                .AtFreeSpotNextTo(map, miningFacilityPoints)
-            );
+        var spawnMapExitParams = new SpawnMapExitParams()
+            .OnMap(map.Id)
+            .WithDirection(Direction.Down);
+        
+        spawnMapExitParams.MapPointChoiceRules.Add(new RestrictedSetRule(miningFacilityPoints));
+        SpawnMapExit(spawnMapExitParams);
 
         _gameWorld.Player = _gameWorld.GameObjectFactory
             .CreateGameObject<Player>()
@@ -87,7 +94,20 @@ public class LevelGenerator : ILevelGenerator
                  1))) // Start off underneath the ship, extra -1 for the current ship design as there's a blank space on the bottom line
             .AddToMap(map);
 
-        SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Black Ops Defender")).OnMap(map.Id));
+        var probabilityTable = new ProbabilityTable<MonsterSpawner>(
+            new List<(MonsterSpawner monsterSpawner, double weight)>
+            {
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Roach")), 1),
+                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("RepairDroid"), GlobalRandom.DefaultRNG, 2, 4), 1)
+            }
+        );
+            
+        probabilityTable.Random = GlobalRandom.DefaultRNG;
+        
+        for (var i = 0; i < 10; i++)
+            probabilityTable.NextItem().Spawn(map);
+        
+        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Black Ops Defender")).OnMap(map.Id));
         // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Black Ops Sniper")).OnMap(map.Id));
         // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Crazed Foreman")).OnMap(map.Id));
         // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Crazed Miner")).OnMap(map.Id));

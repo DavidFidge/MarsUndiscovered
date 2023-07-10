@@ -1,5 +1,4 @@
-﻿using FrigidRogue.TestInfrastructure;
-using MarsUndiscovered.Game.Components;
+﻿using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 using NSubstitute;
 

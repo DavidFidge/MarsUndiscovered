@@ -63,25 +63,6 @@ namespace MarsUndiscovered.Tests.Components
             gameWorld.ProgressiveWorldGeneration(null, 1, new WorldGenerationTypeParams(MapType.Outdoor));
         }
 
-        protected void NewGameWithNoMonstersNoItems(GameWorld gameWorld)
-        {
-            var blankMonsterGenerator = new BlankMonsterGenerator(
-                Container.Resolve<IMonsterGenerator>()
-            );
-
-            var blankItemGenerator = new BlankItemGenerator(
-                Container.Resolve<IItemGenerator>()
-            );
-
-            gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
-            gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
-
-            gameWorld.NewGame();
-
-            gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
-            gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
-        }
-
         protected void NewGameWithCustomMapNoMonstersNoItems(GameWorld gameWorld, IMapGenerator mapGenerator = null, ILevelGenerator levelGenerator = null)
         {
             mapGenerator ??= new BlankMapGenerator(gameWorld.GameObjectFactory);

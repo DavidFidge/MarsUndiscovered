@@ -9,7 +9,6 @@ using SadRogue.Primitives;
 using Serilog;
 using Serilog.Events;
 using Color = Microsoft.Xna.Framework.Color;
-using Path = System.IO.Path;
 
 namespace MarsUndiscovered.Game.Components
 {

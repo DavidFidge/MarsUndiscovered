@@ -3,6 +3,7 @@
     public class SpawnMonsterParams : BaseSpawnGameObjectParams
     {
         public Breed Breed { get; set; }
+        public Monster Result { get; set; }
     }
 
     public static class SpawnMonsterParamsFluentExtensions

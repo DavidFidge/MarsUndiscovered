@@ -1,8 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-
-using FrigidRogue.TestInfrastructure;
 using MarsUndiscovered.Game.Components;
 using NSubstitute;
 #pragma warning disable CS4014
