@@ -9,5 +9,6 @@ namespace MarsUndiscovered.Game.Components.SaveData
         public IList<IMemento<SeenTileSaveData>> SeenTiles { get; set; }
         public List<Point> WanderPath { get; set; }
         public bool UseGoalMapWander { get; set; }
+        public uint? LeaderId { get; set; }
     }
 }

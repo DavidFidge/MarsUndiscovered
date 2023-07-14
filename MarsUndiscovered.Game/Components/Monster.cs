@@ -12,6 +12,7 @@ using GoRogue.FOV;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
+
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
@@ -20,6 +21,7 @@ using MarsUndiscovered.Interfaces;
 
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components
@@ -37,6 +39,8 @@ namespace MarsUndiscovered.Game.Components
         public bool FriendlyFireAllies => Breed.FriendlyFireAllies;
         public bool UseGoalMapWander { get; set; } = false;
 
+        public Monster Leader => _leader;
+        
         private IFOV _fieldOfView;
         private ArrayView<SeenTile> _seenTiles;
         private ArrayView<GoalState> _goalStates;
@@ -48,6 +52,8 @@ namespace MarsUndiscovered.Game.Components
         private ICommandFactory _commandFactory;
         private SeenTile[] _seenTilesAfterLoad;
         private Path _wanderPath;
+        private Monster _leader;
+        private Path _toLeaderPath;
 
         public string GetInformation(Player player)
         {
@@ -162,6 +168,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.BreedName = Breed.NameWithoutSpaces;
             memento.State.WanderPath = _wanderPath?.Steps.ToList();
             memento.State.UseGoalMapWander = UseGoalMapWander;
+            memento.State.LeaderId = _leader?.ID;
 
             if (!IsDead)
             {
@@ -243,6 +250,7 @@ namespace MarsUndiscovered.Game.Components
                     .Condition("is not a turret", monster => !IsWallTurret)
                     .Selector("move selector")
                         .Subtree(HuntBehaviour())
+                        .Subtree(FollowLeader())
                         .Subtree(WanderUsingAStarBehavior())
                         .Subtree(WanderUsingGoalMapBehavior())
                     .End()
@@ -250,6 +258,70 @@ namespace MarsUndiscovered.Game.Components
                 .Build();
 
             return behaviour;
+        }
+
+        private IBehaviour<Monster> FollowLeader()
+        {
+            var behaviour = FluentBuilder.Create<Monster>()
+                .Sequence("follow leader")
+                .Condition("has leader", monster => _leader != null)
+                .Condition("leader is not dead", monster => !_leader.IsDead)
+                .Condition("is on same map", monster => _leader.CurrentMap.Equals(CurrentMap))
+                .Condition(
+                    "is not within 3 squares of leader",
+                    monster =>
+                    {
+                        var distance = Distance.Chebyshev.Calculate(monster.Position, _leader.Position);
+
+                        return distance > 3;
+                    }
+                )
+                .Condition(
+                    "is not blocked",
+                    monster =>
+                    {
+                        if (_toLeaderPath == null || _leader.Position != _toLeaderPath.End ||
+                            !_toLeaderPath.IsPointOnPathAndNotAtEnd(Position))
+                        {
+                            _toLeaderPath = CurrentMap.AStar.ShortestPath(Position, _leader.Position);
+                        }
+
+                        return _toLeaderPath != null && _toLeaderPath.Start != Point.None;
+                    }
+                )
+                .Do(
+                    "move towards leader",
+                    monster =>
+                    {
+                        var nextPointInPath = _toLeaderPath.GetStepAfterPointWithStart(Position);
+
+                        if (!CurrentMap.GameObjectCanMove(this, nextPointInPath))
+                        {
+                            // Path is blocked for some reason.  Do nothing this turn.
+                            _toLeaderPath = null;
+                            return BehaviourStatus.Succeeded;                
+                        }
+
+                        if (nextPointInPath == Point.None)
+                        {
+                            _toLeaderPath = null;
+                            return BehaviourStatus.Succeeded;
+                        }
+
+                        var nextDirection = Direction.GetDirection(Position, nextPointInPath);
+                        
+                        if (nextDirection != Direction.None)
+                        {
+                            var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
+                            _nextCommands.Add(moveCommand);
+                        }
+                        
+                        return BehaviourStatus.Succeeded;
+                    })
+                .End()
+                .Build();
+
+           return behaviour;
         }
 
         private IBehaviour<Monster> MeleeAttackBehaviour()
@@ -519,8 +591,8 @@ namespace MarsUndiscovered.Game.Components
         {
             var currentPathLocation = Point.None;
 
-            if (_wanderPath != null)
-                currentPathLocation = GetCurrentPointOnWanderPath();
+            if (_wanderPath.IsPointOnPathAndNotAtEnd(Position))
+                currentPathLocation = Position;
 
             if (currentPathLocation == Point.None)
             {
@@ -587,26 +659,6 @@ namespace MarsUndiscovered.Game.Components
             return wanderPath;
         }
 
-        private Point GetCurrentPointOnWanderPath()
-        {
-            Point currentPathLocation;
-            currentPathLocation = _wanderPath.StepsWithStart.DefaultIfEmpty(Point.None).FirstOrDefault(s => s == Position);
-
-            if (currentPathLocation == Point.None)
-            {
-                // Current position does not lie on the current wander path, force a new path to be found
-                currentPathLocation = Point.None;
-            }
-
-            if (_wanderPath != null && currentPathLocation == _wanderPath.End)
-            {
-                // Reached the destination, force a new point to be found
-                currentPathLocation = Point.None;
-            }
-
-            return currentPathLocation;
-        }
-
         private int GetRandomUnseenFloorTileIndex(List<int> checkedIndexes)
         {
             var randomUnseenTileIndex = GlobalRandom.DefaultRNG.RandomPosition(_seenTiles).ToIndex(_seenTiles.Width);
@@ -656,6 +708,11 @@ namespace MarsUndiscovered.Game.Components
         public Path GetWanderPath()
         {
             return _wanderPath;
+        }
+
+        public void SetLeader(Monster monster)
+        {
+            _leader = monster;
         }
     }
 }

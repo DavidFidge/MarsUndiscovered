@@ -28,13 +28,23 @@ public class VariableCountAndTypeMonsterSpawner : MonsterSpawner
     {
         var count = _random.NextInt(_min, _max + 1);
         var point = Point.None;
+
+        Monster leader = null;
             
         for (var i = 0; i < count; i++)
         {
             var breed = _probabilityTable.NextItem();
-                
-            var monster = SpawnMonster(new SpawnMonsterParams().AtPosition(point).WithBreed(breed).OnMap(map.Id));
-                
+
+            var spawnMonsterParams = new SpawnMonsterParams().AtPosition(point).WithBreed(breed).OnMap(map.Id);
+
+            if (leader != null)
+                spawnMonsterParams.WithLeader(leader.ID);
+            
+            var monster = SpawnMonster(spawnMonsterParams);
+
+            if (leader == null)
+                leader = monster;
+            
             point = monster.Position;
         }
     }

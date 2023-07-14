@@ -56,6 +56,31 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(_gameWorld.Player.IsWalkable, newGameWorld.Player.IsWalkable);
             Assert.AreEqual(_gameWorld.Player.IsTransparent, newGameWorld.Player.IsTransparent);
         }
+
+        [TestMethod]
+        public void Should_Save_Then_Load_Game_Monsters_With_Leaders()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            var monsterLeader = new SpawnMonsterParams().WithBreed("RepairDroid");
+            _gameWorld.SpawnMonster(monsterLeader);
+
+            var monster = new SpawnMonsterParams().WithBreed("RepairDroid").WithLeader(monsterLeader.Result.ID);
+            _gameWorld.SpawnMonster(monster);
+
+            Assert.IsNotNull(monster.Result.Leader);
+            Assert.AreEqual(monsterLeader.Result, monster.Result.Leader);
+            _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
+
+            // Act
+            var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            newGameWorld.LoadGame("TestShouldSaveThenLoad");
+
+            // Assert
+            Assert.AreNotSame(_gameWorld, newGameWorld);
+            Assert.IsNotNull(newGameWorld.Monsters[monster.Result.ID].Leader);
+            Assert.AreEqual(monsterLeader.Result.ID, newGameWorld.Monsters[monster.Result.ID].Leader.ID);
+        }
         
         [TestMethod]
         public void Should_Not_Reset_Seen_RadioCommsItems()

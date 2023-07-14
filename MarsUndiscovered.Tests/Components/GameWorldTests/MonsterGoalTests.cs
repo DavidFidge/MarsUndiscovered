@@ -537,6 +537,71 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(0, result1.Count);
             Assert.AreEqual(0, result2.Count);
         }
+        
+        [TestMethod]
+        public void Should_Move_Towards_Leader()
+        {
+            // Arrange
+            var lines = new[]
+            {
+                ".#.......",
+                "##.......",
+                ".........",
+                ".........",
+                "...#.#...",
+                "...#.#...",
+                "...#.#...",
+                "...#.#...",
+                "...#.#...",
+                ".........",
+                ".........",
+                ".........",
+                "........."
+            };
+
+            var mapTemplate = new MapTemplate(lines, 0, 0);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, mapTemplate.Where(m => m.Char == '#').Select(m => m.Point).ToList());
+
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            var monsterLeader = new SpawnMonsterParams()
+                .WithBreed("RepairDroid")
+                .AtPosition(new Point(4, 6));
+            
+            _gameWorld.SpawnMonster(monsterLeader);
+            
+            var monsterFollower1 = new SpawnMonsterParams()
+                .WithBreed("RepairDroid")
+                .WithLeader(monsterLeader.Result.ID)
+                .AtPosition(new Point(4, 0));
+            
+            _gameWorld.SpawnMonster(monsterFollower1);
+            
+            var monsterFollower2 = new SpawnMonsterParams()
+                .WithBreed("RepairDroid")
+                .WithLeader(monsterLeader.Result.ID)
+                .AtPosition(new Point(4, 12));
+            
+            _gameWorld.SpawnMonster(monsterFollower2);
+
+            var monster = _gameWorld.Monsters.Values.First();
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+
+            // Act
+            var result1 = monsterFollower1.Result.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result2 = monsterFollower2.Result.NextTurn(_gameWorld.CommandFactory).ToList();
+
+            // Assert
+            var moveCommand1 = (MoveCommand)result1[0];
+            var moveCommand2 = (MoveCommand)result2[0];
+            
+            Assert.AreEqual(new Point(4, 1), moveCommand1.FromTo.Item2);
+            Assert.AreEqual(new Point(4, 11), moveCommand2.FromTo.Item2);
+        }
        
         [TestMethod]
         public void Should_Move_Traverse_Out_Of_Caves()

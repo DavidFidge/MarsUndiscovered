@@ -539,6 +539,7 @@ namespace MarsUndiscovered.Game.Components
 
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
             SetLoadState(gameWorldSaveData);
+            
             GameTimeService.Start();
         }
 

@@ -25,6 +25,8 @@ public class MonsterSpawnerTests : BaseGameWorldIntegrationTests
 
         var monster = _gameWorld.Monsters.Single().Value;
         Assert.AreEqual(breed, monster.Breed);
+        
+        Assert.IsTrue(monster.Leader == null);
     }
     
     [TestMethod]
@@ -50,6 +52,9 @@ public class MonsterSpawnerTests : BaseGameWorldIntegrationTests
         Assert.AreEqual(2, monsters.Count);
         
         Assert.IsTrue(monsters.All(m => m.Breed == breed));
+        
+        var leader = monsters.Single(m => m.Leader == null);
+        Assert.IsTrue(monsters.Where(m => m.Leader != null).All(m => m.Leader == leader));
     }
     
     [TestMethod]
@@ -80,6 +85,9 @@ public class MonsterSpawnerTests : BaseGameWorldIntegrationTests
 
         Assert.IsTrue(monsters[0].Position.Neighbours().Contains(monsters[1].Position));
         Assert.IsTrue(monsters[1].Position.Neighbours().Contains(monsters[2].Position));
+    
+        var leader = monsters.Single(m => m.Leader == null);
+        Assert.IsTrue(monsters.Where(m => m.Leader != null).All(m => m.Leader == leader));
     }
 
     [TestMethod]
@@ -121,5 +129,8 @@ public class MonsterSpawnerTests : BaseGameWorldIntegrationTests
 
         Assert.IsTrue(monsters[0].Position.Neighbours().Contains(monsters[1].Position));
         Assert.IsTrue(monsters[1].Position.Neighbours().Contains(monsters[2].Position));
+    
+        var leader = monsters.Single(m => m.Leader == null);
+        Assert.IsTrue(monsters.Where(m => m.Leader != null).All(m => m.Leader == leader));
     }
 }
