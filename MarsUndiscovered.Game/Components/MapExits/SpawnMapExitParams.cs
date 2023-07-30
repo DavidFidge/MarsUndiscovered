@@ -1,4 +1,5 @@
-﻿using SadRogue.Primitives;
+﻿using System.Runtime.CompilerServices;
+using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Components
 {
@@ -8,6 +9,7 @@ namespace MarsUndiscovered.Game.Components
         public Point LandingPosition { get; set; } = Point.None;
         public Direction Direction { get; set; }
         public MapExit Result { get; set; }
+        public bool UseSeparation { get; set; }
     }
 
     public static class SpawnMapExitParamsFluentExtensions
@@ -23,6 +25,12 @@ namespace MarsUndiscovered.Game.Components
         {
             spawnMapExitParams.LandingPosition = landingPosition;
 
+            return spawnMapExitParams;
+        }
+
+        public static SpawnMapExitParams WithSeparationBetweenMapExitPoints(this SpawnMapExitParams spawnMapExitParams)
+        {
+            spawnMapExitParams.UseSeparation = true;
             return spawnMapExitParams;
         }
     }

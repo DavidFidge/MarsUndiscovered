@@ -1,3 +1,4 @@
+using FrigidRogue.MonoGame.Core.Components.MapPointChoiceRules;
 using FrigidRogue.MonoGame.Core.Extensions;
 
 using GoRogue.GameFramework;
@@ -31,10 +32,16 @@ namespace MarsUndiscovered.Game.Components.Maps
             if (spawnMapExitParams.DestinationMapExitId != null)
                 destinationMapExit = mapExitCollection[spawnMapExitParams.DestinationMapExitId.Value];
 
-            var position = spawnMapExitParams.Position != Point.None
+            if (spawnMapExitParams.UseSeparation)
+            {
+                var separationRule = GetPointsAwayFromOtherExitPoints(map, mapExitCollection.Values);
+                spawnMapExitParams.MapPointChoiceRules.Add(separationRule);
+            }
+            
+            var position = spawnMapExitParams.Position == Point.None
                 ? GetPosition(spawnMapExitParams, map)
-                : GetPointOnWallAwayFromOtherExitPoints(map, mapExitCollection.Values);
-
+                : spawnMapExitParams.Position;
+                
             var landingPosition = spawnMapExitParams.LandingPosition;
 
             if (landingPosition.Equals(Point.None))
@@ -71,37 +78,28 @@ namespace MarsUndiscovered.Game.Components.Maps
             spawnMapExitParams.Result = mapExit;
         }
 
-        private Point GetPointOnWallAwayFromOtherExitPoints(MarsMap map, IEnumerable<IGameObject> mapExitCollection)
+        public RestrictedSetRule GetPointsAwayFromOtherExitPoints(MarsMap map,
+            IEnumerable<IGameObject> mapExitCollection)
         {
-            var candidateWallPositions = map.Walls
-                .Where(w => !w.IsDestroyed)
-                .Select(w => w.Position)
-                .Where(w => map.GetTerrainAround<Floor>(w, AdjacencyRule.Cardinals).Any())
-                .ToList();
-
-            if (!candidateWallPositions.Any())
-            {
-                // This would mean the whole map is a wall or there's no walls at all. Pick any empty point on the floor.
-                candidateWallPositions.Add(GlobalRandom.DefaultRNG.RandomPosition(map, MapHelpers.EmptyPointOnFloor));
-            }
-
             var otherMapExitPoints = mapExitCollection
                 .Where(me => me.CurrentMap != null && me.CurrentMap.Equals(map))
                 .Select(me => me.Position)
                 .ToList();
 
+            var candidatePoints = map.Positions().ToList();
+
             if (otherMapExitPoints.Any())
             {
                 var splitPositionsByMagnitude =
-                    candidateWallPositions.SplitIntoPointsBySumMagnitudeAgainstTargetPoints(otherMapExitPoints);
+                    candidatePoints.SplitIntoPointsBySumMagnitudeAgainstTargetPoints(otherMapExitPoints,
+                        splittingPoint: 0.75f);
 
-                candidateWallPositions = splitPositionsByMagnitude.Item2.Any()
+                candidatePoints = splitPositionsByMagnitude.Item2.Any()
                     ? splitPositionsByMagnitude.Item2.ToList()
                     : splitPositionsByMagnitude.Item1.ToList();
             }
 
-            var position = candidateWallPositions[GlobalRandom.DefaultRNG.NextInt(0, candidateWallPositions.Count - 1)];
-            return position;
+            return new RestrictedSetRule(candidatePoints);
         }
     }
 }

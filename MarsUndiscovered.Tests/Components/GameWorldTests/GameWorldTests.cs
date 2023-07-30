@@ -15,12 +15,14 @@
         {
             // Act
             _gameWorld.NewGame();
-
+            
             // Assert
             Assert.IsNotNull(_gameWorld.CurrentMap);
             Assert.IsNotNull(_gameWorld.Player);
             Assert.IsNotNull(_gameWorld.GameObjects);
             Assert.IsTrue(_gameWorld.GameObjects.Count > 0);
+            Assert.IsTrue(_gameWorld.Monsters.Count > 0);
+            Assert.IsTrue(_gameWorld.Items.Count > 0);
             Assert.IsTrue(_gameWorld.MapExits.Count > 0);
             Assert.IsTrue(_gameWorld.Seed > 0);
             

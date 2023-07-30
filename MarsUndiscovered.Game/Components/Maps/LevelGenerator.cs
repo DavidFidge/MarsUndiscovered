@@ -11,13 +11,22 @@ namespace MarsUndiscovered.Game.Components.Maps;
 public class LevelGenerator : ILevelGenerator
 {
     private GameWorld _gameWorld;
+    private List<(ProbabilityTable<ItemType> itemType, double weight)> _itemTypeWeights;
+    private ProbabilityTable<ProbabilityTable<ItemType>> _itemTypeProbabilityTable;
+    private ProbabilityTable<ItemType> _gadgetProbabilityTable;
+    private List<(ItemType itemType, double weight)> _gadgetWeights;
+    private List<(ItemType itemType, double weight)> _weaponWeights;
+    private ProbabilityTable<ItemType> _weaponProbabilityTable;
+    private List<(ItemType itemType, double weight)> _nanoFlaskWeights;
+    private ProbabilityTable<ItemType> _nanoFlaskProbabilityTable;
     public IMapGenerator MapGenerator { get; set; }
     public IMonsterGenerator MonsterGenerator { get; set; }
     public IItemGenerator ItemGenerator { get; set; }
     public IShipGenerator ShipGenerator { get; set; }
     public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
     public IMapExitGenerator MapExitGenerator { get; set; }
-    
+
+    public IEnhancedRandom RNG { get; set; }
     private void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
     {
         MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Monsters);
@@ -31,6 +40,14 @@ public class LevelGenerator : ILevelGenerator
     private void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
     {
         spawnMapExitParams.MapPointChoiceRules.Add(new WallAdjacentToFloorRule());
+        spawnMapExitParams.WithSeparationBetweenMapExitPoints();
+        
+        MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
+    }
+    
+    private void SpawnMapExitWithoutDefaultRules(SpawnMapExitParams spawnMapExitParams)
+    {
+        spawnMapExitParams.MapPointChoiceRules.Add(new EmptyFloorRule());
         MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
     }
 
@@ -72,19 +89,20 @@ public class LevelGenerator : ILevelGenerator
         ShipGenerator.CreateShip(_gameWorld.GameObjectFactory, map, _gameWorld.Ships);
         MiningFacilityGenerator.CreateMiningFacility(_gameWorld.GameObjectFactory, map, _gameWorld.MiningFacilities);
 
-        var miningFacilityPoints = _gameWorld.MiningFacilities.Values
+        var pointsNextToBottomOfMiningFacility = _gameWorld.MiningFacilities.Values
             .Where(m => ((MarsMap)m.CurrentMap).Id == map.Id)
             .Select(m => m.Position)
             .GroupBy(m => m.Y)
             .MaxBy(m => m.Key)
+            .Select(m => new Point(m.X, m.Y + 1))
             .ToList();
 
         var spawnMapExitParams = new SpawnMapExitParams()
             .OnMap(map.Id)
             .WithDirection(Direction.Down);
         
-        spawnMapExitParams.MapPointChoiceRules.Add(new RestrictedSetRule(miningFacilityPoints));
-        SpawnMapExit(spawnMapExitParams);
+        spawnMapExitParams.MapPointChoiceRules.Add(new RestrictedSetRule(pointsNextToBottomOfMiningFacility));
+        SpawnMapExitWithoutDefaultRules(spawnMapExitParams);
 
         _gameWorld.Player = _gameWorld.GameObjectFactory
             .CreateGameObject<Player>()
@@ -98,14 +116,17 @@ public class LevelGenerator : ILevelGenerator
             new List<(MonsterSpawner monsterSpawner, double weight)>
             {
                 (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Roach")), 1),
-                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("RepairDroid"), GlobalRandom.DefaultRNG, 2, 4), 1)
+                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("RepairDroid"), RNG, 2, 4), 1)
             }
         );
             
-        probabilityTable.Random = GlobalRandom.DefaultRNG;
-        
+        probabilityTable.Random = RNG;
+
         for (var i = 0; i < 10; i++)
             probabilityTable.NextItem().Spawn(map);
+
+        var itemsToPlace = RNG.NextInt(5, 10);
+        SpawnItems(itemsToPlace, map);
         
         // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Black Ops Defender")).OnMap(map.Id));
         // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Black Ops Sniper")).OnMap(map.Id));
@@ -130,18 +151,21 @@ public class LevelGenerator : ILevelGenerator
         // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Yendorian Grunt")).OnMap(map.Id));
         // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Yendorian Master")).OnMap(map.Id));
         
-        SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).OnMap(map.Id));
-        SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).OnMap(map.Id));
-        SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).OnMap(map.Id));
-        SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).OnMap(map.Id));
-        SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).OnMap(map.Id));
-        SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).OnMap(map.Id));
-        SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).OnMap(map.Id));
-        SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).OnMap(map.Id));
-        SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).OnMap(map.Id));
-        SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).OnMap(map.Id));
-
         return map;
+    }
+
+    private void SpawnItems(int itemsToPlace, MarsMap map)
+    {
+        for (var i = 0; i < itemsToPlace; i++)
+        {
+            var itemType = _itemTypeProbabilityTable.NextItem().NextItem();
+
+            var spawnItemParams = new SpawnItemParams()
+                .OnMap(map.Id)
+                .WithItemType(itemType);
+
+            SpawnItem(spawnItemParams);
+        }
     }
 
     private MarsMap CreateLevel2(MarsMap previousMap)
@@ -154,6 +178,9 @@ public class LevelGenerator : ILevelGenerator
         CreateMapExitToPreviousMap(map, previousMap);
         CreateMapExitToNextMap(map);
 
+        var itemsToPlace = RNG.NextInt(5, 10);
+        SpawnItems(itemsToPlace, map);
+        
         return map;
     }
 
@@ -165,17 +192,55 @@ public class LevelGenerator : ILevelGenerator
         map.Level = 3;
 
         SpawnItem(new SpawnItemParams().OnMap(map.Id).WithItemType(ItemType.ShipRepairParts));
-
+        
         CreateMapExitToPreviousMap(map, previousMap);
-
+        
+        var itemsToPlace = RNG.NextInt(5, 10);
+        SpawnItems(itemsToPlace, map);
+        
         return map;
     }
 
     public void CreateLevels()
     {
+        SetupItemWeightTable();
         var level1Map = CreateLevel1();
         var level2Map = CreateLevel2(level1Map);
         CreateLevel3(level2Map);
+    }
+
+    private void SetupItemWeightTable()
+    {
+        _gadgetWeights = new List<(ItemType itemType, double weight)>
+        {
+            (ItemType.ShieldGenerator, 1) 
+        };
+
+        _gadgetProbabilityTable = new ProbabilityTable<ItemType>(_gadgetWeights);
+
+        _weaponWeights = new List<(ItemType itemType, double weight)>
+        {
+            (ItemType.IronSpike, 1), 
+            (ItemType.MagnesiumPipe, 1) 
+        };
+
+        _weaponProbabilityTable = new ProbabilityTable<ItemType>(_weaponWeights);
+
+        _nanoFlaskWeights = new List<(ItemType itemType, double weight)>
+        {
+            (ItemType.HealingBots, 1) 
+        };
+
+        _nanoFlaskProbabilityTable = new ProbabilityTable<ItemType>(_nanoFlaskWeights);
+        
+        _itemTypeWeights = new List<(ProbabilityTable<ItemType> itemType, double weight)>
+        {
+            (_gadgetProbabilityTable, 1), 
+            (_weaponProbabilityTable, 1), 
+            (_nanoFlaskProbabilityTable, 1)
+        };
+        
+        _itemTypeProbabilityTable = new ProbabilityTable<ProbabilityTable<ItemType>>(_itemTypeWeights);
     }
 
     public ProgressiveWorldGenerationResult CreateProgressive(ulong seed, int step, WorldGenerationTypeParams worldGenerationTypeParams)
@@ -201,7 +266,7 @@ public class LevelGenerator : ILevelGenerator
 
         _gameWorld.Player = _gameWorld.GameObjectFactory
             .CreateGameObject<Player>()
-            .PositionedAt(GlobalRandom.DefaultRNG.RandomPosition(MapGenerator.Map, MapHelpers.EmptyPointOnFloor))
+            .PositionedAt(RNG.RandomPosition(MapGenerator.Map, MapHelpers.EmptyPointOnFloor))
             .AddToMap(MapGenerator.Map);
 
         return new ProgressiveWorldGenerationResult { Seed = seed, IsFinalStep = true };
@@ -210,5 +275,6 @@ public class LevelGenerator : ILevelGenerator
     public void Initialise(GameWorld gameWorld)
     {
         _gameWorld = gameWorld;
+        RNG = GlobalRandom.DefaultRNG;
     }
 }
