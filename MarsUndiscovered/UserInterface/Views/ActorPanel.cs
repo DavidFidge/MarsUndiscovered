@@ -10,6 +10,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel Panel;
         protected HealthBar HealthBar;
         protected Label Name;
+        protected Label Status;
         public ActorStatus ActorStatus { get; private set; }
 
         public ActorPanel()
@@ -28,8 +29,14 @@ namespace MarsUndiscovered.UserInterface.Views
                 .WidthOfContainer()
                 .Anchor(Anchor.Auto);
 
+            Status = new Label()
+                .NoPadding()
+                .WidthOfContainer()
+                .Anchor(Anchor.Auto);
+            
             Panel.AddChild(Name);
             HealthBar.AddAsChildTo(Panel);
+            Panel.AddChild(Status);
         }
 
         public void Update(ActorStatus actorStatus)

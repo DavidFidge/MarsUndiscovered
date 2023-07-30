@@ -14,6 +14,7 @@ using GoRogue.Pathing;
 using GoRogue.Random;
 
 using MarsUndiscovered.Game.Commands;
+using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Game.Extensions;
@@ -54,6 +55,7 @@ namespace MarsUndiscovered.Game.Components
         private Path _wanderPath;
         private Monster _leader;
         private Path _toLeaderPath;
+        private string _behaviour;
 
         public string GetInformation(Player player)
         {
@@ -110,6 +112,21 @@ namespace MarsUndiscovered.Game.Components
             return this;
         }
 
+        public MonsterStatus GetMonsterStatus(Player player)
+        {
+            var monsterStatus = new MonsterStatus
+            {
+                ID = ID,
+                DistanceFromPlayer = CurrentMap.DistanceMeasurement.Calculate(Position, player.Position),
+                Health = Health,
+                MaxHealth = MaxHealth,
+                Name = Name,
+                Behaviour = _behaviour
+            };
+
+            return monsterStatus;
+        }
+
         public Monster AddToMap(MarsMap marsMap)
         {
             CreateGoalStates(marsMap);
@@ -141,6 +158,7 @@ namespace MarsUndiscovered.Game.Components
             Breed = Breed.Breeds[memento.State.BreedName];
             UseGoalMapWander = memento.State.UseGoalMapWander;
             _wanderPath = memento.State.WanderPath != null ? new Path(memento.State.WanderPath) : null;
+            _behaviour = memento.State.Behaviour;
             
             if (!IsDead)
             {
@@ -169,6 +187,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.WanderPath = _wanderPath?.Steps.ToList();
             memento.State.UseGoalMapWander = UseGoalMapWander;
             memento.State.LeaderId = _leader?.ID;
+            memento.State.Behaviour = _behaviour;
 
             if (!IsDead)
             {
@@ -338,6 +357,8 @@ namespace MarsUndiscovered.Game.Components
                         attackCommand.Initialise(this, GameWorld.Player);
                         _nextCommands.Add(attackCommand);
 
+                        _behaviour = "Attacking";
+                        
                         return BehaviourStatus.Succeeded;
                     }
                 )
@@ -379,6 +400,8 @@ namespace MarsUndiscovered.Game.Components
 
             _nextCommands.Add(lightningAttackCommand);
 
+            _behaviour = "Attacking";
+
             return BehaviourStatus.Succeeded;
         }
 
@@ -411,6 +434,8 @@ namespace MarsUndiscovered.Game.Components
                                 var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
                                 _nextCommands.Add(moveCommand);
                             }
+
+                            _behaviour = "Wandering";
 
                             return BehaviourStatus.Succeeded;
                         })
@@ -450,6 +475,8 @@ namespace MarsUndiscovered.Game.Components
                             var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
                             _nextCommands.Add(moveCommand);
 
+                            _behaviour = "Wandering";
+
                             return BehaviourStatus.Succeeded;
                         }
                     )
@@ -475,6 +502,8 @@ namespace MarsUndiscovered.Game.Components
 
                             var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
                             _nextCommands.Add(moveCommand);
+                         
+                            _behaviour = "Hunting";
 
                             return BehaviourStatus.Succeeded;
                         }
@@ -641,7 +670,7 @@ namespace MarsUndiscovered.Game.Components
             for (var i = 0; i < findPathToUnseenFloorTileTries; i++)
             {
                 var randomUnseenTileIndex = GetRandomUnseenFloorTileIndex(checkedIndexes);
-
+                
                 if (randomUnseenTileIndex == -1)
                 {
                     return null;
