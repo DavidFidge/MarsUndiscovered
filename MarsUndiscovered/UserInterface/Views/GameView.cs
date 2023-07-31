@@ -347,6 +347,7 @@ namespace MarsUndiscovered.UserInterface.Views
             
             if (_radioCommsItems.Any())
             {
+                _isAutoExploring = false;
                 _isWaitingForRadioComms = true;
                 GameInputService?.ChangeInput(_gameViewRadioCommsMouseHandler, _radioCommsKeyboardHandler);
                 ProcessNextRadioComm();
