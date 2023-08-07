@@ -13,7 +13,10 @@ namespace MarsUndiscovered.Tests.Commands
         public void ChangeMapCommand_Should_Change_Map()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            var wallPosition = new Point(1, 0);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+
+            NewGameWithCustomMapNoMonstersNoItems(_gameWorld, mapGenerator);
             var oldMap = _gameWorld.CurrentMap;
             _gameWorld.Player.Position = new Point(0, 0);
 

@@ -26,6 +26,7 @@ namespace MarsUndiscovered.Game.Components
         public Attack MeleeAttack { get; protected set; } = null;
         public Attack LineAttack { get; protected set; } = null;
         public LightningAttack LightningAttack { get; protected set; } = null;
+        public int DetectionRange { get; set; }
 
         static Breed()
         {
@@ -42,6 +43,7 @@ namespace MarsUndiscovered.Game.Components
                 breed.Name = csvBreed.Name.ToString();
                 breed.NameWithoutSpaces = breed.Name.RemoveSpaces();
                 breed.Description = csvBreed.Description.ToString();
+                breed.DetectionRange = int.Parse(csvBreed.DetectionRange.ToString());
                 
                 var bytes = int.Parse(csvBreed.CodePage437Character.ToString(), NumberStyles.HexNumber);
                 

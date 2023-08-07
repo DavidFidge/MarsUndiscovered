@@ -1,5 +1,6 @@
 ﻿using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
+using MarsUndiscovered.Game.Components.Maps.MapPointChoiceRules;
 using MarsUndiscovered.Game.Extensions;
 using SadRogue.Primitives;
 
@@ -75,6 +76,9 @@ namespace MarsUndiscovered.Tests.Components
 
         private MapExit SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
         {
+            spawnMapExitParams.MapPointChoiceRules.Add(new WallAdjacentToFloorRule());
+            spawnMapExitParams.WithSeparationBetweenMapExitPoints();
+
             MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
             return spawnMapExitParams.Result;
         }
