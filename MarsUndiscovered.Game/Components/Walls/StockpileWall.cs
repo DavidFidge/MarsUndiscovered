@@ -8,6 +8,11 @@ public class StockpileWall : WallType
     private Color _foregroundColour = Color.Black;
     private Color? _backgroundColour = new Color(0xFF244BB6);
 
+    public StockpileWall()
+    {
+        IsTransparent = true;
+    }
+    
     public override char AsciiCharacter
     {
         get => _asciiCharacter;

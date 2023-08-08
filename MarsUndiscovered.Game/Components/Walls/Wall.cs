@@ -8,7 +8,20 @@ namespace MarsUndiscovered.Game.Components
 {
     public class Wall : Terrain, IMementoState<WallSaveData>
     {
-        public WallType WallType { get; set; }
+        private WallType _wallType;
+        public WallType WallType
+        {
+            get
+            {
+                return _wallType;
+            }
+            set
+            {
+                _wallType = value;
+                IsTransparent = _wallType.IsTransparent;
+            }
+        }
+        
         public Wall(IGameWorld gameWorld, uint id) : base(gameWorld, id, false, false)
         {
         }

@@ -8,6 +8,8 @@ public abstract class WallType : GameObjectType
     public static RockWall RockWall = new RockWall();
     public static StockpileWall StockpileWall = new StockpileWall();
 
+    public bool IsTransparent { get; set; } = false;
+    
     public override string Name
     {
         get => GetType().Name;
