@@ -13,7 +13,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void PickUpItemCommand_On_Item_Should_Pick_Up_Item()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             var spawnItemParams = new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe);
             _gameWorld.SpawnItem(spawnItemParams);
            
@@ -39,7 +39,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void PickUpItemCommand_On_Item_Should_Not_Pick_Up_Item_If_Inventory_Is_Full()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
 
             var i = 0;
@@ -74,7 +74,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void PickUpItemCommand_On_Item_Should_Not_Pick_Up_Item_If_Not_Player()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 1);
 
             var spawnMonsterParams = new SpawnMonsterParams().WithBreed("Roach");

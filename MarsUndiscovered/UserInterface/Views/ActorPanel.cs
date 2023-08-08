@@ -5,14 +5,19 @@ using MarsUndiscovered.Game.Components.Dto;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public abstract class ActorPanel : BaseCompositeEntity
+    public abstract class ActorPanel<T> : BaseCompositeEntity where T : ActorStatus
     {
         protected Panel Panel;
         protected HealthBar HealthBar;
         protected Label Name;
-        public ActorStatus ActorStatus { get; private set; }
+        public T ActorStatus { get; private set; }
 
         public ActorPanel()
+        {
+            CreatePanels();
+        }
+
+        public void CreatePanels()
         {
             Panel = new Panel()
                 .SkinNone()
@@ -27,12 +32,12 @@ namespace MarsUndiscovered.UserInterface.Views
                 .NoPadding()
                 .WidthOfContainer()
                 .Anchor(Anchor.Auto);
-
+            
             Panel.AddChild(Name);
             HealthBar.AddAsChildTo(Panel);
         }
 
-        public void Update(ActorStatus actorStatus)
+        public virtual void Update(T actorStatus)
         {
             ActorStatus = actorStatus;
             Name.Text = actorStatus.Name;

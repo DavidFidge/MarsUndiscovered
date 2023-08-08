@@ -14,6 +14,7 @@ using GoRogue.Pathing;
 using GoRogue.Random;
 
 using MarsUndiscovered.Game.Commands;
+using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Game.Extensions;
@@ -35,6 +36,7 @@ namespace MarsUndiscovered.Game.Components
         public override Attack LineAttack => Breed.LineAttack;
         public override LightningAttack LightningAttack => Breed.LightningAttack;
         public override bool IsWallTurret => Breed.IsWallTurret;
+        public int DetectionRange => Breed.DetectionRange;
 
         public bool FriendlyFireAllies => Breed.FriendlyFireAllies;
         public bool UseGoalMapWander { get; set; } = false;
@@ -54,6 +56,7 @@ namespace MarsUndiscovered.Game.Components
         private Path _wanderPath;
         private Monster _leader;
         private Path _toLeaderPath;
+        private MonsterState _monsterState;
 
         public string GetInformation(Player player)
         {
@@ -110,6 +113,21 @@ namespace MarsUndiscovered.Game.Components
             return this;
         }
 
+        public MonsterStatus GetMonsterStatus(Player player)
+        {
+            var monsterStatus = new MonsterStatus
+            {
+                ID = ID,
+                DistanceFromPlayer = CurrentMap.DistanceMeasurement.Calculate(Position, player.Position),
+                Health = Health,
+                MaxHealth = MaxHealth,
+                Name = Name,
+                Behaviour = _monsterState.ToString().ToSeparateWords()
+            };
+
+            return monsterStatus;
+        }
+
         public Monster AddToMap(MarsMap marsMap)
         {
             CreateGoalStates(marsMap);
@@ -141,6 +159,7 @@ namespace MarsUndiscovered.Game.Components
             Breed = Breed.Breeds[memento.State.BreedName];
             UseGoalMapWander = memento.State.UseGoalMapWander;
             _wanderPath = memento.State.WanderPath != null ? new Path(memento.State.WanderPath) : null;
+            _monsterState = memento.State.MonsterState;
             
             if (!IsDead)
             {
@@ -169,6 +188,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.WanderPath = _wanderPath?.Steps.ToList();
             memento.State.UseGoalMapWander = UseGoalMapWander;
             memento.State.LeaderId = _leader?.ID;
+            memento.State.MonsterState = _monsterState;
 
             if (!IsDead)
             {
@@ -295,6 +315,8 @@ namespace MarsUndiscovered.Game.Components
                     {
                         var nextPointInPath = _toLeaderPath.GetStepAfterPointWithStart(Position);
 
+                        _monsterState = MonsterState.FollowingLeader;
+
                         if (!CurrentMap.GameObjectCanMove(this, nextPointInPath))
                         {
                             // Path is blocked for some reason.  Do nothing this turn.
@@ -396,7 +418,9 @@ namespace MarsUndiscovered.Game.Components
                                 if (CurrentMap.GameObjectCanMove(this, Position + direction))
                                     return true;
                             }
-
+                            
+                            _monsterState = MonsterState.Idle;
+                            
                             return false;
                         }
                     )
@@ -412,6 +436,7 @@ namespace MarsUndiscovered.Game.Components
                                 _nextCommands.Add(moveCommand);
                             }
 
+                            _monsterState = MonsterState.Wandering;
                             return BehaviourStatus.Succeeded;
                         })
                 .End()
@@ -435,6 +460,8 @@ namespace MarsUndiscovered.Game.Components
                                     return true;
                             }
 
+                            _monsterState = MonsterState.Idle;
+
                             return false;
                         }
                     )
@@ -450,6 +477,7 @@ namespace MarsUndiscovered.Game.Components
                             var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
                             _nextCommands.Add(moveCommand);
 
+                            _monsterState = MonsterState.Wandering;
                             return BehaviourStatus.Succeeded;
                         }
                     )
@@ -464,6 +492,21 @@ namespace MarsUndiscovered.Game.Components
             var behaviour = FluentBuilder.Create<Monster>()
                 .Sequence("hunt")
                     .Condition("player in field of view", monster => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
+                    .Condition("player has been detected", monster =>
+                    {
+                        if (_monsterState == MonsterState.Hunting)
+                            return true;
+                        
+                        var distance = CurrentMap.DistanceMeasurement.Calculate(Position, GameWorld.Player.Position);
+                        
+                        if (distance <= DetectionRange)
+                        {
+                            if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
+                                _monsterState = MonsterState.Hunting;
+                        }
+
+                        return _monsterState == MonsterState.Hunting;
+                    })
                     .Do(
                         "move towards player",
                         monster =>
@@ -475,7 +518,7 @@ namespace MarsUndiscovered.Game.Components
 
                             var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
                             _nextCommands.Add(moveCommand);
-
+                         
                             return BehaviourStatus.Succeeded;
                         }
                     )
@@ -641,7 +684,7 @@ namespace MarsUndiscovered.Game.Components
             for (var i = 0; i < findPathToUnseenFloorTileTries; i++)
             {
                 var randomUnseenTileIndex = GetRandomUnseenFloorTileIndex(checkedIndexes);
-
+                
                 if (randomUnseenTileIndex == -1)
                 {
                     return null;
@@ -713,6 +756,11 @@ namespace MarsUndiscovered.Game.Components
         public void SetLeader(Monster monster)
         {
             _leader = monster;
+        }
+
+        public void SetMonsterState(MonsterState monsterState)
+        {
+            _monsterState = monsterState;
         }
     }
 }

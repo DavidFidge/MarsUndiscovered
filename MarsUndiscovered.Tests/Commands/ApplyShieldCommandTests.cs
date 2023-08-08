@@ -13,7 +13,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyShieldCommand_Should_Add_A_Shield_To_Player_Overwriting_Existing_Shield()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator).InInventory(_gameWorld.Inventory));
             var item = _gameWorld.Items.First().Value;

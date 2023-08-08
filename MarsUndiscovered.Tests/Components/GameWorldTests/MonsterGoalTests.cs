@@ -736,7 +736,12 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             _gameWorld.Player.Position = new Point(2, 0);
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 4)));
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(2, 4))
+                .WithState(MonsterState.Hunting);
+            
+            _gameWorld.SpawnMonster(spawnMonsterParams);
 
             var monster = _gameWorld.Monsters.Values.First();
 
@@ -782,7 +787,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Monsters_Should_Stop_Acting_When_Player_Dies()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));

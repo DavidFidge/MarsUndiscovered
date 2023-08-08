@@ -13,7 +13,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyHealingBotsCommand_Should_Heal_Player_And_Increase_Max_Health()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).InInventory(_gameWorld.Inventory));
             var item = _gameWorld.Items.First().Value;

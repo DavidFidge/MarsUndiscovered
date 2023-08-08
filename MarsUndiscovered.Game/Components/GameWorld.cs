@@ -610,14 +610,7 @@ namespace MarsUndiscovered.Game.Components
                 .Select(
                     m =>
                     {
-                        var monsterStatus = new MonsterStatus
-                        {
-                            ID = m.ID,
-                            DistanceFromPlayer = CurrentMap.DistanceMeasurement.Calculate(m.Position, Player.Position),
-                            Health = m.Health,
-                            MaxHealth = m.MaxHealth,
-                            Name = m.Name
-                        };
+                        var monsterStatus = m.GetMonsterStatus(Player);
 
                         return monsterStatus;
                     }

@@ -14,7 +14,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void LineAttackCommand_Should_Deduct_Health_Of_Targets_Along_A_Path()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
@@ -52,7 +52,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void LineAttackCommand_Should_Deduct_Health_Of_Target_When_Target_Is_Two_Spaces_Away()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld);
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 2)));
