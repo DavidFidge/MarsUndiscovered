@@ -9,24 +9,20 @@ namespace MarsUndiscovered.UserInterface.Input
 {
     public class GameViewKeyboardHandler : BaseGameViewKeyboardHandler
     {
+        private readonly Options _options;
         private Keys? _ctrlArrowKey = null;
 
-        public GameViewKeyboardHandler() : base()
+        public GameViewKeyboardHandler(Options options) : base()
         {
+            _options = options;
         }
 
         public override void HandleKeyboardKeyDown(Keys[] keysDown, Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
             base.HandleKeyboardKeyDown(keysDown, keyInFocus, keyboardModifier);
 
-            if (ActionMap.ActionIs<ToggleFpsRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new ToggleFpsRequest());
-
             if (ActionMap.ActionIs<OpenInGameOptionsRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new OpenInGameOptionsRequest());
-
-            if (ActionMap.ActionIs<OpenConsoleRequest>(keyInFocus, keyboardModifier))
-                Mediator.Send(new OpenConsoleRequest());
 
             if (ActionMap.ActionIs<OpenGameInventoryRequest>(keyInFocus, keyboardModifier))
             {
@@ -56,6 +52,21 @@ namespace MarsUndiscovered.UserInterface.Input
             if (ActionMap.ActionIs<AutoExploreRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new AutoExploreRequest());
 
+            if (_options.WizardMode)
+            {
+                if (ActionMap.ActionIs<WizardModeNextLevelRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new WizardModeNextLevelRequest());
+                
+                if (ActionMap.ActionIs<WizardModePreviousLevelRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new WizardModePreviousLevelRequest());
+                
+                if (ActionMap.ActionIs<ToggleFpsRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new ToggleFpsRequest());
+                
+                if (ActionMap.ActionIs<OpenConsoleRequest>(keyInFocus, keyboardModifier))
+                    Mediator.Send(new OpenConsoleRequest());
+            }
+            
             ProcessMovement(keyInFocus, keyboardModifier);
         }
 

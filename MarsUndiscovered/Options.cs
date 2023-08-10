@@ -12,5 +12,8 @@ namespace MarsUndiscovered
         
         [Option('w', "WorldBuilder", Required = false, HelpText = "Goes to world builder immediately, skipping the title screen")]
         public bool WorldBuilder { get; set; }
+
+        [Option( "WizardMode", Required = false, HelpText = "Start in wizard mode")]
+        public bool WizardMode { get; set; }
     }
 }

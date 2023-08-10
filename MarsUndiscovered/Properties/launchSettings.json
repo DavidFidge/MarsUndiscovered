@@ -2,19 +2,19 @@
   "profiles": {
     "World Builder": {
       "commandName": "Project",
-      "commandLineArgs": "--WorldBuilder"
+      "commandLineArgs": "--WorldBuilder --WizardMode"
     },
     "Mars Undiscovered": {
       "commandName": "Project",
-      "commandLineArgs": ""
+      "commandLineArgs": "--WizardMode"
     },    
     "New Game": {
       "commandName": "Project",
-      "commandLineArgs": "--NewGame"
+      "commandLineArgs": "--NewGame --WizardMode"
     },
     "New Game Skip Comms": {
       "commandName": "Project",
-      "commandLineArgs": "--NewGame --SkipRadioComms"
+      "commandLineArgs": "--NewGame --SkipRadioComms --WizardMode"
     }
   }
 }

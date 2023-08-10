@@ -8,6 +8,7 @@ using MarsUndiscovered.Interfaces;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
@@ -418,6 +419,25 @@ namespace MarsUndiscovered.Game.Components
         public IGridView<double?> GetGoalMap()
         {
             return Monsters.First().Value.GetGoalMap();
+        }
+
+        public IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange)
+        {
+            var mapExit = MapExits.ForMap(CurrentMap)
+                .Where(e =>
+                    forceLevelChange == Components.ForceLevelChange.NextLevel
+                        ? e.Destination.CurrentMap.MarsMap().Level > CurrentMap.Level 
+                        : e.Destination.CurrentMap.MarsMap().Level < CurrentMap.Level)
+                .OrderBy(exit => exit.ID)
+                .FirstOrDefault();
+
+            if (mapExit == null)
+                return new List<CommandResult>();
+            
+            var command = new ChangeMapCommand(this);
+            command.Initialise(Player, mapExit);
+            
+            return ExecuteCommand(command).ToList();
         }
 
         public void CreateWall(Point position)

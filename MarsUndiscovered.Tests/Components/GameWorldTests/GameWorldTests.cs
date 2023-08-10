@@ -1,4 +1,6 @@
-﻿namespace MarsUndiscovered.Tests.Components.GameWorldTests
+﻿using MarsUndiscovered.Game.Components;
+
+namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
     [TestClass]
     public class GameWorldTests : BaseGameWorldIntegrationTests
@@ -32,6 +34,56 @@
             Assert.IsTrue(_gameWorld.CurrentMap.Width < 200);
             Assert.IsTrue(_gameWorld.CurrentMap.Height >= 10);
             Assert.IsTrue(_gameWorld.CurrentMap.Height < 200);
+        }
+        
+        [TestMethod]
+        public void Should_Force_Move()
+        {
+            // Arrange
+            _gameWorld.NewGame();
+
+            // Act
+            _gameWorld.ForceLevelChange(ForceLevelChange.NextLevel);
+            
+            // Assert
+            Assert.IsNotNull(_gameWorld.CurrentMap);
+            Assert.AreEqual(2, _gameWorld.CurrentMap.Level);
+            Assert.IsNotNull(_gameWorld.Player);
+            Assert.AreEqual(_gameWorld.Player.CurrentMap, _gameWorld.CurrentMap);
+        }
+        
+        [TestMethod]
+        public void Should_Force_Move_Up()
+        {
+            // Arrange
+            _gameWorld.NewGame();
+
+            // Act
+            _gameWorld.ForceLevelChange(ForceLevelChange.NextLevel);
+            _gameWorld.ForceLevelChange(ForceLevelChange.NextLevel);
+            _gameWorld.ForceLevelChange(ForceLevelChange.PreviousLevel);
+            
+            // Assert
+            Assert.IsNotNull(_gameWorld.CurrentMap);
+            Assert.AreEqual(2, _gameWorld.CurrentMap.Level);
+            Assert.IsNotNull(_gameWorld.Player);
+            Assert.AreEqual(_gameWorld.Player.CurrentMap, _gameWorld.CurrentMap);
+        }
+        
+        [TestMethod]
+        public void Should_Stay_On_Same_Map_When_Force_Move_Previous_On_Level_1()
+        {
+            // Arrange
+            _gameWorld.NewGame();
+
+            // Act
+            _gameWorld.ForceLevelChange(ForceLevelChange.PreviousLevel);
+            
+            // Assert
+            Assert.IsNotNull(_gameWorld.CurrentMap);
+            Assert.AreEqual(1, _gameWorld.CurrentMap.Level);
+            Assert.IsNotNull(_gameWorld.Player);
+            Assert.AreEqual(_gameWorld.Player.CurrentMap, _gameWorld.CurrentMap);
         }
     }
 }

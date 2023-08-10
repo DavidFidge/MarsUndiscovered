@@ -20,5 +20,10 @@ namespace MarsUndiscovered.Game.Components
                 mapExit.Destination = mapExitDestination;
             }
         }
+
+        public IEnumerable<MapExit> ForMap(MarsMap map)
+        {
+            return Values.Where(exit => exit.CurrentMap == map);
+        }
     }
 }

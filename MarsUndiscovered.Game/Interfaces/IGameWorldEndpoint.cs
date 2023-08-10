@@ -48,5 +48,6 @@ namespace MarsUndiscovered.Interfaces
         Guid GetGameId();
         IList<RadioCommsItem> GetNewRadioCommsItems();
         IGridView<double?> GetGoalMap();
+        IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange);
     }
 }

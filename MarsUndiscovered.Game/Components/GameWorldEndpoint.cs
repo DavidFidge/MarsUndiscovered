@@ -185,6 +185,11 @@ namespace MarsUndiscovered.Game.Components
             return GameWorld.GetGoalMap();
         }
 
+        public IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange)
+        {
+            return GameWorld.ForceLevelChange(forceLevelChange);
+        }
+
         public void LoadReplay(string gameName)
         {
             GameWorld = _gameWorldFactory.Create();

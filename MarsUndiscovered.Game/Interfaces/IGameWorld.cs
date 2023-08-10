@@ -64,5 +64,6 @@ namespace MarsUndiscovered.Interfaces
         void SnapshotMorgue(string username, bool uploadMorgueFiles);
         IList<RadioCommsItem> GetNewRadioCommsItems();
         IGridView<double?> GetGoalMap();
+        IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange);
     }
 }

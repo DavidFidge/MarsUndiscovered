@@ -38,5 +38,10 @@ namespace MarsUndiscovered.Game.Components
                 .SelectMany(p => map.GetObjectsAt(p))
                 .ToList();
         }
+        
+        public static MarsMap MarsMap(this Map map)
+        {
+            return (MarsMap)map;
+        }
     }
 }

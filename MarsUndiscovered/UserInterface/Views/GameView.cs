@@ -41,7 +41,9 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<MoveRightRequest>,
         IRequestHandler<MoveWaitRequest>,
         IRequestHandler<AutoExploreRequest>,
-        IRequestHandler<EndRadioCommsRequest>
+        IRequestHandler<EndRadioCommsRequest>,
+        IRequestHandler<WizardModeNextLevelRequest>,
+        IRequestHandler<WizardModePreviousLevelRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -477,6 +479,18 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(EndRadioCommsRequest request, CancellationToken cancellationToken)
         {
             ProcessNextRadioComm();
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(WizardModeNextLevelRequest request, CancellationToken cancellationToken)
+        {
+            _viewModel.ForceNextLevel();
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(WizardModePreviousLevelRequest request, CancellationToken cancellationToken)
+        {
+            _viewModel.ForcePreviousLevel();
             return Unit.Task;
         }
     }

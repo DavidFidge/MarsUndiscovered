@@ -101,5 +101,17 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (gameOptionsStore.State.UploadMorgueFiles)
                 Task.Run(() => GameWorldEndpoint.SendPendingMorgues());
         }
+
+        public void ForceNextLevel()
+        {
+            var result = GameWorldEndpoint.ForceLevelChange(ForceLevelChange.NextLevel);
+            AfterTurnExecuted(result);
+        }
+
+        public void ForcePreviousLevel()
+        {
+            var result = GameWorldEndpoint.ForceLevelChange(ForceLevelChange.PreviousLevel);
+            AfterTurnExecuted(result);
+        }
     }
 }
