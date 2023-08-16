@@ -67,7 +67,9 @@ namespace MarsUndiscovered.Game.Commands
 
                 var message = $"{Source.NameSpecificArticleUpperCase} zapped {target.NameSpecificArticleLowerCase}";
                 commandResult.Messages.Add(message);
-
+                
+                SetHuntingIfAttackedByPlayer(Source, target);
+                
                 if (target.Health <= 0)
                 {
                     var deathCommand = CommandFactory.CreateDeathCommand(GameWorld);

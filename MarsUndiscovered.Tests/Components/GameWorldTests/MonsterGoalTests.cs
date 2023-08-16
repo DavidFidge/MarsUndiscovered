@@ -766,7 +766,12 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             _gameWorld.Player.Position = new Point(1, 1);
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(1, 0)));
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(1, 0))
+                .WithState(MonsterState.Hunting);
+            
+            _gameWorld.SpawnMonster(spawnMonsterParams);
 
             var monster = _gameWorld.Monsters.Values.First();
 
@@ -784,14 +789,111 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
 
         [TestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void Should_Attack_Player_When_Has_Line_Attack(bool isAdjacent)
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+
+            _gameWorld.Player.Position = new Point(1, 2);
+
+            var y = isAdjacent ? 1 : 0;
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("CleaningDroid")
+                .AtPosition(new Point(1, y))
+                .WithState(MonsterState.Hunting);
+            
+            _gameWorld.SpawnMonster(spawnMonsterParams);
+
+            var monster = _gameWorld.Monsters.Values.First();
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+
+            // Act
+            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+
+            // Assert
+            var attackCommand = result[0] as LineAttackCommand;
+            Assert.IsNotNull(attackCommand);
+            Assert.AreEqual(1, attackCommand.Targets.Count);
+            Assert.AreSame(_gameWorld.Player, attackCommand.Targets[0]);
+            Assert.AreSame(monster, attackCommand.Source);
+        }
+        
+        [TestMethod]
+        public void Can_Kill_Other_Monsters_With_LineAttack()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            var spawnMonsterParams1 = new SpawnMonsterParams()
+                .WithBreed("CleaningDroid")
+                .AtPosition(new Point(0, 1))
+                .WithState(MonsterState.Hunting);
+            
+            var spawnMonsterParams2 = new SpawnMonsterParams()
+                .WithBreed("CleaningDroid")
+                .AtPosition(new Point(0, 2))
+                .WithState(MonsterState.Hunting);
+            
+            _gameWorld.SpawnMonster(spawnMonsterParams1);
+            _gameWorld.SpawnMonster(spawnMonsterParams2);
+            
+            var monster1 = spawnMonsterParams1.Result;
+            var monster2 = spawnMonsterParams2.Result;
+
+            monster1.Health = 1;
+            
+            _gameWorld.TestResetFieldOfView();
+            monster1.ResetFieldOfViewAndSeenTiles();
+            monster2.ResetFieldOfViewAndSeenTiles();
+            var result = monster2.NextTurn(_gameWorld.CommandFactory).ToList();
+
+            // Act
+            var lineAttackCommand = (LineAttackCommand)result[0]; 
+            lineAttackCommand.Execute();
+
+            foreach (var command in lineAttackCommand.CommandResult.SubsequentCommands)
+            {
+                command.Execute();
+            }
+            
+            // Assert
+            var attackCommand = result[0] as LineAttackCommand;
+            Assert.IsNotNull(attackCommand);
+            Assert.AreEqual(2, attackCommand.Targets.Count);
+            Assert.AreSame(monster1, attackCommand.Targets[0]);
+            Assert.AreSame(_gameWorld.Player, attackCommand.Targets[1]);
+            Assert.AreSame(monster2, attackCommand.Source);
+            Assert.IsTrue(monster1.IsDead);
+        }
+        
+        [TestMethod]
         public void Monsters_Should_Stop_Acting_When_Player_Dies()
         {
             // Arrange
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(1, 0)));
+
+            var monster1 = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(0, 1))
+                .WithState(MonsterState.Hunting);
+
+            _gameWorld.SpawnMonster(monster1);
+            
+            var monster2 = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(1, 0))
+                .WithState(MonsterState.Hunting);
+            
+            _gameWorld.SpawnMonster(monster2);
+            
             _gameWorld.Player.Health = 1;
 
             // Act

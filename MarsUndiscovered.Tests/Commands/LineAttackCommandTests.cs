@@ -46,6 +46,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             Assert.AreEqual(monster1HealthBefore - 1, monster1.Health);
             Assert.AreEqual(monster2HealthBefore - 1, monster2.Health);
+            
+            Assert.AreEqual(MonsterState.Hunting, monster1.MonsterState);
+            Assert.AreEqual(MonsterState.Hunting, monster2.MonsterState);
         }
 
         [TestMethod]

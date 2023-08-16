@@ -160,6 +160,9 @@ namespace MarsUndiscovered.Game.Installers
                     .AsFactory(),
                 
                 Component.For<ICommandFactory<ApplyHealingBotsCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<WaitCommand>>()
                     .AsFactory()
             );
         }

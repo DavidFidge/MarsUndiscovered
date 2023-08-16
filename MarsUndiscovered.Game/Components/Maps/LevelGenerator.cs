@@ -111,12 +111,14 @@ public class LevelGenerator : ILevelGenerator
                 (Constants.ShipOffset -
                  1))) // Start off underneath the ship, extra -1 for the current ship design as there's a blank space on the bottom line
             .AddToMap(map);
-
+        
         var probabilityTable = new ProbabilityTable<MonsterSpawner>(
             new List<(MonsterSpawner monsterSpawner, double weight)>
             {
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Rat")), 1),
                 (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Roach")), 1),
-                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("RepairDroid"), RNG, 2, 4), 1)
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Blood Fly")), 1),
+                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Repair Droid"), RNG, 2, 4), 1)
             }
         );
             
@@ -178,9 +180,25 @@ public class LevelGenerator : ILevelGenerator
         CreateMapExitToPreviousMap(map, previousMap);
         CreateMapExitToNextMap(map);
 
+        var probabilityTable = new ProbabilityTable<MonsterSpawner>(
+            new List<(MonsterSpawner monsterSpawner, double weight)>
+            {
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Rat")), 1),
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Roach")), 1),
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Blood Fly")), 1),
+                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Repair Droid"), RNG, 2, 4), 1),
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Cleaning Droid")), 1)
+            }
+        );
+            
+        probabilityTable.Random = RNG;
+
+        for (var i = 0; i < 10; i++)
+            probabilityTable.NextItem().Spawn(map);
+
         var itemsToPlace = RNG.NextInt(5, 10);
         SpawnItems(itemsToPlace, map);
-        
+
         return map;
     }
 

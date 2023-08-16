@@ -38,7 +38,7 @@ namespace MarsUndiscovered.Game.Components.Maps
             if (spawnMonsterParams.LeaderId.HasValue)
                 monster.SetLeader(monsterCollection[spawnMonsterParams.LeaderId.Value]);
             
-            monster.SetMonsterState(spawnMonsterParams.MonsterState);
+            monster.MonsterState = spawnMonsterParams.MonsterState;
             
             Mediator.Publish(new MapTileChangedNotification(monster.Position));
 

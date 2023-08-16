@@ -1,4 +1,6 @@
-﻿using MarsUndiscovered.Interfaces;
+﻿using CppNet;
+using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
@@ -9,5 +11,14 @@ namespace MarsUndiscovered.Game.Commands
         }
 
         public override bool InterruptsMovement => true;
+        
+        
+        protected void SetHuntingIfAttackedByPlayer(Actor source, Actor target)
+        {
+            if (target is Monster monster && source is Player)
+            {
+                monster.MonsterState = MonsterState.Hunting;
+            }
+        }
     }
 }

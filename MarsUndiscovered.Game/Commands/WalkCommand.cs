@@ -1,4 +1,5 @@
-﻿using FrigidRogue.MonoGame.Core.Components;
+﻿using System.Diagnostics;
+using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Game.Components;
@@ -20,6 +21,7 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Player player, Direction direction)
         {
+            Debug.Assert(direction != Direction.None, "Use wait command if direction is none");
             Player = player;
             Direction = direction;
         }

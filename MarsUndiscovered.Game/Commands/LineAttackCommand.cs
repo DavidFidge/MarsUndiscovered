@@ -7,6 +7,7 @@ using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Game.Commands
 {
@@ -17,6 +18,7 @@ namespace MarsUndiscovered.Game.Commands
 
         public Actor Source { get; private set; }
         public List<Point> Path { get; private set; }
+        public IList<Actor> Targets => _targets;
         
         public LineAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -69,6 +71,8 @@ namespace MarsUndiscovered.Game.Commands
 
                 target.ApplyDamage(damage);
 
+                SetHuntingIfAttackedByPlayer(Source, target);
+                
                 var message = $"{Source.NameSpecificArticleUpperCase} hit {target.NameSpecificArticleLowerCase}";
                 commandResult.Messages.Add(message);
 
@@ -103,6 +107,7 @@ namespace MarsUndiscovered.Game.Commands
         {
             return lineAttackPath
                 .Skip(1)
+                .Where(p => source.CurrentMap.Contains(p))
                 .Select(p => source.CurrentMap.GetObjectAt<Actor>(p))
                 .Where(p => p != null)
                 .ToList();

@@ -61,6 +61,8 @@ namespace MarsUndiscovered.Game.Commands
             var message = $"{Source.NameSpecificArticleUpperCase} hit {Target.NameSpecificArticleLowerCase}";
 
             var commandResult = CommandResult.Success(this, message);
+            
+            SetHuntingIfAttackedByPlayer(Source, Target);
 
             if (Target.Health <= 0)
             {

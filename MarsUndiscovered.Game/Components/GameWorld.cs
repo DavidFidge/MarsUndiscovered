@@ -285,10 +285,22 @@ namespace MarsUndiscovered.Game.Components
 
         public IList<CommandResult> MoveRequest(Direction direction)
         {
-            var walkCommand = CommandFactory.CreateWalkCommand(this);
-            walkCommand.Initialise(Player, direction);
+            BaseGameActionCommand command;
+            
+            if (direction == Direction.None)
+            {
+                var waitCommand = CommandFactory.CreateWaitCommand(this);
+                waitCommand.Initialise(Player);
+                command = waitCommand;
+            }
+            else
+            {
+                var walkCommand = CommandFactory.CreateWalkCommand(this);
+                walkCommand.Initialise(Player, direction);
+                command = walkCommand;
+            }
 
-            return ExecuteCommand(walkCommand).ToList();
+            return ExecuteCommand(command).ToList();
         }
 
         public IList<CommandResult> MoveRequest(Path path)
@@ -434,7 +446,7 @@ namespace MarsUndiscovered.Game.Components
             if (mapExit == null)
                 return new List<CommandResult>();
             
-            var command = new ChangeMapCommand(this);
+            var command = CommandFactory.CreateChangeMapCommand(this);
             command.Initialise(Player, mapExit);
             
             return ExecuteCommand(command).ToList();

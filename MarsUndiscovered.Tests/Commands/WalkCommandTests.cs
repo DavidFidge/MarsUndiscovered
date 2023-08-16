@@ -145,36 +145,6 @@ namespace MarsUndiscovered.Tests.Commands
         }
 
         [TestMethod]
-        public void WalkCommand_With_NoDirection_With_Monster_Adjacent_Should_Result_In_Monster_Attacking_Player()
-        {
-            // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
-            var monster = _gameWorld.Monsters.Values.First();
-            var player = _gameWorld.Player;
-            var healthBefore = player.Health;
-
-            // Act
-            var commandResults = _gameWorld.MoveRequest(Direction.None);
-
-            // Assert
-            Assert.AreEqual(new Point(0, 0), player.Position);
-            Assert.AreEqual(new Point(0, 1), monster.Position);
-
-            Assert.AreEqual(2, commandResults.Count);
-
-            var walkCommandResult = commandResults[0];
-            var attackCommandResult = commandResults[1];
-
-            Assert.IsInstanceOfType(walkCommandResult.Command, typeof(WalkCommand));
-            Assert.IsInstanceOfType(attackCommandResult.Command, typeof(MeleeAttackCommand));
-            Assert.AreEqual("The roach hit you", attackCommandResult.Messages[0]);
-            Assert.IsTrue(player.Health < healthBefore);
-        }
-
-        [TestMethod]
         public void Should_Save_Then_Load_Game_With_Commands()
         {
             // Arrange

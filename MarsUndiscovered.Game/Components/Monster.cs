@@ -40,6 +40,7 @@ namespace MarsUndiscovered.Game.Components
 
         public bool FriendlyFireAllies => Breed.FriendlyFireAllies;
         public bool UseGoalMapWander { get; set; } = false;
+        public MonsterState MonsterState { get; set; }
 
         public Monster Leader => _leader;
         
@@ -56,7 +57,6 @@ namespace MarsUndiscovered.Game.Components
         private Path _wanderPath;
         private Monster _leader;
         private Path _toLeaderPath;
-        private MonsterState _monsterState;
 
         public string GetInformation(Player player)
         {
@@ -122,7 +122,7 @@ namespace MarsUndiscovered.Game.Components
                 Health = Health,
                 MaxHealth = MaxHealth,
                 Name = Name,
-                Behaviour = _monsterState.ToString().ToSeparateWords()
+                Behaviour = MonsterState.ToString().ToSeparateWords()
             };
 
             return monsterStatus;
@@ -159,7 +159,7 @@ namespace MarsUndiscovered.Game.Components
             Breed = Breed.Breeds[memento.State.BreedName];
             UseGoalMapWander = memento.State.UseGoalMapWander;
             _wanderPath = memento.State.WanderPath != null ? new Path(memento.State.WanderPath) : null;
-            _monsterState = memento.State.MonsterState;
+            MonsterState = memento.State.MonsterState;
             
             if (!IsDead)
             {
@@ -188,7 +188,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.WanderPath = _wanderPath?.Steps.ToList();
             memento.State.UseGoalMapWander = UseGoalMapWander;
             memento.State.LeaderId = _leader?.ID;
-            memento.State.MonsterState = _monsterState;
+            memento.State.MonsterState = MonsterState;
 
             if (!IsDead)
             {
@@ -256,6 +256,7 @@ namespace MarsUndiscovered.Game.Components
                 .Condition("on same map as player", monster => CurrentMap.Equals(GameWorld.Player.CurrentMap))
                 .Selector("action selector")
                     .Subtree(MeleeAttackBehaviour())
+                    .Subtree(LineAttackBehaviour())
                     .Subtree(LightningAttackBehaviour())
                     .Subtree(MoveBehavior())
                     .End()
@@ -315,7 +316,7 @@ namespace MarsUndiscovered.Game.Components
                     {
                         var nextPointInPath = _toLeaderPath.GetStepAfterPointWithStart(Position);
 
-                        _monsterState = MonsterState.FollowingLeader;
+                        MonsterState = MonsterState.FollowingLeader;
 
                         if (!CurrentMap.GameObjectCanMove(this, nextPointInPath))
                         {
@@ -351,6 +352,7 @@ namespace MarsUndiscovered.Game.Components
             var behaviour = FluentBuilder.Create<Monster>()
                 .Sequence("melee attack")
                 .Condition("has melee attack", monster => MeleeAttack != null)
+                .Condition("is hunting", monster => MonsterState == MonsterState.Hunting)
                 .Condition("player is adjacent", monster => Position.IsNextTo(GameWorld.Player.Position, AdjacencyRule.EightWay))
                 .Do(
                     "attack player",
@@ -369,13 +371,15 @@ namespace MarsUndiscovered.Game.Components
             return behaviour;
         }
         
-        private IBehaviour<Monster> LightningAttackBehaviour()
+        private IBehaviour<Monster> LineAttackBehaviour()
         {
             var behaviour = FluentBuilder.Create<Monster>()
-                .Sequence("lightning attack")
-                .Condition("has lightning attack", monster => LightningAttack != null)
+                .Sequence("line attack")
+                .Condition("has line attack", monster => LineAttack != null)
                 .Condition("player is in field of view", monster => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
-                .Do("lightning attack player", monster => ExecuteLightningAttack(monster, GameWorld.Player)
+                .Condition("hunting", monster => MonsterState == MonsterState.Hunting)
+                .Condition("within 2 spaces", monster => CurrentMap.DistanceMeasurement.Calculate(Position, GameWorld.Player.Position) <= 2)
+                .Do("line attack player", monster => ExecuteLineAttack(monster, GameWorld.Player)
                 )
                 .End()
                 .Build();
@@ -383,6 +387,46 @@ namespace MarsUndiscovered.Game.Components
             return behaviour;
         }
 
+        private BehaviourStatus ExecuteLineAttack(Monster monster, Player gameWorldPlayer)
+        {
+            var directionToPlayer = Direction.GetDirection(Position, GameWorld.Player.Position);
+            var targetPoint = Position + directionToPlayer + directionToPlayer;
+            var lineAttackPath = Lines.GetLine(Position, targetPoint)
+                .ToList();
+
+            lineAttackPath = lineAttackPath
+                .TakeWhile(p => p == Position || (CurrentMap.Contains(targetPoint) &&
+                                                  (CurrentMap.GetObjectAt<Player>(p) != null ||
+                                                   (CurrentMap.GetObjectAt<Wall>(p) == null &&
+                                                    CurrentMap.GetObjectAt<Indestructible>(p) == null))))
+                .ToList();
+
+            if (!lineAttackPath.Any(p => CurrentMap.GetObjectAt<Player>(p) != null))
+                return BehaviourStatus.Failed;
+            
+            var lineAttackCommand = _commandFactory.CreateLineAttackCommand(GameWorld);
+            
+            lineAttackCommand.Initialise(this, lineAttackPath);
+            _nextCommands.Add(lineAttackCommand);
+
+            return BehaviourStatus.Succeeded;
+        }
+
+        private IBehaviour<Monster> LightningAttackBehaviour()
+        {
+            var behaviour = FluentBuilder.Create<Monster>()
+                .Sequence("lightning attack")
+                .Condition("has lightning attack", monster => LightningAttack != null)
+                .Condition("player is in field of view", monster => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
+                .Condition("turret or hunting", monster => IsWallTurret || MonsterState == MonsterState.Hunting)
+                .Do("lightning attack player", monster => ExecuteLightningAttack(monster, GameWorld.Player)
+                )
+                .End()
+                .Build();
+
+            return behaviour;
+        }
+        
         private BehaviourStatus ExecuteLightningAttack(Actor source, Actor target)
         {
             var lightningAttackCommand = _commandFactory.CreateLightningAttackCommand(GameWorld);
@@ -418,8 +462,13 @@ namespace MarsUndiscovered.Game.Components
                                 if (CurrentMap.GameObjectCanMove(this, Position + direction))
                                     return true;
                             }
+
+                            // Blocked.  If player is participating in blocking, ignore this rule,
+                            // it will be dealt with.
+                            if (CurrentMap.DistanceMeasurement.Calculate(Position, GameWorld.Player.Position) <= 1)
+                                return true;
                             
-                            _monsterState = MonsterState.Idle;
+                            MonsterState = MonsterState.Idle;
                             
                             return false;
                         }
@@ -430,13 +479,22 @@ namespace MarsUndiscovered.Game.Components
                         {
                             var nextDirection = WanderUsingAStar();
 
-                            if (nextDirection != Direction.None)
+                            if (nextDirection == Direction.None)
+                            {
+                                // move is blocked, if player is in a surrounding square, hunt immediately
+                                if (CurrentMap.DistanceMeasurement.Calculate(Position, GameWorld.Player.Position) <= 1)
+                                {
+                                    MonsterState = MonsterState.Hunting;
+                                    return BehaviourStatus.Succeeded;
+                                }
+                            }
+                            else
                             {
                                 var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
                                 _nextCommands.Add(moveCommand);
                             }
 
-                            _monsterState = MonsterState.Wandering;
+                            MonsterState = MonsterState.Wandering;
                             return BehaviourStatus.Succeeded;
                         })
                 .End()
@@ -459,8 +517,13 @@ namespace MarsUndiscovered.Game.Components
                                 if (CurrentMap.GameObjectCanMove(this, Position + direction))
                                     return true;
                             }
+                            
+                            // Blocked.  If player is participating in blocking, ignore this rule,
+                            // it will be dealt with.
+                            if (CurrentMap.DistanceMeasurement.Calculate(Position, GameWorld.Player.Position) <= 1)
+                                return true;
 
-                            _monsterState = MonsterState.Idle;
+                            MonsterState = MonsterState.Idle;
 
                             return false;
                         }
@@ -470,14 +533,23 @@ namespace MarsUndiscovered.Game.Components
                         monster =>
                         {
                             var nextDirection = WanderUsingGoalMap();
-
+                            
                             if (nextDirection == Direction.None)
                                 return BehaviourStatus.Failed;
+
+                            var gameObjects = CurrentMap.GetObjectsAt<Player>(Position + nextDirection);
+
+                            if (gameObjects.Any())
+                            {
+                                // Player is in the chosen square, switch to hunting but do not attack this turn
+                                MonsterState = MonsterState.Hunting;
+                                return BehaviourStatus.Succeeded;
+                            }
 
                             var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
                             _nextCommands.Add(moveCommand);
 
-                            _monsterState = MonsterState.Wandering;
+                            MonsterState = MonsterState.Wandering;
                             return BehaviourStatus.Succeeded;
                         }
                     )
@@ -486,7 +558,7 @@ namespace MarsUndiscovered.Game.Components
 
             return behaviour;
         }
-
+        
         private IBehaviour<Monster> HuntBehaviour()
         {
             var behaviour = FluentBuilder.Create<Monster>()
@@ -494,7 +566,7 @@ namespace MarsUndiscovered.Game.Components
                     .Condition("player in field of view", monster => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
                     .Condition("player has been detected", monster =>
                     {
-                        if (_monsterState == MonsterState.Hunting)
+                        if (MonsterState == MonsterState.Hunting)
                             return true;
                         
                         var distance = CurrentMap.DistanceMeasurement.Calculate(Position, GameWorld.Player.Position);
@@ -502,10 +574,10 @@ namespace MarsUndiscovered.Game.Components
                         if (distance <= DetectionRange)
                         {
                             if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
-                                _monsterState = MonsterState.Hunting;
+                                MonsterState = MonsterState.Hunting;
                         }
 
-                        return _monsterState == MonsterState.Hunting;
+                        return MonsterState == MonsterState.Hunting;
                     })
                     .Do(
                         "move towards player",
@@ -756,11 +828,6 @@ namespace MarsUndiscovered.Game.Components
         public void SetLeader(Monster monster)
         {
             _leader = monster;
-        }
-
-        public void SetMonsterState(MonsterState monsterState)
-        {
-            _monsterState = monsterState;
         }
     }
 }

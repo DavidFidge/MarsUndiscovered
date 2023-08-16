@@ -295,7 +295,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.Player.Position = playerPosition;
 
             var monsterPosition = new Point(1, 0);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(monsterPosition));
+            
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(monsterPosition)
+                .WithState(MonsterState.Hunting);
+            
+            _gameWorld.SpawnMonster(spawnMonsterParams);
             _gameWorld.TestResetFieldOfView();
 
             // Act

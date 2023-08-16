@@ -17,7 +17,13 @@ namespace MarsUndiscovered.Tests.Commands
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
             _gameWorld.Player.Position = new Point(0, 0);
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
+            
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(0, 1))
+                .WithState(MonsterState.Hunting);
+            
+            _gameWorld.SpawnMonster(spawnMonsterParams);
             var monster = _gameWorld.Monsters.Values.First();
             _gameWorld.Player.MeleeAttack.DamageRange = new Range<int>(5, 5);
             var healthBefore = monster.Health;
@@ -40,6 +46,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual("You hit the roach", attackCommand.CommandResult.Messages[0]);
             Assert.AreSame(_gameWorld.Player, attackCommand.Source);
             Assert.AreSame(monster, attackCommand.Target);
+            Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
         }
         
         [TestMethod]

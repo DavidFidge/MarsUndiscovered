@@ -19,6 +19,7 @@ namespace MarsUndiscovered.Game.Components.Factories
         public ICommandFactory<ApplyItemCommand> ApplyItemCommandFactory { get; set; }
         public ICommandFactory<ApplyShieldCommand> ApplyShieldCommandFactory { get; set; }
         public ICommandFactory<ApplyHealingBotsCommand> ApplyHealingBotsCommandFactory { get; set; }
+        public ICommandFactory<WaitCommand> WaitCommandFactory { get; set; }
 
         public MoveCommand CreateMoveCommand(IGameWorld gameWorld)
         {
@@ -87,6 +88,11 @@ namespace MarsUndiscovered.Game.Components.Factories
         public ApplyShieldCommand CreateApplyShieldCommand(IGameWorld gameWorld)
         {
             return ApplyShieldCommandFactory.Create(gameWorld);
+        }
+
+        public WaitCommand CreateWaitCommand(IGameWorld gameWorld)
+        {
+            return WaitCommandFactory.Create(gameWorld);
         }
     }
 }
