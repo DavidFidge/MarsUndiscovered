@@ -2,9 +2,11 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
 
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Game.Commands
 {
@@ -95,7 +97,7 @@ namespace MarsUndiscovered.Game.Commands
             var lightningAttackPath = Lines.GetLine(source.Position, targetPoint).ToList();
 
             lightningAttackPath = lightningAttackPath
-                .TakeWhile(p => p == source.Position || (source.CurrentMap.GetObjectAt<Wall>(p) == null && source.CurrentMap.GetObjectAt<Indestructible>(p) == null))
+                .TakeWhile(p => p == source.Position || (source.CurrentMap.Contains(targetPoint) && source.CurrentMap.GetObjectsAt(p).All(o => o.IsGameObjectStrikeThrough())))
                 .ToList();
 
             Source = source;

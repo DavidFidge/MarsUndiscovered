@@ -787,7 +787,39 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreSame(_gameWorld.Player, attackCommand.Target);
             Assert.AreSame(monster, attackCommand.Source);
         }
+        
+        [TestMethod]
+        public void Should_Not_Attack_Player_When_Has_Line_Attack_And_Blocking_Object_Between()
+        {
+            // Arrange
+            var wallPosition1 = new Point(1, 1);
 
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1 });
+            
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+
+            _gameWorld.Player.Position = new Point(1, 2);
+
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("CleaningDroid")
+                .AtPosition(new Point(1, 0))
+                .WithState(MonsterState.Hunting);
+            
+            _gameWorld.SpawnMonster(spawnMonsterParams);
+
+            var monster = _gameWorld.Monsters.Values.First();
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+
+            // Act
+            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+
+            // Assert
+            Assert.AreEqual(1, result.Count);
+            Assert.IsTrue(result[0] is MoveCommand);
+        }
+        
         [TestMethod]
         [DataRow(true)]
         [DataRow(false)]

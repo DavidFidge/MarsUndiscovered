@@ -378,7 +378,27 @@ namespace MarsUndiscovered.Game.Components
                 .Condition("has line attack", monster => LineAttack != null)
                 .Condition("player is in field of view", monster => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
                 .Condition("hunting", monster => MonsterState == MonsterState.Hunting)
-                .Condition("within 2 spaces", monster => CurrentMap.DistanceMeasurement.Calculate(Position, GameWorld.Player.Position) <= 2)
+                .Condition("able to attack", monster =>
+                {
+                    var distanceToPlayer = CurrentMap.DistanceMeasurement.Calculate(Position, GameWorld.Player.Position);
+
+                    if (distanceToPlayer > 2)
+                        return false;
+                    
+                    if (distanceToPlayer <= 1)
+                        return true;
+                        
+                    var directionToPlayer = Direction.GetDirection(Position, GameWorld.Player.Position);
+                        
+                    if (Position + directionToPlayer + directionToPlayer != GameWorld.Player.Position)
+                        return false;
+
+                    // Check for objects blocking the way between player and monster
+                    if (CurrentMap.GetTerrainAt<Wall>(Position + directionToPlayer) != null)
+                        return false;
+
+                    return true;
+                })
                 .Do("line attack player", monster => ExecuteLineAttack(monster, GameWorld.Player)
                 )
                 .End()
@@ -395,14 +415,8 @@ namespace MarsUndiscovered.Game.Components
                 .ToList();
 
             lineAttackPath = lineAttackPath
-                .TakeWhile(p => p == Position || (CurrentMap.Contains(targetPoint) &&
-                                                  (CurrentMap.GetObjectAt<Player>(p) != null ||
-                                                   (CurrentMap.GetObjectAt<Wall>(p) == null &&
-                                                    CurrentMap.GetObjectAt<Indestructible>(p) == null))))
+                .TakeWhile(p => p == Position || (CurrentMap.Contains(targetPoint) && CurrentMap.GetObjectsAt(p).All(o => o.IsGameObjectStrikeThrough())))
                 .ToList();
-
-            if (!lineAttackPath.Any(p => CurrentMap.GetObjectAt<Player>(p) != null))
-                return BehaviourStatus.Failed;
             
             var lineAttackCommand = _commandFactory.CreateLineAttackCommand(GameWorld);
             
@@ -588,6 +602,13 @@ namespace MarsUndiscovered.Game.Components
                             if (nextDirection == Direction.None)
                                 return BehaviourStatus.Failed;
 
+                            var actorsAtPosition = CurrentMap.GetObjectsAt<Actor>(Position + nextDirection);
+
+                            if (actorsAtPosition.Any())
+                            {
+                                throw new Exception("Hunt behaviour should not move into a square occupied by an actor");
+                            }
+
                             var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
                             _nextCommands.Add(moveCommand);
                          
@@ -625,17 +646,7 @@ namespace MarsUndiscovered.Game.Components
                             _goalStates[x, y] = GoalState.Goal;
                             break;
                         }
-                        if (gameObject is Monster _)
-                        {
-                            _goalStates[x, y] = GoalState.Obstacle;
-                            break;
-                        }
-                        if (gameObject is Indestructible _)
-                        {
-                            _goalStates[x, y] = GoalState.Obstacle;
-                            break;
-                        }
-                        if (gameObject is Wall _)
+                        if (gameObject.IsGameObjectObstacle())
                         {
                             _goalStates[x, y] = GoalState.Obstacle;
                             break;
@@ -675,19 +686,7 @@ namespace MarsUndiscovered.Game.Components
 
                     foreach (var gameObject in gameObjects)
                     {
-                        if (gameObject is Monster _)
-                        {
-                            _goalStates[x, y] = GoalState.Obstacle;
-                            break;
-                        }
-
-                        if (gameObject is Indestructible _)
-                        {
-                            _goalStates[x, y] = GoalState.Obstacle;
-                            break;
-                        }
-
-                        if (gameObject is Wall _)
+                        if (gameObject.IsGameObjectObstacle())
                         {
                             _goalStates[x, y] = GoalState.Obstacle;
                             break;
@@ -701,7 +700,7 @@ namespace MarsUndiscovered.Game.Components
 
             return _goalMap.GetDirectionOfMinValue(Position, AdjacencyRule.EightWay, false);
         }
-        
+
         public Direction WanderUsingAStar()
         {
             var currentPathLocation = Point.None;

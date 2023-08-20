@@ -1,5 +1,5 @@
 using GoRogue.Pathing;
-
+using MarsUndiscovered.Game.Extensions;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
@@ -90,13 +90,7 @@ namespace MarsUndiscovered.Game.Components
                                 break;
                             }
 
-                            if (gameObject is Indestructible _)
-                            {
-                                _goalStates[x, y] = GoalState.Obstacle;
-                                break;
-                            }
-
-                            if (gameObject is Wall _)
+                            if (gameObject.IsGameObjectObstacle())
                             {
                                 _goalStates[x, y] = GoalState.Obstacle;
                                 break;
