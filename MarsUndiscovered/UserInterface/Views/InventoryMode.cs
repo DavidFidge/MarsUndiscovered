@@ -7,6 +7,7 @@
         Equip,
         Unequip,
         Drop,
-        Apply
+        Apply,
+        Enchant
     }
 }

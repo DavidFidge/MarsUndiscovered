@@ -89,9 +89,12 @@ namespace MarsUndiscovered.Game.Commands
             }
 
             Item.ResetRechargeDelay();
-            
-            if (Item.ItemType is NanoFlask)
-                GameWorld.Inventory.Remove(Item);
+
+            if (Item.ItemType is NanoFlask nanoflask)
+            {
+                if (nanoflask.RemoveFromInventoryOnApply)
+                    GameWorld.Inventory.Remove(Item);
+            }
 
             BaseGameActionCommand subsequentCommand;
 

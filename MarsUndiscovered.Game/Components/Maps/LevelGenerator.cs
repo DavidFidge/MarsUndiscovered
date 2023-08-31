@@ -246,7 +246,8 @@ public class LevelGenerator : ILevelGenerator
 
         _nanoFlaskWeights = new List<(ItemType itemType, double weight)>
         {
-            (ItemType.HealingBots, 1) 
+            (ItemType.HealingBots, 1), 
+            (ItemType.EnhancementBots, 1) 
         };
 
         _nanoFlaskProbabilityTable = new ProbabilityTable<ItemType>(_nanoFlaskWeights);

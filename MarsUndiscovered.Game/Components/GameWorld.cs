@@ -728,6 +728,23 @@ namespace MarsUndiscovered.Game.Components
             return ExecuteCommand(applyItemCommand).ToList();
         }
 
+        /// <summary>
+        /// ApplyItemRequest is done first. If is an enchant potion and is successful then
+        /// it is sent back in the command result. The UI will then go modal, forcing an item
+        /// choice for then enchantment. This choice is then sent here.
+        /// </summary>
+        public IList<CommandResult> EnchantItemRequest(Keys itemKey)
+        {
+            if (!Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
+                return null;
+            
+            var enchantItemCommand = CommandFactory.CreateEnchantItemCommand(this);
+
+            enchantItemCommand.Initialise(Inventory.First(i => i.ItemType == ItemType.EnhancementBots), itemGroup.First());
+
+            return ExecuteCommand(enchantItemCommand).ToList();
+        }
+        
         public void Regenerate()
         {
             Player.Regenerate();

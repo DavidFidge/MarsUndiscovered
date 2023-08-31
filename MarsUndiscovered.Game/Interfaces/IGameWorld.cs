@@ -65,5 +65,6 @@ namespace MarsUndiscovered.Interfaces
         IList<RadioCommsItem> GetNewRadioCommsItems();
         IGridView<double?> GetGoalMap();
         IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange);
+        IList<CommandResult> EnchantItemRequest(Keys requestKey);
     }
 }

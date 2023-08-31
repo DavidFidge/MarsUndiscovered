@@ -18,6 +18,7 @@ namespace MarsUndiscovered.Game.Components.Factories
         ChangeMapCommand CreateChangeMapCommand(IGameWorld gameWorld);
         ApplyItemCommand CreateApplyItemCommand(IGameWorld gameWorld);
         ApplyHealingBotsCommand CreateApplyHealingBotsCommand(IGameWorld gameWorld);
+        EnchantItemCommand CreateEnchantItemCommand(IGameWorld gameWorld);
         ApplyShieldCommand CreateApplyShieldCommand(IGameWorld gameWorld);
         WaitCommand CreateWaitCommand(IGameWorld gameWorld);
     }

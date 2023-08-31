@@ -27,9 +27,9 @@ namespace MarsUndiscovered.Game.Components
 
         protected override int RechargeDelay => 300;
 
-        public override void ApplyProperties(Item item)
+        public override void RecalculateProperties(Item item)
         {
-            base.ApplyProperties(item);
+            base.RecalculateProperties(item);
 
             item.DamageShieldPercentage = _damageShieldPercentage + (item.EnchantmentLevel * 10);
 

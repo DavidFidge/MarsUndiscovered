@@ -31,8 +31,7 @@ namespace MarsUndiscovered.Game.Components
         public Item WithItemType(ItemType itemType)
         {
             ItemType = itemType;
-            ItemType.ApplyEnchantmentLevel(this);
-            ItemType.ApplyProperties(this);
+            ItemType.RecalculateProperties(this);
 
             return this;
         }
@@ -170,6 +169,18 @@ namespace MarsUndiscovered.Game.Components
         public void ResetRechargeDelay()
         {
             CurrentRechargeDelay = TotalRechargeDelay;
+        }
+
+        public void Enchant()
+        {
+            EnchantmentLevel++;
+            this.ItemType.RecalculateProperties(this);
+        }
+        
+        public void Enchant(int enchantmentLevel)
+        {
+            EnchantmentLevel = enchantmentLevel;
+            this.ItemType.RecalculateProperties(this);
         }
     }
 }

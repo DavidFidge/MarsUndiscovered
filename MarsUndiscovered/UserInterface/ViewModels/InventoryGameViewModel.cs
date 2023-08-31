@@ -9,22 +9,22 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     {
         public void EquipRequest(Keys requestKey)
         {
-            DoRequest(requestKey, GameWorldEndpoint.EquipItemRequest);
+            DoRequest(requestKey, requestKey1 => GameWorldEndpoint.EquipItemRequest(requestKey1));
         }
 
         public void UnequipRequest(Keys requestKey)
         {
-            DoRequest(requestKey, GameWorldEndpoint.UnequipItemRequest);
+            DoRequest(requestKey, requestKey1 => GameWorldEndpoint.UnequipItemRequest(requestKey1));
         }
 
         public void DropRequest(Keys requestKey)
         {
-            DoRequest(requestKey, GameWorldEndpoint.DropItemRequest);
+            DoRequest(requestKey, requestKey1 => GameWorldEndpoint.DropItemRequest(requestKey1));
         }
 
         public void ApplyRequest(Keys requestKey)
         {
-            DoRequest(requestKey, GameWorldEndpoint.ApplyItemRequest);
+            DoRequest(requestKey, requestKey1 => GameWorldEndpoint.ApplyItemRequest(requestKey1));
         }
 
         private void DoRequest(Keys requestKey, Action<Keys> action)
@@ -37,6 +37,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 Mediator.Send(new CloseGameInventoryRequest());
                 Mediator.Publish(new RefreshViewNotification());
             }
+        }
+
+        public void EnchantItemRequest(Keys requestKey)
+        {
+            DoRequest(requestKey, GameWorldEndpoint.EnchantItemRequest);
         }
     }
 }

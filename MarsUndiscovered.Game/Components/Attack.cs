@@ -19,14 +19,6 @@ namespace MarsUndiscovered.Game.Components
             return GlobalRandom.DefaultRNG.NextInt(DamageRange.Min, DamageRange.Max);
         }
 
-        public void SetPowerLevel(int powerLevel)
-        {
-            var minDamage = DamageRangeBase.Min + powerLevel;
-            var maxDamage = DamageRangeBase.Max + powerLevel;
-
-            DamageRange = new Range<int>(minDamage <= 0 ? 1 : minDamage, maxDamage <= 0 ? 1 : maxDamage);
-        }
-
         public object Clone()
         {
             var attack = (Attack)MemberwiseClone();

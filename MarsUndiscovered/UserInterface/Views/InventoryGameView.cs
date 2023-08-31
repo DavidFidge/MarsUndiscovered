@@ -219,6 +219,9 @@ namespace MarsUndiscovered.UserInterface.Views
                 case Views.InventoryMode.Apply:
                     _viewModel.ApplyRequest(focusItem.Key);
                     break;
+                case Views.InventoryMode.Enchant:
+                    _viewModel.EnchantItemRequest(focusItem.Key);
+                    break;
             }
         }
 
