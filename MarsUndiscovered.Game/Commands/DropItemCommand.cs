@@ -22,6 +22,8 @@ namespace MarsUndiscovered.Game.Commands
 
         public DropItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
+            EndsPlayerTurn = true;
+            PersistForReplay = true;
         }
 
         public void Initialise(IGameObject gameObject, Item item)

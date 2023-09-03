@@ -7,6 +7,5 @@ namespace MarsUndiscovered.Game.Commands
     {
         IGameWorld GameWorld { get; }
         ICommandFactory CommandFactory { get; set; }
-        bool InterruptsMovement { get; }
     }
 }

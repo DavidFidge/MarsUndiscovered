@@ -7,7 +7,7 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class EnchantItemCommand : BaseAttackCommand<EnchantItemCommandSaveData>
+    public class EnchantItemCommand : BaseMarsGameActionCommand<EnchantItemCommandSaveData>
     {
         public Item Source { get; private set; }
         public Item Target { get; private set; }
@@ -17,6 +17,8 @@ namespace MarsUndiscovered.Game.Commands
         
         public EnchantItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
+            EndsPlayerTurn = true;
+            PersistForReplay = true;
         }
 
         public void Initialise(Item source, Item target)

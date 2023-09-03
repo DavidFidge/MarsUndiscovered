@@ -352,7 +352,7 @@ namespace MarsUndiscovered.Game.Components
 
                 foreach (var command in monster.NextTurn(CommandFactory))
                 {
-                    foreach (var result in ExecuteCommand(command, false))
+                    foreach (var result in ExecuteCommand(command))
                         yield return result;
                 }
             }
@@ -381,24 +381,29 @@ namespace MarsUndiscovered.Game.Components
                 .ToList();
         }
 
-        private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command, bool isPlayerAction = true)
+        private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command)
         {
             var result = command.Execute();
             _messageLog.AddMessages(result.Messages);
             _radioComms.ProcessCommand(command, _messageLog);
 
-            if (isPlayerAction)
+            // Actions that are persisted for replay are those where the player triggers an action
+            // that results in a change in the game world.  Actions that require user input
+            // should not be persisted as they are not needed for replays and subsequent actions
+            // generated such as all monster turns should not be persisted as they can be recreated
+            // using the rng seed.
+            if (command.PersistForReplay)
                 HistoricalCommands.AddCommand(command);
 
             yield return result;
 
             foreach (var subsequentCommand in result.SubsequentCommands)
             {
-                foreach (var subsequentResult in ExecuteCommand(subsequentCommand, false))
+                foreach (var subsequentResult in ExecuteCommand(subsequentCommand))
                     yield return subsequentResult;
             }
 
-            if (isPlayerAction && result.Result == CommandResultEnum.Success)
+            if (command.EndsPlayerTurn && result.Result == CommandResultEnum.Success)
             {
                 UpdateFieldOfView();
 

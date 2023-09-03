@@ -21,6 +21,8 @@ namespace MarsUndiscovered.Game.Commands
 
         public ApplyItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
+            EndsPlayerTurn = true;
+            PersistForReplay = true;
         }
 
         public void Initialise(IGameObject gameObject, Item item)
@@ -96,7 +98,7 @@ namespace MarsUndiscovered.Game.Commands
                     GameWorld.Inventory.Remove(Item);
             }
 
-            BaseGameActionCommand subsequentCommand;
+            BaseGameActionCommand subsequentCommand = null;
 
             switch (Item.ItemType)
             {
@@ -112,6 +114,13 @@ namespace MarsUndiscovered.Game.Commands
                     var command = CommandFactory.CreateApplyHealingBotsCommand(GameWorld);
                     command.Initialise(Item, GameWorld.Player);
                     subsequentCommand = command;
+                    break;
+                }
+                case EnhancementBots:
+                {
+                    RequiresPlayerInput = true;
+                    EndsPlayerTurn = false;
+                    PersistForReplay = false;
                     break;
                 }
                 default:

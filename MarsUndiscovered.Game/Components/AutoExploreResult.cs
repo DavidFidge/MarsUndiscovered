@@ -47,7 +47,7 @@ namespace MarsUndiscovered.Game.Components
             Path = new Path(path);
 
             if (player.CurrentMap.GetObjectsAround<Monster>(player.Position, AdjacencyRule.EightWay).Any()
-                || (moveRequestResults != null && moveRequestResults.Any(r => ((IBaseMarsGameActionCommand)r.Command).InterruptsMovement))
+                || (moveRequestResults != null && moveRequestResults.Any(r => r.Command.InterruptsMovement))
                 || monstersInView.Except(lastMonstersInView).Any())
             {
                 MovementInterrupted = true;

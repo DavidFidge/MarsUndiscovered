@@ -48,6 +48,7 @@ namespace MarsUndiscovered.Game.Components
             ItemTypes.Add(MagnesiumPipe.Name, MagnesiumPipe);
             ItemTypes.Add(IronSpike.Name, IronSpike);
             ItemTypes.Add(HealingBots.Name, HealingBots);
+            ItemTypes.Add(EnhancementBots.Name, EnhancementBots);
             ItemTypes.Add(ShipRepairParts.Name, ShipRepairParts);
         }
 

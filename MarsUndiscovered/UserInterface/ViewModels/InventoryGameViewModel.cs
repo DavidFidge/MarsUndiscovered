@@ -1,6 +1,9 @@
+using FrigidRogue.MonoGame.Core.Components;
+using MarsUndiscovered.Game.Commands;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
-
+using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
@@ -24,24 +27,41 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void ApplyRequest(Keys requestKey)
         {
-            DoRequest(requestKey, requestKey1 => GameWorldEndpoint.ApplyItemRequest(requestKey1));
+            var commandResults = DoRequest(requestKey, requestKey1 => GameWorldEndpoint.ApplyItemRequest(requestKey1));
+            
+            foreach (var commandResult in commandResults)
+            {
+                if (commandResult.Result == CommandResultEnum.Success && commandResult.Command.RequiresPlayerInput)
+                {
+                    var applyItemCommand = (ApplyItemCommand)commandResult.Command;
+
+                    if (applyItemCommand.Item.ItemType == ItemType.EnhancementBots)
+                    {
+                        Mediator.Send(new OpenGameInventoryRequest(InventoryMode.Enchant));
+                    }
+                }
+            }
         }
 
-        private void DoRequest(Keys requestKey, Action<Keys> action)
+        private IList<CommandResult> DoRequest(Keys requestKey, Func<Keys, IList<CommandResult>> action)
         {
             var item = _inventoryItems.FirstOrDefault(i => i.Key == requestKey);
 
             if (item != null)
             {
-                action(requestKey);
+                var commandResults = action(requestKey);
                 Mediator.Send(new CloseGameInventoryRequest());
                 Mediator.Publish(new RefreshViewNotification());
+
+                return commandResults;
             }
+
+            return new List<CommandResult>();
         }
 
         public void EnchantItemRequest(Keys requestKey)
         {
-            DoRequest(requestKey, GameWorldEndpoint.EnchantItemRequest);
+            DoRequest(requestKey, requestKey => GameWorldEndpoint.EnchantItemRequest(requestKey));
         }
     }
 }

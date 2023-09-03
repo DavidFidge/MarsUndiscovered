@@ -8,10 +8,8 @@ namespace MarsUndiscovered.Game.Commands
     {
         protected BaseAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
+            InterruptsMovement = true;
         }
-
-        public override bool InterruptsMovement => true;
-        
         
         protected void SetHuntingIfAttackedByPlayer(Actor source, Actor target)
         {
