@@ -44,6 +44,11 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.IsInstanceOfType(attackCommandResult.Command, typeof(MeleeAttackCommand));
             Assert.AreEqual("The roach hit you", attackCommandResult.Messages[0]);
             Assert.IsTrue(player.Health < healthBefore);
+            
+            Assert.IsTrue(waitCommandResult.Command.PersistForReplay);
+            Assert.IsTrue(waitCommandResult.Command.EndsPlayerTurn);
+            Assert.IsFalse(waitCommandResult.Command.RequiresPlayerInput);
+            Assert.IsFalse(waitCommandResult.Command.InterruptsMovement);
         }
         
         [TestMethod]

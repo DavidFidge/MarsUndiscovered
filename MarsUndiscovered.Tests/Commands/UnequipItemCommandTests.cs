@@ -39,6 +39,11 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual("You sheathe a Magnesium Pipe", result.Messages[0]);
             Assert.AreNotEqual(item.MeleeAttack.DamageRange.Min, _gameWorld.Player.MeleeAttack.DamageRange.Min);
             Assert.AreNotEqual(item.MeleeAttack.DamageRange.Max, _gameWorld.Player.MeleeAttack.DamageRange.Max);
+            
+            Assert.IsTrue(result.Command.PersistForReplay);
+            Assert.IsTrue(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.RequiresPlayerInput);
+            Assert.IsFalse(result.Command.InterruptsMovement);
         }
 
         [TestMethod]

@@ -30,6 +30,11 @@ namespace MarsUndiscovered.Tests.Commands
             // Assert
             Assert.AreEqual(_gameWorld.Player.Position, newPosition);
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
+            
+            Assert.IsFalse(result.Command.PersistForReplay);
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.RequiresPlayerInput);
+            Assert.IsFalse(result.Command.InterruptsMovement);
         }
 
         [TestMethod]

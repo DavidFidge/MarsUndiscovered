@@ -15,12 +15,7 @@ public class EnchantItemCommandTests : BaseGameWorldIntegrationTests
         // Arrange
         NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
         _gameWorld.Player.Position = new Point(0, 0);
-        var enhancementBotParams = new SpawnItemParams().WithItemType(ItemType.EnhancementBots)
-            .InInventory(_gameWorld.Inventory);
-        _gameWorld.SpawnItem(enhancementBotParams);
-
-        var enhancementBots = enhancementBotParams.Result;
-
+        
         var magnesiumPipeParams =
             new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).InInventory(_gameWorld.Inventory);
         _gameWorld.SpawnItem(magnesiumPipeParams);
@@ -30,7 +25,7 @@ public class EnchantItemCommandTests : BaseGameWorldIntegrationTests
         var commandFactory = Container.Resolve<ICommandFactory>();
 
         var enchantItemCommand = commandFactory.CreateEnchantItemCommand(_gameWorld);
-        enchantItemCommand.Initialise(enhancementBots, magnesiumPipe);
+        enchantItemCommand.Initialise(magnesiumPipe);
 
         var currentEnchant = magnesiumPipe.EnchantmentLevel;
 
@@ -44,5 +39,10 @@ public class EnchantItemCommandTests : BaseGameWorldIntegrationTests
         Assert.AreEqual(currentEnchant + 1, magnesiumPipe.EnchantmentLevel);
         Assert.IsTrue(currentMeleeAttack.Max < magnesiumPipe.MeleeAttack.DamageRange.Max);
         Assert.IsTrue(currentMeleeAttack.Min < magnesiumPipe.MeleeAttack.DamageRange.Min);
+        
+        Assert.IsTrue(result.Command.PersistForReplay);
+        Assert.IsTrue(result.Command.EndsPlayerTurn);
+        Assert.IsFalse(result.Command.RequiresPlayerInput);
+        Assert.IsFalse(result.Command.InterruptsMovement);
     }
 }

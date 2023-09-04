@@ -740,12 +740,12 @@ namespace MarsUndiscovered.Game.Components
         /// </summary>
         public IList<CommandResult> EnchantItemRequest(Keys itemKey)
         {
-            if (!Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
+            if (!Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var item))
                 return null;
             
             var enchantItemCommand = CommandFactory.CreateEnchantItemCommand(this);
 
-            enchantItemCommand.Initialise(Inventory.First(i => i.ItemType == ItemType.EnhancementBots), itemGroup.First());
+            enchantItemCommand.Initialise(item.First());
 
             return ExecuteCommand(enchantItemCommand).ToList();
         }

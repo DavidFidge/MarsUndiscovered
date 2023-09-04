@@ -12,8 +12,6 @@
 
         public override bool GroupsInInventory => true;
 
-        public virtual bool RemoveFromInventoryOnApply => true;
-        
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
             ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {

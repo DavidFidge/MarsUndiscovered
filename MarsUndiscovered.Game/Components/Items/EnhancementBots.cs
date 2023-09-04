@@ -6,8 +6,6 @@ namespace MarsUndiscovered.Game.Components
     {
         public override string Name => nameof(EnhancementBots);
 
-        public override bool RemoveFromInventoryOnApply => false;
-
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
             ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {

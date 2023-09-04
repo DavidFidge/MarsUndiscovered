@@ -2,9 +2,6 @@
 {
     public class EnchantItemCommandSaveData : BaseCommandSaveData
     {
-        // The flask
-        public uint SourceId { get; set; }
-        
         // Item that will be enchanted
         public uint TargetId { get; set; }
         

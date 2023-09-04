@@ -92,10 +92,9 @@ namespace MarsUndiscovered.Game.Commands
 
             Item.ResetRechargeDelay();
 
-            if (Item.ItemType is NanoFlask nanoflask)
+            if (Item.ItemType is NanoFlask)
             {
-                if (nanoflask.RemoveFromInventoryOnApply)
-                    GameWorld.Inventory.Remove(Item);
+                GameWorld.Inventory.Remove(Item);
             }
 
             BaseGameActionCommand subsequentCommand = null;
@@ -120,7 +119,6 @@ namespace MarsUndiscovered.Game.Commands
                 {
                     RequiresPlayerInput = true;
                     EndsPlayerTurn = false;
-                    PersistForReplay = false;
                     break;
                 }
                 default:

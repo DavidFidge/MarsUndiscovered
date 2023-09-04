@@ -9,7 +9,6 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class EnchantItemCommand : BaseMarsGameActionCommand<EnchantItemCommandSaveData>
     {
-        public Item Source { get; private set; }
         public Item Target { get; private set; }
 
         private int _oldEnchantLevel;
@@ -21,9 +20,8 @@ namespace MarsUndiscovered.Game.Commands
             PersistForReplay = true;
         }
 
-        public void Initialise(Item source, Item target)
+        public void Initialise(Item target)
         {
-            Source = source;
             Target = target;
         }
 
@@ -32,7 +30,6 @@ namespace MarsUndiscovered.Game.Commands
             var memento = new Memento<EnchantItemCommandSaveData>(new EnchantItemCommandSaveData());
             base.PopulateSaveState(memento.State);
 
-            memento.State.SourceId = Source.ID;
             memento.State.TargetId = Target.ID;
             memento.State.OldEnchantLevel = _oldEnchantLevel;
             memento.State.NewEnchantLevel = _newEnchantLevel;
@@ -44,7 +41,6 @@ namespace MarsUndiscovered.Game.Commands
         {
             base.PopulateLoadState(memento.State);
 
-            Source = (Item)GameWorld.GameObjects[memento.State.SourceId];
             Target = (Item)GameWorld.GameObjects[memento.State.TargetId];
             _oldEnchantLevel = memento.State.OldEnchantLevel;
             _newEnchantLevel = memento.State.NewEnchantLevel;

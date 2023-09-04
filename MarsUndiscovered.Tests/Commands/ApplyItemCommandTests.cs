@@ -59,6 +59,11 @@ namespace MarsUndiscovered.Tests.Commands
 
             var subsequentCommand = result.SubsequentCommands[0] as ApplyShieldCommand;
             Assert.IsNotNull(subsequentCommand);
+            
+            Assert.IsTrue(result.Command.PersistForReplay);
+            Assert.IsTrue(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.RequiresPlayerInput);
+            Assert.IsFalse(result.Command.InterruptsMovement);
         }
  
         [TestMethod]
@@ -168,6 +173,38 @@ namespace MarsUndiscovered.Tests.Commands
             
             var subsequentCommand = result.SubsequentCommands[0] as ApplyHealingBotsCommand;
             Assert.IsNotNull(subsequentCommand);
+        }
+                
+        [TestMethod]
+        public void ApplyItemCommand_Apply_EnhancementBots_Should_Require_Player_Input()
+        {
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            _gameWorld.Player.Position = new Point(0, 0);
+
+            var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.EnhancementBots);
+            _gameWorld.Inventory.ItemTypeDiscoveries[ItemType.EnhancementBots].IsItemTypeDiscovered = true;
+
+            var commandFactory = Container.Resolve<ICommandFactory>();
+
+            var applyItemCommand = commandFactory.CreateApplyItemCommand(_gameWorld);
+            applyItemCommand.Initialise(_gameWorld.Player, item);
+
+            // Act
+            var result = applyItemCommand.Execute();
+
+            // Assert
+            Assert.AreEqual(CommandResultEnum.Success, result.Result);
+            Assert.IsNull(_gameWorld.Inventory.Items.SingleOrDefault(i => i.Equals(item)));
+            Assert.IsTrue(_gameWorld.CurrentMap.GetObjectsAt<Item>(_gameWorld.Player.Position).IsEmpty());
+            Assert.AreEqual("You apply a NanoFlask of Enhancement Bots", result.Messages[0]);
+
+            Assert.AreEqual(0, result.SubsequentCommands.Count);
+            
+            Assert.IsTrue(result.Command.PersistForReplay);
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
+            Assert.IsTrue(result.Command.RequiresPlayerInput);
+            Assert.IsFalse(result.Command.InterruptsMovement);
         }
     }
 }
