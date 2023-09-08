@@ -50,7 +50,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (item != null)
             {
                 var commandResults = action(requestKey);
-                Mediator.Send(new CloseGameInventoryRequest());
+                
+                if (commandResults.Any(c => c.Result == CommandResultEnum.Success))
+                    Mediator.Send(new CloseGameInventoryRequest());
+                
                 Mediator.Publish(new RefreshViewNotification());
 
                 return commandResults;

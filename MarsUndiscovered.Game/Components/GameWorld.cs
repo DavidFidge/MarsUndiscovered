@@ -735,8 +735,8 @@ namespace MarsUndiscovered.Game.Components
 
         /// <summary>
         /// ApplyItemRequest is done first. If is an enchant potion and is successful then
-        /// it is sent back in the command result. The UI will then go modal, forcing an item
-        /// choice for then enchantment. This choice is then sent here.
+        /// it is sent back in the command result. The UI will then ask for an item to enchant.
+        /// This choice is then sent here.
         /// </summary>
         public IList<CommandResult> EnchantItemRequest(Keys itemKey)
         {

@@ -48,6 +48,11 @@ namespace MarsUndiscovered.Game.Commands
 
         protected override CommandResult ExecuteInternal()
         {
+            var canEnchant = GameWorld.Inventory.CanTypeBeEnchanted(Target);
+
+            if (!canEnchant)
+                return Result(CommandResult.NoMove(this, $"{GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItem(Target)} cannot be enchanted."));
+            
             _oldEnchantLevel = Target.EnchantmentLevel;
             _newEnchantLevel = _oldEnchantLevel + 1;
             
