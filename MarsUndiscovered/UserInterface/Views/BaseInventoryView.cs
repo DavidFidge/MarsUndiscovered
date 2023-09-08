@@ -191,4 +191,12 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
 
         return Unit.Task;
     }
+    
+    public void HideIfMouseOver()
+    {
+        if (!InventoryPanel.IsMouseOver && !InventoryItemDescriptionPanel.IsMouseOver)
+        {
+            Hide();
+        }
+    }
 }

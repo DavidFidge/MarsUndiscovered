@@ -86,7 +86,8 @@ namespace MarsUndiscovered.Game.Components
                             CanEquip = CanEquip(item),
                             CanDrop = true,
                             CanUnequip = CanUnequip(item),
-                            CanApply = CanApply(item)
+                            CanApply = CanApply(item),
+                            CanEnchant = CanEnchant(item)
                         };
                     }
                 ).ToList();
@@ -301,6 +302,27 @@ namespace MarsUndiscovered.Game.Components
             return false;
         }
 
+        public bool CanEnchant(Item item)
+        {
+            if (item == null)
+                return false;
+
+            if (!Items.Contains(item))
+                return false;
+
+            return CanTypeBeEnchanted(item);
+        }
+        
+        public bool CanTypeBeEnchanted(Item item)
+        {
+            if (item.ItemType is Gadget or Weapon)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        
         public bool IsEquipped(Item item)
         {
             if (item == null)

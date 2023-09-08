@@ -344,7 +344,7 @@ namespace MarsUndiscovered.Installers
             container.Register(
                 Component.For<InventoryGameView>()
                     .DependsOn(Dependency.OnComponent<IKeyboardHandler, InventoryGameViewKeyboardHandler>())
-                    .DependsOn(Dependency.OnComponent<IMouseHandler, NullMouseHandler>()),
+                    .DependsOn(Dependency.OnComponent<IMouseHandler, InventoryGameViewMouseHandler>()),
 
                 Component.For<InventoryGameViewModel>()
             );
@@ -354,8 +354,9 @@ namespace MarsUndiscovered.Installers
         {
             container.Register(
                 Component.For<InventoryReplayView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, InventoryReplayViewKeyboardHandler>()),
-
+                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, InventoryReplayViewKeyboardHandler>())
+                    .DependsOn(Dependency.OnComponent<IMouseHandler, InventoryReplayViewMouseHandler>()),
+                
                 Component.For<InventoryReplayViewModel>()
             );
         }
