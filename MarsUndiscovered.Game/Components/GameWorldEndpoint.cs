@@ -60,24 +60,24 @@ namespace MarsUndiscovered.Game.Components
             return GameWorld.GetInventoryItems();
         }
 
-        public void EquipItemRequest(Keys requestKey)
+        public IList<CommandResult> EquipItemRequest(Keys requestKey)
         {
-            GameWorld.EquipItemRequest(requestKey);
+            return GameWorld.EquipItemRequest(requestKey);
         }
 
-        public void UnequipItemRequest(Keys requestKey)
+        public IList<CommandResult> UnequipItemRequest(Keys requestKey)
         {
-            GameWorld.UnequipItemRequest(requestKey);
+            return GameWorld.UnequipItemRequest(requestKey);
         }
 
-        public void DropItemRequest(Keys requestKey)
+        public IList<CommandResult> DropItemRequest(Keys requestKey)
         {
-            GameWorld.DropItemRequest(requestKey);
+            return GameWorld.DropItemRequest(requestKey);
         }
 
-        public void ApplyItemRequest(Keys requestKey)
+        public IList<CommandResult> ApplyItemRequest(Keys requestKey)
         {
-            GameWorld.ApplyItemRequest(requestKey);
+            return GameWorld.ApplyItemRequest(requestKey);
         }
 
         public string GetSeed()
@@ -188,6 +188,11 @@ namespace MarsUndiscovered.Game.Components
         public IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange)
         {
             return GameWorld.ForceLevelChange(forceLevelChange);
+        }
+
+        public IList<CommandResult> EnchantItemRequest(Keys requestKey)
+        {
+            return GameWorld.EnchantItemRequest(requestKey);
         }
 
         public void LoadReplay(string gameName)

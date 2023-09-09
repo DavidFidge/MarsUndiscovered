@@ -23,10 +23,10 @@ namespace MarsUndiscovered.Interfaces
         ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step, WorldGenerationTypeParams worldGenerationTypeParams);
         void AfterCreateGame();
         List<InventoryItem> GetInventoryItems();
-        void EquipItemRequest(Keys requestKey);
-        void UnequipItemRequest(Keys requestKey);
-        void DropItemRequest(Keys requestKey);
-        void ApplyItemRequest(Keys requestKey);
+        IList<CommandResult> EquipItemRequest(Keys requestKey);
+        IList<CommandResult> UnequipItemRequest(Keys requestKey);
+        IList<CommandResult> DropItemRequest(Keys requestKey);
+        IList<CommandResult> ApplyItemRequest(Keys requestKey);
         string GetSeed();
         Rectangle GetCurrentMapDimensions();
         IList<IGameObject> GetLastSeenGameObjectsAtPosition(Point point);
@@ -49,5 +49,6 @@ namespace MarsUndiscovered.Interfaces
         IList<RadioCommsItem> GetNewRadioCommsItems();
         IGridView<double?> GetGoalMap();
         IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange);
+        IList<CommandResult> EnchantItemRequest(Keys obj);
     }
 }

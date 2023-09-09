@@ -21,6 +21,8 @@ namespace MarsUndiscovered.Game.Commands
 
         public ApplyItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
+            EndsPlayerTurn = true;
+            PersistForReplay = true;
         }
 
         public void Initialise(IGameObject gameObject, Item item)
@@ -89,11 +91,13 @@ namespace MarsUndiscovered.Game.Commands
             }
 
             Item.ResetRechargeDelay();
-            
-            if (Item.ItemType is NanoFlask)
-                GameWorld.Inventory.Remove(Item);
 
-            BaseGameActionCommand subsequentCommand;
+            if (Item.ItemType is NanoFlask)
+            {
+                GameWorld.Inventory.Remove(Item);
+            }
+
+            BaseGameActionCommand subsequentCommand = null;
 
             switch (Item.ItemType)
             {
@@ -109,6 +113,12 @@ namespace MarsUndiscovered.Game.Commands
                     var command = CommandFactory.CreateApplyHealingBotsCommand(GameWorld);
                     command.Initialise(Item, GameWorld.Player);
                     subsequentCommand = command;
+                    break;
+                }
+                case EnhancementBots:
+                {
+                    RequiresPlayerInput = true;
+                    EndsPlayerTurn = false;
                     break;
                 }
                 default:

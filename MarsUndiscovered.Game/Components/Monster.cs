@@ -606,7 +606,10 @@ namespace MarsUndiscovered.Game.Components
 
                             if (actorsAtPosition.Any())
                             {
-                                throw new Exception("Hunt behaviour should not move into a square occupied by an actor");
+                                // If we entered here then the monster would have switched to hunting while
+                                // adjacent to the player.  Do not move anywhere - next turn the monster
+                                // should perform an attack.
+                                return BehaviourStatus.Succeeded;
                             }
 
                             var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);

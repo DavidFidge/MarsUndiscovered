@@ -5,16 +5,20 @@ namespace MarsUndiscovered.Game.Components
 {
     public class IronSpike : Weapon
     {
-        private Attack _lineAttack = new(new Range<int>(50, 90));
+        private Attack _lineAttack = new(new Range<int>(12, 16));
 
         public override string Name => nameof(IronSpike);
 
-        public override void ApplyProperties(Item item)
+        public override void RecalculateProperties(Item item)
         {
-            base.ApplyProperties(item);
+            base.RecalculateProperties(item);
 
             item.LineAttack = (Attack)_lineAttack.Clone();
-            item.LineAttack.SetPowerLevel(item.EnchantmentLevel);
+
+            var minDamage = item.LineAttack.DamageRangeBase.Min + item.EnchantmentLevel * 2;
+            var maxDamage = item.LineAttack.DamageRangeBase.Max + item.EnchantmentLevel * 2;
+
+            item.LineAttack.DamageRange = new Range<int>(minDamage <= 0 ? 1 : minDamage, maxDamage <= 0 ? 1 : maxDamage);
         }
         
         public override string GetTypeDescription()

@@ -2,15 +2,10 @@
 
 namespace MarsUndiscovered.Messages
 {
-    public class LeftClickViewRequest : IRequest
+    public class LeftClickViewRequest : BaseClickViewRequest
     {
-        public LeftClickViewRequest(int x, int y)
+        public LeftClickViewRequest(int x, int y) : base(x, y)
         {
-            X = x;
-            Y = y;
         }
-
-        public int X { get; }
-        public int Y { get; }
     }
 }

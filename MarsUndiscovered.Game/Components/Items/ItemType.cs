@@ -9,6 +9,7 @@ namespace MarsUndiscovered.Game.Components
         public static MagnesiumPipe MagnesiumPipe = new MagnesiumPipe();
         public static IronSpike IronSpike = new IronSpike();
         public static HealingBots HealingBots = new HealingBots();
+        public static EnhancementBots EnhancementBots = new EnhancementBots();
         public static ShipRepairParts ShipRepairParts = new ShipRepairParts();
 
         private Color _foregroundColour = Color.Yellow;
@@ -34,16 +35,11 @@ namespace MarsUndiscovered.Game.Components
 
         public virtual bool GroupsInInventory { get; } = false;
 
-        public virtual void ApplyProperties(Item item)
+        public virtual void RecalculateProperties(Item item)
         {
             item.GroupsInInventory = GroupsInInventory;
         }
 
-        public virtual void ApplyEnchantmentLevel(Item item)
-        {
-            item.EnchantmentLevel = 0;
-        }
-        
         static ItemType()
         {
             ItemTypes = new Dictionary<string, ItemType>();
@@ -52,6 +48,7 @@ namespace MarsUndiscovered.Game.Components
             ItemTypes.Add(MagnesiumPipe.Name, MagnesiumPipe);
             ItemTypes.Add(IronSpike.Name, IronSpike);
             ItemTypes.Add(HealingBots.Name, HealingBots);
+            ItemTypes.Add(EnhancementBots.Name, EnhancementBots);
             ItemTypes.Add(ShipRepairParts.Name, ShipRepairParts);
         }
 

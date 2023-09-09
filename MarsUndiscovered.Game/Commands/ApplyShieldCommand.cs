@@ -7,7 +7,7 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class ApplyShieldCommand : BaseAttackCommand<ApplyShieldCommandSaveData>
+    public class ApplyShieldCommand : BaseMarsGameActionCommand<ApplyShieldCommandSaveData>
     {
         public Item Source { get; private set; }
         public Actor Target { get; private set; }

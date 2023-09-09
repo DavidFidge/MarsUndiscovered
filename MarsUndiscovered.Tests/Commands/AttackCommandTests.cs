@@ -47,6 +47,11 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreSame(_gameWorld.Player, attackCommand.Source);
             Assert.AreSame(monster, attackCommand.Target);
             Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
+            
+            Assert.IsFalse(attackCommand.PersistForReplay);
+            Assert.IsFalse(attackCommand.EndsPlayerTurn);
+            Assert.IsFalse(attackCommand.RequiresPlayerInput);
+            Assert.IsTrue(attackCommand.InterruptsMovement);
         }
         
         [TestMethod]

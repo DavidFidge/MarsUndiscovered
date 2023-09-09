@@ -33,6 +33,11 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.IsFalse(_gameWorld.CurrentMap.GetObjectsAt(_gameWorld.Player.Position).Any(m => m is Item));
             Assert.AreEqual("You pick up a Magnesium Pipe", result.Messages[0]);
+            
+            Assert.IsFalse(result.Command.PersistForReplay);
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.RequiresPlayerInput);
+            Assert.IsFalse(result.Command.InterruptsMovement);
         }
 
         [TestMethod]

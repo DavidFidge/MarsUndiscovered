@@ -38,6 +38,11 @@ namespace MarsUndiscovered.Tests.Commands
 
             Assert.IsNotNull(moveCommand);
             Assert.AreEqual(CommandResultEnum.Success, moveCommand.CommandResult.Result);
+            
+            Assert.IsTrue(walkCommand.PersistForReplay);
+            Assert.IsTrue(walkCommand.EndsPlayerTurn);
+            Assert.IsFalse(walkCommand.RequiresPlayerInput);
+            Assert.IsFalse(walkCommand.InterruptsMovement);
         }
 
         [TestMethod]

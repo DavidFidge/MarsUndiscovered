@@ -139,6 +139,7 @@ public class InventoryItemPanel : Panel
             (inventoryMode == InventoryMode.Unequip && !inventoryItem.CanUnequip) ||
             (inventoryMode == InventoryMode.Drop && !inventoryItem.CanDrop) ||
             (inventoryMode == InventoryMode.Apply && !inventoryItem.CanApply) ||
+            (inventoryMode == InventoryMode.Enchant && !inventoryItem.CanEnchant) ||
             inventoryMode == InventoryMode.ReadOnly)
         {
             _key.FillColor(Color.Gray);

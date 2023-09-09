@@ -15,8 +15,6 @@ namespace MarsUndiscovered.Game.Commands
         [JsonIgnore]
         public ICommandFactory CommandFactory { get; set; }
 
-        public virtual bool InterruptsMovement => false;
-
         public BaseMarsGameActionCommand(IGameWorld gameWorld)
         {
             GameWorld = gameWorld;

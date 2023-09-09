@@ -14,7 +14,8 @@ using Microsoft.Xna.Framework.Input;
 namespace MarsUndiscovered.UserInterface.Views
 {
     public class InventoryGameView : BaseInventoryView<InventoryGameViewModel, InventoryGameData>,
-        IRequestHandler<InventoryItemSelectionRequest>
+        IRequestHandler<InventoryItemSelectionRequest>,
+        IRequestHandler<LeftClickInventoryGameViewRequest>
     {
         private readonly IActionMap _actionMap;
         private Button _equipButton;
@@ -156,6 +157,9 @@ namespace MarsUndiscovered.UserInterface.Views
                 case Views.InventoryMode.Apply:
                     InventoryLabel.Text = "Apply (use) what?";
                     break;
+                case Views.InventoryMode.Enchant:
+                    InventoryLabel.Text = "Enhance what?";
+                    break;
             }
         }
 
@@ -180,6 +184,9 @@ namespace MarsUndiscovered.UserInterface.Views
                     break;
                 case Views.InventoryMode.Apply:
                     _viewModel.ApplyRequest(request.Key);
+                    break;
+                case Views.InventoryMode.Enchant:
+                    _viewModel.EnchantItemRequest(request.Key);
                     break;
                 case Views.InventoryMode.ReadOnly:
                     base.PerformKeyAction(request.Key);
@@ -219,6 +226,9 @@ namespace MarsUndiscovered.UserInterface.Views
                 case Views.InventoryMode.Apply:
                     _viewModel.ApplyRequest(focusItem.Key);
                     break;
+                case Views.InventoryMode.Enchant:
+                    _viewModel.EnchantItemRequest(focusItem.Key);
+                    break;
             }
         }
 
@@ -226,6 +236,13 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             ClearFocus();
             base.Hide();
+        }
+
+        public Task<Unit> Handle(LeftClickInventoryGameViewRequest request, CancellationToken cancellationToken)
+        {
+            HideIfMouseOver();
+
+            return Unit.Task;
         }
     }
 }

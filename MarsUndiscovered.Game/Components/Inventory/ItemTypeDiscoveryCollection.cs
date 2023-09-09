@@ -80,15 +80,23 @@ public class ItemTypeDiscoveryCollection : Dictionary<ItemType, ItemTypeDiscover
     public void CreateUndiscoveredItemTypeNames()
     {
         var unusedFlaskNames = new List<string>(RandomFlaskNames);
-
-        var index = GlobalRandom.DefaultRNG.NextInt(0, unusedFlaskNames.Count - 1);
-        Add(ItemType.HealingBots, new ItemTypeDiscovery(unusedFlaskNames[index]));
-        unusedFlaskNames.Remove(unusedFlaskNames[index]);
-
         var unusedGadgetNames = new List<string>(RandomGadgetNames);
-        index = GlobalRandom.DefaultRNG.NextInt(0, unusedGadgetNames.Count - 1);
-        Add(ItemType.ShieldGenerator, new ItemTypeDiscovery(unusedGadgetNames[index]));
-        unusedGadgetNames.Remove(unusedGadgetNames[index]);
+        
+        foreach (var itemType in ItemType.ItemTypes)
+        {
+            List<string> names;
+            
+            if (itemType.Value is NanoFlask)
+                names = unusedFlaskNames;
+            else if (itemType.Value is Gadget)
+                names = unusedGadgetNames;
+            else
+                continue;
+            
+            var index = GlobalRandom.DefaultRNG.NextInt(0, names.Count - 1);
+            Add(itemType.Value, new ItemTypeDiscovery(names[index]));
+            names.Remove(names[index]);
+        }
     }
     
     public string GetUndiscoveredDescription(ItemType itemType)

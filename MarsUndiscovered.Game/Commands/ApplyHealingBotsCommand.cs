@@ -7,7 +7,7 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class ApplyHealingBotsCommand : BaseAttackCommand<ApplyHealingBotsCommandSaveData>
+    public class ApplyHealingBotsCommand : BaseMarsGameActionCommand<ApplyHealingBotsCommandSaveData>
     {
         public Item Source { get; private set; }
         public Actor Target { get; private set; }

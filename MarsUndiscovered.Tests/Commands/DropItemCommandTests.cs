@@ -33,6 +33,11 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.AreSame(item, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
             Assert.AreEqual("You drop a Magnesium Pipe", result.Messages[0]);
+            
+            Assert.IsTrue(result.Command.PersistForReplay);
+            Assert.IsTrue(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.RequiresPlayerInput);
+            Assert.IsFalse(result.Command.InterruptsMovement);
         }
 
         [TestMethod]
@@ -41,7 +46,10 @@ namespace MarsUndiscovered.Tests.Commands
             // Arrange
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
-            var spawnItemParams = new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).IntoPlayerInventory();
+            var spawnItemParams = new SpawnItemParams()
+                .WithItemType(ItemType.MagnesiumPipe)
+                .IntoPlayerInventory();
+            
             _gameWorld.SpawnItem(spawnItemParams);
             var itemInInventory = spawnItemParams.Result;
 
