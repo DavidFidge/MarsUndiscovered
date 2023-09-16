@@ -5,7 +5,6 @@ namespace MarsUndiscovered.Game.Components
     public class HealingBots : NanoFlask
     {
         private readonly int _healthIncreasePercent = 25;
-        public override string Name => nameof(HealingBots);
 
         public override void RecalculateProperties(Item item)
         {
@@ -25,11 +24,6 @@ namespace MarsUndiscovered.Game.Components
                 return $"{(includePrefix ? $"{quantity.ToString()} " : "")}{GetAbstractTypeName()}{(includePrefix ? "s" : "")} of Healing Bots";
 
             return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}";
-        }
-
-        public override string GetTypeDescription()
-        {
-            return $"{GetAbstractTypeName()} of Healing Bots";
         }
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)

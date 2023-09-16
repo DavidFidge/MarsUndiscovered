@@ -32,6 +32,7 @@ namespace MarsUndiscovered.Interfaces
         DoorCollection Doors { get; }
         MonsterCollection Monsters { get; }
         ItemCollection Items { get; }
+        MachineCollection Machines { get; }
         Inventory Inventory { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
         ILevelGenerator LevelGenerator { get; set; }
@@ -66,5 +67,6 @@ namespace MarsUndiscovered.Interfaces
         IGridView<double?> GetGoalMap();
         IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange);
         IList<CommandResult> EnchantItemRequest(Keys requestKey);
+        void SpawnMachine(SpawnMachineParams spawnMachineParams);
     }
 }

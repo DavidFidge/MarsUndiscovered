@@ -2,12 +2,9 @@
 {
     public class ShipRepairParts : VictoryItemType
     {
-        private char _asciiCharacter = '&';
-
-        public override char AsciiCharacter
+        public ShipRepairParts()
         {
-            get => _asciiCharacter;
-            set => _asciiCharacter = value;
+            AsciiCharacter = '&';
         }
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery,

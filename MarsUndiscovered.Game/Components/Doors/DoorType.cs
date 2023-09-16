@@ -10,12 +10,6 @@ public abstract class DoorType : GameObjectType
     public static Dictionary<DoorType, DoorType> OpenClosedMapping;
     public static Dictionary<DoorType, DoorType> ClosedOpenMapping;
 
-    public override string Name
-    {
-        get => GetType().Name;
-        set { }
-    }
-
     static DoorType()
     {
         DoorTypes = new Dictionary<string, DoorType>();

@@ -7,8 +7,6 @@ namespace MarsUndiscovered.Game.Components
     {
         private Attack _lineAttack = new(new Range<int>(12, 16));
 
-        public override string Name => nameof(IronSpike);
-
         public override void RecalculateProperties(Item item)
         {
             base.RecalculateProperties(item);

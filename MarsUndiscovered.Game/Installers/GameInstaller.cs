@@ -48,6 +48,10 @@ namespace MarsUndiscovered.Game.Installers
                     .ImplementedBy<ItemGenerator>()
                     .LifestyleTransient(),
 
+                Component.For<IMachineGenerator>()
+                    .ImplementedBy<MachineGenerator>()
+                    .LifestyleTransient(),
+
                 Component.For<IShipGenerator>()
                     .ImplementedBy<ShipGenerator>()
                     .LifestyleTransient(),

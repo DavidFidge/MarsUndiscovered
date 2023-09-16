@@ -11,6 +11,10 @@ namespace MarsUndiscovered.Game.Components.Maps;
 public class LevelGenerator : ILevelGenerator
 {
     private GameWorld _gameWorld;
+    
+    private ProbabilityTable<MachineType> _machineTypeProbabilityTable;
+    private List<(MachineType machineType, double weight)> _machineTypeWeights;
+
     private List<(ProbabilityTable<ItemType> itemType, double weight)> _itemTypeWeights;
     private ProbabilityTable<ProbabilityTable<ItemType>> _itemTypeProbabilityTable;
     private ProbabilityTable<ItemType> _gadgetProbabilityTable;
@@ -25,8 +29,15 @@ public class LevelGenerator : ILevelGenerator
     public IShipGenerator ShipGenerator { get; set; }
     public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
     public IMapExitGenerator MapExitGenerator { get; set; }
-
+    public IMachineGenerator MachineGenerator { get; set; }
+    
     public IEnhancedRandom RNG { get; set; }
+    
+    private void SpawnMachine(SpawnMachineParams spawnMachineParams)
+    {
+        MachineGenerator.SpawnMachine(spawnMachineParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Machines);
+    }
+    
     private void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
     {
         MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Monsters);
@@ -78,6 +89,34 @@ public class LevelGenerator : ILevelGenerator
         previousMapExit.Destination = mapExit;
     }
 
+    private void SpawnItems(int itemsToPlace, MarsMap map)
+    {
+        for (var i = 0; i < itemsToPlace; i++)
+        {
+            var itemType = _itemTypeProbabilityTable.NextItem().NextItem();
+
+            var spawnItemParams = new SpawnItemParams()
+                .OnMap(map.Id)
+                .WithItemType(itemType);
+
+            SpawnItem(spawnItemParams);
+        }
+    }
+    
+    private void SpawnMachines(int machinesToPlace, MarsMap map)
+    {
+        for (var i = 0; i < machinesToPlace; i++)
+        {
+            var machineItem = _machineTypeProbabilityTable.NextItem();
+
+            var spawnMachineParams = new SpawnMachineParams()
+                .OnMap(map.Id)
+                .WithMachineType(machineItem);
+
+            SpawnMachine(spawnMachineParams);
+        }
+    }
+    
     private MarsMap CreateLevel1()
     {
         MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, 70, 70);
@@ -130,46 +169,12 @@ public class LevelGenerator : ILevelGenerator
         var itemsToPlace = RNG.NextInt(5, 10);
         SpawnItems(itemsToPlace, map);
         
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Black Ops Defender")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Black Ops Sniper")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Crazed Foreman")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Crazed Miner")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Eldritch Worm")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Flame Turret")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Megalith Carrier")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Megalith Chucker")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Missile Turret")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Nirgal Bomber")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Nirgal Rebel")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Phasmid Hunter")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Repair Droid")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Roach")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Spiral Borer")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Steam Elemental")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Tentacle Horror")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Tesla Turret")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Tunnel Borer")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Werewolf")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Yendorian Grunt")).OnMap(map.Id));
-        // SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Yendorian Master")).OnMap(map.Id));
+        var machinesToPlace = RNG.NextInt(1, 2);
+        SpawnMachines(machinesToPlace, map);
         
         return map;
     }
-
-    private void SpawnItems(int itemsToPlace, MarsMap map)
-    {
-        for (var i = 0; i < itemsToPlace; i++)
-        {
-            var itemType = _itemTypeProbabilityTable.NextItem().NextItem();
-
-            var spawnItemParams = new SpawnItemParams()
-                .OnMap(map.Id)
-                .WithItemType(itemType);
-
-            SpawnItem(spawnItemParams);
-        }
-    }
-
+    
     private MarsMap CreateLevel2(MarsMap previousMap)
     {
         MapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60);
@@ -198,7 +203,10 @@ public class LevelGenerator : ILevelGenerator
 
         var itemsToPlace = RNG.NextInt(5, 10);
         SpawnItems(itemsToPlace, map);
-
+        
+        var machinesToPlace = RNG.NextInt(1, 2);
+        SpawnMachines(machinesToPlace, map);
+        
         return map;
     }
 
@@ -210,18 +218,24 @@ public class LevelGenerator : ILevelGenerator
         map.Level = 3;
 
         SpawnItem(new SpawnItemParams().OnMap(map.Id).WithItemType(ItemType.ShipRepairParts));
+        SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Yendorian Master")).OnMap(map.Id));
         
         CreateMapExitToPreviousMap(map, previousMap);
         
         var itemsToPlace = RNG.NextInt(5, 10);
         SpawnItems(itemsToPlace, map);
         
+        var machinesToPlace = RNG.NextInt(1, 2);
+        SpawnMachines(machinesToPlace, map);
+
         return map;
     }
 
     public void CreateLevels()
     {
         SetupItemWeightTable();
+        SetupMachineWeightTable();
+        
         var level1Map = CreateLevel1();
         var level2Map = CreateLevel2(level1Map);
         CreateLevel3(level2Map);
@@ -261,7 +275,17 @@ public class LevelGenerator : ILevelGenerator
         
         _itemTypeProbabilityTable = new ProbabilityTable<ProbabilityTable<ItemType>>(_itemTypeWeights);
     }
-
+    
+    private void SetupMachineWeightTable()
+    {
+        _machineTypeWeights = new List<(MachineType machineType, double weight)>
+        {
+            (MachineType.Analyzer, 1)
+        };
+        
+        _machineTypeProbabilityTable = new ProbabilityTable<MachineType>(_machineTypeWeights);
+    }
+    
     public ProgressiveWorldGenerationResult CreateProgressive(ulong seed, int step, WorldGenerationTypeParams worldGenerationTypeParams)
     {
         switch (worldGenerationTypeParams.MapType)

@@ -236,7 +236,10 @@ namespace MarsUndiscovered.Game.Components
                 .ToArray();
 
             SeenTiles = new ArrayView<SeenTile>(seenTiles, MapWidth);
-
+            
+            // If KeyNotFoundException happens here then the game object type SaveState or LoadState
+            // is not populating the id. Base game object classes populate the id for you (refer
+            // to existing implementations).
             var gameObjectsOnMap = memento.State.GameObjectIds
                 .Select(g => _gameWorld.GameObjects[g])
                 .OfType<MarsGameObject>()

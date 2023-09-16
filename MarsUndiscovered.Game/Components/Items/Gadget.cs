@@ -2,16 +2,13 @@
 {
     public abstract class Gadget : ItemType
     {
-        private char _asciiCharacter = (char)237;
-
-        public override char AsciiCharacter
-        {
-            get => _asciiCharacter;
-            set => _asciiCharacter = value;
-        }
-
         protected abstract int RechargeDelay { get; }
 
+        public Gadget()
+        {
+            AsciiCharacter = (char)237;
+        }
+        
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
             if (!includePrefix)

@@ -215,5 +215,10 @@ namespace MarsUndiscovered.Game.Components
         {
             GameWorld.SpawnMapExit(spawnMapExitParams);
         }
+
+        public void SpawnMachine(SpawnMachineParams spawnMachineParams)
+        {
+            GameWorld.SpawnMachine(spawnMachineParams);
+        }
     }
 }

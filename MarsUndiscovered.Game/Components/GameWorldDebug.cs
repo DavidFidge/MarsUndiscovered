@@ -9,6 +9,7 @@ namespace MarsUndiscovered.Game.Components
         public IMonsterGenerator MonsterGenerator { get; set; }
         public IItemGenerator ItemGenerator { get; set; }
         public IMapExitGenerator MapExitGenerator { get; set; }
+        public IMachineGenerator MachineGenerator { get; set; }
         private GameWorld _gameWorld { get; set; }
 
 
@@ -33,6 +34,11 @@ namespace MarsUndiscovered.Game.Components
         public void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
         {
             MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
+        }
+
+        public void SpawnMachine(SpawnMachineParams spawnMachineParams)
+        {
+            MachineGenerator.SpawnMachine(spawnMachineParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Machines);
         }
     }
 }

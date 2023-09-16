@@ -8,7 +8,6 @@ using MarsUndiscovered.Interfaces;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
-using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
@@ -40,6 +39,7 @@ namespace MarsUndiscovered.Game.Components
         public DoorCollection Doors { get; private set; }
         public MonsterCollection Monsters { get; private set; }
         public ItemCollection Items { get; private set; }
+        public MachineCollection Machines { get; private set; }
         public MapExitCollection MapExits { get; private set; }
         public ShipCollection Ships { get; private set; }
         public MiningFacilityCollection MiningFacilities { get; private set; }
@@ -172,6 +172,7 @@ namespace MarsUndiscovered.Game.Components
             Doors = new DoorCollection(GameObjectFactory);
             Monsters = new MonsterCollection(GameObjectFactory);
             Items = new ItemCollection(GameObjectFactory);
+            Machines = new MachineCollection(GameObjectFactory);
             MapExits = new MapExitCollection(GameObjectFactory);
             Ships = new ShipCollection(GameObjectFactory);
             MiningFacilities = new MiningFacilityCollection(GameObjectFactory);
@@ -554,6 +555,7 @@ namespace MarsUndiscovered.Game.Components
             Doors.LoadState(saveGameService, gameWorld);
             Monsters.LoadState(saveGameService, gameWorld);
             Items.LoadState(saveGameService, gameWorld);
+            Machines.LoadState(saveGameService, gameWorld);
             MapExits.LoadState(saveGameService, gameWorld);
             Ships.LoadState(saveGameService, gameWorld);
             MiningFacilities.LoadState(saveGameService, gameWorld);
@@ -589,6 +591,7 @@ namespace MarsUndiscovered.Game.Components
             Doors.SaveState(saveGameService, gameWorld);
             Monsters.SaveState(saveGameService, gameWorld);
             Items.SaveState(saveGameService, gameWorld);
+            Machines.SaveState(saveGameService, gameWorld);
             MapExits.SaveState(saveGameService, gameWorld);
             Ships.SaveState(saveGameService, gameWorld);
             MiningFacilities.SaveState(saveGameService, gameWorld);
@@ -770,6 +773,12 @@ namespace MarsUndiscovered.Game.Components
         {
             spawnItemParams.MapId = CurrentMap.Id;
             GameWorldDebug.SpawnItem(spawnItemParams);
+        }
+        
+        public void SpawnMachine(SpawnMachineParams spawnMachineParams)
+        {
+            spawnMachineParams.MapId = CurrentMap.Id;
+            GameWorldDebug.SpawnMachine(spawnMachineParams);
         }
 
         public void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
