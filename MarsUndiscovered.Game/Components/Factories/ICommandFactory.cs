@@ -21,5 +21,7 @@ namespace MarsUndiscovered.Game.Components.Factories
         EnchantItemCommand CreateEnchantItemCommand(IGameWorld gameWorld);
         ApplyShieldCommand CreateApplyShieldCommand(IGameWorld gameWorld);
         WaitCommand CreateWaitCommand(IGameWorld gameWorld);
+        ApplyMachineCommand CreateApplyMachineCommand(IGameWorld gameWorld);
+        IdentifyItemCommand CreateIdentifyItemCommand(IGameWorld gameWorld);
     }
 }

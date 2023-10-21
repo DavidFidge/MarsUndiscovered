@@ -50,5 +50,6 @@ namespace MarsUndiscovered.Interfaces
         IGridView<double?> GetGoalMap();
         IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange);
         IList<CommandResult> EnchantItemRequest(Keys obj);
+        IList<CommandResult> IdentifyItemRequest(Keys requestKey);
     }
 }

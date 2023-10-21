@@ -21,6 +21,8 @@ namespace MarsUndiscovered.Game.Components.Factories
         public ICommandFactory<ApplyHealingBotsCommand> ApplyHealingBotsCommandFactory { get; set; }
         public ICommandFactory<EnchantItemCommand> EnchantItemCommandFactory { get; set; }
         public ICommandFactory<WaitCommand> WaitCommandFactory { get; set; }
+        public ICommandFactory<ApplyMachineCommand> ApplyMachineCommandFactory { get; set; }
+        public ICommandFactory<IdentifyItemCommand> IdentifyItemCommandFactory { get; set; }
 
         public MoveCommand CreateMoveCommand(IGameWorld gameWorld)
         {
@@ -99,6 +101,16 @@ namespace MarsUndiscovered.Game.Components.Factories
         public WaitCommand CreateWaitCommand(IGameWorld gameWorld)
         {
             return WaitCommandFactory.Create(gameWorld);
+        }
+
+        public ApplyMachineCommand CreateApplyMachineCommand(IGameWorld gameWorld)
+        {
+            return ApplyMachineCommandFactory.Create(gameWorld);
+        }
+
+        public IdentifyItemCommand CreateIdentifyItemCommand(IGameWorld gameWorld)
+        {
+            return IdentifyItemCommandFactory.Create(gameWorld);
         }
     }
 }

@@ -195,6 +195,11 @@ namespace MarsUndiscovered.Game.Components
             return GameWorld.EnchantItemRequest(requestKey);
         }
 
+        public IList<CommandResult> IdentifyItemRequest(Keys requestKey)
+        {
+            return GameWorld.IdentifyItemRequest(requestKey);
+        }
+
         public void LoadReplay(string gameName)
         {
             GameWorld = _gameWorldFactory.Create();

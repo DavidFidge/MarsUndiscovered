@@ -97,7 +97,8 @@ public class LevelGenerator : ILevelGenerator
 
             var spawnItemParams = new SpawnItemParams()
                 .OnMap(map.Id)
-                .WithItemType(itemType);
+                .WithItemType(itemType)
+                .WithRandomEnchantmentLevel();
 
             SpawnItem(spawnItemParams);
         }

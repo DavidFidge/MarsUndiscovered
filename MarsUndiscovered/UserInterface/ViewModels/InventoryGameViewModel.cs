@@ -66,5 +66,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             DoRequest(requestKey, requestKey => GameWorldEndpoint.EnchantItemRequest(requestKey));
         }
+        
+        public void IdentifyItemRequest(Keys requestKey)
+        {
+            DoRequest(requestKey, requestKey => GameWorldEndpoint.IdentifyItemRequest(requestKey));
+        }
     }
 }

@@ -170,6 +170,12 @@ namespace MarsUndiscovered.Game.Installers
                     .AsFactory(),
                 
                 Component.For<ICommandFactory<WaitCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<ApplyMachineCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<IdentifyItemCommand>>()
                     .AsFactory()
             );
         }

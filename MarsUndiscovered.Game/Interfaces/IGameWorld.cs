@@ -68,5 +68,6 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange);
         IList<CommandResult> EnchantItemRequest(Keys requestKey);
         void SpawnMachine(SpawnMachineParams spawnMachineParams);
+        IList<CommandResult> IdentifyItemRequest(Keys requestKey);
     }
 }

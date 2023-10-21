@@ -131,6 +131,16 @@ namespace MarsUndiscovered.Game.Commands
 
                     return Result(CommandResult.NoMove(this, "You don't have the parts you need to repair your ship!"));
                 }
+                
+                var machineAt = map.GetObjectAt<Machine>(newPlayerPosition);
+
+                if (machineAt != null)
+                {
+                    var command = CommandFactory.CreateApplyMachineCommand(GameWorld);
+                    command.Initialise(machineAt);
+
+                    return Result(CommandResult.Success(this, command));
+                }
             }
 
             return Result(CommandResult.Exception(this, $"Cannot move {Direction}"));

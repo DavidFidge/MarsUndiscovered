@@ -781,6 +781,18 @@ namespace MarsUndiscovered.Game.Components
             GameWorldDebug.SpawnMachine(spawnMachineParams);
         }
 
+        public IList<CommandResult> IdentifyItemRequest(Keys requestKey)
+        {
+            if (!Inventory.ItemKeyAssignments.TryGetValue(requestKey, out var item))
+                return null;
+            
+            var identifyItemCommand = CommandFactory.CreateIdentifyItemCommand(this);
+
+            identifyItemCommand.Initialise(item.First());
+
+            return ExecuteCommand(identifyItemCommand).ToList();
+        }
+
         public void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
         {
             spawnMapExitParams.MapId = CurrentMap.Id;
