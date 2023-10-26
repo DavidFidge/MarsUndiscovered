@@ -37,6 +37,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private ArrayView<MapTileEntity> _terrainTiles;
         private ArrayView<MapTileEntity> _actorTiles;
         private ArrayView<MapTileEntity> _itemTiles;
+        private ArrayView<MapTileEntity> _machineTiles;
         private ArrayView<MapTileEntity> _indestructibleTiles;
         private ArrayView<FieldOfViewTileEntity> _fieldOfViewTiles;
         private ArrayView<GoalMapEntity> _goalMapTiles;
@@ -100,6 +101,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _terrainTiles = new ArrayView<MapTileEntity>(_width, _height);
             _actorTiles = new ArrayView<MapTileEntity>(_width, _height);
             _itemTiles = new ArrayView<MapTileEntity>(_width, _height);
+            _machineTiles = new ArrayView<MapTileEntity>(_width, _height);
             _indestructibleTiles = new ArrayView<MapTileEntity>(_width, _height);
             _fieldOfViewTiles = new ArrayView<FieldOfViewTileEntity>(_width, _height);
             _mouseHoverTiles = new ArrayView<MapTileEntity>(_width, _height);
@@ -130,6 +132,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _terrainTiles[point].IsVisible = false;
             _actorTiles[point].IsVisible = false;
             _itemTiles[point].IsVisible = false;
+            _machineTiles[point].IsVisible = false;
             _goalMapTiles[point].IsVisible = false;
             _indestructibleTiles[point].IsVisible = false;
 
@@ -205,6 +208,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             var itemTileEntity = _mapTileEntityFactory.Create(position);
             _itemTiles[position] = itemTileEntity;
 
+            var machineTileEntity = _mapTileEntityFactory.Create(position);
+            _machineTiles[position] = machineTileEntity;
+            
             var indestructibleTile = _mapTileEntityFactory.Create(position);
             _indestructibleTiles[position] = indestructibleTile;
 
@@ -228,6 +234,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _allTiles.Add(itemTileEntity);
             _allTiles.Add(actorTileEntity);
             _allTiles.Add(indestructibleTile);
+            _allTiles.Add(machineTileEntity);
             _allTiles.Add(mouseHoverEntity);
             _allTiles.Add(animationTileEntity);
             _allTiles.Add(fieldOfViewTileEntity);
@@ -293,6 +300,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
                 return;
             }
+            
+            // Must come before indestructible as machines are currently indestructible
+            var machine = gameObjects.FirstOrDefault(go => go is Machine);
+
+            if (machine != null)
+            {
+                _machineTiles[point].SetMachine(((Machine)machine).MachineType);
+                return;
+            }
 
             var indestructibleTile = gameObjects.FirstOrDefault(go => go is Indestructible);
 
@@ -301,11 +317,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 if (indestructibleTile is MapExit)
                     _indestructibleTiles[point].SetMapExit(((MapExit)indestructibleTile).Direction);
 
-                if (indestructibleTile is Ship)
+                else if (indestructibleTile is Ship)
                     _indestructibleTiles[point].SetShip(((Ship)indestructibleTile).ShipPart);
                 
-                if (indestructibleTile is MiningFacility)
-                    _indestructibleTiles[point].SetMiningFacility(((MiningFacility)indestructibleTile).MiningFacilitySection);
+                else if (indestructibleTile is MiningFacility)
+                    _indestructibleTiles[point]
+                        .SetMiningFacility(((MiningFacility)indestructibleTile).MiningFacilitySection);
+                else
+                    throw new Exception($"Indestructible tile type {0} is not being drawn");
 
                 return;
             }

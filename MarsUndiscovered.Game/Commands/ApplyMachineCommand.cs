@@ -53,6 +53,7 @@ namespace MarsUndiscovered.Game.Commands
             Machine.IsUsed = true;
 
             BaseGameActionCommand subsequentCommand = null;
+            string message;
 
             switch (Machine.MachineType)
             {
@@ -60,6 +61,7 @@ namespace MarsUndiscovered.Game.Commands
                 {
                     RequiresPlayerInput = true;
                     EndsPlayerTurn = false;
+                    message = "The analyzer machine has enough power to identify 1 item";
                     break;
                 }
                 
@@ -67,7 +69,7 @@ namespace MarsUndiscovered.Game.Commands
                     throw new Exception($"Apply for MachineType {Machine.MachineType} has not been implemented");
             }
             
-            return Result(CommandResult.Success(this, subsequentCommand));
+            return Result(CommandResult.Success(this, message, subsequentCommand));
         }
 
         protected override void UndoInternal()

@@ -2,10 +2,11 @@ using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.Pathing;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
-
+using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Xna.Framework;
 
 using SadRogue.Primitives;
@@ -55,6 +56,20 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             QueueAnimations(commandResults);
             MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
+
+            foreach (var commandResult in commandResults)
+            {
+                if (commandResult.Command.RequiresPlayerInput)
+                {
+                    if (commandResult.Command is ApplyMachineCommand applyMachineCommand)
+                    {
+                        if (applyMachineCommand.Machine.MachineType == MachineType.Analyzer)
+                        {
+                            Mediator.Send(new OpenGameInventoryRequest(InventoryMode.Identify));
+                        }
+                    }
+                }
+            }
         }
 
         public Path GetPathToDestination(Ray pointerRay)

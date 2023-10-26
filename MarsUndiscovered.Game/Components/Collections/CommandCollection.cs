@@ -29,6 +29,8 @@ namespace MarsUndiscovered.Game.Components
             ApplyHealingBotsCommands = new ApplyHealingBotsCommandCollection(commandFactory, gameWorld);
             EnchantItemCommands = new EnchantItemCommandCollection(commandFactory, gameWorld);
             WaitCommands = new WaitCommandCollection(commandFactory, gameWorld);
+            ApplyMachineCommands = new ApplyMachineCommandCollection(commandFactory, gameWorld);
+            IdentifyItemCommands = new IdentifyItemCommandCollection(commandFactory, gameWorld);
 
             _commandCollectionPropertyInfos = GetType()
                 .GetProperties()
@@ -56,6 +58,8 @@ namespace MarsUndiscovered.Game.Components
         public ApplyHealingBotsCommandCollection ApplyHealingBotsCommands { get; set; }
         public EnchantItemCommandCollection EnchantItemCommands { get; set; }
         public WaitCommandCollection WaitCommands { get; set; }
+        public ApplyMachineCommandCollection ApplyMachineCommands { get; set; }
+        public IdentifyItemCommandCollection IdentifyItemCommands { get; set; }
 
         public IEnumerator<BaseGameActionCommand> GetEnumerator()
         {

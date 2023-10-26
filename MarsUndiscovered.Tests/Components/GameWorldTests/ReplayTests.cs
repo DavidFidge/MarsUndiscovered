@@ -120,5 +120,49 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(0, newGameWorld.HistoricalCommands.WalkCommands.Count);
             Assert.AreEqual(new Point(0, 0), newGameWorld.Player.Position);
         }
+        
+        [TestMethod]
+        public void Should_Replay_ApplyMachineCommand()
+        {
+            // TODO Failing on load.  May have something to do 
+            // with replay creating the game world based on seed rather
+            // than actually loading the game.
+            
+            // Arrange
+            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            _gameWorld.Player.Position = new Point(0, 2);
+
+            var machineParams = new SpawnMachineParams()
+                .WithMachineType(MachineType.Analyzer)
+                .AtPosition(new Point(0, 3))
+                .OnMap(_gameWorld.CurrentMap.Id);
+            
+            _gameWorld.SpawnMachine(machineParams);
+
+            _gameWorld.MoveRequest(Direction.Down);
+
+            _gameWorld.SaveGame("TestReplay", true);
+
+            // Act
+            var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
+
+            newGameWorld.LoadReplay("TestReplay");
+            newGameWorld.Player.Position = new Point(0, 2);
+
+            // Act
+            var result = newGameWorld.ExecuteNextReplayCommand();
+            
+            // Assert
+            Assert.IsTrue(result.HasMoreCommands);
+            Assert.AreNotSame(_gameWorld, newGameWorld);
+            Assert.AreEqual(2, newGameWorld.HistoricalCommands.Count());
+            Assert.AreEqual(1, newGameWorld.HistoricalCommands.WalkCommands.Count);
+            Assert.AreEqual(new Point(0, 3), newGameWorld.Player.Position);
+
+            Assert.AreEqual(2, result.CommandResults.Count);
+            var walkCommand = newGameWorld.HistoricalCommands.WalkCommands[0];
+            var applyMachineCommand = newGameWorld.HistoricalCommands.ApplyMachineCommands[0];
+        }
     }
 }
