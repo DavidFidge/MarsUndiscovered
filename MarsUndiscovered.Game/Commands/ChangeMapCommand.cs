@@ -1,6 +1,4 @@
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
 
@@ -13,10 +11,9 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class ChangeMapCommand : BaseMarsGameActionCommand<ChangeMapSaveData>
     {
-        private MarsMap _oldMap;
-        private Point _oldPosition;
-        public IGameObject GameObject { get; private set; }
-        public MapExit MapExit { get; set; }
+        private MarsMap _oldMap => GameWorld.Maps.Single(m => m.Id == _data.OldMapId);
+        public IGameObject GameObject => GameWorld.GameObjects[_data.GameObjectId];
+        public MapExit MapExit => GameWorld.GameObjects[_data.MapExitId] as MapExit;
 
         public ChangeMapCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -24,32 +21,14 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(IGameObject gameObject, MapExit mapExit)
         {
-            GameObject = gameObject;
-            MapExit = mapExit;
+            _data.GameObjectId = gameObject.ID;
+            _data.MapExitId = mapExit.ID;
         }
-
-        public override IMemento<ChangeMapSaveData> GetSaveState()
-        {
-            var memento = new Memento<ChangeMapSaveData>(new ChangeMapSaveData());
-            base.PopulateSaveState(memento.State);
-            memento.State.GameObjectId = GameObject.ID;
-            memento.State.MapExitId = MapExit.ID;
-
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<ChangeMapSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-
-            GameObject = GameWorld.GameObjects[memento.State.GameObjectId];
-            MapExit = (MapExit)GameWorld.GameObjects[memento.State.MapExitId];
-        }
-
+        
         protected override CommandResult ExecuteInternal()
         {
-            _oldMap = (MarsMap)GameObject.CurrentMap;
-            _oldPosition = GameObject.Position;
+            _data.OldMapId = ((MarsMap)GameObject.CurrentMap).Id;
+            _data.OldPosition = GameObject.Position;
 
             _oldMap.RemoveEntity(GameObject);
 
@@ -75,7 +54,8 @@ namespace MarsUndiscovered.Game.Commands
         protected override void UndoInternal()
         {
             GameObject.CurrentMap.RemoveEntity(GameObject);
-            GameObject.Position = _oldPosition;
+            GameObject.Position = _data.OldPosition;
+            
             _oldMap.AddEntity(GameObject);
 
             if (GameObject is Player)
@@ -84,7 +64,7 @@ namespace MarsUndiscovered.Game.Commands
             }
             else
             {
-                Mediator.Publish(new MapTileChangedNotification(_oldPosition));
+                Mediator.Publish(new MapTileChangedNotification(_data.OldPosition));
             }
         }
     }

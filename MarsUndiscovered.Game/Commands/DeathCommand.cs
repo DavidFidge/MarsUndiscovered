@@ -1,47 +1,30 @@
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
 
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.ViewMessages;
 using MarsUndiscovered.Interfaces;
+
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Commands
 {
     public class DeathCommand : BaseMarsGameActionCommand<DeathCommandSaveData>
     {
-        public string KilledByMessage { get; private set; }
-        public Actor Source { get; private set; }
-        private Point _oldPosition;
-        private Map _sourceMap;
-
+        public string KilledByMessage => _data.KilledByMessage;
+        public Actor Source => GameWorld.GameObjects[_data.SourceId] as Actor;
+        private Point _oldPosition => _data.OldPosition;
+        private Map _sourceMap => GameWorld.Maps.Single(m => m.Id == _data.MapId);
+        
         public DeathCommand(IGameWorld gameWorld) : base(gameWorld)
         {
         }
 
         public void Initialise(Actor source, string killedByMessage)
         {
-            Source = source;
-            KilledByMessage = $"killed by {killedByMessage}";
-        }
-
-        public override IMemento<DeathCommandSaveData> GetSaveState()
-        {
-            var memento = new Memento<DeathCommandSaveData>(new DeathCommandSaveData());
-            base.PopulateSaveState(memento.State);
-            memento.State.SourceId = Source.ID;
-            memento.State.KilledByMessage = KilledByMessage;
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<DeathCommandSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-            KilledByMessage = memento.State.KilledByMessage;
-            Source = (Actor)GameWorld.GameObjects[memento.State.SourceId];
+            _data.SourceId = source.ID;
+            _data.KilledByMessage = $"killed by {killedByMessage}";
         }
 
         protected override CommandResult ExecuteInternal()
@@ -52,9 +35,9 @@ namespace MarsUndiscovered.Game.Commands
 
             if (!(Source is Player))
             {
-                _sourceMap = Source.CurrentMap;
+                _data.MapId = ((MarsMap)Source.CurrentMap).Id;
                 _sourceMap.RemoveEntity(Source);
-                _oldPosition = Source.Position;
+                _data.OldPosition = Source.Position;
                 Source.Position = Point.None;
                 
                 Mediator.Publish(new MapTileChangedNotification(_oldPosition));

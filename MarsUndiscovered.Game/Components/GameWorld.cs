@@ -297,7 +297,7 @@ namespace MarsUndiscovered.Game.Components
             else
             {
                 var walkCommand = CommandFactory.CreateWalkCommand(this);
-                walkCommand.Initialise(Player, direction);
+                walkCommand.Initialise(direction);
                 command = walkCommand;
             }
 

@@ -89,12 +89,12 @@ namespace MarsUndiscovered.Tests.Components
 
         protected void NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(GameWorld gameWorld, IMapGenerator mapGenerator = null, ILevelGenerator levelGenerator = null)
         {
-            SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(gameWorld, mapGenerator, levelGenerator);
+            SetGameWorldLevelGeneratorWithCustomMapNoMonstersNoItemsNoExitsNoStructures(gameWorld, mapGenerator, levelGenerator);
 
             gameWorld.NewGame();
         }
 
-        protected void SetupGameWorldWithCustomMapNoMonstersNoItemsNoExitsNoStructures(GameWorld gameWorld, IMapGenerator mapGenerator = null, ILevelGenerator levelGenerator = null)
+        protected void SetGameWorldLevelGeneratorWithCustomMapNoMonstersNoItemsNoExitsNoStructures(GameWorld gameWorld, IMapGenerator mapGenerator = null, ILevelGenerator levelGenerator = null)
         {
             mapGenerator ??= new BlankMapGenerator(gameWorld.GameObjectFactory);
 

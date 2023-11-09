@@ -1,6 +1,4 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
@@ -9,10 +7,10 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class EquipItemCommand : BaseMarsGameActionCommand<EquipItemSaveData>
     {
-        public Item Item { get; private set; }
-        private Item _previousItem;
-        private bool _isAlreadyEquipped;
-        private bool _canEquipType;
+        public Item Item => GameWorld.Items[_data.ItemId];
+        private Item _previousItem => _data.PreviousItemId == null ? null : GameWorld.Items[_data.PreviousItemId.Value];
+        private bool _isAlreadyEquipped => _data.IsAlreadyEquipped;
+        private bool _canEquipType => GameWorld.Inventory.CanTypeBeEquipped(Item);
 
         public EquipItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -22,38 +20,23 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Item item)
         {
-            Item = item;
-        }
-
-        public override IMemento<EquipItemSaveData> GetSaveState()
-        {
-            var memento = new Memento<EquipItemSaveData>(new EquipItemSaveData());
-            base.PopulateSaveState(memento.State);
-            memento.State.ItemId = Item.ID;
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<EquipItemSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-            Item = GameWorld.Items[memento.State.ItemId];
+            _data.ItemId = item.ID;
         }
 
         protected override CommandResult ExecuteInternal()
         {
-            _canEquipType = GameWorld.Inventory.CanTypeBeEquipped(Item);
-
             if (!_canEquipType)
                 return Result(CommandResult.NoMove(this, $"Cannot equip this type of item"));
 
-            _previousItem = GameWorld.Inventory.GetEquippedItemOfType(Item.ItemType);
+            var previousItem = GameWorld.Inventory.GetEquippedItemOfType(Item.ItemType);
+            _data.PreviousItemId = previousItem?.ID;
 
             var currentItemDescription = String.Empty;
 
-            if (_previousItem != null)
+            if (previousItem != null)
                 currentItemDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(_previousItem);
 
-            _isAlreadyEquipped = GameWorld.Inventory.IsEquipped(Item);
+            _data.IsAlreadyEquipped = GameWorld.Inventory.IsEquipped(Item);
 
             if (_isAlreadyEquipped)
                 return Result(CommandResult.NoMove(this, $"Item is already equipped"));
@@ -84,7 +67,9 @@ namespace MarsUndiscovered.Game.Commands
                 return;
 
             GameWorld.Inventory.Unequip(Item);
-            GameWorld.Inventory.Equip(_previousItem);
+            
+            if (_data.PreviousItemId != null)
+                GameWorld.Inventory.Equip(_previousItem);
         }
     }
 }

@@ -849,8 +849,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             var attackCommand = result[0] as LineAttackCommand;
             Assert.IsNotNull(attackCommand);
-            Assert.AreEqual(1, attackCommand.Targets.Count);
-            Assert.AreSame(_gameWorld.Player, attackCommand.Targets[0]);
+            Assert.AreEqual(1, attackCommand.GetTargets().Count);
+            Assert.AreSame(_gameWorld.Player, attackCommand.GetTargets()[0]);
             Assert.AreSame(monster, attackCommand.Source);
         }
         
@@ -897,9 +897,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             var attackCommand = result[0] as LineAttackCommand;
             Assert.IsNotNull(attackCommand);
-            Assert.AreEqual(2, attackCommand.Targets.Count);
-            Assert.AreSame(monster1, attackCommand.Targets[0]);
-            Assert.AreSame(_gameWorld.Player, attackCommand.Targets[1]);
+            var saveState = attackCommand.GetSaveState();
+            Assert.AreEqual(monster1.ID, saveState.State.LineAttackCommandRestore[0].Id);
+            Assert.AreEqual(_gameWorld.Player.ID, saveState.State.LineAttackCommandRestore[1].Id);
             Assert.AreSame(monster2, attackCommand.Source);
             Assert.IsTrue(monster1.IsDead);
         }
@@ -994,7 +994,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             var lightningAttackCommand = result[0].Command as LightningAttackCommand;
             Assert.IsNotNull(lightningAttackCommand);
-            Assert.AreSame(_gameWorld.Player, lightningAttackCommand.Targets.Single());
+            Assert.AreSame(_gameWorld.Player, lightningAttackCommand.GetTargets().Single());
             Assert.AreSame(monster, lightningAttackCommand.Source);
             Assert.AreEqual(playerHealth - monster.LightningAttack.Damage, _gameWorld.Player.Health);
 

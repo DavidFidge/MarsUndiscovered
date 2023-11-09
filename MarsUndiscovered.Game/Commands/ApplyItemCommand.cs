@@ -1,23 +1,16 @@
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
 
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
-using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.Game.Commands
 {
     public class ApplyItemCommand : BaseMarsGameActionCommand<ApplyItemCommandSaveData>
     {
-        public Item Item { get; private set; }
-        public IGameObject GameObject { get; private set; }
-        private bool _canApply;
-        private bool _isItemTypeDiscovered;
-        private Keys _itemKey;
-        private bool _isCharged;
+        public Item Item => GameWorld.Items[_data.ItemId];
+        public IGameObject GameObject => GameWorld.GameObjects[_data.GameObjectId];
 
         public ApplyItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -27,46 +20,21 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(IGameObject gameObject, Item item)
         {
-            GameObject = gameObject;
-            Item = item;
-        }
-
-        public override IMemento<ApplyItemCommandSaveData> GetSaveState()
-        {
-            var memento = new Memento<ApplyItemCommandSaveData>(new ApplyItemCommandSaveData());
-            base.PopulateSaveState(memento.State);
-            memento.State.GameObjectId = GameObject.ID;
-            memento.State.ItemId = Item.ID;
-            memento.State.CanApply = _canApply;
-            memento.State.IsItemTypeDiscovered = _isItemTypeDiscovered;
-            memento.State.ItemKey = _itemKey;
-            memento.State.IsCharged = _isCharged;
-            
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<ApplyItemCommandSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-            GameObject = GameWorld.GameObjects[memento.State.GameObjectId];
-            Item = GameWorld.Items[memento.State.ItemId];
-            _canApply = memento.State.CanApply;
-            _isItemTypeDiscovered = memento.State.IsItemTypeDiscovered;
-            _itemKey = memento.State.ItemKey;
-            _isCharged = memento.State.IsCharged;
+            _data.GameObjectId = gameObject.ID;
+            _data.ItemId = item.ID;
         }
 
         protected override CommandResult ExecuteInternal()
         {
-            _canApply = GameWorld.Inventory.CanTypeBeApplied(Item);
+            _data.CanApply = GameWorld.Inventory.CanTypeBeApplied(Item);
 
-            if (!_canApply)
+            if (!_data.CanApply)
                 return Result(CommandResult.NoMove(this, $"{GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItem(Item)} cannot be applied. Did you mean to equip it?"));
 
-            _isCharged = Item.ItemType is NanoFlask || (Item.ItemType is Gadget && Item.CurrentRechargeDelay > 0);
+            _data.IsCharged = Item.ItemType is NanoFlask || (Item.ItemType is Gadget && Item.CurrentRechargeDelay > 0);
             
-            _itemKey = GameWorld.Inventory.GetKeyForItem(Item);
-            _isItemTypeDiscovered = GameWorld.Inventory.ItemTypeDiscoveries.IsItemTypeDiscovered(Item);
+            _data.ItemKey = GameWorld.Inventory.GetKeyForItem(Item);
+            _data.IsItemTypeDiscovered = GameWorld.Inventory.ItemTypeDiscoveries.IsItemTypeDiscovered(Item);
 
             if (Item.ItemType is Gadget && Item.CurrentRechargeDelay > 0)
             {
@@ -78,7 +46,7 @@ namespace MarsUndiscovered.Game.Commands
 
             string message;
 
-            if (!_isItemTypeDiscovered)
+            if (!_data.IsItemTypeDiscovered)
             {
                 GameWorld.Inventory.ItemTypeDiscoveries.SetItemTypeDiscovered(Item);
                 
@@ -130,13 +98,13 @@ namespace MarsUndiscovered.Game.Commands
 
         protected override void UndoInternal()
         {
-            if (!_canApply || !_isCharged)
+            if (!_data.CanApply || !_data.IsCharged)
                 return;
             
-            if (!_isItemTypeDiscovered)
+            if (!_data.IsItemTypeDiscovered)
                 GameWorld.Inventory.ItemTypeDiscoveries.SetItemTypeUndiscovered(Item);
             
-            GameWorld.Inventory.Add(Item, _itemKey);
+            GameWorld.Inventory.Add(Item, _data.ItemKey);
             Item.CurrentRechargeDelay = 0;
         }
     }

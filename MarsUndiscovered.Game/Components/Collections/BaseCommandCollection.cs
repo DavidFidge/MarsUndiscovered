@@ -6,6 +6,7 @@ using MarsUndiscovered.Interfaces;
 namespace MarsUndiscovered.Game.Components
 {
     public abstract class BaseCommandCollection<T, TState> : List<BaseMarsGameActionCommand<TState>>, ISaveable
+        where TState : BaseCommandSaveData, new()
         where T : BaseMarsGameActionCommand<TState>, IMementoState<TState>
     {
         protected readonly IGameWorld GameWorld;

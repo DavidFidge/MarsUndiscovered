@@ -1,8 +1,4 @@
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
-
-using GoRogue.GameFramework;
 
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
@@ -11,8 +7,7 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class ApplyMachineCommand : BaseMarsGameActionCommand<ApplyMachineCommandSaveData>
     {
-        public Machine Machine { get; private set; }
-        public bool IsUsed { get; private set; }
+        public Machine Machine => GameWorld.Machines[_data.MachineId];
         
         public ApplyMachineCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -22,24 +17,7 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Machine machine)
         {
-            Machine = machine;
-        }
-
-        public override IMemento<ApplyMachineCommandSaveData> GetSaveState()
-        {
-            var memento = new Memento<ApplyMachineCommandSaveData>(new ApplyMachineCommandSaveData());
-            base.PopulateSaveState(memento.State);
-            memento.State.MachineId = Machine.ID;
-            memento.State.IsUsed = Machine.IsUsed;
-            
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<ApplyMachineCommandSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-            Machine = GameWorld.Machines[memento.State.MachineId];
-            IsUsed = memento.State.IsUsed;
+            _data.MachineId = machine.ID;
         }
 
         protected override CommandResult ExecuteInternal()
@@ -51,6 +29,7 @@ namespace MarsUndiscovered.Game.Commands
             }
 
             Machine.IsUsed = true;
+            _data.IsUsed = true;
 
             BaseGameActionCommand subsequentCommand = null;
             string message;
@@ -74,6 +53,7 @@ namespace MarsUndiscovered.Game.Commands
 
         protected override void UndoInternal()
         {
+            Machine.IsUsed = _data.IsUsed;
         }
     }
 }

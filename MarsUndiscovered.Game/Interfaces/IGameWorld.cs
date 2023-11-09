@@ -34,7 +34,9 @@ namespace MarsUndiscovered.Interfaces
         ItemCollection Items { get; }
         MachineCollection Machines { get; }
         Inventory Inventory { get; }
+        MapExitCollection MapExits { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
+        MapCollection Maps { get; }
         ILevelGenerator LevelGenerator { get; set; }
         Guid GameId { get; }
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);

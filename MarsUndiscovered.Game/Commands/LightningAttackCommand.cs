@@ -1,6 +1,4 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
@@ -12,37 +10,11 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class LightningAttackCommand : BaseAttackCommand<LightningAttackCommandSaveData>
     {
-        private List<AttackRestoreData> _targetHitDetails = new List<AttackRestoreData>();
-        private IList<Actor> _targets;
-        public IList<Actor> Targets => _targets;
-
-        public Actor Source { get; private set; }
-        public List<Point> Path { get; private set; }
+        public Actor Source => GameWorld.GameObjects[_data.SourceId] as Actor; 
+        public List<Point> Path => _data.Path;
 
         public LightningAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
-        }
-
-        public override IMemento<LightningAttackCommandSaveData> GetSaveState()
-        {
-            var memento = new Memento<LightningAttackCommandSaveData>(new LightningAttackCommandSaveData());
-            base.PopulateSaveState(memento.State);
-
-            memento.State.SourceId = Source.ID;
-            memento.State.Path = Path.ToList();
-            memento.State.LineAttackCommandRestore = _targetHitDetails.ToList();
-
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<LightningAttackCommandSaveData> memento)
-        {
-            PopulateLoadState(memento.State);
-
-            Source = (Actor)GameWorld.GameObjects[memento.State.SourceId];
-            Path = memento.State.Path.ToList();
-            _targets = GetTargets(Source, Path);
-            _targetHitDetails = memento.State.LineAttackCommandRestore.ToList();
         }
         
         protected override CommandResult ExecuteInternal()
@@ -50,20 +22,23 @@ namespace MarsUndiscovered.Game.Commands
             if (Source.LightningAttack == null)
                 throw new Exception("Object does not have a lightning attack");
 
+            var targets = GetTargets();
+
             var damage = Source.LightningAttack.Damage;
 
-            var commandResult = CommandResult.Success(this, new List<string>(_targets.Count));
-
-            foreach (var target in _targets)
+            var commandResult = CommandResult.Success(this, new List<string>(targets.Count));
+            
+            foreach (var target in targets)
             {
                 var lineAttackCommandRestore = new AttackRestoreData
                 {
+                    Id = target.ID,
                     Damage = damage,
                     Health = target.Health,
                     Shield = target.Shield
                 };
                 
-                _targetHitDetails.Add(lineAttackCommandRestore);
+                _data.LightningAttackCommandRestore.Add(lineAttackCommandRestore);
                 
                 target.ApplyDamage(damage);
 
@@ -85,10 +60,10 @@ namespace MarsUndiscovered.Game.Commands
 
         protected override void UndoInternal()
         {
-            for (var i = 0; i < _targets.Count; i++)
+            foreach (var restore in _data.LightningAttackCommandRestore)
             {
-                _targets[i].Health = _targetHitDetails[i].Health;
-                _targets[i].Shield = _targetHitDetails[i].Shield;
+                ((Actor)GameWorld.GameObjects[restore.Id]).Health = restore.Health;
+                ((Actor)GameWorld.GameObjects[restore.Id]).Shield = restore.Shield;
             }
         }
 
@@ -100,16 +75,15 @@ namespace MarsUndiscovered.Game.Commands
                 .TakeWhile(p => p == source.Position || (source.CurrentMap.Contains(targetPoint) && source.CurrentMap.GetObjectsAt(p).All(o => o.IsGameObjectStrikeThrough())))
                 .ToList();
 
-            Source = source;
-            Path = lightningAttackPath;
-            _targets = GetTargets(Source, Path);
+            _data.SourceId = source.ID;
+            _data.Path = lightningAttackPath;
         }
 
-        private IList<Actor> GetTargets(Actor source, List<Point> lightningAttackPath)
+        public IList<Actor> GetTargets()
         {
-            return lightningAttackPath
+            return Path
                 .Skip(1)
-                .Select(p => source.CurrentMap.GetObjectAt<Actor>(p))
+                .Select(p => Source.CurrentMap.GetObjectAt<Actor>(p))
                 .Where(p => p != null)
                 .ToList();
         }

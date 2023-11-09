@@ -446,12 +446,13 @@ namespace MarsUndiscovered.Game.Components
             var lightningAttackCommand = _commandFactory.CreateLightningAttackCommand(GameWorld);
             lightningAttackCommand.Initialise(source, target.Position);
 
-            if (!lightningAttackCommand.Targets.Any(t => t is Player))
+            var targets = lightningAttackCommand.GetTargets();
+            if (!targets.Any(t => t is Player))
                 return BehaviourStatus.Failed;
 
             if (!FriendlyFireAllies)
             {
-                var anyAlliesAlongPath = lightningAttackCommand.Targets.Any(t => t is Monster);
+                var anyAlliesAlongPath = targets.Any(t => t is Monster);
 
                 if (anyAlliesAlongPath)
                     return BehaviourStatus.Failed;

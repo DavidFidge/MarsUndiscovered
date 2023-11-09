@@ -9,7 +9,7 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class IdentifyItemCommand : BaseMarsGameActionCommand<IdentifyItemCommandSaveData>
     {
-        public Item Item { get; private set; }
+        public Item Item => GameWorld.Items[_data.ItemId];
 
         public IdentifyItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -19,24 +19,7 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Item item)
         {
-            Item = item;
-        }
-
-        public override IMemento<IdentifyItemCommandSaveData> GetSaveState()
-        {
-            var memento = new Memento<IdentifyItemCommandSaveData>(new IdentifyItemCommandSaveData());
-            base.PopulateSaveState(memento.State);
-
-            memento.State.ItemId = Item.ID;
-
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<IdentifyItemCommandSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-
-            Item = GameWorld.Items[memento.State.ItemId];
+            _data.ItemId = item.ID;
         }
 
         protected override CommandResult ExecuteInternal()

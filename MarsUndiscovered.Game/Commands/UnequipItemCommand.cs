@@ -9,8 +9,7 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class UnequipItemCommand : BaseMarsGameActionCommand<UnequipItemSaveData>
     {
-        private bool _isNotEquipped;
-        public Item Item { get; private set; }
+        public Item Item => GameWorld.Items[_data.ItemId];
 
         public UnequipItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -20,29 +19,16 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Item item)
         {
-            Item = item;
-        }
-
-        public override IMemento<UnequipItemSaveData> GetSaveState()
-        {
-            var memento = new Memento<UnequipItemSaveData>(new UnequipItemSaveData());
-            base.PopulateSaveState(memento.State);
-            memento.State.ItemId = Item.ID;
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<UnequipItemSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-            Item = GameWorld.Items[memento.State.ItemId];
+            _data.ItemId = item.ID;
         }
 
         protected override CommandResult ExecuteInternal()
         {
             var itemDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(Item);
-
-            _isNotEquipped = !GameWorld.Inventory.IsEquipped(Item);
-            if (_isNotEquipped)
+            
+            _data.IsNotEquipped = !GameWorld.Inventory.IsEquipped(Item);
+            
+            if (_data.IsNotEquipped)
                 return Result(CommandResult.NoMove(this, $"Item is already unequipped"));
 
             GameWorld.Inventory.Unequip(Item);
@@ -57,7 +43,7 @@ namespace MarsUndiscovered.Game.Commands
 
         protected override void UndoInternal()
         {
-            if (!_isNotEquipped)
+            if (!_data.IsNotEquipped)
                 GameWorld.Inventory.Equip(Item);
         }
     }
