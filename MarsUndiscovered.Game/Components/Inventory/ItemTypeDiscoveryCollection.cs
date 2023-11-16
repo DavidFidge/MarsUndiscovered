@@ -125,6 +125,13 @@ public class ItemTypeDiscoveryCollection : Dictionary<ItemType, ItemTypeDiscover
             
         return item.GetDescriptionWithoutPrefix(itemTypeDiscovery);
     }
+    
+    public string GetInventoryDescriptionWithoutPrefixAndWithoutStatus(Item item)
+    {
+        TryGetValue(item.ItemType, out var itemTypeDiscovery);
+            
+        return item.GetDescriptionWithoutPrefixAndWithoutStatus(itemTypeDiscovery);
+    }
 
     public string GetInventoryDescriptionAsSingleItem(Item item)
     {

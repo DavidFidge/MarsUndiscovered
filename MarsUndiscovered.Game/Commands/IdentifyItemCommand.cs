@@ -35,13 +35,14 @@ namespace MarsUndiscovered.Game.Commands
                     $"The {GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionWithoutPrefix(Item)} is already identified."));
             }
 
-            var undiscoveredDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetUndiscoveredDescription(Item);
+            var undiscoveredDescription =
+                GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionWithoutPrefixAndWithoutStatus(Item);
             
             GameWorld.Inventory.ItemTypeDiscoveries.SetItemTypeDiscovered(Item);
             Item.ItemDiscovery.IsItemSpecialDiscovered = true;
             Item.ItemDiscovery.IsEnchantLevelDiscovered = true;
 
-            var discoveredDescription = Item.GetDiscoveredDescription(1);
+            var discoveredDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionWithoutPrefixAndWithoutStatus(Item);
             
             var message =
                 $"The {undiscoveredDescription} is a {discoveredDescription}!";
