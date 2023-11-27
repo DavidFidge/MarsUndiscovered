@@ -253,5 +253,10 @@ namespace MarsUndiscovered.UserInterface.Views
 
             return Unit.Task;
         }
+
+        protected override void ClosingInventoryNoAction()
+        {
+            _viewModel.ClosingInventoryNoAction(InventoryMode);
+        }
     }
 }

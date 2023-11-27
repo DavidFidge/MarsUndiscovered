@@ -200,6 +200,11 @@ namespace MarsUndiscovered.Game.Components
             return GameWorld.IdentifyItemRequest(requestKey);
         }
 
+        public void CancelIdentify()
+        {
+            GameWorld.CancelIdentify();
+        }
+
         public void LoadReplay(string gameName)
         {
             GameWorld = _gameWorldFactory.Create();

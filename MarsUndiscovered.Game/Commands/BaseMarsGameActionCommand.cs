@@ -20,7 +20,7 @@ namespace MarsUndiscovered.Game.Commands
         
         [JsonIgnore]
         public IGameWorld GameWorld { get; private set; }
-
+        
         [JsonIgnore]
         public ICommandFactory CommandFactory { get; set; }
 
@@ -34,6 +34,7 @@ namespace MarsUndiscovered.Game.Commands
             var memento = new Memento<T>(CloneData());
         
             memento.State.AdvanceSequenceNumber = AdvanceSequenceNumber;
+            memento.State.Id = Id;
             memento.State.TurnDetails = (TurnDetails)TurnDetails.Clone();
 
             return memento;
@@ -45,6 +46,7 @@ namespace MarsUndiscovered.Game.Commands
             _data.TurnDetails = (TurnDetails)memento.State.TurnDetails.Clone();
             TurnDetails = (TurnDetails)memento.State.TurnDetails.Clone();
             AdvanceSequenceNumber = _data.AdvanceSequenceNumber;
+            Id = _data.Id;
         }
     }
 }

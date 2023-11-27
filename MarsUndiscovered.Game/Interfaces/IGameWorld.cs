@@ -71,5 +71,7 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> EnchantItemRequest(Keys requestKey);
         void SpawnMachine(SpawnMachineParams spawnMachineParams);
         IList<CommandResult> IdentifyItemRequest(Keys requestKey);
+        CommandCollection ReplayCommands { get; }
+        void CancelIdentify();
     }
 }

@@ -31,6 +31,7 @@ namespace MarsUndiscovered.Game.Components
             WaitCommands = new WaitCommandCollection(commandFactory, gameWorld);
             ApplyMachineCommands = new ApplyMachineCommandCollection(commandFactory, gameWorld);
             IdentifyItemCommands = new IdentifyItemCommandCollection(commandFactory, gameWorld);
+            UndoCommands = new UndoCommandCollection(commandFactory, gameWorld);
 
             _commandCollectionPropertyInfos = GetType()
                 .GetProperties()
@@ -60,6 +61,7 @@ namespace MarsUndiscovered.Game.Components
         public WaitCommandCollection WaitCommands { get; set; }
         public ApplyMachineCommandCollection ApplyMachineCommands { get; set; }
         public IdentifyItemCommandCollection IdentifyItemCommands { get; set; }
+        public UndoCommandCollection UndoCommands { get; set; }
 
         public IEnumerator<BaseGameActionCommand> GetEnumerator()
         {

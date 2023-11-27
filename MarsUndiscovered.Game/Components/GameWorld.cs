@@ -8,6 +8,7 @@ using MarsUndiscovered.Interfaces;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
@@ -43,17 +44,22 @@ namespace MarsUndiscovered.Game.Components
         public MapExitCollection MapExits { get; private set; }
         public ShipCollection Ships { get; private set; }
         public MiningFacilityCollection MiningFacilities { get; private set; }
-        public CommandCollection HistoricalCommands { get; private set; }
+        public CommandCollection ReplayCommands { get; private set; }
+
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
 
         public MapCollection Maps { get; private set; }
+
         public MarsMap CurrentMap => Maps.CurrentMap;
 
         private readonly MessageLog _messageLog = new();
+
         private readonly RadioComms _radioComms = new();
-        
+
         public ulong Seed { get; set; }
+
         protected IList<Monster> MonstersInView = new List<Monster>();
+
         protected IList<Monster> LastMonstersInView = new List<Monster>();
 
         public string LoadGameDetail
@@ -65,6 +71,7 @@ namespace MarsUndiscovered.Game.Components
         public Inventory Inventory { get; private set; }
 
         private BaseGameActionCommand[] _replayHistoricalCommands;
+
         private int _replayHistoricalCommandIndex;
 
         private AutoExploreGoalMap _autoExploreGoalMap;
@@ -73,7 +80,7 @@ namespace MarsUndiscovered.Game.Components
         {
             GlobalRandom.DefaultRNG = new MizuchiRandom();
         }
-        
+
         private ulong MakeSeed()
         {
             unchecked
@@ -127,7 +134,7 @@ namespace MarsUndiscovered.Game.Components
 
              return result;
         }
-        
+
         protected void ResetFieldOfView()
         {
             CurrentMap.ResetFieldOfView();
@@ -177,7 +184,7 @@ namespace MarsUndiscovered.Game.Components
             Ships = new ShipCollection(GameObjectFactory);
             MiningFacilities = new MiningFacilityCollection(GameObjectFactory);
             Maps = new MapCollection();
-            HistoricalCommands = new CommandCollection(CommandFactory, this);
+            ReplayCommands = new CommandCollection(CommandFactory, this);
             _autoExploreGoalMap = new AutoExploreGoalMap();
 
             GameObjectFactory.Initialise(this);
@@ -217,7 +224,7 @@ namespace MarsUndiscovered.Game.Components
 
             Mediator.Publish(new FieldOfViewChangedNotification(CurrentMap.PlayerFOV.CurrentFOV, CurrentMap.Positions(), CurrentMap.SeenTiles));
         }
-        
+
         public void AfterProgressiveWorldGeneration()
         {
             // Show all monsters and all of map
@@ -394,7 +401,7 @@ namespace MarsUndiscovered.Game.Components
             // generated such as all monster turns should not be persisted as they can be recreated
             // using the rng seed.
             if (command.PersistForReplay)
-                HistoricalCommands.AddCommand(command);
+                ReplayCommands.AddCommand(command);
 
             yield return result;
 
@@ -425,7 +432,7 @@ namespace MarsUndiscovered.Game.Components
                 .Select(s => s.Message)
                 .ToList();
         }
-        
+
         public IList<RadioCommsItem> GetNewRadioCommsItems()
         {
             return _radioComms
@@ -469,7 +476,7 @@ namespace MarsUndiscovered.Game.Components
             CurrentMap.CreateFloor(FloorType.BlankFloor, position, GameObjectFactory);
             UpdateFieldOfView();
         }
-        
+
         public void CreateWall(int x, int y)
         {
             CurrentMap.CreateWall(WallType.RockWall, new Point(x, y), GameObjectFactory);
@@ -574,7 +581,7 @@ namespace MarsUndiscovered.Game.Components
 
             Maps.LoadState(saveGameService, gameWorld);
             GameTimeService.LoadState(saveGameService);
-            HistoricalCommands.LoadState(saveGameService, gameWorld);
+            ReplayCommands.LoadState(saveGameService, gameWorld);
 
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
             SetLoadState(gameWorldSaveData);
@@ -598,7 +605,7 @@ namespace MarsUndiscovered.Game.Components
             _messageLog.SaveState(saveGameService, gameWorld);
             _radioComms.SaveState(saveGameService, gameWorld);
             Player.SaveState(saveGameService, gameWorld);
-            HistoricalCommands.SaveState(saveGameService, gameWorld);
+            ReplayCommands.SaveState(saveGameService, gameWorld);
             Inventory.SaveState(saveGameService, gameWorld);
             Maps.SaveState(saveGameService, gameWorld);
             GameTimeService.SaveState(saveGameService);
@@ -723,7 +730,7 @@ namespace MarsUndiscovered.Game.Components
 
             return ExecuteCommand(unequipItemCommand).ToList();
         }
-        
+
         public IList<CommandResult> ApplyItemRequest(Keys itemKey)
         {
             if (!Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
@@ -752,7 +759,7 @@ namespace MarsUndiscovered.Game.Components
 
             return ExecuteCommand(enchantItemCommand).ToList();
         }
-        
+
         public void Regenerate()
         {
             Player.Regenerate();
@@ -774,7 +781,7 @@ namespace MarsUndiscovered.Game.Components
             spawnItemParams.MapId = CurrentMap.Id;
             GameWorldDebug.SpawnItem(spawnItemParams);
         }
-        
+
         public void SpawnMachine(SpawnMachineParams spawnMachineParams)
         {
             spawnMachineParams.MapId = CurrentMap.Id;
@@ -797,6 +804,22 @@ namespace MarsUndiscovered.Game.Components
         {
             spawnMapExitParams.MapId = CurrentMap.Id;
             GameWorldDebug.SpawnMapExit(spawnMapExitParams);
+        }
+
+        public void CancelIdentify()
+        {
+            var lastCommand = CommandFactory.CreatedCommands.LastOrDefault();
+
+            if (lastCommand is ApplyMachineCommand applyMachineCommand)
+            {
+                var undoCommand = CommandFactory.CreateCommand<UndoCommand>(this);
+                undoCommand.Initialise(applyMachineCommand.Id);
+                ExecuteCommand(undoCommand).ToList();
+            }
+            else
+            {
+                throw new Exception("Unexpected cancel identify request. Last command should have been an apply mahcine command as this is currently the only way to identify items.");
+            }
         }
     }
 }

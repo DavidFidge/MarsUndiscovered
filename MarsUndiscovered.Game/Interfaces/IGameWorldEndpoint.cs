@@ -51,5 +51,6 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange);
         IList<CommandResult> EnchantItemRequest(Keys obj);
         IList<CommandResult> IdentifyItemRequest(Keys requestKey);
+        void CancelIdentify();
     }
 }

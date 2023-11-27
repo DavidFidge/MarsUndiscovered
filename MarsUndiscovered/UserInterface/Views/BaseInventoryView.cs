@@ -186,10 +186,15 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         }
         else
         {
+            ClosingInventoryNoAction();
             Mediator.Send(new CloseGameInventoryRequest());
         }
 
         return Unit.Task;
+    }
+
+    protected virtual void ClosingInventoryNoAction()
+    {
     }
     
     public void HideIfMouseOver()

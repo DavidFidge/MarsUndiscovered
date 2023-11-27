@@ -1,10 +1,18 @@
-﻿using MarsUndiscovered.Game.Commands;
+﻿using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Interfaces.Components;
+using FrigidRogue.MonoGame.Core.Services;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Interfaces;
+using Exception = System.Exception;
 
 namespace MarsUndiscovered.Game.Components.Factories
 {
-    public class CommandFactory : ICommandFactory
+    public class CommandFactory : ICommandFactory, IMementoState<CommandFactorySaveData>
     {
+        private uint _nextId = 1;
+        
+        // The factories are injected by windsor then reflection is used
+        // to look up the factory to use in CreateCommand
         public ICommandFactory<MoveCommand> MoveCommandFactory { get; set; }
         public ICommandFactory<WalkCommand> WalkCommandFactory { get; set; }
         public ICommandFactory<MeleeAttackCommand> MeleeAttackCommandFactory { get; set; }
@@ -23,94 +31,48 @@ namespace MarsUndiscovered.Game.Components.Factories
         public ICommandFactory<WaitCommand> WaitCommandFactory { get; set; }
         public ICommandFactory<ApplyMachineCommand> ApplyMachineCommandFactory { get; set; }
         public ICommandFactory<IdentifyItemCommand> IdentifyItemCommandFactory { get; set; }
+        public ICommandFactory<UndoCommand> UndoCommandFactory { get; set; }
 
-        public MoveCommand CreateMoveCommand(IGameWorld gameWorld)
-        {
-            return MoveCommandFactory.Create(gameWorld);
-        }
-
-        public WalkCommand CreateWalkCommand(IGameWorld gameWorld)
-        {
-            return WalkCommandFactory.Create(gameWorld);
-        }
-        public MeleeAttackCommand CreateMeleeAttackCommand(IGameWorld gameWorld)
-        {
-            return MeleeAttackCommandFactory.Create(gameWorld);
-        }
+        // This is not persisted. It can be used during normal game/replay processing but not used
+        // during save/load.
+        public List<BaseGameActionCommand> CreatedCommands { get; private set; }
         
-        public LineAttackCommand CreateLineAttackCommand(IGameWorld gameWorld)
+        public T CreateCommand<T>(IGameWorld gameWorld) where T : BaseGameActionCommand
         {
-            return LineAttackCommandFactory.Create(gameWorld);
+            var factoryName = $"{typeof(T).Name}Factory";
+            
+            // use reflection to look up property called factoryName
+            var factory = (ICommandFactory<T>)this.GetType().GetProperty(factoryName)?.GetValue(this);
+            
+            if (factory == null)
+            {
+                throw new Exception($"Factory not found for {typeof(T).Name}. " +
+                    $"Ensure it is added to the installer, then add a property called {factoryName} to this class.");
+            }
+            
+            var command = factory.Create(gameWorld);
+
+            command.Id = _nextId;
+            _nextId++;
+            CreatedCommands.Add(command);
+
+            return command;
         }
 
-        public LightningAttackCommand CreateLightningAttackCommand(IGameWorld gameWorld)
+        public IMemento<CommandFactorySaveData> GetSaveState()
         {
-            return LightningAttackCommandFactory.Create(gameWorld);
+            return new Memento<CommandFactorySaveData>()
+            {
+                State = new CommandFactorySaveData()
+                {
+                    NextId = _nextId
+                }
+            };
         }
 
-        public DeathCommand CreateDeathCommand(IGameWorld gameWorld)
+        public void SetLoadState(IMemento<CommandFactorySaveData> memento)
         {
-            return DeathCommandFactory.Create(gameWorld);
-        }
-
-        public PickUpItemCommand CreatePickUpItemCommand(IGameWorld gameWorld)
-        {
-            return PickUpItemCommandFactory.Create(gameWorld);
-        }
-
-        public EquipItemCommand CreateEquipItemCommand(IGameWorld gameWorld)
-        {
-            return EquipItemCommandFactory.Create(gameWorld);
-        }
-
-        public UnequipItemCommand CreateUnequipItemCommand(IGameWorld gameWorld)
-        {
-            return UnequipItemCommandFactory.Create(gameWorld);
-        }
-
-        public DropItemCommand CreateDropItemCommand(IGameWorld gameWorld)
-        {
-            return DropItemCommandFactory.Create(gameWorld);
-        }
-
-        public ChangeMapCommand CreateChangeMapCommand(IGameWorld gameWorld)
-        {
-            return ChangeMapCommandFactory.Create(gameWorld);
-        }
-        
-        public ApplyItemCommand CreateApplyItemCommand(IGameWorld gameWorld)
-        {
-            return ApplyItemCommandFactory.Create(gameWorld);
-        }
-        
-        public ApplyHealingBotsCommand CreateApplyHealingBotsCommand(IGameWorld gameWorld)
-        {
-            return ApplyHealingBotsCommandFactory.Create(gameWorld);
-        }
-        
-        public EnchantItemCommand CreateEnchantItemCommand(IGameWorld gameWorld)
-        {
-            return EnchantItemCommandFactory.Create(gameWorld);
-        }
-
-        public ApplyShieldCommand CreateApplyShieldCommand(IGameWorld gameWorld)
-        {
-            return ApplyShieldCommandFactory.Create(gameWorld);
-        }
-
-        public WaitCommand CreateWaitCommand(IGameWorld gameWorld)
-        {
-            return WaitCommandFactory.Create(gameWorld);
-        }
-
-        public ApplyMachineCommand CreateApplyMachineCommand(IGameWorld gameWorld)
-        {
-            return ApplyMachineCommandFactory.Create(gameWorld);
-        }
-
-        public IdentifyItemCommand CreateIdentifyItemCommand(IGameWorld gameWorld)
-        {
-            return IdentifyItemCommandFactory.Create(gameWorld);
+            this._nextId = memento.State.NextId;
         }
     }
 }

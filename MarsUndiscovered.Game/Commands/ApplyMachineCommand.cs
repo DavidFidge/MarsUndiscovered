@@ -11,8 +11,7 @@ namespace MarsUndiscovered.Game.Commands
         
         public ApplyMachineCommand(IGameWorld gameWorld) : base(gameWorld)
         {
-            EndsPlayerTurn = true;
-            PersistForReplay = true;
+            EndsPlayerTurn = false;
         }
 
         public void Initialise(Machine machine)
@@ -24,10 +23,10 @@ namespace MarsUndiscovered.Game.Commands
         {
             if (Machine.IsUsed)
             {
-                EndsPlayerTurn = false;
                 return Result(CommandResult.NoMove(this, $"The machine no longer has power and lies dormant."));
             }
 
+            _data.OldIsUsed = Machine.IsUsed;
             Machine.IsUsed = true;
             _data.IsUsed = true;
 
@@ -53,7 +52,8 @@ namespace MarsUndiscovered.Game.Commands
 
         protected override void UndoInternal()
         {
-            Machine.IsUsed = _data.IsUsed;
+            Machine.IsUsed = _data.OldIsUsed;
+            _data.IsUsed = _data.OldIsUsed;
         }
     }
 }

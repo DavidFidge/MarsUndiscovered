@@ -33,13 +33,13 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(Direction.Down);
 
             // Assert
-            var walkCommand = _gameWorld.HistoricalCommands.WalkCommands[0];
+            var walkCommand = _gameWorld.ReplayCommands.WalkCommands[0];
 
             Assert.AreEqual(CommandResultEnum.Success, walkCommand.CommandResult.Result);
-            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
 
             var lineAttackCommand =
-                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as
+                _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as
                     LineAttackCommand;
             Assert.IsNotNull(lineAttackCommand);
             Assert.AreEqual(CommandResultEnum.Success, lineAttackCommand.CommandResult.Result);
@@ -71,13 +71,13 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(Direction.Down);
 
             // Assert
-            var walkCommand = _gameWorld.HistoricalCommands.WalkCommands[0];
+            var walkCommand = _gameWorld.ReplayCommands.WalkCommands[0];
 
             Assert.AreEqual(CommandResultEnum.Success, walkCommand.CommandResult.Result);
-            Assert.AreEqual(1, _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
 
             var lineAttackCommand =
-                _gameWorld.HistoricalCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as
+                _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as
                     LineAttackCommand;
             Assert.IsNotNull(lineAttackCommand);
             Assert.AreEqual(CommandResultEnum.Success, lineAttackCommand.CommandResult.Result);

@@ -170,7 +170,7 @@ public class LevelGenerator : ILevelGenerator
         var itemsToPlace = RNG.NextInt(5, 10);
         SpawnItems(itemsToPlace, map);
         
-        var machinesToPlace = RNG.NextInt(1, 2);
+        var machinesToPlace = RNG.NextInt(10, 20);
         SpawnMachines(machinesToPlace, map);
         
         return map;

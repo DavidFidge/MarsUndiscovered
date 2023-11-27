@@ -40,7 +40,9 @@ namespace MarsUndiscovered.Tests.Commands
          
             Assert.IsTrue(command.Machine.IsUsed);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
+            // At the moment moving into a machine will automatically create the machine command so
+            // we don't need to persist it for replay.
+            Assert.IsFalse(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsTrue(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
@@ -77,7 +79,9 @@ namespace MarsUndiscovered.Tests.Commands
          
             Assert.IsTrue(command.Machine.IsUsed);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
+            // At the moment moving into a machine will automatically create the machine command so
+            // we don't need to persist it for replay.
+            Assert.IsFalse(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
