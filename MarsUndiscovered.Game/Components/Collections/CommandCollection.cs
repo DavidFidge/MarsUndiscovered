@@ -3,112 +3,69 @@ using System.Reflection;
 
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Components
 {
-    public class CommandCollection : IEnumerable<BaseGameActionCommand>, ISaveable
+    public class CommandCollection : ISaveable
     {
-        private readonly List<PropertyInfo> _commandCollectionPropertyInfos;
-
+        public List<LineAttackCommand> LineAttackCommands { get; set; }
+        public List<MeleeAttackCommand> MeleeAttackCommands { get; set; }
+        public List<LightningAttackCommand> LightningAttackCommands { get; set; }
+        public List<WalkCommand> WalkCommands { get; set; }
+        public List<MoveCommand> MoveCommands { get; set; }
+        public List<DeathCommand> DeathCommands { get; set; }
+        public List<EquipItemCommand> EquipItemCommands { get; set; }
+        public List<UnequipItemCommand> UnequipItemCommands { get; set; }
+        public List<DropItemCommand> DropItemCommands { get; set; }
+        public List<PickUpItemCommand> PickUpItemCommands { get; set; }
+        public List<ChangeMapCommand> ChangeMapCommands { get; set; }
+        public List<ApplyItemCommand> ApplyItemCommands { get; set; }
+        public List<ApplyShieldCommand> ApplyShieldCommands { get; set; }
+        public List<ApplyHealingBotsCommand> ApplyHealingBotsCommands { get; set; }
+        public List<EnchantItemCommand> EnchantItemCommands { get; set; }
+        public List<WaitCommand> WaitCommands { get; set; }
+        public List<ApplyMachineCommand> ApplyMachineCommands { get; set; }
+        public List<IdentifyItemCommand> IdentifyItemCommands { get; set; }
+        public List<UndoCommand> UndoCommands { get; set; }
+        
         public CommandCollection(ICommandFactory commandFactory, IGameWorld gameWorld)
         {
-            AttackCommands = new AttackCommandCollection(commandFactory, gameWorld);
-            LightningAttackCommands = new LightningAttackCommandCollection(commandFactory, gameWorld);
-            WalkCommands = new WalkCommandCollection(commandFactory, gameWorld);
-            MoveCommands = new MoveCommandCollection(commandFactory, gameWorld);
-            DeathCommands = new DeathCommandCollection(commandFactory, gameWorld); 
-            EquipItemCommands = new EquipItemCommandCollection(commandFactory, gameWorld);
-            UnequipItemCommands = new UnequipItemCommandCollection(commandFactory, gameWorld);
-            DropItemCommands = new DropItemCommandCollection(commandFactory, gameWorld);
-            PickUpItemCommands = new PickUpItemCommandCollection(commandFactory, gameWorld);
-            ChangeMapCommands = new ChangeMapCommandCollection(commandFactory, gameWorld);
-            ApplyItemCommands = new ApplyItemCommandCollection(commandFactory, gameWorld);
-            ApplyShieldCommands = new ApplyShieldCommandCollection(commandFactory, gameWorld);
-            ApplyHealingBotsCommands = new ApplyHealingBotsCommandCollection(commandFactory, gameWorld);
-            EnchantItemCommands = new EnchantItemCommandCollection(commandFactory, gameWorld);
-            WaitCommands = new WaitCommandCollection(commandFactory, gameWorld);
-            ApplyMachineCommands = new ApplyMachineCommandCollection(commandFactory, gameWorld);
-            IdentifyItemCommands = new IdentifyItemCommandCollection(commandFactory, gameWorld);
-            UndoCommands = new UndoCommandCollection(commandFactory, gameWorld);
-
-            _commandCollectionPropertyInfos = GetType()
-                .GetProperties()
-                .Where(p => p.PropertyType.BaseType != null)
-                .Where(p => p.PropertyType.BaseType.GenericTypeArguments.Any())
-                .Where(
-                    p => typeof(BaseGameActionCommand).IsAssignableFrom(p.PropertyType.BaseType.GenericTypeArguments[0])
-                )
-                .Where(p => typeof(IList).IsAssignableFrom(p.PropertyType))
-                .ToList();
         }
-
-        public AttackCommandCollection AttackCommands { get; set; }
-        public LightningAttackCommandCollection LightningAttackCommands { get; set; }
-        public WalkCommandCollection WalkCommands { get; set; }
-        public MoveCommandCollection MoveCommands { get; set; }
-        public DeathCommandCollection DeathCommands { get; set; }
-        public EquipItemCommandCollection EquipItemCommands { get; set; }
-        public UnequipItemCommandCollection UnequipItemCommands { get; set; }
-        public DropItemCommandCollection DropItemCommands { get; set; }
-        public PickUpItemCommandCollection PickUpItemCommands { get; set; }
-        public ChangeMapCommandCollection ChangeMapCommands { get; set; }
-        public ApplyItemCommandCollection ApplyItemCommands { get; set; }
-        public ApplyShieldCommandCollection ApplyShieldCommands { get; set; }
-        public ApplyHealingBotsCommandCollection ApplyHealingBotsCommands { get; set; }
-        public EnchantItemCommandCollection EnchantItemCommands { get; set; }
-        public WaitCommandCollection WaitCommands { get; set; }
-        public ApplyMachineCommandCollection ApplyMachineCommands { get; set; }
-        public IdentifyItemCommandCollection IdentifyItemCommands { get; set; }
-        public UndoCommandCollection UndoCommands { get; set; }
-
-        public IEnumerator<BaseGameActionCommand> GetEnumerator()
-        {
-            foreach (var commandCollectionProperty in _commandCollectionPropertyInfos)
-            {
-                var commandCollection = (IList)commandCollectionProperty.GetValue(this);
-
-                foreach (var command in commandCollection)
-                {
-                    yield return (BaseGameActionCommand)command;
-                }
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
+        
         public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
-            SaveLoad(saveGameService, (s, sgs) => s.SaveState(sgs, gameWorld));
+            var commandLists = GetType()
+                .GetProperties()
+                .Where(p => p.PropertyType.GenericTypeArguments.Any())
+                .Where(
+                    p => typeof(IBaseMarsGameActionCommand).IsAssignableFrom(p.PropertyType.GenericTypeArguments[0])
+                )
+                .Where(p => typeof(IList).IsAssignableFrom(p.PropertyType))
+                .ToDictionary(p => p.PropertyType.GenericTypeArguments[0], p => p.GetValue(this));
+            
+            foreach (var commandList in commandLists)
+            {
+                // using commandList.Key, get the base class type's first generic argument type
+                var saveDataType = commandList.Key.BaseType.GenericTypeArguments[0];
+                
+                var mementos = ((IList)commandList.Value)
+                    .Cast<IBaseMarsGameActionCommand>()
+                    .Select(c => c.GetSaveStateAsObject())
+                    .ToList();
+                
+                // Call savegameService.SaveListToStore using gameObjectSaveData's type
+                saveGameService.GetType().GetMethod(nameof(saveGameService.SaveListToStore))
+                    .MakeGenericMethod(saveDataType)
+                    .Invoke(saveGameService, new [] { mementos });
+            }
         }
 
         public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
-            SaveLoad(saveGameService, (s, sgs) => s.LoadState(sgs, gameWorld));
-        }
-
-        private void SaveLoad(ISaveGameService saveGameService, Action<ISaveable, ISaveGameService> action)
-        {
-            foreach (var property in _commandCollectionPropertyInfos)
-            {
-                var saveable = (ISaveable)property.GetValue(this);
-                action(saveable, saveGameService);
-            }
-        }
-
-        public void AddCommand(BaseGameActionCommand command)
-        {
-            var commandType = command.GetType();
-
-            var propertyInfo = _commandCollectionPropertyInfos.First(p => p.PropertyType.BaseType.GenericTypeArguments[0].IsAssignableFrom(commandType));
-
-            var commandCollection = (IList)propertyInfo.GetValue(this);
-
-            commandCollection.Add(command);
+            //SaveLoad(saveGameService, (s, sgs) => s.LoadState(sgs, gameWorld));
         }
     }
 }
