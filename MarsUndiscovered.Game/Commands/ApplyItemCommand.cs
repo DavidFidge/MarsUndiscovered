@@ -71,14 +71,14 @@ namespace MarsUndiscovered.Game.Commands
             {
                 case ShieldGenerator:
                 {
-                    var command = CommandFactory.CreateApplyShieldCommand(GameWorld);
+                    var command = CommandCollection.CreateCommand<ApplyShieldCommand>(GameWorld);
                     command.Initialise(Item, GameWorld.Player);
                     subsequentCommand = command;
                     break;
                 }
                 case HealingBots:
                 {
-                    var command = CommandFactory.CreateApplyHealingBotsCommand(GameWorld);
+                    var command = CommandCollection.CreateCommand<ApplyHealingBotsCommand>(GameWorld);
                     command.Initialise(Item, GameWorld.Player);
                     subsequentCommand = command;
                     break;

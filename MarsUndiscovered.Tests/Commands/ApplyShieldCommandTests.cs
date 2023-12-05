@@ -1,4 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
@@ -20,9 +21,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             _gameWorld.Player.Shield = 1;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyShieldCommand = commandFactory.CreateApplyShieldCommand(_gameWorld);
+            var applyShieldCommand = commandFactory.CreateCommand<ApplyShieldCommand>(_gameWorld);
             applyShieldCommand.Initialise(item, _gameWorld.Player);
 
             // Act

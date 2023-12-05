@@ -111,16 +111,21 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Assert
             Assert.AreNotSame(_gameWorld, newGameWorld);
-            Assert.AreEqual(2, newGameWorld.ReplayCommands.Count());
-            Assert.AreEqual(2, newGameWorld.ReplayCommands.WaitCommands.Count);
+            Assert.AreEqual(2, newGameWorld.CommandCollection.GetReplayCommands().Length);
+            
+            var waitCommands = newGameWorld.CommandCollection.GetReplayCommands()
+                .Cast<WaitCommand>()
+                .ToList();
+            
+            Assert.AreEqual(2, waitCommands.Count);
             Assert.AreEqual(_gameWorld.Player.Position, newGameWorld.Player.Position);
             Assert.AreEqual(new Point(0, 0), newGameWorld.Player.Position);
 
-            var waitCommand1 = newGameWorld.ReplayCommands.WaitCommands[0];
+            var waitCommand1 = waitCommands[0];
             Assert.AreEqual(1, waitCommand1.TurnDetails.SequenceNumber);
             Assert.AreEqual(1, waitCommand1.TurnDetails.TurnNumber);
 
-            var waitCommand2 = newGameWorld.ReplayCommands.WaitCommands[1];
+            var waitCommand2 = waitCommands[1];
             Assert.AreEqual(2, waitCommand2.TurnDetails.SequenceNumber);
             Assert.AreEqual(2, waitCommand2.TurnDetails.TurnNumber);
         }

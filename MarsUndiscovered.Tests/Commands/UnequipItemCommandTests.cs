@@ -1,4 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
@@ -21,13 +22,13 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var equipItemCommand = commandFactory.CreateEquipItemCommand(_gameWorld);
+            var equipItemCommand = commandFactory.CreateCommand<EquipItemCommand>(_gameWorld);
             equipItemCommand.Initialise(item);
             equipItemCommand.Execute();
 
-            var unequipItemCommand = commandFactory.CreateUnequipItemCommand(_gameWorld);
+            var unequipItemCommand = commandFactory.CreateCommand<UnequipItemCommand>(_gameWorld);
             unequipItemCommand.Initialise(item);
 
             // Act
@@ -58,9 +59,9 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var unequipItemCommand = commandFactory.CreateUnequipItemCommand(_gameWorld);
+            var unequipItemCommand = commandFactory.CreateCommand<UnequipItemCommand>(_gameWorld);
             unequipItemCommand.Initialise(item);
 
             // Act

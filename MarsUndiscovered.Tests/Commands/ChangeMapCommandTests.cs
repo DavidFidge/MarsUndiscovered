@@ -1,4 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
@@ -26,9 +27,9 @@ namespace MarsUndiscovered.Tests.Commands
             if (_gameWorld.Player.Position == mapExit.Destination.LandingPosition)
                 _gameWorld.Player.Position = new Point(0, 1);
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var changeMapCommand = commandFactory.CreateChangeMapCommand(_gameWorld);
+            var changeMapCommand = commandFactory.CreateCommand<ChangeMapCommand>(_gameWorld);
             changeMapCommand.Initialise(_gameWorld.Player, mapExit);
 
             // Act
@@ -63,9 +64,9 @@ namespace MarsUndiscovered.Tests.Commands
                 }
             }
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var changeMapCommand = commandFactory.CreateChangeMapCommand(_gameWorld);
+            var changeMapCommand = commandFactory.CreateCommand<ChangeMapCommand>(_gameWorld);
             changeMapCommand.Initialise(_gameWorld.Player, mapExit);
 
             // Act

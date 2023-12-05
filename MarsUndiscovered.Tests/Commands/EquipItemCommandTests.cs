@@ -1,4 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
@@ -18,9 +19,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.MagnesiumPipe);
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var equipItemCommand = commandFactory.CreateEquipItemCommand(_gameWorld);
+            var equipItemCommand = commandFactory.CreateCommand<EquipItemCommand>(_gameWorld);
             equipItemCommand.Initialise(item);
 
             // Act
@@ -46,9 +47,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.IronSpike);
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var equipItemCommand = commandFactory.CreateEquipItemCommand(_gameWorld);
+            var equipItemCommand = commandFactory.CreateCommand<EquipItemCommand>(_gameWorld);
             equipItemCommand.Initialise(item);
 
             // Act
@@ -74,9 +75,9 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var equipItemCommand = commandFactory.CreateEquipItemCommand(_gameWorld);
+            var equipItemCommand = commandFactory.CreateCommand<EquipItemCommand>(_gameWorld);
             equipItemCommand.Initialise(item);
 
             // Act
@@ -109,13 +110,13 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.CurrentMap.RemoveEntity(item2);
             item2.Position = Point.None;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var equipItemCommand = commandFactory.CreateEquipItemCommand(_gameWorld);
+            var equipItemCommand = commandFactory.CreateCommand<EquipItemCommand>(_gameWorld);
             equipItemCommand.Initialise(item1);
             equipItemCommand.Execute();
 
-            var equipItemCommand2 = commandFactory.CreateEquipItemCommand(_gameWorld);
+            var equipItemCommand2 = commandFactory.CreateCommand<EquipItemCommand>(_gameWorld);
             equipItemCommand2.Initialise(item2);
 
             // Act
@@ -141,13 +142,13 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var equipItemCommand = commandFactory.CreateEquipItemCommand(_gameWorld);
+            var equipItemCommand = commandFactory.CreateCommand<EquipItemCommand>(_gameWorld);
             equipItemCommand.Initialise(item);
             equipItemCommand.Execute();
 
-            var equipItemCommand2 = commandFactory.CreateEquipItemCommand(_gameWorld);
+            var equipItemCommand2 = commandFactory.CreateCommand<EquipItemCommand>(_gameWorld);
             equipItemCommand2.Initialise(item);
 
             // Act

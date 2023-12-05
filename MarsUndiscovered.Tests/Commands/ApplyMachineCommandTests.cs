@@ -25,9 +25,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             var machine = machineParams.Result;
             
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyMachineCommand = commandFactory.CreateApplyMachineCommand(_gameWorld);
+            var applyMachineCommand = commandFactory.CreateCommand<ApplyMachineCommand>(_gameWorld);
             applyMachineCommand.Initialise(machine);
 
             // Act
@@ -64,9 +64,9 @@ namespace MarsUndiscovered.Tests.Commands
             var machine = machineParams.Result;
             machine.IsUsed = true;
             
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyMachineCommand = commandFactory.CreateApplyMachineCommand(_gameWorld);
+            var applyMachineCommand = commandFactory.CreateCommand<ApplyMachineCommand>(_gameWorld);
             applyMachineCommand.Initialise(machine);
 
             // Act

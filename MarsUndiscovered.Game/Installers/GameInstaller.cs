@@ -121,8 +121,8 @@ namespace MarsUndiscovered.Game.Installers
                 Component.For<IFactory<IGameWorld>>()
                     .AsFactory(),
 
-                Component.For<ICommandFactory>()
-                    .ImplementedBy<CommandFactory>(),
+                Component.For<ICommandCollection>()
+                    .ImplementedBy<CommandCollection>(),
 
                 Component.For<ICommandFactory<MoveCommand>>()
                    .AsFactory(),

@@ -4,6 +4,6 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class UndoCommandSaveData : BaseCommandSaveData
     {
-        public Guid CommandId { get; set; }
+        public uint CommandId { get; set; }
     }
 }

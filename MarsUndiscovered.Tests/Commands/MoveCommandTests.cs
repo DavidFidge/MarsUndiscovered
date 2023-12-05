@@ -17,9 +17,9 @@ namespace MarsUndiscovered.Tests.Commands
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.Player.Position = new Point(0, 0);
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var moveCommand = commandFactory.CreateMoveCommand(_gameWorld);
+            var moveCommand = commandFactory.CreateCommand<MoveCommand>(_gameWorld);
             var newPosition = new Point(0, 1);
 
             moveCommand.Initialise(_gameWorld.Player, new Tuple<Point, Point>(_gameWorld.Player.Position, newPosition));
@@ -47,9 +47,9 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(newPosition));
             _gameWorld.Player.Position = new Point(0, 0);
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var moveCommand = commandFactory.CreateMoveCommand(_gameWorld);
+            var moveCommand = commandFactory.CreateCommand<MoveCommand>(_gameWorld);
 
             moveCommand.Initialise(_gameWorld.Player, new Tuple<Point, Point>(_gameWorld.Player.Position, newPosition));
 

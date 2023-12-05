@@ -1,4 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
@@ -26,9 +27,9 @@ public class IdentifyItemCommandTests : BaseGameWorldIntegrationTests
 
         var magnesiumPipe = magnesiumPipeParams.Result;
 
-        var commandFactory = Container.Resolve<ICommandFactory>();
+        var commandFactory = Container.Resolve<ICommandCollection>();
 
-        var identifyItemCommand = commandFactory.CreateIdentifyItemCommand(_gameWorld);
+        var identifyItemCommand = commandFactory.CreateCommand<IdentifyItemCommand>(_gameWorld);
         identifyItemCommand.Initialise(magnesiumPipe);
 
         // Act
@@ -65,9 +66,9 @@ public class IdentifyItemCommandTests : BaseGameWorldIntegrationTests
         magnesiumPipe.ItemDiscovery.IsItemSpecialDiscovered = true;
         magnesiumPipe.ItemDiscovery.IsEnchantLevelDiscovered = true;
         
-        var commandFactory = Container.Resolve<ICommandFactory>();
+        var commandFactory = Container.Resolve<ICommandCollection>();
 
-        var identifyItemCommand = commandFactory.CreateIdentifyItemCommand(_gameWorld);
+        var identifyItemCommand = commandFactory.CreateCommand<IdentifyItemCommand>(_gameWorld);
         identifyItemCommand.Initialise(magnesiumPipe);
 
         // Act

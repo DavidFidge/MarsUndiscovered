@@ -22,19 +22,17 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(Direction.Down);
 
             // Assert
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.Count());
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.MoveCommands.Count);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands.Count);
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.AttackCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 1), _gameWorld.Player.Position);
 
-            var walkCommand = _gameWorld.ReplayCommands.WalkCommands[0];
+            var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.Success, walkCommand.CommandResult.Result);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
 
             var moveCommand =
-                _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as MoveCommand;
+                _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.First() as MoveCommand;
 
             Assert.IsNotNull(moveCommand);
             Assert.AreEqual(CommandResultEnum.Success, moveCommand.CommandResult.Result);
@@ -60,16 +58,15 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(Direction.Right);
 
             // Assert
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.Count());
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.MoveCommands.Count);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands.Count);
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.AttackCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
+            Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<MoveCommand>().Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
 
-            var walkCommand = _gameWorld.ReplayCommands.WalkCommands[0];
+            var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.NoMove, walkCommand.CommandResult.Result);
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+            Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
         }
 
         [TestMethod]
@@ -87,19 +84,18 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(Direction.Down);
 
             // Assert
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.Count());
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.MoveCommands.Count);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands.Count);
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.AttackCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
+            Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<MoveCommand>().Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
 
-            var walkCommand = _gameWorld.ReplayCommands.WalkCommands[0];
+            var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.Success, walkCommand.CommandResult.Result);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
 
             var attackCommand =
-                _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
+                _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
 
             Assert.IsNotNull(attackCommand);
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
@@ -128,19 +124,18 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(Direction.Down);
 
             // Assert
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.Count());
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.MoveCommands.Count);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands.Count);
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.AttackCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
+            Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<MoveCommand>().Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
 
-            var walkCommand = _gameWorld.ReplayCommands.WalkCommands[0];
+            var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.Success, walkCommand.CommandResult.Result);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
 
             var attackCommand =
-                _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
+                _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
 
             Assert.IsNotNull(attackCommand);
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
@@ -166,16 +161,21 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Assert
             Assert.AreNotSame(_gameWorld, newGameWorld);
-            Assert.AreEqual(2, newGameWorld.ReplayCommands.Count());
-            Assert.AreEqual(2, newGameWorld.ReplayCommands.WalkCommands.Count);
+            Assert.AreEqual(2, newGameWorld.CommandCollection.GetReplayCommands().Length);
+
+            var walkCommands = newGameWorld.CommandCollection.GetReplayCommands()
+                .Cast<WalkCommand>()
+                .ToList();
+            
+            Assert.AreEqual(2, walkCommands.Count);
             Assert.AreEqual(_gameWorld.Player.Position, newGameWorld.Player.Position);
             Assert.AreEqual(new Point(0, 2), newGameWorld.Player.Position);
 
-            var walkCommand1 = newGameWorld.ReplayCommands.WalkCommands[0];
+            var walkCommand1 = walkCommands[0];
             Assert.AreEqual(1, walkCommand1.TurnDetails.SequenceNumber);
             Assert.AreEqual(1, walkCommand1.TurnDetails.TurnNumber);
 
-            var walkCommand2 = newGameWorld.ReplayCommands.WalkCommands[1];
+            var walkCommand2 = walkCommands[1];
             Assert.AreEqual(3, walkCommand2.TurnDetails.SequenceNumber); // sequence number 2 is used in the move command, which is performed inside the walk command
             Assert.AreEqual(2, walkCommand2.TurnDetails.TurnNumber);
         }
@@ -270,19 +270,18 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(path);
 
             // Assert
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.Count());
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.MoveCommands.Count);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands.Count);
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.AttackCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
+            Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<MoveCommand>().Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
 
-            var walkCommand = _gameWorld.ReplayCommands.WalkCommands[0];
+            var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.Success, walkCommand.CommandResult.Result);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
 
             var attackCommand =
-                _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
+                _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
 
             Assert.IsNotNull(attackCommand);
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
@@ -320,10 +319,8 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.IsTrue(result1[1].Command is MoveCommand); // Player move
             Assert.IsTrue(result1[2].Command is MoveCommand); // Monster move
 
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.Count());
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.MoveCommands.Count);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands.Count);
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.AttackCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 1), _gameWorld.Player.Position);
             Assert.AreEqual(new Point(0, 2), monster.Position);
 
@@ -345,14 +342,14 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Assert
             Assert.IsTrue(_gameWorld.Player.IsVictorious);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.Count());
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
 
-            var walkCommand = _gameWorld.ReplayCommands.WalkCommands[0];
+            var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.NoMove, walkCommand.CommandResult.Result);
             Assert.AreEqual("You board your ship, make hasty repairs to critical parts and fire the engines! You have escaped!", walkCommand.CommandResult.Messages.First());
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+            Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
         }
         
         [TestMethod]
@@ -371,14 +368,14 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Assert
             Assert.IsTrue(_gameWorld.Player.IsVictorious);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.Count());
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
 
-            var walkCommand = _gameWorld.ReplayCommands.WalkCommands[0];
+            var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.NoMove, walkCommand.CommandResult.Result);
             Assert.AreEqual("You board your ship, make hasty repairs to critical parts and fire the engines! You have escaped!", walkCommand.CommandResult.Messages.First());
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+            Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
         }
 
         [TestMethod]
@@ -394,14 +391,14 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Assert
             Assert.IsFalse(_gameWorld.Player.IsVictorious);
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.Count());
-            Assert.AreEqual(1, _gameWorld.ReplayCommands.WalkCommands.Count);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
 
-            var walkCommand = _gameWorld.ReplayCommands.WalkCommands[0];
+            var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.NoMove, walkCommand.CommandResult.Result);
             Assert.AreEqual("You don't have the parts you need to repair your ship!", walkCommand.CommandResult.Messages.First());
-            Assert.AreEqual(0, _gameWorld.ReplayCommands.WalkCommands[0].CommandResult.SubsequentCommands.Count);
+            Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
         }
     }
 }

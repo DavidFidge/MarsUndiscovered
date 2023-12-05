@@ -25,18 +25,18 @@ namespace MarsUndiscovered.Tests.Commands
 
             var machine = machineParams.Result;
             
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyMachineCommand = commandFactory.CreateApplyMachineCommand(_gameWorld);
+            var applyMachineCommand = commandFactory.CreateCommand<ApplyMachineCommand>(_gameWorld);
             applyMachineCommand.Initialise(machine);
             var applyMachineCommandResult = applyMachineCommand.Execute();
             
             // Usually this gets done by the game world
-            _gameWorld.ReplayCommands.AddCommand(applyMachineCommand);
+            _gameWorld.CommandCollection.ReprocessReplayCommand(applyMachineCommand);
             
             Assert.IsTrue(machine.IsUsed);
 
-            var undoCommand = commandFactory.CreateUndoCommand(_gameWorld);
+            var undoCommand = commandFactory.CreateCommand<UndoCommand>(_gameWorld);
             undoCommand.Initialise(applyMachineCommand.Id);
             
             // Act

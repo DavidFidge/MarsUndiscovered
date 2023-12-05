@@ -52,7 +52,7 @@ namespace MarsUndiscovered.Game.Commands
 
                     if (lineAttackPath.Any(p => map.GetObjectAt<Monster>(p) != null))
                     {
-                        var command = CommandFactory.CreateLineAttackCommand(GameWorld);
+                        var command = CommandCollection.CreateCommand<LineAttackCommand>(GameWorld);
                         command.Initialise(Player, lineAttackPath);
 
                         return Result(CommandResult.Success(this, command));
@@ -61,7 +61,7 @@ namespace MarsUndiscovered.Game.Commands
                 
                 if (map.GameObjectCanMove(Player, newPlayerPosition))
                 {
-                    var command = CommandFactory.CreateMoveCommand(GameWorld);
+                    var command = CommandCollection.CreateCommand<MoveCommand>(GameWorld);
 
                     command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
 
@@ -73,7 +73,7 @@ namespace MarsUndiscovered.Game.Commands
                 {
                     if (Player.MeleeAttack != null)
                     {
-                        var command = CommandFactory.CreateMeleeAttackCommand(GameWorld);
+                        var command = CommandCollection.CreateCommand<MeleeAttackCommand>(GameWorld);
                         command.Initialise(Player, actorAt);
 
                         return Result(CommandResult.Success(this, command));
@@ -94,7 +94,7 @@ namespace MarsUndiscovered.Game.Commands
 
                 if (mapExitAt != null)
                 {
-                    var command = CommandFactory.CreateChangeMapCommand(GameWorld);
+                    var command = CommandCollection.CreateCommand<ChangeMapCommand>(GameWorld);
 
                     command.Initialise(Player, mapExitAt);
                     return Result(CommandResult.Success(this, command));
@@ -118,7 +118,7 @@ namespace MarsUndiscovered.Game.Commands
 
                 if (machineAt != null)
                 {
-                    var command = CommandFactory.CreateApplyMachineCommand(GameWorld);
+                    var command = CommandCollection.CreateCommand<ApplyMachineCommand>(GameWorld);
                     command.Initialise(machineAt);
 
                     return Result(CommandResult.Success(this, command));

@@ -1,4 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
@@ -22,9 +23,9 @@ public class EnchantItemCommandTests : BaseGameWorldIntegrationTests
 
         var magnesiumPipe = magnesiumPipeParams.Result;
 
-        var commandFactory = Container.Resolve<ICommandFactory>();
+        var commandFactory = Container.Resolve<ICommandCollection>();
 
-        var enchantItemCommand = commandFactory.CreateEnchantItemCommand(_gameWorld);
+        var enchantItemCommand = commandFactory.CreateCommand<EnchantItemCommand>(_gameWorld);
         enchantItemCommand.Initialise(magnesiumPipe);
 
         var currentEnchant = magnesiumPipe.EnchantmentLevel;
@@ -59,9 +60,9 @@ public class EnchantItemCommandTests : BaseGameWorldIntegrationTests
 
         var healingBots = healingBotsParams.Result;
 
-        var commandFactory = Container.Resolve<ICommandFactory>();
+        var commandFactory = Container.Resolve<ICommandCollection>();
 
-        var enchantItemCommand = commandFactory.CreateEnchantItemCommand(_gameWorld);
+        var enchantItemCommand = commandFactory.CreateCommand<EnchantItemCommand>(_gameWorld);
         enchantItemCommand.Initialise(healingBots);
 
         var currentEnchant = healingBots.EnchantmentLevel;

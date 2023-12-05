@@ -22,7 +22,7 @@ namespace MarsUndiscovered.Game.Commands
         public IGameWorld GameWorld { get; private set; }
         
         [JsonIgnore]
-        public ICommandFactory CommandFactory { get; set; }
+        public ICommandCollection CommandCollection { get; set; }
 
         public BaseMarsGameActionCommand(IGameWorld gameWorld)
         {

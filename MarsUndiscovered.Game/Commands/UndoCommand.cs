@@ -7,7 +7,7 @@ namespace MarsUndiscovered.Game.Commands
     public class UndoCommand : BaseMarsGameActionCommand<UndoCommandSaveData>
     {
         public BaseGameActionCommand Command =>
-            GameWorld.ReplayCommands.Where(c => c.Id == _data.CommandId).FirstOrDefault();
+            GameWorld.CommandCollection.GetCommand(_data.CommandId);
         
         public UndoCommand(IGameWorld gameWorld) : base(gameWorld)
         {

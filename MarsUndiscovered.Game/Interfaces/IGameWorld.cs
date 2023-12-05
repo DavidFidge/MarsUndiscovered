@@ -7,6 +7,7 @@ using GoRogue.Pathing;
 
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Dto;
+using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using Microsoft.Xna.Framework.Input;
 
@@ -71,7 +72,7 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> EnchantItemRequest(Keys requestKey);
         void SpawnMachine(SpawnMachineParams spawnMachineParams);
         IList<CommandResult> IdentifyItemRequest(Keys requestKey);
-        CommandCollection ReplayCommands { get; }
+        ICommandCollection CommandCollection { get; }
         void CancelIdentify();
     }
 }

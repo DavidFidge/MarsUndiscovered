@@ -52,7 +52,7 @@ namespace MarsUndiscovered.Game.Components
         private WeightedGoalMap _goalMap;
         private IBehaviour<Monster> _behaviourTree;
         private IList<BaseGameActionCommand> _nextCommands;
-        private ICommandFactory _commandFactory;
+        private ICommandCollection _commandFactory;
         private SeenTile[] _seenTilesAfterLoad;
         private Path _wanderPath;
         private Monster _leader;
@@ -210,7 +210,7 @@ namespace MarsUndiscovered.Game.Components
             _fieldOfView = new RecursiveShadowcastingFOV(CurrentMap.TransparencyView);
         }
 
-        public IEnumerable<BaseGameActionCommand> NextTurn(ICommandFactory commandFactory)
+        public IEnumerable<BaseGameActionCommand> NextTurn(ICommandCollection commandFactory)
         {
             _commandFactory = commandFactory;
             _fieldOfView.Calculate(Position, VisualRange);
@@ -221,9 +221,9 @@ namespace MarsUndiscovered.Game.Components
             return _nextCommands;
         }
 
-        private MoveCommand CreateMoveCommand(ICommandFactory commandFactory, Direction direction)
+        private MoveCommand CreateMoveCommand(ICommandCollection commandFactory, Direction direction)
         {
-            var moveCommand = commandFactory.CreateMoveCommand(GameWorld);
+            var moveCommand = commandFactory.CreateCommand<MoveCommand>(GameWorld);
             moveCommand.Initialise(this, new Tuple<Point, Point>(Position, Position + direction));
             return moveCommand;
         }
@@ -358,7 +358,7 @@ namespace MarsUndiscovered.Game.Components
                     "attack player",
                     monster =>
                     {
-                        var attackCommand = _commandFactory.CreateMeleeAttackCommand(GameWorld);
+                        var attackCommand = _commandFactory.CreateCommand<MeleeAttackCommand>(GameWorld);
                         attackCommand.Initialise(this, GameWorld.Player);
                         _nextCommands.Add(attackCommand);
 
@@ -418,7 +418,7 @@ namespace MarsUndiscovered.Game.Components
                 .TakeWhile(p => p == Position || (CurrentMap.Contains(targetPoint) && CurrentMap.GetObjectsAt(p).All(o => o.IsGameObjectStrikeThrough())))
                 .ToList();
             
-            var lineAttackCommand = _commandFactory.CreateLineAttackCommand(GameWorld);
+            var lineAttackCommand = _commandFactory.CreateCommand<LineAttackCommand>(GameWorld);
             
             lineAttackCommand.Initialise(this, lineAttackPath);
             _nextCommands.Add(lineAttackCommand);
@@ -443,7 +443,7 @@ namespace MarsUndiscovered.Game.Components
         
         private BehaviourStatus ExecuteLightningAttack(Actor source, Actor target)
         {
-            var lightningAttackCommand = _commandFactory.CreateLightningAttackCommand(GameWorld);
+            var lightningAttackCommand = _commandFactory.CreateCommand<LightningAttackCommand>(GameWorld);
             lightningAttackCommand.Initialise(source, target.Position);
 
             var targets = lightningAttackCommand.GetTargets();
