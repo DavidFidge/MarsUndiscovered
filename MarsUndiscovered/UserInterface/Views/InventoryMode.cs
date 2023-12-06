@@ -8,6 +8,7 @@
         Unequip,
         Drop,
         Apply,
-        Enchant
+        Enchant,
+        Identify
     }
 }

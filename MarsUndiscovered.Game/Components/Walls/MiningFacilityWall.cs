@@ -4,25 +4,10 @@ namespace MarsUndiscovered.Game.Components;
 
 public class MiningFacilityWall : WallType
 {
-    private char _asciiCharacter = '#';
-    private Color _foregroundColour =  Color.Black;
-    private Color? _backgroundColour = new Color(0xFF777777);
-
-    public override char AsciiCharacter
+    public MiningFacilityWall()
     {
-        get => _asciiCharacter;
-        set => _asciiCharacter = value;
-    }
-
-    public override Color ForegroundColour
-    {
-        get => _foregroundColour;
-        set => _foregroundColour = value;
-    }
-
-    public override Color? BackgroundColour
-    {
-        get => _backgroundColour;
-        set => _backgroundColour = value;
+        ForegroundColour = Color.Black;
+        BackgroundColour = new Color(0xFF777777);
+        AsciiCharacter = '#';
     }
 }

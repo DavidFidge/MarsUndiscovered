@@ -2,12 +2,9 @@
 {
     public abstract class Weapon : ItemType
     {
-        private char _asciiCharacter = (char)0x18;
-
-        public override char AsciiCharacter
+        protected Weapon()
         {
-            get => _asciiCharacter;
-            set => _asciiCharacter = value;
+            AsciiCharacter = (char)0x18;
         }
 
         public override string GetAbstractTypeName()

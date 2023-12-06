@@ -4,8 +4,6 @@ namespace MarsUndiscovered.Game.Components
 {
     public class EnhancementBots : NanoFlask
     {
-        public override string Name => nameof(EnhancementBots);
-
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
             ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
@@ -16,11 +14,6 @@ namespace MarsUndiscovered.Game.Components
                 return $"{(includePrefix ? $"{quantity.ToString()} " : "")}{GetAbstractTypeName()}{(includePrefix ? "s" : "")} of Enhancement Bots";
 
             return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}";
-        }
-
-        public override string GetTypeDescription()
-        {
-            return $"{GetAbstractTypeName()} of Enhancement Bots";
         }
 
         public override string GetLongDescription(Item item, ItemTypeDiscovery itemTypeDiscovery)

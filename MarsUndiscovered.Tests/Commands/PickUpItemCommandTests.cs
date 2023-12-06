@@ -1,4 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
@@ -21,9 +22,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             var item = _gameWorld.Items.First().Value;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var pickUpItemCommand = commandFactory.CreatePickUpItemCommand(_gameWorld);
+            var pickUpItemCommand = commandFactory.CreateCommand<PickUpItemCommand>(_gameWorld);
             pickUpItemCommand.Initialise(item, _gameWorld.Player);
 
             // Act
@@ -61,9 +62,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             _gameWorld.Player.Position = item.Position;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var pickUpItemCommand = commandFactory.CreatePickUpItemCommand(_gameWorld);
+            var pickUpItemCommand = commandFactory.CreateCommand<PickUpItemCommand>(_gameWorld);
             pickUpItemCommand.Initialise(item, _gameWorld.Player);
 
             // Act
@@ -91,9 +92,9 @@ namespace MarsUndiscovered.Tests.Commands
             var item = spawnItemParams.Result;
             monster.Position = item.Position;
             
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var pickUpItemCommand = commandFactory.CreatePickUpItemCommand(_gameWorld);
+            var pickUpItemCommand = commandFactory.CreateCommand<PickUpItemCommand>(_gameWorld);
             pickUpItemCommand.Initialise(item, monster);
 
             // Act

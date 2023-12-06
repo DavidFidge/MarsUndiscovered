@@ -18,6 +18,8 @@ namespace MarsUndiscovered.Game.Components.Maps
                 .CreateGameObject<Item>()
                 .WithItemType(spawnItemParams.ItemType);
 
+            item.EnchantmentLevel = spawnItemParams.EnchantmentLevel;
+            
             if (spawnItemParams.Inventory == null)
             {
                 var map = maps.Single(m => m.Id == spawnItemParams.MapId);

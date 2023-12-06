@@ -7,6 +7,7 @@ using GoRogue.Pathing;
 
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Dto;
+using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using Microsoft.Xna.Framework.Input;
 
@@ -32,8 +33,11 @@ namespace MarsUndiscovered.Interfaces
         DoorCollection Doors { get; }
         MonsterCollection Monsters { get; }
         ItemCollection Items { get; }
+        MachineCollection Machines { get; }
         Inventory Inventory { get; }
+        MapExitCollection MapExits { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
+        MapCollection Maps { get; }
         ILevelGenerator LevelGenerator { get; set; }
         Guid GameId { get; }
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
@@ -66,5 +70,9 @@ namespace MarsUndiscovered.Interfaces
         IGridView<double?> GetGoalMap();
         IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange);
         IList<CommandResult> EnchantItemRequest(Keys requestKey);
+        void SpawnMachine(SpawnMachineParams spawnMachineParams);
+        IList<CommandResult> IdentifyItemRequest(Keys requestKey);
+        ICommandCollection CommandCollection { get; }
+        void CancelIdentify();
     }
 }

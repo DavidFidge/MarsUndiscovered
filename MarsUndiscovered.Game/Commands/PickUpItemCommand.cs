@@ -15,8 +15,8 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class PickUpItemCommand : BaseMarsGameActionCommand<PickUpItemSaveData>
     {
-        public Item Item { get; private set; }
-        public IGameObject GameObject { get; private set; }
+        public Item Item => GameWorld.Items[_data.ItemId];
+        public IGameObject GameObject => GameWorld.GameObjects[_data.GameObjectId];
 
         public PickUpItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -24,26 +24,10 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Item item, IGameObject gameObject)
         {
-            GameObject = gameObject;
-            Item = item;
+            _data.GameObjectId = gameObject.ID;
+            _data.ItemId = item.ID;
 
             Debug.Assert(Item.Position.Equals(GameObject.Position));
-        }
-
-        public override IMemento<PickUpItemSaveData> GetSaveState()
-        {
-            var memento = new Memento<PickUpItemSaveData>(new PickUpItemSaveData());
-            base.PopulateLoadState(memento.State);
-            memento.State.ItemId = Item.ID;
-            memento.State.GameObjectId = GameObject.ID;
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<PickUpItemSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-            GameObject = GameWorld.GameObjects[memento.State.GameObjectId];
-            Item = GameWorld.Items[memento.State.ItemId];
         }
 
         protected override CommandResult ExecuteInternal()

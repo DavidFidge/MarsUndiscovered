@@ -5,25 +5,10 @@ namespace MarsUndiscovered.Game.Components;
 
 public class BlankFloor : FloorType
 {
-    private char _asciiCharacter = ' ';
-    private Color _foregroundColour =  Color.Black;
-    private Color? _backgroundColour = null;
-
-    public override char AsciiCharacter
+    public BlankFloor()
     {
-        get => _asciiCharacter;
-        set => _asciiCharacter = value;
-    }
-
-    public override Color ForegroundColour
-    {
-        get => _foregroundColour;
-        set => _foregroundColour = value;
-    }
-
-    public override Color? BackgroundColour
-    {
-        get => _backgroundColour;
-        set => _backgroundColour = value;
+        AsciiCharacter = ' ';
+        ForegroundColour = Color.Black;
+        BackgroundColour = null;
     }
 }

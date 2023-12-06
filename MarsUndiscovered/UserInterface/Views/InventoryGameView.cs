@@ -160,6 +160,9 @@ namespace MarsUndiscovered.UserInterface.Views
                 case Views.InventoryMode.Enchant:
                     InventoryLabel.Text = "Enhance what?";
                     break;
+                case Views.InventoryMode.Identify:
+                    InventoryLabel.Text = "Identify what?";
+                    break;   
             }
         }
 
@@ -187,6 +190,9 @@ namespace MarsUndiscovered.UserInterface.Views
                     break;
                 case Views.InventoryMode.Enchant:
                     _viewModel.EnchantItemRequest(request.Key);
+                    break;
+                case Views.InventoryMode.Identify:
+                    _viewModel.IdentifyItemRequest(request.Key);
                     break;
                 case Views.InventoryMode.ReadOnly:
                     base.PerformKeyAction(request.Key);
@@ -229,6 +235,9 @@ namespace MarsUndiscovered.UserInterface.Views
                 case Views.InventoryMode.Enchant:
                     _viewModel.EnchantItemRequest(focusItem.Key);
                     break;
+                case Views.InventoryMode.Identify:
+                    _viewModel.EnchantItemRequest(focusItem.Key);
+                    break;
             }
         }
 
@@ -243,6 +252,11 @@ namespace MarsUndiscovered.UserInterface.Views
             HideIfMouseOver();
 
             return Unit.Task;
+        }
+
+        protected override void ClosingInventoryNoAction()
+        {
+            _viewModel.ClosingInventoryNoAction(InventoryMode);
         }
     }
 }

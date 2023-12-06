@@ -4,30 +4,11 @@ namespace MarsUndiscovered.Game.Components;
 
 public class StockpileWall : WallType
 {
-    private char _asciiCharacter = '#';
-    private Color _foregroundColour = Color.Black;
-    private Color? _backgroundColour = new Color(0xFF244BB6);
-
     public StockpileWall()
     {
+        ForegroundColour = Color.Black;
+        BackgroundColour = new Color(0xFF244BB6);
+        AsciiCharacter = '#';
         IsTransparent = true;
-    }
-    
-    public override char AsciiCharacter
-    {
-        get => _asciiCharacter;
-        set => _asciiCharacter = value;
-    }
-
-    public override Color ForegroundColour
-    {
-        get => _foregroundColour;
-        set => _foregroundColour = value;
-    }
-
-    public override Color? BackgroundColour
-    {
-        get => _backgroundColour;
-        set => _backgroundColour = value;
     }
 }

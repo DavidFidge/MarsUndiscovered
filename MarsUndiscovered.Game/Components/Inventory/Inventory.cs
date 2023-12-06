@@ -370,5 +370,22 @@ namespace MarsUndiscovered.Game.Components
         {
             return ItemKeyAssignments.First(i => i.Value.Contains(item)).Key;
         }
+        
+        public bool IsIdentified(Item item)
+        {
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+
+            if (!ItemTypeDiscoveries.IsItemTypeDiscovered(item))
+                return false;
+            
+            if (!item.ItemDiscovery.IsEnchantLevelDiscovered)
+                return false;
+
+            if (!item.ItemDiscovery.IsItemSpecialDiscovered)
+                return false;
+
+            return true;
+        }
     }
 }

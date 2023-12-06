@@ -16,6 +16,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach"));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            _gameWorld.SpawnMachine(new SpawnMachineParams().WithMachineType(MachineType.Analyzer));
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 
             // Act
@@ -42,6 +43,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Monster>().Count());
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Item>().Count());
             Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Player>().Count());
+            Assert.AreEqual(1, newGameWorld.GameObjects.Values.OfType<Machine>().Count());
             Assert.AreEqual(2, newGameWorld.GetNewRadioCommsItems().Count);
             Assert.AreEqual(0, newGameWorld.Inventory.Items.Count);
 
@@ -50,7 +52,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(mapEntities.Select(s => s.Item).Contains(newGameWorld.GameObjects.Values.OfType<Player>().First()));
             Assert.IsTrue(mapEntities.Select(s => s.Item).Contains(newGameWorld.GameObjects.Values.OfType<Item>().First()));
             Assert.IsTrue(mapEntities.Select(s => s.Item).Contains(newGameWorld.GameObjects.Values.OfType<Monster>().First()));
-
+            Assert.IsTrue(mapEntities.Select(s => s.Item).Contains(newGameWorld.GameObjects.Values.OfType<Machine>().First()));
+            
             Assert.AreEqual(_gameWorld.Player.ID, newGameWorld.Player.ID);
             Assert.AreEqual(_gameWorld.Player.Position, newGameWorld.Player.Position);
             Assert.AreEqual(_gameWorld.Player.IsWalkable, newGameWorld.Player.IsWalkable);

@@ -20,9 +20,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.MagnesiumPipe);
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyItemCommand = commandFactory.CreateApplyItemCommand(_gameWorld);
+            var applyItemCommand = commandFactory.CreateCommand<ApplyItemCommand>(_gameWorld);
             applyItemCommand.Initialise(_gameWorld.Player, item);
 
             // Act
@@ -43,9 +43,9 @@ namespace MarsUndiscovered.Tests.Commands
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.ShieldGenerator);
             _gameWorld.Inventory.ItemTypeDiscoveries[ItemType.ShieldGenerator].IsItemTypeDiscovered = true;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyItemCommand = commandFactory.CreateApplyItemCommand(_gameWorld);
+            var applyItemCommand = commandFactory.CreateCommand<ApplyItemCommand>(_gameWorld);
             applyItemCommand.Initialise(_gameWorld.Player, item);
 
             // Act
@@ -75,9 +75,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.ShieldGenerator);
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyItemCommand = commandFactory.CreateApplyItemCommand(_gameWorld);
+            var applyItemCommand = commandFactory.CreateCommand<ApplyItemCommand>(_gameWorld);
             applyItemCommand.Initialise(_gameWorld.Player, item);
 
             // Act
@@ -104,9 +104,9 @@ namespace MarsUndiscovered.Tests.Commands
             item.CurrentRechargeDelay = 1;
             _gameWorld.Inventory.ItemTypeDiscoveries[ItemType.ShieldGenerator].IsItemTypeDiscovered = true;
             
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyItemCommand = commandFactory.CreateApplyItemCommand(_gameWorld);
+            var applyItemCommand = commandFactory.CreateCommand<ApplyItemCommand>(_gameWorld);
             applyItemCommand.Initialise(_gameWorld.Player, item);
 
             // Act
@@ -129,9 +129,9 @@ namespace MarsUndiscovered.Tests.Commands
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.HealingBots);
             _gameWorld.Inventory.ItemTypeDiscoveries[ItemType.HealingBots].IsItemTypeDiscovered = true;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyItemCommand = commandFactory.CreateApplyItemCommand(_gameWorld);
+            var applyItemCommand = commandFactory.CreateCommand<ApplyItemCommand>(_gameWorld);
             applyItemCommand.Initialise(_gameWorld.Player, item);
 
             // Act
@@ -156,9 +156,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.HealingBots);
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyItemCommand = commandFactory.CreateApplyItemCommand(_gameWorld);
+            var applyItemCommand = commandFactory.CreateCommand<ApplyItemCommand>(_gameWorld);
             applyItemCommand.Initialise(_gameWorld.Player, item);
 
             // Act
@@ -185,9 +185,9 @@ namespace MarsUndiscovered.Tests.Commands
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.EnhancementBots);
             _gameWorld.Inventory.ItemTypeDiscoveries[ItemType.EnhancementBots].IsItemTypeDiscovered = true;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyItemCommand = commandFactory.CreateApplyItemCommand(_gameWorld);
+            var applyItemCommand = commandFactory.CreateCommand<ApplyItemCommand>(_gameWorld);
             applyItemCommand.Initialise(_gameWorld.Player, item);
 
             // Act

@@ -2,12 +2,9 @@
 {
     public abstract class NanoFlask : ItemType
     {
-        private char _asciiCharacter = (char)0x9a;
-
-        public override char AsciiCharacter
+        public NanoFlask()
         {
-            get => _asciiCharacter;
-            set => _asciiCharacter = value;
+            AsciiCharacter = (char)0x9a;
         }
 
         public override bool GroupsInInventory => true;
@@ -26,6 +23,11 @@
             }
 
             return null;
+        }
+        
+        public override string GetTypeDescription()
+        {
+            return $"{GetAbstractTypeName()} of {base.GetTypeDescription()}";
         }
 
         public override string GetAbstractTypeName()

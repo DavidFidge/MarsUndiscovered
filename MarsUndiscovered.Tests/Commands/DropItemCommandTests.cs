@@ -1,4 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
@@ -21,9 +22,9 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.CurrentMap.RemoveEntity(item);
             item.Position = Point.None;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var dropItemCommand = commandFactory.CreateDropItemCommand(_gameWorld);
+            var dropItemCommand = commandFactory.CreateCommand<DropItemCommand>(_gameWorld);
             dropItemCommand.Initialise(_gameWorld.Player, item);
 
             // Act
@@ -59,9 +60,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             _gameWorld.Player.Position = item2.Position;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var dropItemCommand = commandFactory.CreateDropItemCommand(_gameWorld);
+            var dropItemCommand = commandFactory.CreateCommand<DropItemCommand>(_gameWorld);
             dropItemCommand.Initialise(_gameWorld.Player, itemInInventory);
 
             // Act
@@ -82,9 +83,9 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.Player.Position = new Point(0, 0);
             var item = SpawnItemAndEquip(_gameWorld, ItemType.IronSpike);
             
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var dropItemCommand = commandFactory.CreateDropItemCommand(_gameWorld);
+            var dropItemCommand = commandFactory.CreateCommand<DropItemCommand>(_gameWorld);
             dropItemCommand.Initialise(_gameWorld.Player, item);
             Assert.IsNull(_gameWorld.Player.MeleeAttack);
             Assert.IsNotNull(_gameWorld.Player.LineAttack);

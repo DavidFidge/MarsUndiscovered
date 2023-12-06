@@ -195,6 +195,16 @@ namespace MarsUndiscovered.Game.Components
             return GameWorld.EnchantItemRequest(requestKey);
         }
 
+        public IList<CommandResult> IdentifyItemRequest(Keys requestKey)
+        {
+            return GameWorld.IdentifyItemRequest(requestKey);
+        }
+
+        public void CancelIdentify()
+        {
+            GameWorld.CancelIdentify();
+        }
+
         public void LoadReplay(string gameName)
         {
             GameWorld = _gameWorldFactory.Create();
@@ -214,6 +224,11 @@ namespace MarsUndiscovered.Game.Components
         public void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
         {
             GameWorld.SpawnMapExit(spawnMapExitParams);
+        }
+
+        public void SpawnMachine(SpawnMachineParams spawnMachineParams)
+        {
+            GameWorld.SpawnMachine(spawnMachineParams);
         }
     }
 }

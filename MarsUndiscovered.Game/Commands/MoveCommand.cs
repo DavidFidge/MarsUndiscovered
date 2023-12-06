@@ -1,6 +1,4 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
 
@@ -13,8 +11,8 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class MoveCommand : BaseMarsGameActionCommand<MoveCommandSaveData>
     {
-        public IGameObject GameObject { get; private set; }
-        public Tuple<Point, Point> FromTo { get; set; }
+        public IGameObject GameObject => GameWorld.GameObjects[_data.GameObjectId];
+        public Tuple<Point, Point> FromTo => _data.FromTo;
 
         public MoveCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -22,24 +20,8 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(IGameObject gameObject, Tuple<Point, Point> fromTo)
         {
-            GameObject = gameObject;
-            FromTo = fromTo;
-        }
-
-        public override IMemento<MoveCommandSaveData> GetSaveState()
-        {
-            var memento = new Memento<MoveCommandSaveData>(new MoveCommandSaveData());
-            base.PopulateSaveState(memento.State);
-            memento.State.FromTo = new Tuple<Point, Point>(FromTo.Item1, FromTo.Item2);
-            memento.State.GameObjectId = GameObject.ID;
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<MoveCommandSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-            GameObject = GameWorld.GameObjects[memento.State.GameObjectId];
-            FromTo = new Tuple<Point, Point>(memento.State.FromTo.Item1, memento.State.FromTo.Item2);
+            _data.GameObjectId = gameObject.ID;
+            _data.FromTo = fromTo;
         }
 
         protected override CommandResult ExecuteInternal()
@@ -54,7 +36,7 @@ namespace MarsUndiscovered.Game.Commands
 
                 if (item != null)
                 {
-                    var pickUpItemCommand = CommandFactory.CreatePickUpItemCommand(GameWorld);
+                    var pickUpItemCommand = CommandCollection.CreateCommand<PickUpItemCommand>(GameWorld);
                     pickUpItemCommand.Initialise(item, GameObject);
                     subsequentCommands.Add(pickUpItemCommand);
                 }

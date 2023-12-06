@@ -9,12 +9,6 @@ public abstract class WallType : GameObjectType
     public static StockpileWall StockpileWall = new StockpileWall();
 
     public bool IsTransparent { get; set; } = false;
-    
-    public override string Name
-    {
-        get => GetType().Name;
-        set { }
-    }
 
     static WallType()
     {

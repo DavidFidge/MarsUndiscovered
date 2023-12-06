@@ -1,4 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
@@ -20,9 +21,9 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.Player.Health = 1;
             var currentMaxHealth = _gameWorld.Player.MaxHealth;
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var applyHealingBotsCommand = commandFactory.CreateApplyHealingBotsCommand(_gameWorld);
+            var applyHealingBotsCommand = commandFactory.CreateCommand<ApplyHealingBotsCommand>(_gameWorld);
             applyHealingBotsCommand.Initialise(item, _gameWorld.Player);
 
             // Act

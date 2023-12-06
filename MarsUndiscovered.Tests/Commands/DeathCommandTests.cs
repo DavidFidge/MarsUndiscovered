@@ -18,9 +18,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             var monster = _gameWorld.Monsters.Values.First();
             var oldMonsterPosition = monster.Position;
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var deathCommand = commandFactory.CreateDeathCommand(_gameWorld);
+            var deathCommand = commandFactory.CreateCommand<DeathCommand>(_gameWorld);
             deathCommand.Initialise(monster, "you");
 
             // Act
@@ -46,9 +46,9 @@ namespace MarsUndiscovered.Tests.Commands
             // Arrange
             NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
 
-            var commandFactory = Container.Resolve<ICommandFactory>();
+            var commandFactory = Container.Resolve<ICommandCollection>();
 
-            var deathCommand = commandFactory.CreateDeathCommand(_gameWorld);
+            var deathCommand = commandFactory.CreateCommand<DeathCommand>(_gameWorld);
             deathCommand.Initialise(_gameWorld.Player, "a monster");
 
             // Act

@@ -49,32 +49,37 @@ public class ItemTypeDiscoveryCollection : Dictionary<ItemType, ItemTypeDiscover
 
     public bool IsItemTypeDiscovered(ItemType itemType)
     {
+        if (!this.ContainsKey(itemType))
+            return true;
+        
         return this[itemType].IsItemTypeDiscovered;
     }
     
     public bool IsItemTypeDiscovered(Item item)
     {
-        return this[item.ItemType].IsItemTypeDiscovered;
+        return IsItemTypeDiscovered(item.ItemType);
     }
     
     public void SetItemTypeDiscovered(Item item)
     {
-        this[item.ItemType].IsItemTypeDiscovered = true;
+        SetItemTypeDiscovered(item.ItemType);
     }
     
     public void SetItemTypeUndiscovered(Item item)
     {
-        this[item.ItemType].IsItemTypeDiscovered = false;
+        SetItemTypeUndiscovered(item.ItemType);
     }
     
     public void SetItemTypeDiscovered(ItemType itemType)
     {
-        this[itemType].IsItemTypeDiscovered = true;
+        if (this.ContainsKey(itemType))
+            this[itemType].IsItemTypeDiscovered = true;
     }
     
     public void SetItemTypeUndiscovered(ItemType itemType)
-    {
-        this[itemType].IsItemTypeDiscovered = false;
+    {   
+        if (this.ContainsKey(itemType))
+            this[itemType].IsItemTypeDiscovered = false;
     }
 
     public void CreateUndiscoveredItemTypeNames()
@@ -119,6 +124,13 @@ public class ItemTypeDiscoveryCollection : Dictionary<ItemType, ItemTypeDiscover
         TryGetValue(item.ItemType, out var itemTypeDiscovery);
             
         return item.GetDescriptionWithoutPrefix(itemTypeDiscovery);
+    }
+    
+    public string GetInventoryDescriptionWithoutPrefixAndWithoutStatus(Item item)
+    {
+        TryGetValue(item.ItemType, out var itemTypeDiscovery);
+            
+        return item.GetDescriptionWithoutPrefixAndWithoutStatus(itemTypeDiscovery);
     }
 
     public string GetInventoryDescriptionAsSingleItem(Item item)

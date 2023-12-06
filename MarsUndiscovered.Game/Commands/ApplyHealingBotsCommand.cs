@@ -1,6 +1,4 @@
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
@@ -9,49 +7,23 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class ApplyHealingBotsCommand : BaseMarsGameActionCommand<ApplyHealingBotsCommandSaveData>
     {
-        public Item Source { get; private set; }
-        public Actor Target { get; private set; }
+        public Item Source => GameWorld.Items[_data.SourceId];
+        public Actor Target => GameWorld.GameObjects[_data.TargetId] as Actor;
         
-        private int _oldHealth;
-        private int _oldMaxHealth;
-
         public ApplyHealingBotsCommand(IGameWorld gameWorld) : base(gameWorld)
         {
         }
 
         public void Initialise(Item source, Actor target)
         {
-            Source = source;
-            Target = target;
-        }
-
-        public override IMemento<ApplyHealingBotsCommandSaveData> GetSaveState()
-        {
-            var memento = new Memento<ApplyHealingBotsCommandSaveData>(new ApplyHealingBotsCommandSaveData());
-            base.PopulateSaveState(memento.State);
-
-            memento.State.SourceId = Source.ID;
-            memento.State.TargetId = Target.ID;
-            memento.State.OldHealth = _oldHealth;
-            memento.State.OldMaxHealth = _oldMaxHealth;
-
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<ApplyHealingBotsCommandSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-
-            Source = (Item)GameWorld.GameObjects[memento.State.SourceId];
-            Target = (Actor)GameWorld.GameObjects[memento.State.TargetId];
-            _oldHealth = memento.State.OldHealth;
-            _oldMaxHealth = memento.State.OldMaxHealth;
+            _data.SourceId = source.ID;
+            _data.TargetId = target.ID;
         }
 
         protected override CommandResult ExecuteInternal()
         {
-            _oldMaxHealth = Target.MaxHealth;
-            _oldHealth = Target.Health;
+            _data.OldMaxHealth = Target.MaxHealth;
+            _data.OldHealth = Target.Health;
             
             Target.MaxHealth += Source.MaxHealthIncrease;
             Target.Health = Target.MaxHealth;
@@ -64,8 +36,8 @@ namespace MarsUndiscovered.Game.Commands
 
         protected override void UndoInternal()
         {
-            Target.Health = _oldHealth;
-            Target.MaxHealth = _oldMaxHealth;
+            Target.Health = _data.OldHealth;
+            Target.MaxHealth = _data.OldMaxHealth;
         }
     }
 }

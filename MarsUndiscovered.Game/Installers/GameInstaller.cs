@@ -48,6 +48,10 @@ namespace MarsUndiscovered.Game.Installers
                     .ImplementedBy<ItemGenerator>()
                     .LifestyleTransient(),
 
+                Component.For<IMachineGenerator>()
+                    .ImplementedBy<MachineGenerator>()
+                    .LifestyleTransient(),
+
                 Component.For<IShipGenerator>()
                     .ImplementedBy<ShipGenerator>()
                     .LifestyleTransient(),
@@ -117,8 +121,8 @@ namespace MarsUndiscovered.Game.Installers
                 Component.For<IFactory<IGameWorld>>()
                     .AsFactory(),
 
-                Component.For<ICommandFactory>()
-                    .ImplementedBy<CommandFactory>(),
+                Component.For<ICommandCollection>()
+                    .ImplementedBy<CommandCollection>(),
 
                 Component.For<ICommandFactory<MoveCommand>>()
                    .AsFactory(),
@@ -166,6 +170,15 @@ namespace MarsUndiscovered.Game.Installers
                     .AsFactory(),
                 
                 Component.For<ICommandFactory<WaitCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<ApplyMachineCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<IdentifyItemCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<UndoCommand>>()
                     .AsFactory()
             );
         }

@@ -80,6 +80,11 @@ public class Assets : IAssets
             CreateGameObjectTypeGraphics(doorType.Value, assetsList, doorType.Key);
         }
         
+        foreach (var machineType in MachineType.MachineTypes)
+        {
+            CreateGameObjectTypeGraphics(machineType.Value, assetsList, machineType.Key);
+        }
+        
         var itemTypes = ItemType.ItemTypes.Values
             .GroupBy(i => i.AsciiCharacter)
             .Select(g => g.First()).ToList();

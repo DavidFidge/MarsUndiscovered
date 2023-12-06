@@ -5,7 +5,6 @@ namespace MarsUndiscovered.Game.Components
     public class ShieldGenerator : Gadget
     {
         private int _damageShieldPercentage = 30;
-        public override string Name => nameof(ShieldGenerator);
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {

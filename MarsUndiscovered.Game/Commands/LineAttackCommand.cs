@@ -1,8 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Extensions;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
-
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 
@@ -13,37 +10,11 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class LineAttackCommand : BaseAttackCommand<LineAttackCommandSaveData>
     {
-        private List<AttackRestoreData> _targetHitDetails = new List<AttackRestoreData>();
-        private IList<Actor> _targets;
-
-        public Actor Source { get; private set; }
-        public List<Point> Path { get; private set; }
-        public IList<Actor> Targets => _targets;
+        public Actor Source => GameWorld.GameObjects[_data.SourceId] as Actor;
+        public List<Point> Path => _data.Path;
         
         public LineAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
-        }
-
-        public override IMemento<LineAttackCommandSaveData> GetSaveState()
-        {
-            var memento = new Memento<LineAttackCommandSaveData>(new LineAttackCommandSaveData());
-            base.PopulateSaveState(memento.State);
-
-            memento.State.SourceId = Source.ID;
-            memento.State.Path = Path.ToList();
-            memento.State.LineAttackCommandRestore = _targetHitDetails.ToList();
-
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<LineAttackCommandSaveData> memento)
-        {
-            PopulateLoadState(memento.State);
-
-            Source = (Actor)GameWorld.GameObjects[memento.State.SourceId];
-            Path = memento.State.Path.ToList();
-            _targetHitDetails = memento.State.LineAttackCommandRestore.ToList();
-            _targets = GetTargets(Source, Path);
         }
         
         protected override CommandResult ExecuteInternal()
@@ -51,23 +22,26 @@ namespace MarsUndiscovered.Game.Commands
             if (Source.LineAttack == null)
                 throw new Exception("Object does not have a line attack");
 
-            if (_targets.IsEmpty())
+            var targets = GetTargets();
+            
+            if (targets.IsEmpty())
                 return CommandResult.Exception(this, "No targets found for LineAttack");
 
-            var commandResult = CommandResult.Success(this, new List<string>(_targets.Count));
+            var commandResult = CommandResult.Success(this, new List<string>(targets.Count));
 
-            foreach (var target in _targets)
+            foreach (var target in targets)
             {
                 var damage = Source.LineAttack.Roll();
 
                 var lineAttackCommandRestore = new AttackRestoreData
                 {
+                    Id = target.ID,
                     Damage = damage,
                     Health = target.Health,
                     Shield = target.Shield
                 };
                 
-                _targetHitDetails.Add(lineAttackCommandRestore);
+                _data.LineAttackCommandRestore.Add(lineAttackCommandRestore);
 
                 target.ApplyDamage(damage);
 
@@ -78,7 +52,7 @@ namespace MarsUndiscovered.Game.Commands
 
                 if (target.Health <= 0)
                 {
-                    var deathCommand = CommandFactory.CreateDeathCommand(GameWorld);
+                    var deathCommand = CommandCollection.CreateCommand<DeathCommand>(GameWorld);
                     deathCommand.Initialise(target, Source.NameGenericArticleLowerCase);
                     commandResult.SubsequentCommands.Add(deathCommand);
                 }
@@ -89,26 +63,25 @@ namespace MarsUndiscovered.Game.Commands
 
         protected override void UndoInternal()
         {
-            for (var i = 0; i < _targets.Count; i++)
+            foreach (var restore in _data.LineAttackCommandRestore)
             {
-                _targets[i].Health = _targetHitDetails[i].Health;
-                _targets[i].Shield = _targetHitDetails[i].Shield;
+                ((Actor)GameWorld.GameObjects[restore.Id]).Health = restore.Health;
+                ((Actor)GameWorld.GameObjects[restore.Id]).Shield = restore.Shield;
             }
         }
 
         public void Initialise(Actor source, List<Point> path)
         {
-            Source = source;
-            Path = path;
-            _targets = GetTargets(Source, Path);
+            _data.SourceId = source.ID;
+            _data.Path = path;
         }
 
-        private IList<Actor> GetTargets(Actor source, List<Point> lineAttackPath)
+        public IList<Actor> GetTargets()
         {
-            return lineAttackPath
+            return Path
                 .Skip(1)
-                .Where(p => source.CurrentMap.Contains(p))
-                .Select(p => source.CurrentMap.GetObjectAt<Actor>(p))
+                .Where(p => Source.CurrentMap.Contains(p))
+                .Select(p => Source.CurrentMap.GetObjectAt<Actor>(p))
                 .Where(p => p != null)
                 .ToList();
         }

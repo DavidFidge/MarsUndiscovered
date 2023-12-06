@@ -40,7 +40,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             var moveCommand = result[0] as MoveCommand;
@@ -77,19 +77,19 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result1 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result1 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             var moveCommand1 = (MoveCommand)result1[0];
             monster.Position = moveCommand1.FromTo.Item2;
             
-            var result2 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result2 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             var moveCommand2 = (MoveCommand)result2[0];
             monster.Position = moveCommand2.FromTo.Item2;
             
-            var result3 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result3 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             var moveCommand3 = (MoveCommand)result3[0];
             monster.Position = moveCommand3.FromTo.Item2;
             
-            var result4 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result4 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             var moveCommand4 = (MoveCommand)result4[0];
             monster.Position = moveCommand4.FromTo.Item2;
 
@@ -128,7 +128,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result1 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result1 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Map Turn 1");
@@ -137,7 +137,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var moveCommand1 = (MoveCommand)result1[0];
             monster.Position = moveCommand1.FromTo.Item2;
 
-            var result2 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result2 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             
             stringBuilder.AppendLine("Map Turn 2");
             monster.GetGoalMap().AddToStringBuilder(stringBuilder);
@@ -145,7 +145,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var moveCommand2 = (MoveCommand)result2[0];
             monster.Position = moveCommand2.FromTo.Item2;
             
-            var result3 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result3 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             
             stringBuilder.AppendLine("Map Turn 3");
             monster.GetGoalMap().AddToStringBuilder(stringBuilder);
@@ -153,7 +153,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var moveCommand3 = (MoveCommand)result3[0];
             monster.Position = moveCommand3.FromTo.Item2;
             
-            var result4 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result4 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             
             stringBuilder.AppendLine("Map Turn 4");
             monster.GetGoalMap().AddToStringBuilder(stringBuilder);
@@ -257,19 +257,19 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var oldRandom = GlobalRandom.DefaultRNG;
             GlobalRandom.DefaultRNG = new KnownSeriesRandom(new int[] { 3, 6, 2, 4 });
 
-            var result1 = monster1.NextTurn(_gameWorld.CommandFactory).ToList();
-            var result2 = monster2.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result1 = monster1.NextTurn(_gameWorld.CommandCollection).ToList();
+            var result2 = monster2.NextTurn(_gameWorld.CommandCollection).ToList();
             
             monster1.Position = ((MoveCommand)result1[0]).FromTo.Item2;
             monster2.Position = ((MoveCommand)result2[0]).FromTo.Item2;
 
             GlobalRandom.DefaultRNG = oldRandom;
             
-            var result3 = monster1.NextTurn(_gameWorld.CommandFactory).ToList();
-            var result4 = monster2.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result3 = monster1.NextTurn(_gameWorld.CommandCollection).ToList();
+            var result4 = monster2.NextTurn(_gameWorld.CommandCollection).ToList();
             
-            var result5 = monster1.NextTurn(_gameWorld.CommandFactory).ToList();
-            var result6 = monster2.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result5 = monster1.NextTurn(_gameWorld.CommandCollection).ToList();
+            var result6 = monster2.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             Assert.AreEqual(0 ,result3.Count);
@@ -310,7 +310,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             var moveCommand = result[0] as MoveCommand;
@@ -349,7 +349,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Act
             GlobalRandom.DefaultRNG = new KnownSeriesRandom(new int[] { 2, 0 });
-            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             var moveCommand = result[0] as MoveCommand;
@@ -415,24 +415,24 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             
             var oldRandom = GlobalRandom.DefaultRNG;
             GlobalRandom.DefaultRNG = new KnownSeriesRandom(new int[] { 2, 1 });
-            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             monster.Position = ((MoveCommand)result[0]).FromTo.Item2;
 
             GlobalRandom.DefaultRNG = oldRandom;
 
-            result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             monster.Position = ((MoveCommand)result[0]).FromTo.Item2;
-            result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             monster.Position = ((MoveCommand)result[0]).FromTo.Item2;
-            result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             monster.Position = ((MoveCommand)result[0]).FromTo.Item2;
 
             // Act
             // The first NextTurn should result in no movement, the next turn should result in a recalculation and movement
-            result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             Assert.AreEqual(0, result.Count);
             
-            result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             var moveCommand = result[0] as MoveCommand;
@@ -494,8 +494,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result1 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
-            var result2 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result1 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
+            var result2 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             var moveCommand = result2[0] as MoveCommand;
@@ -530,8 +530,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result1 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
-            var result2 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result1 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
+            var result2 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             Assert.AreEqual(0, result1.Count);
@@ -592,8 +592,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result1 = monsterFollower1.Result.NextTurn(_gameWorld.CommandFactory).ToList();
-            var result2 = monsterFollower2.Result.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result1 = monsterFollower1.Result.NextTurn(_gameWorld.CommandCollection).ToList();
+            var result2 = monsterFollower2.Result.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             var moveCommand1 = (MoveCommand)result1[0];
@@ -631,19 +631,19 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result1 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result1 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             var moveCommand1 = (MoveCommand)result1[0];
             monster.Position = moveCommand1.FromTo.Item2;
             
-            var result2 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result2 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             var moveCommand2 = (MoveCommand)result2[0];
             monster.Position = moveCommand2.FromTo.Item2;
             
-            var result3 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result3 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             var moveCommand3 = (MoveCommand)result3[0];
             monster.Position = moveCommand3.FromTo.Item2;
             
-            var result4 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result4 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             var moveCommand4 = (MoveCommand)result4[0];
             monster.Position = moveCommand4.FromTo.Item2;
 
@@ -681,7 +681,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result1 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result1 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Map Turn 1");
@@ -690,7 +690,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var moveCommand1 = (MoveCommand)result1[0];
             monster.Position = moveCommand1.FromTo.Item2;
 
-            var result2 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result2 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             
             stringBuilder.AppendLine("Map Turn 2");
             monster.CurrentMap.AddToStringBuilderWithPathGrid(stringBuilder, monster.GetWanderPath(), 1);
@@ -698,7 +698,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var moveCommand2 = (MoveCommand)result2[0];
             monster.Position = moveCommand2.FromTo.Item2;
             
-            var result3 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result3 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             
             stringBuilder.AppendLine("Map Turn 3");
             monster.CurrentMap.AddToStringBuilderWithPathGrid(stringBuilder, monster.GetWanderPath(), 1);
@@ -706,7 +706,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var moveCommand3 = (MoveCommand)result3[0];
             monster.Position = moveCommand3.FromTo.Item2;
             
-            var result4 = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result4 = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             
             stringBuilder.AppendLine("Map Turn 4");
             monster.CurrentMap.AddToStringBuilderWithPathGrid(stringBuilder, monster.GetWanderPath(), 1);
@@ -749,7 +749,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             var moveCommand = result[0] as MoveCommand;
@@ -779,7 +779,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             var attackCommand = result[0] as MeleeAttackCommand;
@@ -813,7 +813,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             Assert.AreEqual(1, result.Count);
@@ -844,13 +844,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             var attackCommand = result[0] as LineAttackCommand;
             Assert.IsNotNull(attackCommand);
-            Assert.AreEqual(1, attackCommand.Targets.Count);
-            Assert.AreSame(_gameWorld.Player, attackCommand.Targets[0]);
+            Assert.AreEqual(1, attackCommand.GetTargets().Count);
+            Assert.AreSame(_gameWorld.Player, attackCommand.GetTargets()[0]);
             Assert.AreSame(monster, attackCommand.Source);
         }
         
@@ -883,7 +883,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.TestResetFieldOfView();
             monster1.ResetFieldOfViewAndSeenTiles();
             monster2.ResetFieldOfViewAndSeenTiles();
-            var result = monster2.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result = monster2.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Act
             var lineAttackCommand = (LineAttackCommand)result[0]; 
@@ -897,9 +897,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             var attackCommand = result[0] as LineAttackCommand;
             Assert.IsNotNull(attackCommand);
-            Assert.AreEqual(2, attackCommand.Targets.Count);
-            Assert.AreSame(monster1, attackCommand.Targets[0]);
-            Assert.AreSame(_gameWorld.Player, attackCommand.Targets[1]);
+            var saveState = attackCommand.GetSaveState();
+            Assert.AreEqual(monster1.ID, saveState.State.LineAttackCommandRestore[0].Id);
+            Assert.AreEqual(_gameWorld.Player.ID, saveState.State.LineAttackCommandRestore[1].Id);
             Assert.AreSame(monster2, attackCommand.Source);
             Assert.IsTrue(monster1.IsDead);
         }
@@ -963,7 +963,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var result = monster.NextTurn(_gameWorld.CommandFactory).ToList();
+            var result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
             Assert.IsTrue(result.IsEmpty());
@@ -994,7 +994,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             var lightningAttackCommand = result[0].Command as LightningAttackCommand;
             Assert.IsNotNull(lightningAttackCommand);
-            Assert.AreSame(_gameWorld.Player, lightningAttackCommand.Targets.Single());
+            Assert.AreSame(_gameWorld.Player, lightningAttackCommand.GetTargets().Single());
             Assert.AreSame(monster, lightningAttackCommand.Source);
             Assert.AreEqual(playerHealth - monster.LightningAttack.Damage, _gameWorld.Player.Health);
 

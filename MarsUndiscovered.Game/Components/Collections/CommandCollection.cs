@@ -2,107 +2,296 @@
 using System.Reflection;
 
 using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
+using FrigidRogue.MonoGame.Core.Services;
+using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Components
 {
-    public class CommandCollection : IEnumerable<BaseGameActionCommand>, ISaveable
+    public class CommandCollection : IMementoState<CommandCollectionSaveData>, ICommandCollection
     {
-        private readonly List<PropertyInfo> _commandCollectionPropertyInfos;
+        private uint _nextId = 1;
 
-        public CommandCollection(ICommandFactory commandFactory, IGameWorld gameWorld)
+        public List<LineAttackCommand> LineAttackCommands { get; private set; } = new();
+        public ICommandFactory<LineAttackCommand> LineAttackCommandFactory { get; set; }
+        
+        public List<MeleeAttackCommand> MeleeAttackCommands { get; private set; } = new();
+        public ICommandFactory<MeleeAttackCommand> MeleeAttackCommandFactory { get; set; }
+        
+        public List<LightningAttackCommand> LightningAttackCommands { get; private set; } = new();
+        public ICommandFactory<LightningAttackCommand> LightningAttackCommandFactory { get; set; }
+
+        public List<WalkCommand> WalkCommands { get; private set; } = new();
+        public ICommandFactory<WalkCommand> WalkCommandFactory { get; set; }
+
+        public List<MoveCommand> MoveCommands { get; private set; } = new();
+        public ICommandFactory<MoveCommand> MoveCommandFactory { get; set; }
+        
+        public List<DeathCommand> DeathCommands { get; private set; } = new();
+        public ICommandFactory<DeathCommand> DeathCommandFactory { get; set; }
+
+        public List<EquipItemCommand> EquipItemCommands { get; private set; } = new();
+        public ICommandFactory<EquipItemCommand> EquipItemCommandFactory { get; set; }
+
+        public List<UnequipItemCommand> UnequipItemCommands { get; private set; } = new();
+        public ICommandFactory<UnequipItemCommand> UnequipItemCommandFactory { get; set; }
+
+        public List<DropItemCommand> DropItemCommands { get; private set; } = new();
+        public ICommandFactory<DropItemCommand> DropItemCommandFactory { get; set; }
+
+        public List<PickUpItemCommand> PickUpItemCommands { get; private set; } = new();
+        public ICommandFactory<PickUpItemCommand> PickUpItemCommandFactory { get; set; }
+
+        public List<ChangeMapCommand> ChangeMapCommands { get; private set; } = new();
+        public ICommandFactory<ChangeMapCommand> ChangeMapCommandFactory { get; set; }
+        
+        public List<ApplyItemCommand> ApplyItemCommands { get; private set; } = new();
+        public ICommandFactory<ApplyItemCommand> ApplyItemCommandFactory { get; set; }
+
+        public List<ApplyShieldCommand> ApplyShieldCommands { get; private set; } = new();
+        public ICommandFactory<ApplyShieldCommand> ApplyShieldCommandFactory { get; set; }
+        
+        public List<ApplyHealingBotsCommand> ApplyHealingBotsCommands { get; private set; } = new();
+        public ICommandFactory<ApplyHealingBotsCommand> ApplyHealingBotsCommandFactory { get; set; }
+        
+        public List<EnchantItemCommand> EnchantItemCommands { get; private set; } = new();
+        public ICommandFactory<EnchantItemCommand> EnchantItemCommandFactory { get; set; }
+
+        public List<WaitCommand> WaitCommands { get; private set; } = new();
+        public ICommandFactory<WaitCommand> WaitCommandFactory { get; set; }
+
+        public List<ApplyMachineCommand> ApplyMachineCommands { get; private set; } = new();
+        public ICommandFactory<ApplyMachineCommand> ApplyMachineCommandFactory { get; set; }
+
+        public List<IdentifyItemCommand> IdentifyItemCommands { get; private set; } = new();
+        public ICommandFactory<IdentifyItemCommand> IdentifyItemCommandFactory { get; set; }
+        
+        public List<UndoCommand> UndoCommands { get; private set; } = new();
+        public ICommandFactory<UndoCommand> UndoCommandFactory { get; set; }
+        
+        private List<uint> _replayCommandIds = new();
+        private Dictionary<uint, BaseGameActionCommand> _commandsById = new();
+        private Dictionary<Type, PropertyInfo> _commandListProperties;
+        
+        public CommandCollection()
         {
-            AttackCommands = new AttackCommandCollection(commandFactory, gameWorld);
-            LightningAttackCommands = new LightningAttackCommandCollection(commandFactory, gameWorld);
-            WalkCommands = new WalkCommandCollection(commandFactory, gameWorld);
-            MoveCommands = new MoveCommandCollection(commandFactory, gameWorld);
-            DeathCommands = new DeathCommandCollection(commandFactory, gameWorld); 
-            EquipItemCommands = new EquipItemCommandCollection(commandFactory, gameWorld);
-            UnequipItemCommands = new UnequipItemCommandCollection(commandFactory, gameWorld);
-            DropItemCommands = new DropItemCommandCollection(commandFactory, gameWorld);
-            PickUpItemCommands = new PickUpItemCommandCollection(commandFactory, gameWorld);
-            ChangeMapCommands = new ChangeMapCommandCollection(commandFactory, gameWorld);
-            ApplyItemCommands = new ApplyItemCommandCollection(commandFactory, gameWorld);
-            ApplyShieldCommands = new ApplyShieldCommandCollection(commandFactory, gameWorld);
-            ApplyHealingBotsCommands = new ApplyHealingBotsCommandCollection(commandFactory, gameWorld);
-            EnchantItemCommands = new EnchantItemCommandCollection(commandFactory, gameWorld);
-            WaitCommands = new WaitCommandCollection(commandFactory, gameWorld);
-
-            _commandCollectionPropertyInfos = GetType()
-                .GetProperties()
-                .Where(p => p.PropertyType.BaseType != null)
-                .Where(p => p.PropertyType.BaseType.GenericTypeArguments.Any())
-                .Where(
-                    p => typeof(BaseGameActionCommand).IsAssignableFrom(p.PropertyType.BaseType.GenericTypeArguments[0])
-                )
-                .Where(p => typeof(IList).IsAssignableFrom(p.PropertyType))
-                .ToList();
+            _commandListProperties = GetCommandListProperties();
         }
-
-        public AttackCommandCollection AttackCommands { get; set; }
-        public LightningAttackCommandCollection LightningAttackCommands { get; set; }
-        public WalkCommandCollection WalkCommands { get; set; }
-        public MoveCommandCollection MoveCommands { get; set; }
-        public DeathCommandCollection DeathCommands { get; set; }
-        public EquipItemCommandCollection EquipItemCommands { get; set; }
-        public UnequipItemCommandCollection UnequipItemCommands { get; set; }
-        public DropItemCommandCollection DropItemCommands { get; set; }
-        public PickUpItemCommandCollection PickUpItemCommands { get; set; }
-        public ChangeMapCommandCollection ChangeMapCommands { get; set; }
-        public ApplyItemCommandCollection ApplyItemCommands { get; set; }
-        public ApplyShieldCommandCollection ApplyShieldCommands { get; set; }
-        public ApplyHealingBotsCommandCollection ApplyHealingBotsCommands { get; set; }
-        public EnchantItemCommandCollection EnchantItemCommands { get; set; }
-        public WaitCommandCollection WaitCommands { get; set; }
-
-        public IEnumerator<BaseGameActionCommand> GetEnumerator()
+        
+        public IMemento<CommandCollectionSaveData> GetSaveState()
         {
-            foreach (var commandCollectionProperty in _commandCollectionPropertyInfos)
+            return new Memento<CommandCollectionSaveData>
             {
-                var commandCollection = (IList)commandCollectionProperty.GetValue(this);
-
-                foreach (var command in commandCollection)
+                State = new CommandCollectionSaveData
                 {
-                    yield return (BaseGameActionCommand)command;
+                    NextId = _nextId,
+                    ReplayCommandIds = _replayCommandIds.ToList()
                 }
-            }
+            };
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public void SetLoadState(IMemento<CommandCollectionSaveData> memento)
         {
-            return GetEnumerator();
+            _nextId = memento.State.NextId;
+            _replayCommandIds = memento.State.ReplayCommandIds.ToList();
         }
 
         public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
-            SaveLoad(saveGameService, (s, sgs) => s.SaveState(sgs, gameWorld));
+            var saveState = GetSaveState();
+            saveGameService.SaveToStore(saveState);
+            
+            // call SaveCommandList for each of properties using reflection
+            foreach (var commandListProperty in _commandListProperties)
+            {
+                var method = this.GetType().GetMethod("SaveCommandList");
+
+                var commandTypeSaveData = commandListProperty.Key.BaseType.GetGenericArguments().First();
+                var commandList = commandListProperty.Value.GetValue(this);
+                
+                var genericMethod = method.MakeGenericMethod(commandListProperty.Key, commandTypeSaveData);
+                
+                genericMethod.Invoke(this, new object[] { commandList, saveGameService });
+            }
         }
 
         public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
-            SaveLoad(saveGameService, (s, sgs) => s.LoadState(sgs, gameWorld));
-        }
-
-        private void SaveLoad(ISaveGameService saveGameService, Action<ISaveable, ISaveGameService> action)
-        {
-            foreach (var property in _commandCollectionPropertyInfos)
+            var memento = saveGameService.GetFromStore<CommandCollectionSaveData>();
+            
+            _nextId = memento.State.NextId;
+            _replayCommandIds = memento.State.ReplayCommandIds.ToList();
+            
+            foreach (var commandListProperty in _commandListProperties)
             {
-                var saveable = (ISaveable)property.GetValue(this);
-                action(saveable, saveGameService);
+                // Call LoadCommandsList for each property using reflection
+                var method = this.GetType().GetMethod("LoadCommandList");
+
+                var commandTypeSaveData = commandListProperty.Key.BaseType.GetGenericArguments().First();
+                
+                var commandList = commandListProperty.Value.GetValue(this);
+
+                var genericMethod = method.MakeGenericMethod(commandListProperty.Key, commandTypeSaveData);
+                
+                genericMethod.Invoke(this, new object[] { commandList, saveGameService, gameWorld });
             }
         }
 
-        public void AddCommand(BaseGameActionCommand command)
+        private Dictionary<Type, PropertyInfo> GetCommandListProperties()
         {
-            var commandType = command.GetType();
+            var commandListProperties = this
+                .GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.PropertyType.IsAssignableTo(typeof(IList)))
+                .Where(p => p.PropertyType.GetGenericArguments().Any())
+                .Where(p => p.PropertyType.GetGenericArguments().First().IsAssignableTo(typeof(BaseGameActionCommand)))
+                .ToDictionary(k => k.PropertyType.GetGenericArguments().First(), v => v);
+            
+            return commandListProperties;
+        }
 
-            var propertyInfo = _commandCollectionPropertyInfos.First(p => p.PropertyType.BaseType.GenericTypeArguments[0].IsAssignableFrom(commandType));
+        // Called via reflection
+        public void SaveCommandList<T, TSaveData>(List<T> commands, ISaveGameService saveGameService)
+            where T : BaseMarsGameActionCommand<TSaveData>
+            where TSaveData : BaseCommandSaveData, new()
+        {
+            var mementos = new List<IMemento<TSaveData>>();
+            
+            foreach (var command in commands)
+            {
+                var saveState = command.GetSaveState();
+                
+                mementos.Add(saveState);
+            }
 
-            var commandCollection = (IList)propertyInfo.GetValue(this);
+            saveGameService.SaveListToStore(mementos);
+        }
 
-            commandCollection.Add(command);
+        // Called via reflection
+        public void LoadCommandList<T, TSaveData>(List<T> commands, ISaveGameService saveGameService, IGameWorld gameWorld)
+            where T : BaseMarsGameActionCommand<TSaveData>
+            where TSaveData : BaseCommandSaveData, new()
+        {
+            var mementos = saveGameService.GetListFromStore<TSaveData>();
+            
+            foreach (var memento in mementos)
+            {
+                var command = CreateCommand<T>(gameWorld, memento.State.Id);
+                
+                command.SetLoadState(memento);
+
+                commands.Add(command);
+            }
+        }
+        
+        public T CreateCommand<T>(IGameWorld gameWorld) where T : BaseGameActionCommand
+        {
+            var command = CreateCommand<T>(gameWorld, _nextId);
+            _nextId++;
+            
+            return command;
+        }
+        
+        public T CreateCommand<T>(IGameWorld gameWorld, uint id) where T : BaseGameActionCommand
+        {
+            var factoryName = $"{typeof(T).Name}Factory";
+            
+            // use reflection to look up property called factoryName
+            var factory = (ICommandFactory<T>)this.GetType().GetProperty(factoryName)?.GetValue(this);
+            
+            if (factory == null)
+            {
+                throw new Exception($"Factory not found for {typeof(T).Name}. " +
+                    $"Ensure it is added to the installer, then add a property called {factoryName} to this class.");
+            }
+            
+            var command = factory.Create(gameWorld);
+
+            command.Id = id;
+            _commandsById.Add(id, command);
+            
+            var commandListProperty = _commandListProperties[typeof(T)];
+            
+            var commandList = (List<T>)commandListProperty.GetValue(this);
+
+            commandList.Add(command);
+
+            return command;
+        }
+        
+        // Usually commands are created by the factories in this class but when replaying
+        // the command is already created. This method is used to add it to the collection
+        public void ReprocessReplayCommand<T>(T command) where T : BaseGameActionCommand
+        {
+            if (_nextId != command.Id)
+            {
+                throw new Exception(
+                    $"Expected _nextId {_nextId} to be equal to the command being replayed: {command.Id}");
+            }
+            
+            _commandsById.Add(command.Id, command);
+            
+            // command.GetType is used here instead of typeof(T) because
+            // the parameter passed in is a BaseGameActionCommand rather than
+            // the actual concrete type.
+            var commandListProperty = _commandListProperties[command.GetType()];
+            
+            var commandList = (IList)commandListProperty.GetValue(this);
+
+            commandList.Add(command);
+            _nextId++;
+        }
+
+        public void AddReplayCommand(BaseGameActionCommand command)
+        {
+            _replayCommandIds.Add(command.Id);
+        }
+
+        public BaseGameActionCommand[] GetReplayCommands()
+        {
+            return _replayCommandIds
+                .Select(r => _commandsById[r])
+                .OrderBy(c => c.TurnDetails.SequenceNumber)
+                .ToArray();
+        }
+
+        public T GetLastCommand<T>()
+        {
+            var commandListProperty = _commandListProperties[typeof(T)];
+            
+            var commandList = (IList)commandListProperty.GetValue(this);
+            
+            return (T)commandList[^1];
+        }
+
+        public List<T> GetCommands<T>()
+        {
+            var commandListProperty = _commandListProperties[typeof(T)];
+            
+            var commandList = commandListProperty.GetValue(this);
+
+            return (List<T>)commandList;
+        }
+
+        public void Initialise()
+        {
+            foreach (var commandListProperty in _commandListProperties.Values)
+            {
+                var commandList = (IList)commandListProperty.GetValue(this);
+                commandList.Clear();
+            }
+
+            _nextId = 1;
+            _replayCommandIds.Clear();
+            _commandsById.Clear();
+        }
+
+        public BaseGameActionCommand GetCommand(uint dataCommandId)
+        {
+            return _commandsById[dataCommandId];
         }
     }
 }

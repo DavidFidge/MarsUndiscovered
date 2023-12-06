@@ -12,25 +12,10 @@ namespace MarsUndiscovered.Game.Components
         public static EnhancementBots EnhancementBots = new EnhancementBots();
         public static ShipRepairParts ShipRepairParts = new ShipRepairParts();
 
-        private Color _foregroundColour = Color.Yellow;
-        private Color? _backgroundColour = null;
-
-        public override string Name
+        public ItemType()
         {
-            get => GetType().Name;
-            set { }
-        }
-
-        public override Color ForegroundColour
-        {
-            get => _foregroundColour;
-            set => _foregroundColour = value;
-        }
-
-        public override Color? BackgroundColour
-        {
-            get => _backgroundColour;
-            set => _backgroundColour = value;
+            ForegroundColour = Color.Yellow;
+            BackgroundColour = null;
         }
 
         public virtual bool GroupsInInventory { get; } = false;
@@ -61,8 +46,6 @@ namespace MarsUndiscovered.Game.Components
         }
 
         public abstract string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true);
-        public abstract string GetTypeDescription();
-        public abstract string GetAbstractTypeName();
 
         protected string GetEnchantText(Item item)
         {

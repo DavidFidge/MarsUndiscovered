@@ -5,7 +5,7 @@ namespace MarsUndiscovered.Game.Components
 {
     public interface ISaveable
     {
-        void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld);
-        void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld);
+        public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld);
+        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld);
     }
 }

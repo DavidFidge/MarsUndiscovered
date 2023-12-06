@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 
@@ -12,8 +10,8 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class WalkCommand : BaseMarsGameActionCommand<WalkCommandSaveData>
     {
-        public Direction Direction { get; set; }
-        public Player Player { get; set; }
+        public Direction Direction => _data.Direction;
+        public Player Player => GameWorld.Player;
 
         public WalkCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -21,26 +19,10 @@ namespace MarsUndiscovered.Game.Commands
             PersistForReplay = true;
         }
 
-        public void Initialise(Player player, Direction direction)
+        public void Initialise(Direction direction)
         {
             Debug.Assert(direction != Direction.None, "Use wait command if direction is none");
-            Player = player;
-            Direction = direction;
-        }
-
-        public override IMemento<WalkCommandSaveData> GetSaveState()
-        {
-            var memento = new Memento<WalkCommandSaveData>(new WalkCommandSaveData());
-            base.PopulateSaveState(memento.State);
-            memento.State.Direction = Direction;
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<WalkCommandSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-            Direction = memento.State.Direction;
-            Player = GameWorld.Player;
+            _data.Direction = direction;
         }
 
         protected override CommandResult ExecuteInternal()
@@ -70,7 +52,7 @@ namespace MarsUndiscovered.Game.Commands
 
                     if (lineAttackPath.Any(p => map.GetObjectAt<Monster>(p) != null))
                     {
-                        var command = CommandFactory.CreateLineAttackCommand(GameWorld);
+                        var command = CommandCollection.CreateCommand<LineAttackCommand>(GameWorld);
                         command.Initialise(Player, lineAttackPath);
 
                         return Result(CommandResult.Success(this, command));
@@ -79,7 +61,7 @@ namespace MarsUndiscovered.Game.Commands
                 
                 if (map.GameObjectCanMove(Player, newPlayerPosition))
                 {
-                    var command = CommandFactory.CreateMoveCommand(GameWorld);
+                    var command = CommandCollection.CreateCommand<MoveCommand>(GameWorld);
 
                     command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
 
@@ -91,7 +73,7 @@ namespace MarsUndiscovered.Game.Commands
                 {
                     if (Player.MeleeAttack != null)
                     {
-                        var command = CommandFactory.CreateMeleeAttackCommand(GameWorld);
+                        var command = CommandCollection.CreateCommand<MeleeAttackCommand>(GameWorld);
                         command.Initialise(Player, actorAt);
 
                         return Result(CommandResult.Success(this, command));
@@ -112,7 +94,7 @@ namespace MarsUndiscovered.Game.Commands
 
                 if (mapExitAt != null)
                 {
-                    var command = CommandFactory.CreateChangeMapCommand(GameWorld);
+                    var command = CommandCollection.CreateCommand<ChangeMapCommand>(GameWorld);
 
                     command.Initialise(Player, mapExitAt);
                     return Result(CommandResult.Success(this, command));
@@ -130,6 +112,16 @@ namespace MarsUndiscovered.Game.Commands
                     }
 
                     return Result(CommandResult.NoMove(this, "You don't have the parts you need to repair your ship!"));
+                }
+                
+                var machineAt = map.GetObjectAt<Machine>(newPlayerPosition);
+
+                if (machineAt != null)
+                {
+                    var command = CommandCollection.CreateCommand<ApplyMachineCommand>(GameWorld);
+                    command.Initialise(machineAt);
+
+                    return Result(CommandResult.Success(this, command));
                 }
             }
 

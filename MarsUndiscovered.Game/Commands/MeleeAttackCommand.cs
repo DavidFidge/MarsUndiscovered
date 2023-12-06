@@ -1,6 +1,4 @@
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
 
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
@@ -9,10 +7,8 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class MeleeAttackCommand : BaseAttackCommand<MeleeAttackCommandSaveData>
     {
-        public Actor Source { get; private set; }
-        public Actor Target { get; private set; }
-
-        private AttackRestoreData _attackRestoreData;
+        public Actor Source => GameWorld.GameObjects[_data.SourceId] as Actor;
+        public Actor Target => GameWorld.GameObjects[_data.TargetId] as Actor;
 
         public MeleeAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -20,36 +16,15 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Actor source, Actor target)
         {
-            Source = source;
-            Target = target;
-        }
-
-        public override IMemento<MeleeAttackCommandSaveData> GetSaveState()
-        {
-            var memento = new Memento<MeleeAttackCommandSaveData>(new MeleeAttackCommandSaveData());
-            base.PopulateSaveState(memento.State);
-
-            memento.State.SourceId = Source.ID;
-            memento.State.TargetId = Target.ID;
-            memento.State.AttackRestoreData = _attackRestoreData;
-
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<MeleeAttackCommandSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-
-            Source = (Actor)GameWorld.GameObjects[memento.State.SourceId];
-            Target = (Actor)GameWorld.GameObjects[memento.State.TargetId];
-            _attackRestoreData = memento.State.AttackRestoreData;
+            _data.SourceId = source.ID;
+            _data.TargetId = target.ID;
         }
 
         protected override CommandResult ExecuteInternal()
         {
             var damage = Source.MeleeAttack.Roll();
 
-            _attackRestoreData = new AttackRestoreData
+            _data.AttackRestoreData = new AttackRestoreData
             {
                 Damage = damage,
                 Health = Target.Health,
@@ -66,7 +41,7 @@ namespace MarsUndiscovered.Game.Commands
 
             if (Target.Health <= 0)
             {
-                var deathCommand = CommandFactory.CreateDeathCommand(GameWorld);
+                var deathCommand = CommandCollection.CreateCommand<DeathCommand>(GameWorld);
                 deathCommand.Initialise(Target, Source.NameGenericArticleLowerCase);
                 commandResult.SubsequentCommands.Add(deathCommand);
             }
@@ -76,8 +51,8 @@ namespace MarsUndiscovered.Game.Commands
 
         protected override void UndoInternal()
         {
-            Target.Health = _attackRestoreData.Health;
-            Target.Shield = _attackRestoreData.Shield;
+            Target.Health = _data.AttackRestoreData.Health;
+            Target.Shield = _data.AttackRestoreData.Shield;
         }
     }
 }

@@ -7,8 +7,6 @@ namespace MarsUndiscovered.Game.Components
     {
         private Attack _meleeAttack = new Attack(new Range<int>(5, 9));
 
-        public override string Name => nameof(MagnesiumPipe);
-
         public override void RecalculateProperties(Item item)
         {
             base.RecalculateProperties(item);

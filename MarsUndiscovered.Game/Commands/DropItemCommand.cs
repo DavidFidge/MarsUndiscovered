@@ -1,6 +1,4 @@
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
 
@@ -13,12 +11,12 @@ namespace MarsUndiscovered.Game.Commands
 {
     public class DropItemCommand : BaseMarsGameActionCommand<DropItemSaveData>
     {
-        public Item Item { get; private set; }
-        public IGameObject GameObject { get; private set; }
-        private bool _wasInInventory;
-        private bool _wasEquipped;
-        private bool _oldHasBeenDropped;
-        private Keys _itemKey;
+        public Item Item => GameWorld.Items[_data.ItemId];
+        public IGameObject GameObject => GameWorld.GameObjects[_data.GameObjectId];
+        private bool _wasInInventory => _data.WasInInventory;
+        private bool _wasEquipped => _data.WasEquipped;
+        private bool _oldHasBeenDropped => _data.OldHasBeenDropped;
+        private Keys _itemKey => _data.ItemKey;
 
         public DropItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -28,32 +26,8 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(IGameObject gameObject, Item item)
         {
-            GameObject = gameObject;
-            Item = item;
-        }
-
-        public override IMemento<DropItemSaveData> GetSaveState()
-        {
-            var memento = new Memento<DropItemSaveData>(new DropItemSaveData());
-            base.PopulateSaveState(memento.State);
-            memento.State.GameObjectId = GameObject.ID;
-            memento.State.ItemId = Item.ID;
-            memento.State.WasInInventory = _wasInInventory;
-            memento.State.WasEquipped = _wasEquipped;
-            memento.State.OldHasBeenDropped = _oldHasBeenDropped;
-            memento.State.ItemKey = _itemKey;
-            return memento;
-        }
-
-        public override void SetLoadState(IMemento<DropItemSaveData> memento)
-        {
-            base.PopulateLoadState(memento.State);
-            GameObject = GameWorld.GameObjects[memento.State.GameObjectId];
-            Item = GameWorld.Items[memento.State.ItemId];
-            _wasInInventory = memento.State.WasInInventory;
-            _wasEquipped = memento.State.WasEquipped;
-            _oldHasBeenDropped = memento.State.OldHasBeenDropped;
-            _itemKey = memento.State.ItemKey;
+            _data.GameObjectId = gameObject.ID;
+            _data.ItemId = item.ID;
         }
 
         protected override CommandResult ExecuteInternal()
@@ -68,16 +42,16 @@ namespace MarsUndiscovered.Game.Commands
                 return Result(CommandResult.NoMove(this, "Cannot drop item - there is another item in the way"));
             }
             
-            _itemKey = GameWorld.Inventory.GetKeyForItem(Item);
-            _wasEquipped = GameWorld.Inventory.IsEquipped(Item);
-            _wasInInventory = GameWorld.Inventory.Remove(Item);
+            _data.ItemKey = GameWorld.Inventory.GetKeyForItem(Item);
+            _data.WasEquipped = GameWorld.Inventory.IsEquipped(Item);
+            _data.WasInInventory = GameWorld.Inventory.Remove(Item);
 
             Item.Position = position;
 
             map.AddEntity(Item);
 
             var itemDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(Item);
-            _oldHasBeenDropped = Item.HasBeenDropped;
+            _data.OldHasBeenDropped = Item.HasBeenDropped;
             Item.HasBeenDropped = true;
 
             return Result(CommandResult.Success(this, $"You drop {itemDescription}"));

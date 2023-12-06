@@ -9,12 +9,6 @@ public abstract class FloorType : GameObjectType
     public static RockFloor RockFloor = new RockFloor();
     public static StockpileFloor StockpileFloor = new StockpileFloor();
 
-    public override string Name
-    {
-        get => GetType().Name;
-        set { }
-    }
-
     static FloorType()
     {
         FloorTypes = new Dictionary<string, FloorType>();
