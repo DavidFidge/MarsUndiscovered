@@ -250,7 +250,8 @@ public class LevelGenerator : ILevelGenerator
         };
 
         _gadgetProbabilityTable = new ProbabilityTable<ItemType>(_gadgetWeights);
-
+        _gadgetProbabilityTable.Random = RNG;
+        
         _weaponWeights = new List<(ItemType itemType, double weight)>
         {
             (ItemType.IronSpike, 1), 
@@ -258,7 +259,8 @@ public class LevelGenerator : ILevelGenerator
         };
 
         _weaponProbabilityTable = new ProbabilityTable<ItemType>(_weaponWeights);
-
+        _weaponProbabilityTable.Random = RNG;
+        
         _nanoFlaskWeights = new List<(ItemType itemType, double weight)>
         {
             (ItemType.HealingBots, 1), 
@@ -266,6 +268,7 @@ public class LevelGenerator : ILevelGenerator
         };
 
         _nanoFlaskProbabilityTable = new ProbabilityTable<ItemType>(_nanoFlaskWeights);
+        _nanoFlaskProbabilityTable.Random = RNG;
         
         _itemTypeWeights = new List<(ProbabilityTable<ItemType> itemType, double weight)>
         {
@@ -275,6 +278,7 @@ public class LevelGenerator : ILevelGenerator
         };
         
         _itemTypeProbabilityTable = new ProbabilityTable<ProbabilityTable<ItemType>>(_itemTypeWeights);
+        _itemTypeProbabilityTable.Random = RNG;
     }
     
     private void SetupMachineWeightTable()
@@ -285,6 +289,7 @@ public class LevelGenerator : ILevelGenerator
         };
         
         _machineTypeProbabilityTable = new ProbabilityTable<MachineType>(_machineTypeWeights);
+        _machineTypeProbabilityTable.Random = RNG;
     }
     
     public ProgressiveWorldGenerationResult CreateProgressive(ulong seed, int step, WorldGenerationTypeParams worldGenerationTypeParams)
