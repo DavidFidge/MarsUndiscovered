@@ -31,9 +31,6 @@ namespace MarsUndiscovered.Tests.Commands
             applyMachineCommand.Initialise(machine);
             var applyMachineCommandResult = applyMachineCommand.Execute();
             
-            // Usually this gets done by the game world
-            _gameWorld.CommandCollection.ReprocessReplayCommand(applyMachineCommand);
-            
             Assert.IsTrue(machine.IsUsed);
 
             var undoCommand = commandFactory.CreateCommand<UndoCommand>(_gameWorld);
