@@ -14,8 +14,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyMachineCommand_Should_Apply_Machine()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             var machineParams = new SpawnMachineParams()
                 .WithMachineType(MachineType.Analyzer)
@@ -52,8 +51,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyMachineCommand_Should_Do_Nothing_If_Machine_Is_Used()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             var machineParams = new SpawnMachineParams()
                 .WithMachineType(MachineType.Analyzer)

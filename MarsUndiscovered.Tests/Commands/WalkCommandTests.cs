@@ -14,9 +14,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void WalkCommand_Should_Move_Player_For_Valid_Square()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
             // Act
             _gameWorld.MoveRequest(Direction.Down);
@@ -50,9 +48,7 @@ namespace MarsUndiscovered.Tests.Commands
             var wallPosition = new Point(1, 0);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
             // Act
             _gameWorld.MoveRequest(Direction.Right);
@@ -73,9 +69,8 @@ namespace MarsUndiscovered.Tests.Commands
         public void WalkCommand_Player_Into_Monster_Should_Attack()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
-            _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
             var monster = _gameWorld.Monsters.Values.First();
             var healthBefore = monster.Health;
@@ -111,9 +106,7 @@ namespace MarsUndiscovered.Tests.Commands
             var wallPosition = new Point(0, 1);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition));
 
@@ -148,8 +141,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void Should_Save_Then_Load_Game_With_Commands()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
             _gameWorld.MoveRequest(Direction.Down);
             _gameWorld.MoveRequest(Direction.Down);
@@ -184,9 +176,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void Should_Walk_To_Position()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
             var path = _gameWorld.GetPathToPlayer(new Point(2, 2));
 
@@ -211,9 +201,7 @@ namespace MarsUndiscovered.Tests.Commands
             var wallPosition = new Point(2, 2);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
             var path = _gameWorld.GetPathToPlayer(new Point(2, 2));
 
@@ -238,9 +226,7 @@ namespace MarsUndiscovered.Tests.Commands
             var wallPosition = new Point(1, 1);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
             var path = _gameWorld.GetPathToPlayer(new Point(1, 1));
 
@@ -256,9 +242,8 @@ namespace MarsUndiscovered.Tests.Commands
         public void Walk_Player_Into_Adjacent_Monster_Via_MoveRequestDestination_Should_Attack()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
-            _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
 
             var monster = _gameWorld.Monsters.Values.First();
@@ -294,9 +279,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void Walk_Player_Into_Monster_Via_MoveRequestDestination_Should_Stop_Adjacent_To_Monster()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
             
             var spawnMonsterParams = new SpawnMonsterParams()
                 .WithBreed("Roach")

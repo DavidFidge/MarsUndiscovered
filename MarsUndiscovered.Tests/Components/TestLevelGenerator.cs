@@ -17,10 +17,18 @@ namespace MarsUndiscovered.Tests.Components
         public IShipGenerator ShipGenerator { get; set; }
         public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
         public IMapExitGenerator MapExitGenerator { get; set; }
-
+        public IMachineGenerator MachineGenerator { get; set; }
+   
         public Point OutdoorMapSize { get; set; }
 
         public Point PlayerPosition { get; set; } = Point.None;
+
+        // Specify the counts here. For controlling the type of item to create, use
+        // the generators.
+        public int ItemsToCreateCount { get; set; }
+        public int MonstersToCreateCount { get; set; }
+        public int MachinesToCreateCount { get; set; }
+        public bool AddExits { get; set; }
 
         public TestLevelGenerator(GameWorld gameWorld, IMapGenerator mapGenerator, int mapWidth, int mapHeight)
         {
@@ -32,9 +40,12 @@ namespace MarsUndiscovered.Tests.Components
             MapGenerator = mapGenerator ?? new BlankMapGenerator(_gameWorld.GameObjectFactory);
             MonsterGenerator = _originalLevelGenerator.MonsterGenerator;
             ItemGenerator = _originalLevelGenerator.ItemGenerator;
-            ShipGenerator = _originalLevelGenerator.ShipGenerator;
-            MiningFacilityGenerator = _originalLevelGenerator.MiningFacilityGenerator;
             MapExitGenerator = _originalLevelGenerator.MapExitGenerator;
+            MachineGenerator = _originalLevelGenerator.MachineGenerator;
+            
+            // Currently not used
+            MiningFacilityGenerator = _originalLevelGenerator.MiningFacilityGenerator;
+            ShipGenerator = _originalLevelGenerator.ShipGenerator;
         }
 
         public void CreateLevels()
@@ -63,8 +74,40 @@ namespace MarsUndiscovered.Tests.Components
                 .AddToMap(MapGenerator.Map);
 
             CreateMapExitToNextMap(MapGenerator.Map);
+            
+            for (var i = 0; i < MonstersToCreateCount; i++)
+            {
+                SpawnMonster(new SpawnMonsterParams { MapId = MapGenerator.Map.Id });
+            }
 
+            for (var i = 0; i < ItemsToCreateCount; i++)
+            {
+                SpawnItem(new SpawnItemParams { MapId = MapGenerator.Map.Id });
+            }
+            
+            for (var i = 0; i < MachinesToCreateCount; i++)
+            {
+                SpawnMachine(new SpawnMachineParams { MapId = MapGenerator.Map.Id });
+            }
+            
             return MapGenerator.Map;
+        }
+        
+        private void SpawnMachine(SpawnMachineParams spawnMachineParams)
+        {
+            spawnMachineParams.MachineType = MachineType.Analyzer;
+            
+            MachineGenerator.SpawnMachine(spawnMachineParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Machines);
+        }
+    
+        private void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
+        {
+            MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Monsters);
+        }
+
+        private void SpawnItem(SpawnItemParams spawnItemParams)
+        {
+            ItemGenerator.SpawnItem(spawnItemParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Items);
         }
 
         private void CreateLevel2(MarsMap previousMap)
@@ -85,6 +128,9 @@ namespace MarsUndiscovered.Tests.Components
 
         private void CreateMapExitToNextMap(MarsMap map)
         {
+            if (!AddExits)
+                return;
+            
             SpawnMapExit(
                 new SpawnMapExitParams()
                     .OnMap(map.Id)
@@ -94,6 +140,9 @@ namespace MarsUndiscovered.Tests.Components
 
         private void CreateMapExitToPreviousMap(MarsMap currentMap, MarsMap previousMap)
         {
+            if (!AddExits)
+                return;
+            
             var mapExit = SpawnMapExit(new SpawnMapExitParams()
                 .OnMap(currentMap.Id)
                 .WithDirection(Direction.Up));

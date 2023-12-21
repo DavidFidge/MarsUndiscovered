@@ -1,4 +1,5 @@
 using System.ComponentModel.Design;
+using System.Windows.Forms.VisualStyles;
 using Castle.MicroKernel.Registration;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using MarsUndiscovered.Game.Components;
@@ -62,65 +63,29 @@ namespace MarsUndiscovered.Tests.Components
             gameWorld.LevelGenerator = levelGenerator;
             gameWorld.ProgressiveWorldGeneration(null, 1, new WorldGenerationTypeParams(MapType.Outdoor));
         }
-
-        protected void NewGameWithCustomMapNoMonstersNoItems(GameWorld gameWorld, IMapGenerator mapGenerator = null, ILevelGenerator levelGenerator = null)
+        
+        protected void NewGameWithTestLevelGenerator(GameWorld gameWorld, IMapGenerator mapGenerator = null, int itemCount = 0, int monsterCount = 0, int machineCount = 0, bool addExits = false, int mapWidth = 60, int mapHeight = 60, Point? playerPosition = null)
         {
-            mapGenerator ??= new BlankMapGenerator(gameWorld.GameObjectFactory);
-
-            levelGenerator ??= new TestLevelGenerator(gameWorld, mapGenerator, 60, 60);
-            gameWorld.LevelGenerator = levelGenerator;
-
-            var blankMonsterGenerator = new BlankMonsterGenerator(
-                Container.Resolve<IMonsterGenerator>()
-            );
-
-            var blankItemGenerator = new BlankItemGenerator(
-                Container.Resolve<IItemGenerator>()
-            );
-
-            gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
-            gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
-
-            gameWorld.NewGame();
-
-            gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator.OriginalMonsterGenerator;
-            gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator.OriginalItemGenerator;
-        }
-
-        protected void NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(GameWorld gameWorld, IMapGenerator mapGenerator = null, ILevelGenerator levelGenerator = null)
-        {
-            SetGameWorldLevelGeneratorWithCustomMapNoMonstersNoItemsNoExitsNoStructures(gameWorld, mapGenerator, levelGenerator);
+            SetupGameWorldWithTestLevelGenerator(gameWorld, mapGenerator, itemCount, monsterCount, machineCount, addExits, mapWidth, mapHeight, playerPosition);
 
             gameWorld.NewGame();
         }
 
-        protected void SetGameWorldLevelGeneratorWithCustomMapNoMonstersNoItemsNoExitsNoStructures(GameWorld gameWorld, IMapGenerator mapGenerator = null, ILevelGenerator levelGenerator = null)
+        protected void SetupGameWorldWithTestLevelGenerator(GameWorld gameWorld, IMapGenerator mapGenerator = null, int itemCount = 0, int monsterCount = 0, int machineCount = 0, bool addExits = false, int mapWidth = 60, int mapHeight = 60, Point? playerPosition = null)
         {
+            playerPosition ??= Point.None;
+
             mapGenerator ??= new BlankMapGenerator(gameWorld.GameObjectFactory);
 
-            levelGenerator ??= new TestLevelGenerator(gameWorld, mapGenerator, 60, 60);
-            gameWorld.LevelGenerator = levelGenerator;
+            var testLevelGenerator = new TestLevelGenerator(gameWorld, mapGenerator, mapWidth, mapHeight);
 
-            var blankMonsterGenerator = new BlankMonsterGenerator(
-                Container.Resolve<IMonsterGenerator>()
-            );
-
-            var blankItemGenerator = new BlankItemGenerator(
-                Container.Resolve<IItemGenerator>()
-            );
-
-            var blankMapExitGenerator = new BlankMapExitGenerator(
-                Container.Resolve<IMapExitGenerator>()
-            );
-
-            var blankShipGenerator = new BlankShipGenerator();
-            var blankMiningFacilityGenerator = new BlankMiningFacilityGenerator();
-
-            gameWorld.LevelGenerator.MonsterGenerator = blankMonsterGenerator;
-            gameWorld.LevelGenerator.ItemGenerator = blankItemGenerator;
-            gameWorld.LevelGenerator.MapExitGenerator = blankMapExitGenerator;
-            gameWorld.LevelGenerator.ShipGenerator = blankShipGenerator;
-            gameWorld.LevelGenerator.MiningFacilityGenerator = blankMiningFacilityGenerator;
+            testLevelGenerator.ItemsToCreateCount = itemCount;
+            testLevelGenerator.MonstersToCreateCount = monsterCount;
+            testLevelGenerator.MachinesToCreateCount = machineCount;
+            testLevelGenerator.AddExits = addExits;
+            testLevelGenerator.PlayerPosition = playerPosition.Value;
+            
+            gameWorld.LevelGenerator = testLevelGenerator;
         }
 
         protected Item SpawnItemAndEquip(GameWorld gameWorld, ItemType itemType)

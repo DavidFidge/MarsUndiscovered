@@ -2,6 +2,7 @@
 using MarsUndiscovered.Game.Components.Maps.MapPointChoiceRules;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Game.ViewMessages;
+using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {
@@ -20,10 +21,15 @@ namespace MarsUndiscovered.Game.Components.Maps
 
             var map = maps.Single(m => m.Id == spawnMachineParams.MapId);
             spawnMachineParams.MapPointChoiceRules.Add(new EmptyFloorRule());
+            spawnMachineParams.MapPointChoiceRules.Add(new NonBlockingRule());
             spawnMachineParams.AssignMap(map);
 
+            // Machines are blocking so only spawn a machine if it can be moved past
             var position = GetPosition(spawnMachineParams, map);
                 
+            if (position == Point.None)
+                return;
+            
             machine.PositionedAt(position)
                 .AddToMap(map);
 

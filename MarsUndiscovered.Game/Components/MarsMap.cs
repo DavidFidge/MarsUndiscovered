@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-
+using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
@@ -262,8 +262,58 @@ namespace MarsUndiscovered.Game.Components
             }
         }
 
-        public Point FindClosestFreeFloor(Point startPoint, bool contiguousFromStartingPoint = true)
+        // Returns whether a point will block movement between different areas of the map
+        // if an obstacle is placed there.  Note that technically diagonals could be moved
+        // around, but ideally we should exclude placing an item also if the player
+        // could only move around it via a diagonal as it does not look pretty.
+        public bool IsBlockingIfPlacingObstacle(Point position)
         {
+            // get neighbours around position
+            // the problem here is that neighbours is not clockwise or anticlockwise.
+            // need to get neighbours in clockwise order and also account for edges of map -
+            // these could be treated as blocking squares.
+            var neighbors = AdjacencyRule.EightWay.NeighborsClockwise(position);
+            
+            // is blocking if there are more than one set of contiguous blocking points
+            var contiguousBlockingPoints = 0;
+            bool? lastWalkabilityView = null;
+            
+            foreach (var neighbor in neighbors)
+            {
+                var pointWalkabilityView = WalkabilityOrFalseIfOffMap(neighbor); 
+                
+                if (lastWalkabilityView == null)
+                {
+                    lastWalkabilityView = pointWalkabilityView;
+                    continue;
+                }
+
+                if (pointWalkabilityView ^ lastWalkabilityView.Value)
+                {
+                    contiguousBlockingPoints++;
+                    lastWalkabilityView = pointWalkabilityView;
+                }
+
+                if (contiguousBlockingPoints >= 3)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool WalkabilityOrFalseIfOffMap(Point point)
+        {
+            if (!WalkabilityView.Contains(point))
+                return false;
+
+            return WalkabilityView[point];
+        }
+
+        public Point FindClosestFreeFloor(Point startPoint, bool contiguousFromStartingPoint = true, Func<Point, bool> additionalRule = null)
+        {
+            if (startPoint == Point.None)
+                return startPoint;
+            
             var queue = new Queue<Point>();
             var explored = new HashSet<Point>();
             var wallPoints = new Queue<Point>();
@@ -283,7 +333,10 @@ namespace MarsUndiscovered.Game.Components
                     var point = queue.Dequeue();
 
                     if (WalkabilityView[point])
-                        return point;
+                    {
+                        if (additionalRule == null || additionalRule(point))
+                            return point;
+                    }
 
                     var neighbours = adjacencyRule.Neighbors(point);
 

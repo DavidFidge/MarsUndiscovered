@@ -13,7 +13,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_Specific_Entities()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach"));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
             _gameWorld.SpawnMachine(new SpawnMachineParams().WithMachineType(MachineType.Analyzer));
@@ -64,7 +64,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_Monsters_With_Leaders()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
             var monsterLeader = new SpawnMonsterParams().WithBreed("RepairDroid");
             _gameWorld.SpawnMonster(monsterLeader);
 
@@ -89,7 +89,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Not_Reset_Seen_RadioCommsItems()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             _gameWorld.GetNewRadioCommsItems();
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
@@ -123,7 +123,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_Inventory()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
             
             var item1 = SpawnItemAndAddToInventory(_gameWorld, ItemType.MagnesiumPipe);
             var item2 = SpawnItemAndAddToInventory(_gameWorld, ItemType.MagnesiumPipe);
@@ -163,9 +163,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Arrange
             var wallPosition = new Point(1, 1);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)));
             var monster = _gameWorld.Monsters.First().Value;
@@ -206,7 +204,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition = new Point(0, 0);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld, mapGenerator);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator);
 
             var maps = _gameWorld.Maps.ToList();
 
@@ -252,11 +250,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition = new Point(1, 0);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld, mapGenerator);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, addExits: true, playerPosition: new Point(0, 0));
 
             var maps = _gameWorld.Maps.ToList();
-
-            _gameWorld.Player.Position = new Point(0, 0);
 
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 
@@ -284,11 +280,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_Weapon_LineAttack_Properties_Restored()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
             var maps = _gameWorld.Maps.ToList();
-
-            _gameWorld.Player.Position = new Point(0, 0);
 
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.IronSpike).AtPosition(new Point(1, 1))
                 .OnMap(_gameWorld.CurrentMap.Id));
@@ -312,9 +306,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Save_Then_Load_Game_Enchanted_Weapon_Properties_Restored()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
             var spawnItemParams = new SpawnItemParams()
                 .WithItemType(ItemType.IronSpike)
@@ -345,7 +337,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Retain_Residual_Regen()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach"));
             _gameWorld.Player.ResidualRegen = 0.1m;
             _gameWorld.Monsters.First().Value.ResidualRegen = 0.2m;

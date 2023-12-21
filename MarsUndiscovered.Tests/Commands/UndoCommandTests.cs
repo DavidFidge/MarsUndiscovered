@@ -14,8 +14,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void UndoCommand_Should_Undo_ApplyMachineCommand()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             var machineParams = new SpawnMachineParams()
                 .WithMachineType(MachineType.Analyzer)

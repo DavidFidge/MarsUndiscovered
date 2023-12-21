@@ -14,8 +14,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void DropItemCommand_Should_Drop_Item_At_Players_Location()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(_gameWorld.Player.Position));
             var item = _gameWorld.Items.First().Value;
             _gameWorld.Inventory.Add(item);
@@ -45,8 +44,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void DropItemCommand_Should_Not_Drop_Item_If_Item_Exists_At_Players_Location()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
             var spawnItemParams = new SpawnItemParams()
                 .WithItemType(ItemType.MagnesiumPipe)
                 .IntoPlayerInventory();
@@ -79,8 +77,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void DropItemCommand_Should_Recalculate_Player_Attacks()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
             var item = SpawnItemAndEquip(_gameWorld, ItemType.IronSpike);
             
             var commandFactory = Container.Resolve<ICommandCollection>();

@@ -3,7 +3,6 @@ using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
-using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Commands
 {
@@ -14,8 +13,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyHealingBotsCommand_Should_Heal_Player_And_Increase_Max_Health()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots).InInventory(_gameWorld.Inventory));
             var item = _gameWorld.Items.First().Value;
             _gameWorld.Player.Health = 1;

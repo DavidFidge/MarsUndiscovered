@@ -14,9 +14,8 @@ namespace MarsUndiscovered.Tests.Commands
         public void LineAttackCommand_Should_Deduct_Health_Of_Targets_Along_A_Path()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
-            _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 2)));
             var monster1 = _gameWorld.Monsters.Values.First();
@@ -55,9 +54,8 @@ namespace MarsUndiscovered.Tests.Commands
         public void LineAttackCommand_Should_Deduct_Health_Of_Target_When_Target_Is_Two_Spaces_Away()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
-            _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 2)));
             var monster = _gameWorld.Monsters.Values.First();
 

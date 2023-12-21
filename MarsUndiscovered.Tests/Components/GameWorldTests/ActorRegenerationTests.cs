@@ -10,9 +10,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Increase_Residual_Regen()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
-            _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 1;
             _gameWorld.Player.MaxHealth = 100;
             _gameWorld.Player.RegenRate = 0.002m;
@@ -29,9 +28,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Increase_Health_When_Residual_Regen_Spills()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
-            _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 1;
             _gameWorld.Player.MaxHealth = 100;
             _gameWorld.Player.RegenRate = 0.006m;
@@ -49,9 +47,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Increase_Health_When_Residual_Regen_Spills_For_Regen_Rates_Greater_Than_One()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
-            _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 1;
             _gameWorld.Player.MaxHealth = 100;
             _gameWorld.Player.RegenRate = 0.056m;
@@ -68,9 +65,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Residual_Should_Clear_When_Health_Increases_To_Full()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
-            _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 99;
             _gameWorld.Player.MaxHealth = 100;
             _gameWorld.Player.RegenRate = 0.056m;
@@ -87,9 +83,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Residual_Should_Clear_When_Health_Increases_To_Full_When_Residual_Exists()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
-            _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 94;
             _gameWorld.Player.MaxHealth = 100;
             _gameWorld.Player.RegenRate = 0.056m;
@@ -107,9 +102,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Residual_Should_Not_Increase_When_Health_Is_Full()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
-            _gameWorld.Player.Position = new Point(0, 0);
             _gameWorld.Player.Health = 100;
             _gameWorld.Player.MaxHealth = 100;
             _gameWorld.Player.RegenRate = 0.056m;
@@ -126,9 +120,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Increase_Residual_Regen_Monsters()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
             
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(5, 0)));
 

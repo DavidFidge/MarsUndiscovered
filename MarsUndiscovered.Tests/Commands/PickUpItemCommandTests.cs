@@ -14,12 +14,14 @@ namespace MarsUndiscovered.Tests.Commands
         public void PickUpItemCommand_On_Item_Should_Pick_Up_Item()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
             var spawnItemParams = new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe);
             _gameWorld.SpawnItem(spawnItemParams);
-           
+            
+            // Items always try and find a free floor spot so cannot be spawned directly on top of
+            // the player via .AtPosition().  So instead move the player onto the item
             _gameWorld.Player.Position = spawnItemParams.Result.Position;
-
+           
             var item = _gameWorld.Items.First().Value;
 
             var commandFactory = Container.Resolve<ICommandCollection>();
@@ -45,8 +47,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void PickUpItemCommand_On_Item_Should_Not_Pick_Up_Item_If_Inventory_Is_Full()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
             var i = 0;
             while(_gameWorld.Inventory.CanPickUpItem)
@@ -80,8 +81,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void PickUpItemCommand_On_Item_Should_Not_Pick_Up_Item_If_Not_Player()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 1);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 1));
 
             var spawnMonsterParams = new SpawnMonsterParams().WithBreed("Roach");
             _gameWorld.SpawnMonster(spawnMonsterParams);

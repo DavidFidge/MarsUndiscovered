@@ -14,8 +14,7 @@ public class EnchantItemCommandTests : BaseGameWorldIntegrationTests
     public void EnchantItemCommand_Should_Enchant_Item()
     {
         // Arrange
-        NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-        _gameWorld.Player.Position = new Point(0, 0);
+        NewGameWithTestLevelGenerator(_gameWorld);
         
         var magnesiumPipeParams =
             new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).InInventory(_gameWorld.Inventory);
@@ -51,8 +50,7 @@ public class EnchantItemCommandTests : BaseGameWorldIntegrationTests
     public void EnchantItemCommand_Should_Not_Enchant_Items_That_Cannot_Be_Enchanted()
     {
         // Arrange
-        NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-        _gameWorld.Player.Position = new Point(0, 0);
+        NewGameWithTestLevelGenerator(_gameWorld);
         
         var healingBotsParams =
             new SpawnItemParams().WithItemType(ItemType.HealingBots).InInventory(_gameWorld.Inventory);

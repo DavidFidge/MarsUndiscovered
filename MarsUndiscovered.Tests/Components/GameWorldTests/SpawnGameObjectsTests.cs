@@ -41,9 +41,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition = new Point(1, 1);
 
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(3, 3));
 
-            _gameWorld.Player.Position = new Point(3, 3);
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition));
 
             // Act

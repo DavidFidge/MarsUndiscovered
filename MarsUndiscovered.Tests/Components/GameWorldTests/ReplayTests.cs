@@ -14,22 +14,20 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         {
             base.Setup();
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
         }
 
         [TestMethod]
         public void Should_LoadReplay_With_No_Historical_Commands()
         {
             // Arrange
-            _gameWorld.Player.Position = new Point(0, 0);
-
             _gameWorld.MoveRequest(Direction.Down);
             _gameWorld.MoveRequest(Direction.Down);
             _gameWorld.SaveGame("TestReplay", true);
 
             // Act
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-            SetGameWorldLevelGeneratorWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
+            SetupGameWorldWithTestLevelGenerator(newGameWorld);
 
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
@@ -43,14 +41,12 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Replay_One_Of_Two_Walk_Commands()
         {
             // Arrange
-            _gameWorld.Player.Position = new Point(0, 0);
-
             _gameWorld.MoveRequest(Direction.Down);
             _gameWorld.MoveRequest(Direction.Down);
             _gameWorld.SaveGame("TestReplay", true);
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-            SetGameWorldLevelGeneratorWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
+            SetupGameWorldWithTestLevelGenerator(newGameWorld);
 
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
@@ -79,14 +75,12 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Replay_Two_Walk_Commands()
         {
             // Arrange
-            _gameWorld.Player.Position = new Point(0, 0);
-
             _gameWorld.MoveRequest(Direction.Down);
             _gameWorld.MoveRequest(Direction.Down);
             _gameWorld.SaveGame("TestReplay", true);
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-            SetGameWorldLevelGeneratorWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
+            SetupGameWorldWithTestLevelGenerator(newGameWorld);
 
             newGameWorld.LoadReplay("TestReplay");
             newGameWorld.Player.Position = new Point(0, 0);
@@ -111,12 +105,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Return_False_And_Do_Nothing_If_No_Commands_To_Execute()
         {
             // Arrange
-            _gameWorld.Player.Position = new Point(0, 0);
-
             _gameWorld.SaveGame("TestReplay", true);
 
             var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-            SetGameWorldLevelGeneratorWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
+            SetupGameWorldWithTestLevelGenerator(newGameWorld);
 
             newGameWorld.LoadReplay("TestReplay");
 
@@ -136,8 +128,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Replay_ApplyMachineCommand()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 2);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 2));
 
             var machineParams = new SpawnMachineParams()
                 .WithMachineType(MachineType.Analyzer)
@@ -155,7 +146,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Replays create a new game and only load in the historical commands where
             // Command.PersistForReplay = true. This means we need to re-spawn the monster
             // with the same ID after LoadReplay.
-            SetGameWorldLevelGeneratorWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
+            SetupGameWorldWithTestLevelGenerator(newGameWorld);
             newGameWorld.LoadReplay("TestReplay");
             
             newGameWorld.Player.Position = new Point(0, 2);
@@ -198,8 +189,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Replay_ApplyMachineCommand_Then_Replay_Undo_Command()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 2);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 2));
 
             var machineParams = new SpawnMachineParams()
                 .WithMachineType(MachineType.Analyzer)
@@ -218,7 +208,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Replays create a new game and only load in the historical commands where
             // Command.PersistForReplay = true. This means we need to re-spawn the monster
             // with the same ID after LoadReplay.
-            SetGameWorldLevelGeneratorWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
+            SetupGameWorldWithTestLevelGenerator(newGameWorld);
             newGameWorld.LoadReplay("TestReplay");
             
             newGameWorld.Player.Position = new Point(0, 2);
@@ -262,7 +252,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Replay_ApplyItem()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             var itemParams = new SpawnItemParams()
                 .WithItemType(ItemType.ShieldGenerator)
@@ -288,7 +278,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Replays create a new game and only load in the historical commands where
             // Command.PersistForReplay = true. This means we need to re-spawn the monster
             // with the same ID after LoadReplay.
-            SetGameWorldLevelGeneratorWithCustomMapNoMonstersNoItemsNoExitsNoStructures(newGameWorld);
+            SetupGameWorldWithTestLevelGenerator(newGameWorld);
             newGameWorld.LoadReplay("TestReplay");
             
             var newItemParams = new SpawnItemParams()

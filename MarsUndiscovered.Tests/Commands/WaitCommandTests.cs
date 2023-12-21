@@ -13,10 +13,8 @@ namespace MarsUndiscovered.Tests.Commands
         public void WaitCommand_With_Monster_Adjacent_Should_Result_In_Monster_Attacking_Player()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
-            _gameWorld.Player.Position = new Point(0, 0);
-            
             var spawnMonsterParams = new SpawnMonsterParams()
                 .WithBreed("Roach")
                 .AtPosition(new Point(0, 1))
@@ -62,9 +60,7 @@ namespace MarsUndiscovered.Tests.Commands
                 _gameWorld.GameObjectFactory,
                 new[] { wallPosition1, wallPosition2 });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            _gameWorld.Player.Position = new Point(0, 1);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 1));
 
             Breed.Breeds["Roach"].DetectionRange = 0;
             
@@ -98,8 +94,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void Should_Save_Then_Load_Game_With_Wait_Commands()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
             _gameWorld.MoveRequest(Direction.None);
             _gameWorld.MoveRequest(Direction.None);
@@ -134,9 +129,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void Should_Wait()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
             // Act
             var result = _gameWorld.MoveRequest(Direction.None);

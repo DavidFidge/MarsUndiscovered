@@ -12,7 +12,7 @@ public class MonsterSpawnerTests : BaseGameWorldIntegrationTests
     [TestMethod]
     public void SingleMonsterSpawner_Should_Spawn_Single_Monster()
     {
-        NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+        NewGameWithTestLevelGenerator(_gameWorld);
 
         var map = _gameWorld.Maps.First();
         var monsterGenerator = new MonsterGenerator();
@@ -32,7 +32,7 @@ public class MonsterSpawnerTests : BaseGameWorldIntegrationTests
     [TestMethod]
     public void VariableCountMonsterSpawner_Should_Spawn_Multiple_Monsters()
     {
-        NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+        NewGameWithTestLevelGenerator(_gameWorld);
 
         var map = _gameWorld.Maps.First();
         var monsterGenerator = new MonsterGenerator();
@@ -60,7 +60,7 @@ public class MonsterSpawnerTests : BaseGameWorldIntegrationTests
     [TestMethod]
     public void ConstantGroupMonsterSpawner_Should_Spawn_A_Group_OfMonsters_With_Given_Breeds_Next_To_Each_Other()
     {
-        NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+        NewGameWithTestLevelGenerator(_gameWorld);
 
         var map = _gameWorld.Maps.First();
         var monsterGenerator = new MonsterGenerator();
@@ -93,7 +93,7 @@ public class MonsterSpawnerTests : BaseGameWorldIntegrationTests
     [TestMethod]
     public void VariableCountAndTypeMonsterSpawner_Should_Spawn_A_Group_Of_Monsters_With_Different_Types()
     {
-        NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
+        NewGameWithTestLevelGenerator(_gameWorld);
 
         var map = _gameWorld.Maps.First();
         var monsterGenerator = new MonsterGenerator();

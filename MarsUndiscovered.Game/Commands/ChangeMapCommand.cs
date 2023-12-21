@@ -35,6 +35,13 @@ namespace MarsUndiscovered.Game.Commands
             var newMap = (MarsMap)MapExit.Destination.CurrentMap;
 
             GameObject.Position = newMap.FindClosestFreeFloor(MapExit.Destination.LandingPosition);
+
+            if (GameObject.Position == Point.None)
+            {
+                // TODO: Should destroy a monster to place the player if no room
+                throw new Exception("No room to place player");
+            }
+            
             newMap.AddEntity(GameObject);
 
             if (GameObject is Player)

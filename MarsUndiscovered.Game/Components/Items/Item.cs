@@ -139,7 +139,7 @@ namespace MarsUndiscovered.Game.Components
         public string GetEnchantmentLevelText()
         {
             return
-                $"With the current enchantment level of {(EnchantmentLevel >= 0 ? "{{L_BLUE}}+" : "{{L_RED}}-")}{EnchantmentLevel}{{{{DEFAULT}}}}";
+                $"With the current enchantment level of {(EnchantmentLevel >= 0 ? "{{L_BLUE}}+" : "{{L_RED}}")}{EnchantmentLevel}{{{{DEFAULT}}}}";
         }
         
         public string GetRechargeText()

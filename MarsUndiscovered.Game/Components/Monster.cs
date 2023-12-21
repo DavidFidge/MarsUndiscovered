@@ -591,6 +591,12 @@ namespace MarsUndiscovered.Game.Components
                             if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
                                 MonsterState = MonsterState.Hunting;
                         }
+                        if (distance <= DetectionRange / 2)
+                        {
+                            // perform a second roll if within half of detection range
+                            if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
+                                MonsterState = MonsterState.Hunting;
+                        }
 
                         return MonsterState == MonsterState.Hunting;
                     })

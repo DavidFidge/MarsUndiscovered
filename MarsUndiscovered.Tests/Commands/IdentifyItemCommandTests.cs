@@ -14,8 +14,7 @@ public class IdentifyItemCommandTests : BaseGameWorldIntegrationTests
     public void IdentifyItemCommand_Should_Identify_Item()
     {
         // Arrange
-        NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-        _gameWorld.Player.Position = new Point(0, 0);
+        NewGameWithTestLevelGenerator(_gameWorld);
         
         var magnesiumPipeParams =
             new SpawnItemParams()
@@ -50,8 +49,7 @@ public class IdentifyItemCommandTests : BaseGameWorldIntegrationTests
     public void IdentifyItemCommand_Should_Fail_If_Item_Is_Identified()
     {
         // Arrange
-        NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-        _gameWorld.Player.Position = new Point(0, 0);
+        NewGameWithTestLevelGenerator(_gameWorld);
         
         var magnesiumPipeParams =
             new SpawnItemParams()

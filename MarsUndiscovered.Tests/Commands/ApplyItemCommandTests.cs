@@ -15,8 +15,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyItemCommand_Should_Not_Apply_Other_Types_Of_Items()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.MagnesiumPipe);
 
@@ -37,8 +36,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyItemCommand_Should_Apply_Gadget_And_Put_Gadget_On_Cooldown()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.ShieldGenerator);
             _gameWorld.Inventory.ItemTypeDiscoveries[ItemType.ShieldGenerator].IsItemTypeDiscovered = true;
@@ -70,8 +68,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyItemCommand_Should_Identify_Gadget_If_Used_When_Unidentified()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.ShieldGenerator);
 
@@ -97,8 +94,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyItemCommand_Should_Not_Apply_Gadget_If_It_Is_Still_On_Cooldown()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.ShieldGenerator);
             item.CurrentRechargeDelay = 1;
@@ -123,8 +119,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyItemCommand_Should_Apply_NanoFlask_And_Consume_NanoFlask()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.HealingBots);
             _gameWorld.Inventory.ItemTypeDiscoveries[ItemType.HealingBots].IsItemTypeDiscovered = true;
@@ -151,8 +146,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyItemCommand_Should_Identify_NanoFlask_If_Consumed_When_Unidentified()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.HealingBots);
 
@@ -179,8 +173,7 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyItemCommand_Apply_EnhancementBots_Should_Require_Player_Input()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld);
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld);
 
             var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.EnhancementBots);
             _gameWorld.Inventory.ItemTypeDiscoveries[ItemType.EnhancementBots].IsItemTypeDiscovered = true;

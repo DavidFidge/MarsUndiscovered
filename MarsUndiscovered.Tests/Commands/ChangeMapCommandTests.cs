@@ -16,8 +16,10 @@ namespace MarsUndiscovered.Tests.Commands
             // Arrange
             var wallPosition = new Point(1, 0);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
+            
+            SetupGameWorldWithTestLevelGenerator(_gameWorld, mapGenerator, addExits: true);
+            _gameWorld.NewGame();
 
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld, mapGenerator);
             var oldMap = _gameWorld.CurrentMap;
             _gameWorld.Player.Position = new Point(0, 0);
 
@@ -46,7 +48,12 @@ namespace MarsUndiscovered.Tests.Commands
         public void ChangeMapCommand_Should_Change_Map_And_Put_Player_In_Square_Close_To_Landing_Position_When_Landing_Position_Is_Not_Walkable()
         {
             // Arrange
-            NewGameWithCustomMapNoMonstersNoItems(_gameWorld, new SpecificMapGenerator(_gameWorld.GameObjectFactory, new List<Point> { new Point(0, 0) }));
+
+            var specificMapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new List<Point> { new Point(0, 0) });
+            
+            SetupGameWorldWithTestLevelGenerator(_gameWorld, specificMapGenerator, addExits: true);
+            _gameWorld.NewGame();
+
             var oldMap = _gameWorld.CurrentMap;
             _gameWorld.Player.Position = new Point(0, 1);
 

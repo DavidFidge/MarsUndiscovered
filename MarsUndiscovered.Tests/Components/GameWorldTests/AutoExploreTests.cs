@@ -15,9 +15,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition3 = new Point(1, 2);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3 });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
             _gameWorld.TestResetFieldOfView();
 
@@ -44,9 +42,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition3 = new Point(1, 2);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3 });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
-            _gameWorld.Player.Position = new Point(0, 0);
             var itemPosition = new Point(0, 5);
 
             _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe).AtPosition(itemPosition));
@@ -73,9 +70,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition3 = new Point(1, 2);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3 });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
             _gameWorld.Player.VisualRange = 1000;
-            _gameWorld.Player.Position = new Point(0, 0);
 
             var itemPosition = new Point(0, 5);
 
@@ -105,9 +101,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition3 = new Point(1, 2);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3 });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
             _gameWorld.Player.VisualRange = 1000;
-            _gameWorld.Player.Position = new Point(0, 0);
 
             var mapExitPosition = new Point(0, 5);
 
@@ -143,9 +138,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition3 = new Point(1, 2);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3 });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
             _gameWorld.Player.VisualRange = 1000;
-            _gameWorld.Player.Position = new Point(0, 0);
 
             var mapExitPosition = new Point(0, 5);
 
@@ -183,9 +177,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, wallPositions);
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            _gameWorld.Player.Position = new Point(0, 0);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
             _gameWorld.TestResetFieldOfView();
 
@@ -214,9 +206,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, wallPositions);
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
             _gameWorld.Player.VisualRange = 1000;
-            _gameWorld.Player.Position = new Point(0, 0);
 
             _gameWorld.TestResetFieldOfView();
 
@@ -255,11 +246,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition4 = new Point(0, 2);
 
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3, wallPosition4 });
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
-            var playerPosition = new Point(0, 0);
-
-            _gameWorld.Player.Position = playerPosition;
+            var playerPosition = _gameWorld.Player.Position;
 
             _gameWorld.TestResetFieldOfView();
 
@@ -289,10 +278,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, wallPositions);
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
-            var playerPosition = new Point(0, 0);
-            _gameWorld.Player.Position = playerPosition;
+            var playerPosition = _gameWorld.Player.Position;
 
             var monsterPosition = new Point(1, 0);
             
@@ -321,11 +309,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition = new Point(0, 0);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(3, 3));
             _gameWorld.Player.VisualRange = 1000;
-
-            var playerPosition = new Point(3, 3);
-            _gameWorld.Player.Position = playerPosition;
 
             var mapExitPosition = new Point(5, 5);
 
@@ -350,10 +335,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition = new Point(0, 1);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            var playerPosition = new Point(0, 10);
-            _gameWorld.Player.Position = playerPosition;
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 10));
 
             var monsterPosition = new Point(0, 0);
             var mapExitPosition = new Point(5, 10);
@@ -376,10 +358,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition = new Point(0, 1);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            var playerPosition = new Point(0, 10);
-            _gameWorld.Player.Position = playerPosition;
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 10));
 
             var monsterPosition = new Point(0, 0);
             var mapExitPosition = new Point(5, 10);
@@ -403,10 +382,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition = new Point(0, 1);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithCustomMapNoMonstersNoItemsNoExitsNoStructures(_gameWorld, mapGenerator);
-
-            var playerPosition = new Point(0, 10);
-            _gameWorld.Player.Position = playerPosition;
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 10));
 
             var monsterPosition = new Point(0, 0);
             var mapExitPosition = new Point(5, 10);

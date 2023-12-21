@@ -12,4 +12,5 @@ public interface ILevelGenerator
     IShipGenerator ShipGenerator { get; set; }
     IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
     IMapExitGenerator MapExitGenerator { get; set; }
+    IMachineGenerator MachineGenerator { get; set; }
 }
