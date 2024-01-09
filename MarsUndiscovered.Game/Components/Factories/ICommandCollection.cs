@@ -7,8 +7,6 @@ namespace MarsUndiscovered.Game.Components.Factories
     public interface ICommandCollection : ISaveable
     {
         T CreateCommand<T>(IGameWorld gameWorld) where T : BaseGameActionCommand;
-        void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld);
-        void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld);
         void AddReplayCommand(BaseGameActionCommand command);
         BaseGameActionCommand[] GetReplayCommands();
         T GetLastCommand<T>();

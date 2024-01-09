@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/../BehaviourTree" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../FrigidRogue" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../GeonBit.UI" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../GoRogue" vcs="Git" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../MonoGame.Extended" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../WaveFunctionCollapse" vcs="Git" />
   </component>
 </project>

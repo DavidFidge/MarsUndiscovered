@@ -82,8 +82,8 @@ namespace MarsUndiscovered.UserInterface.Views
                 _firstHealthUpdate = false;
             }
 
-            _healthBar.Max = (uint)maxHealth;
-            _healthBar.StepsCount = _healthBar.Max;
+            _healthBar.Max = maxHealth;
+            _healthBar.StepsCount = _healthBar.Max < 0 ? 0 : (uint)_healthBar.Max;
             _healthBar.Value = currentHealth;
 
             _gainLossLabel.Text = String.Empty;
@@ -107,8 +107,8 @@ namespace MarsUndiscovered.UserInterface.Views
             else
                 _healthLabel.Text = "Health";
 
-            _shieldBar.StepsCount = _healthBar.Max;
-            _shieldBar.Max = (uint)maxHealth;
+            _shieldBar.StepsCount = _healthBar.Max < 0 ? 0 : (uint)_healthBar.Max;
+            _shieldBar.Max = maxHealth;
             _shieldBar.Value = currentShield;
         }
 

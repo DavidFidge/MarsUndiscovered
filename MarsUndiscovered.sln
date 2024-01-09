@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrigidRogue.MonoGame.Core.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeonBit.UI", "..\GeonBit.UI\GeonBit.UI\GeonBit.UI.csproj", "{3DF28DF8-74EB-469F-8FE1-DF78706749C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeonBit.UI.DataTypes", "..\GeonBit.UI\GeonBit.UI\Libs\DataTypes\GeonBit.UI.DataTypes.csproj", "{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarsUndiscovered.Tests", "MarsUndiscovered.Tests\MarsUndiscovered.Tests.csproj", "{1F47B8DE-A296-46E6-A5B2-1B9AE8B699BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrigidRogue.TestInfrastructure", "..\FrigidRogue\FrigidRogue.TestInfrastructure\FrigidRogue.TestInfrastructure.csproj", "{B7E23A72-004C-44E2-BC5D-91F5F4A42C95}"
@@ -63,10 +61,6 @@ Global
 		{3DF28DF8-74EB-469F-8FE1-DF78706749C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DF28DF8-74EB-469F-8FE1-DF78706749C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DF28DF8-74EB-469F-8FE1-DF78706749C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F916021-2E2C-4F2A-BF5C-7AEBC228FA2C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1F47B8DE-A296-46E6-A5B2-1B9AE8B699BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F47B8DE-A296-46E6-A5B2-1B9AE8B699BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F47B8DE-A296-46E6-A5B2-1B9AE8B699BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
