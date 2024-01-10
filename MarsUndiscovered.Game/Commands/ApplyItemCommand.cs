@@ -76,6 +76,13 @@ namespace MarsUndiscovered.Game.Commands
                     subsequentCommand = command;
                     break;
                 }
+                case ForcePush:
+                {
+                    var command = CommandCollection.CreateCommand<ApplyForcePushCommand>(GameWorld);
+                    //TODO implement command.Initialise(Item, GameWorld.Player);
+                    subsequentCommand = command;
+                    break;
+                }
                 case HealingBots:
                 {
                     var command = CommandCollection.CreateCommand<ApplyHealingBotsCommand>(GameWorld);

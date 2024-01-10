@@ -6,6 +6,7 @@ namespace MarsUndiscovered.Game.Components
     {
         public static Dictionary<string, ItemType> ItemTypes;
         public static ShieldGenerator ShieldGenerator = new ShieldGenerator();
+        public static ForcePush ForcePush = new ForcePush();
         public static MagnesiumPipe MagnesiumPipe = new MagnesiumPipe();
         public static IronSpike IronSpike = new IronSpike();
         public static HealingBots HealingBots = new HealingBots();
