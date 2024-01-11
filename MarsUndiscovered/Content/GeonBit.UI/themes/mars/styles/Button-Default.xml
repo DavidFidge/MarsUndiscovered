@@ -12,7 +12,7 @@
     <X>600</X>
     <Y>100</Y>
   </DefaultSize>
-  <Scale>2</Scale>
+  <Scale xsi:nil="true" />
   <FillColor xsi:nil="true" />
   <OutlineColor xsi:nil="true" />
   <OutlineWidth xsi:nil="true" />
