@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- this file not used since geonbit 4.3 -->
 <XnaContent xmlns:ns="Microsoft.Xna.Framework">
   <Asset Type="GeonBit.UI.DataTypes.ThemeSettings">
     <ThemeName>Mars</ThemeName>

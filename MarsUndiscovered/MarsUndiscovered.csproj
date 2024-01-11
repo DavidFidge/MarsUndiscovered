@@ -16,6 +16,9 @@
     <None Update="Content\Animations\ShipAiRadioComms.sf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Remove="Content\GeonBit.UI\themes\mars\textures\panel_golden_md.xml" />
+    <None Remove="Content\GeonBit.UI\themes\mars\textures\slider_fancy_md.xml" />
+    <None Remove="Content\GeonBit.UI\themes\mars\textures\button_fancy_md.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
