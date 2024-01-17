@@ -7,7 +7,12 @@ namespace MarsUndiscovered.Game.Components
 {
     public static class MapExtensions
     {
-        public static IList<IGameObject> GetBlockingObjectsAt(this Map map, Point position, AdjacencyRule adjacencyRule)
+        public static bool AnyBlockingObjectsAt(this Map map, Point position)
+        {
+            return map.GetObjectsAt(position).Any(o => !o.IsWalkable);
+        }
+
+        public static IList<IGameObject> GetBlockingObjectsAt(this Map map, Point position)
         {
             return map.GetObjectsAt(position)
                 .Where(o => !o.IsWalkable)

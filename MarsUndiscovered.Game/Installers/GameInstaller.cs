@@ -179,6 +179,9 @@ namespace MarsUndiscovered.Game.Installers
                     .AsFactory(),
                 
                 Component.For<ICommandFactory<UndoCommand>>()
+                    .AsFactory(),
+                
+                Component.For<ICommandFactory<ApplyForcePushCommand>>()
                     .AsFactory()
             );
         }
