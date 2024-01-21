@@ -45,7 +45,14 @@ namespace MarsUndiscovered.Game.Commands
             }
 
             string message;
-
+            
+            // Gadgets also get their enchant level identified since the effects
+            // themselves reveal it
+            if (Item.ItemType is Gadget)
+            {
+                Item.ItemDiscovery.IsEnchantLevelDiscovered = true;
+            }
+            
             if (!_data.IsItemTypeDiscovered)
             {
                 GameWorld.Inventory.ItemTypeDiscoveries.SetItemTypeDiscovered(Item);
@@ -57,7 +64,7 @@ namespace MarsUndiscovered.Game.Commands
             {
                 message = $"You apply {GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(Item)}";
             }
-
+            
             Item.ResetRechargeDelay();
 
             if (Item.ItemType is NanoFlask)
@@ -99,6 +106,8 @@ namespace MarsUndiscovered.Game.Commands
                 default:
                     throw new Exception($"Apply for ItemType {Item.ItemType} has not been implemented");
             }
+            
+            
             
             return Result(CommandResult.Success(this, message, subsequentCommand));
         }

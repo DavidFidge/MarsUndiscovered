@@ -11,17 +11,13 @@
         
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
-            if (!includePrefix)
-                return $"{itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeName()}";
-            
-            if (!itemTypeDiscovery.IsItemTypeDiscovered)
-            {
-                var description = $"{GetQuantityText(quantity, itemTypeDiscovery)} {itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeName()}";
+            if (itemTypeDiscovery is { IsItemTypeDiscovered: false })
+                return $"{GetQuantityText(1, itemTypeDiscovery)} {itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeName()}";
+               
+            if (!itemDiscovery.IsEnchantLevelDiscovered)
+                return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}";
 
-                return quantity > 1 ? $"{description}s" : description;
-            }
-
-            return null;
+            return $"{(includePrefix ? "A " : "")}{GetEnchantText(item)} {GetTypeDescription()}";
         }
 
         public override string GetAbstractTypeName()
