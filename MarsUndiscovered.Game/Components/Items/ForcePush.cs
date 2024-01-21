@@ -4,7 +4,8 @@ namespace MarsUndiscovered.Game.Components
 {
     public class ForcePush : Gadget
     {
-        private int _defaultPushDistance = 2;
+        private int _defaultPushDistance = 3;
+        private int _defaultRadius = 2;
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
@@ -31,6 +32,7 @@ namespace MarsUndiscovered.Game.Components
             base.RecalculateProperties(item);
 
             item.PushPullDistance = _defaultPushDistance + item.EnchantmentLevel;
+            item.PushPullRadius = _defaultRadius + (item.EnchantmentLevel / 2);
 
             if (item.PushPullDistance <= 0)
                 item.PushPullDistance = 0;

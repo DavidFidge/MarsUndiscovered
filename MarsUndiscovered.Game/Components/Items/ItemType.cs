@@ -30,6 +30,7 @@ namespace MarsUndiscovered.Game.Components
         {
             ItemTypes = new Dictionary<string, ItemType>();
 
+            ItemTypes.Add(ForcePush.Name, ForcePush);
             ItemTypes.Add(ShieldGenerator.Name, ShieldGenerator);
             ItemTypes.Add(MagnesiumPipe.Name, MagnesiumPipe);
             ItemTypes.Add(IronSpike.Name, IronSpike);

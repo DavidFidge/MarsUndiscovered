@@ -23,7 +23,7 @@ namespace MarsUndiscovered.Game.Commands
         public void Initialise(Item source, Point point, int pushDistance, int radius)
         {
             this.PersistForReplay = true;
-            this.EndsPlayerTurn = true;
+            this.EndsPlayerTurn = false;
             _data.SourceId = source.ID;
             _data.Point = point;
             _data.PushDistance = pushDistance;
@@ -56,7 +56,7 @@ namespace MarsUndiscovered.Game.Commands
                     Math.Abs(this.Point.X - actor.Position.X),
                     Math.Abs(this.Point.Y - actor.Position.Y));
                
-                var newPosition = Vector2.Lerp(this.Point.ToVector(), actor.Position.ToVector(), (this.PushDistance / maxDistanceOut) + 1f);
+                var newPosition = Vector2.Lerp(this.Point.ToVector(), actor.Position.ToVector(), (this.PushDistance / (float)maxDistanceOut) + 1f);
 
                 var newPoint = newPosition
                     .FromVectorRounded()

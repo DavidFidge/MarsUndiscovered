@@ -99,7 +99,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
-            Assert.IsTrue(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
         }
@@ -190,7 +190,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
-            Assert.IsTrue(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
         } 
@@ -251,7 +251,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
-            Assert.IsTrue(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
         }
@@ -338,7 +338,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
-            Assert.IsTrue(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
         }
@@ -399,7 +399,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
-            Assert.IsTrue(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
         }
@@ -447,7 +447,7 @@ namespace MarsUndiscovered.Tests.Commands
             var commandFactory = Container.Resolve<ICommandCollection>();
 
             var applyForcePushCommand = commandFactory.CreateCommand<ApplyForcePushCommand>(_gameWorld);
-            applyForcePushCommand.Initialise(item, new Point(3, 3), 2, 1);
+            applyForcePushCommand.Initialise(item, new Point(3, 3), 2, 2);
     
             // Act
             var result = applyForcePushCommand.Execute();
@@ -460,7 +460,148 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
-            Assert.IsTrue(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.RequiresPlayerInput);
+            Assert.IsFalse(result.Command.InterruptsMovement);
+        }
+        
+        [TestMethod]
+        public void ApplyForcePushCommand_Should_Push_Actors_In_A_Line()
+        {
+            // Arrange
+            var lines = new[]
+            {
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+                "......."
+            };
+
+            var mapTemplate = new MapTemplate(lines);
+            
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, mapTemplate.Where(m => m.Char == '#').Select(m => m.Point).ToList());
+
+            NewGameWithTestLevelGenerator(
+                _gameWorld,
+                mapGenerator,
+                playerPosition: new Point(4, 8),
+                mapWidth: mapTemplate.Bounds.Width,
+                mapHeight: mapTemplate.Bounds.Height);
+
+            var spawnItemParams = new SpawnItemParams().WithItemType(ItemType.ForcePush).IntoPlayerInventory();
+            _gameWorld.SpawnItem(spawnItemParams);
+
+            var item = spawnItemParams.Result;
+
+            var monster1Params = new SpawnMonsterParams()
+                .AtPosition(new Point(4, 7))
+                .WithBreed(Breed.Breeds.First().Value)
+                .OnMap(_gameWorld.CurrentMap.Id);
+            
+            _gameWorld.SpawnMonster(monster1Params);
+
+            var monster1 = monster1Params.Result;
+            
+            var monster2Params = new SpawnMonsterParams()
+                .AtPosition(new Point(4, 6))
+                .WithBreed(Breed.Breeds.First().Value)
+                .OnMap(_gameWorld.CurrentMap.Id);
+            
+            _gameWorld.SpawnMonster(monster2Params);
+
+            var monster2 = monster2Params.Result;
+            
+            var monster3Params = new SpawnMonsterParams()
+                .AtPosition(new Point(4, 4))
+                .WithBreed(Breed.Breeds.First().Value)
+                .OnMap(_gameWorld.CurrentMap.Id);
+            
+            _gameWorld.SpawnMonster(monster3Params);
+
+            var monster3 = monster3Params.Result;
+            
+            var commandFactory = Container.Resolve<ICommandCollection>();
+
+            var applyForcePushCommand = commandFactory.CreateCommand<ApplyForcePushCommand>(_gameWorld);
+            applyForcePushCommand.Initialise(item, new Point(4, 8), 3, 99);
+    
+            // Act
+            var result = applyForcePushCommand.Execute();
+
+            // Assert
+            Assert.AreEqual(CommandResultEnum.Success, result.Result);
+            
+            Assert.AreEqual(new Point(4, 4), monster1.Position);
+            Assert.AreEqual(new Point(4, 3), monster2.Position);
+            Assert.AreEqual(new Point(4, 1), monster3.Position);
+            
+            Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
+            
+            Assert.IsTrue(result.Command.PersistForReplay);
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.RequiresPlayerInput);
+            Assert.IsFalse(result.Command.InterruptsMovement);
+        }
+        
+        [TestMethod]
+        public void ApplyForcePushCommand_Should_Push_All_Actors_Away_From_Location_With_Blocking_Wall()
+        {
+            // Arrange
+            var lines = new[]
+            {
+                ".......",
+                ".#.....",
+                ".......",
+            };
+
+            var mapTemplate = new MapTemplate(lines);
+            
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, mapTemplate.Where(m => m.Char == '#').Select(m => m.Point).ToList());
+
+            NewGameWithTestLevelGenerator(
+                _gameWorld,
+                mapGenerator,
+                playerPosition: new Point(4, 1),
+                mapWidth: mapTemplate.Bounds.Width,
+                mapHeight: mapTemplate.Bounds.Height);
+
+            var spawnItemParams = new SpawnItemParams().WithItemType(ItemType.ForcePush).IntoPlayerInventory();
+            _gameWorld.SpawnItem(spawnItemParams);
+
+            var item = spawnItemParams.Result;
+
+            var monster1Params = new SpawnMonsterParams()
+                .AtPosition(new Point(3, 1))
+                .WithBreed(Breed.Breeds.First().Value)
+                .OnMap(_gameWorld.CurrentMap.Id);
+            
+            _gameWorld.SpawnMonster(monster1Params);
+
+            var monster1 = monster1Params.Result;
+            
+            var commandFactory = Container.Resolve<ICommandCollection>();
+
+            var applyForcePushCommand = commandFactory.CreateCommand<ApplyForcePushCommand>(_gameWorld);
+            applyForcePushCommand.Initialise(item, new Point(4, 1), 2, 1);
+    
+            // Act
+            var result = applyForcePushCommand.Execute();
+
+            // Assert
+            Assert.AreEqual(CommandResultEnum.Success, result.Result);
+            
+            Assert.AreEqual(new Point(2, 1), monster1.Position);
+            
+            Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
+            
+            Assert.IsTrue(result.Command.PersistForReplay);
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
         }
