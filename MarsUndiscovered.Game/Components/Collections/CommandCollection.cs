@@ -72,6 +72,9 @@ namespace MarsUndiscovered.Game.Components
         public List<UndoCommand> UndoCommands { get; private set; } = new();
         public ICommandFactory<UndoCommand> UndoCommandFactory { get; set; }
         
+        public List<ApplyForcePushCommand> ApplyForcePushCommand { get; private set; } = new();
+        public ICommandFactory<ApplyForcePushCommand> ApplyForcePushCommandFactory { get; set; }
+        
         private List<uint> _replayCommandIds = new();
         private Dictionary<uint, BaseGameActionCommand> _commandsById = new();
         private Dictionary<Type, PropertyInfo> _commandListProperties;

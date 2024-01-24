@@ -18,6 +18,8 @@ namespace MarsUndiscovered.Game.Components
         public Attack MeleeAttack { get; set; }
         public Attack LineAttack { get; set; }
         public int DamageShieldPercentage { get; set; }
+        public int PushPullDistance { get; set; }
+        public int PushPullRadius { get; set; }
         public int HealPercentOfMax { get; set; }
         public int MaxHealthIncrease { get; set; }
         public bool GroupsInInventory { get; set; }

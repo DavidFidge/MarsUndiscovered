@@ -2,9 +2,10 @@ using System.Text;
 
 namespace MarsUndiscovered.Game.Components
 {
-    public class ShieldGenerator : Gadget
+    public class ForcePush : Gadget
     {
-        private int _damageShieldPercentage = 30;
+        private int _defaultPushDistance = 3;
+        private int _defaultRadius = 2;
 
         public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
@@ -21,19 +22,20 @@ namespace MarsUndiscovered.Game.Components
 
         public override string GetTypeDescription()
         {
-            return $"Shield Generator {GetAbstractTypeName()}";
+            return $"Force Push {GetAbstractTypeName()}";
         }
 
-        protected override int RechargeDelay => 300;
+        protected override int RechargeDelay => 100;
 
         public override void RecalculateProperties(Item item)
         {
             base.RecalculateProperties(item);
 
-            item.DamageShieldPercentage = _damageShieldPercentage + (item.EnchantmentLevel * 10);
+            item.PushPullDistance = _defaultPushDistance + item.EnchantmentLevel;
+            item.PushPullRadius = _defaultRadius + (item.EnchantmentLevel / 2);
 
-            if (item.DamageShieldPercentage <= 0)
-                item.DamageShieldPercentage = 5;
+            if (item.PushPullDistance <= 0)
+                item.PushPullDistance = 0;
 
             if (item.EnchantmentLevel <= 0)
             {
@@ -57,17 +59,17 @@ namespace MarsUndiscovered.Game.Components
             
             var stringBuilder = new StringBuilder();
             
-            stringBuilder.AppendLine("Strapped around the waist, this device emits a band of negative energy around the wearer. Any harmful object or particle enters into the space immediately surrounding the wearer, it immediately repels it, thus protecting the wearer from harm.");
+            stringBuilder.AppendLine("When activated, this gadget generates a force field around the wearer. The force field is then ejected in all directions outward at light speed, repelling anything in its path.");
             
             stringBuilder.AppendLine();
 
             if (itemTypeDiscovery.IsItemTypeDiscovered)
             {
-                stringBuilder.AppendLine($"{item.GetEnchantmentLevelText()} this shield generator will give you a shield worth {{{{L_BLUE}}}}{item.DamageShieldPercentage}%{{{{DEFAULT}}}} of your maximum health.");
+                stringBuilder.AppendLine($"{item.GetEnchantmentLevelText()} this force push gadget will push all enemies up to {{{{L_BLUE}}}}{item.PushPullDistance}{{{{DEFAULT}}}} squares away from you.");
             }
             else
             {
-                stringBuilder.AppendLine($"{GetPropertiesUnknownText()} the shield generator will act like a +0 device and give you a shield worth {{{{L_BLUE}}}}{_damageShieldPercentage}%{{{{DEFAULT}}}} of your maximum health.");
+                stringBuilder.AppendLine($"{GetPropertiesUnknownText()} the shield generator will act like a +0 device push all enemies up to {{{{L_BLUE}}}}{_defaultPushDistance}{{{{DEFAULT}}}} away from you.");
             }
 
             stringBuilder.AppendLine();

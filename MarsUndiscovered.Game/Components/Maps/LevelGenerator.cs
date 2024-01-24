@@ -167,7 +167,7 @@ public class LevelGenerator : ILevelGenerator
         for (var i = 0; i < 10; i++)
             probabilityTable.NextItem().Spawn(map);
 
-        var itemsToPlace = RNG.NextInt(5, 10);
+        var itemsToPlace = RNG.NextInt(50, 100);
         SpawnItems(itemsToPlace, map);
         
         var machinesToPlace = RNG.NextInt(10, 20);
@@ -246,7 +246,8 @@ public class LevelGenerator : ILevelGenerator
     {
         _gadgetWeights = new List<(ItemType itemType, double weight)>
         {
-            (ItemType.ShieldGenerator, 1) 
+            (ItemType.ShieldGenerator, 1), 
+            (ItemType.ForcePush, 1)
         };
 
         _gadgetProbabilityTable = new ProbabilityTable<ItemType>(_gadgetWeights);
