@@ -25,7 +25,6 @@ namespace MarsUndiscovered.UserInterface.Views
         private SelectList _messageLog;
         protected Panel LeftPanel;
         protected Panel BottomPanel;
-        protected Panel TopPanel;
         protected PlayerPanel PlayerPanel;
         protected IList<MonsterPanel> MonsterPanels = new List<MonsterPanel>();
         protected RichParagraph StatusParagraph;
@@ -41,43 +40,38 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected void CreateLayoutPanels()
         {
+            // This creates a three-sectioned layout
+            // A left panel for game information
+            // A bottom panel for messages
+            // The rest of the space is for the game view
             LeftPanel = new Panel()
                 .Anchor(Anchor.TopLeft)
                 .Width(Constants.LeftPanelWidth)
-                .SkinNone()
-                .NoPadding()
-                .Height(0.999f);
-
+                .SkinSimple()
+                .Height(1f)
+                .NoPadding();
+            
             RootPanel.AddChild(LeftPanel);
-
-            TopPanel = new Panel()
-                .Anchor(Anchor.TopRight)
-                .Width(Constants.MiddlePanelWidth)
-                .SkinNone()
-                .NoPadding()
-                .Offset(new Vector2(20f, 0))
-                .Height(0.14f);
-
-            RootPanel.AddChild(TopPanel);
 
             BottomPanel = new Panel()
                 .Anchor(Anchor.BottomRight)
-                .Width(Constants.MiddlePanelWidth)
-                .SkinNone()
+                .Width(Constants.GameViewPanelWidth)
+                .SkinSimple()
                 .NoPadding()
-                .Offset(new Vector2(20f, 0))
-                .Height(0.1f);
+                .Offset(new Vector2(Constants.LeftPanelWidth, 0f))
+                .Height(Constants.BottomPanelHeight);
 
             RootPanel.AddChild(BottomPanel);
 
             GameViewPanel = new Panel()
-                .Anchor(Anchor.CenterRight)
-                .Width(Constants.MiddlePanelWidth)
+                .Anchor(Anchor.TopLeft)
+                .Width(Constants.GameViewPanelWidth)
                 .SkinNone()
                 .NoPadding()
-                .Height(0.79f)
-                .Offset(new Vector2(20f, 120f));
+                .Height(Constants.GameViewPanelHeight)
+                .Offset(new Vector2(Constants.LeftPanelWidth));
 
+            // This creates two sections in the game view that is used for 'popups' like game inventory
             HoverPanelLeft = new Panel()
                 .Anchor(Anchor.TopLeft)
                 .Width(0.45f)
@@ -123,12 +117,13 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _messageLog = new SelectList()
                 .SkinSimple()
-                .Anchor(Anchor.Auto)
+                .Anchor(Anchor.TopLeft)
+                .Height(Constants.MessageLogHeight)
                 .NoPadding();
 
             _messageLog.ExtraSpaceBetweenLines = -14;
             _messageLog.LockSelection = true;
-            TopPanel.AddChild(_messageLog);
+            BottomPanel.AddChild(_messageLog);
 
             _messageLog.OnListChange = entity =>
             {

@@ -63,7 +63,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .SkinNone()
                 .Anchor(Anchor.Auto)
                 .NoPadding()
-                .Size(new Vector2(0.99f, 0.88f));
+                .Size(new Vector2(1f, 0.88f));
 
             _consoleHistory.ExtraSpaceBetweenLines = -30;
 

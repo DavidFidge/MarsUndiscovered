@@ -50,7 +50,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Width(Constants.LeftPanelWidth)
                 .SkinNone()
                 .NoPadding()
-                .Height(0.999f);
+                .Height(1f);
             
             new Button("Menu")
                 .SendOnClick<OpenWorldBuilderOptionsRequest>(Mediator)

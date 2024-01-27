@@ -37,7 +37,7 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
     {
         InventoryContainerPanel = new Panel()
             .Anchor(Anchor.CenterRight)
-            .Width(Constants.MiddlePanelWidth)
+            .Width(Constants.GameViewPanelWidth)
             .SkinNone()
             .NoPadding()
             .Height(0.79f)

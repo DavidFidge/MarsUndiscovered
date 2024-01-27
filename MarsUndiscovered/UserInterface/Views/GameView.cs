@@ -113,12 +113,12 @@ namespace MarsUndiscovered.UserInterface.Views
         protected void CreateRadioCommsPanel()
         {
             RadioCommsPanel = new Panel()
-                .Anchor(Anchor.BottomCenter)
+                .Anchor(Anchor.TopLeft)
                 .Skin(PanelSkin.Alternative)
-                .Height(380)
+                .Height(Constants.RadioCommsPanelHeight)
                 .WidthOfContainer();
 
-            GameViewPanel.AddChild(RadioCommsPanel);
+            BottomPanel.AddChild(RadioCommsPanel);
 
             RadioCommsSource = new RichParagraph()
                 .Anchor(Anchor.AutoCenter)
