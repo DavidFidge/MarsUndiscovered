@@ -8,6 +8,10 @@
         public const float GameViewPanelWidth = 0.85f;
         public const float LeftPanelWidth = 0.15f;
         
+        // 0 is a special value to designate 100% height of the parent.
+        // Note - a value between 0f and 1f is a percentage of the parent. 
+        public const float HeightOfParent = 0f;
+        
         public const float GameViewPanelHeight = 0.8f;
         public const float BottomPanelHeight = 0.2f;
         

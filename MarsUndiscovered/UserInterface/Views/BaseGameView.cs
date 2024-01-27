@@ -48,7 +48,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Anchor(Anchor.TopLeft)
                 .Width(Constants.LeftPanelWidth)
                 .SkinSimple()
-                .Height(1f)
+                .Height(Constants.HeightOfParent)
                 .NoPadding();
             
             RootPanel.AddChild(LeftPanel);
