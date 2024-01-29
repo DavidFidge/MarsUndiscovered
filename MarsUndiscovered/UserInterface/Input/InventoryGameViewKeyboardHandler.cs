@@ -15,6 +15,16 @@ namespace MarsUndiscovered.UserInterface.Input
 
             if (ActionMap.ActionIs<InventoryItemSelectionRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new InventoryItemSelectionRequest(keyInFocus));
+
+            if (ActionMap.ActionIs<InventoryItemSelectionCycleRequest>(keyInFocus, keyboardModifier))
+            {
+                var actionName = ActionMap.ActionName<InventoryItemSelectionCycleRequest>(keyInFocus, keyboardModifier);
+                
+                if (actionName == Constants.InventoryItemSelectionCycleRequestNext)
+                    Mediator.Send(new InventoryItemSelectionCycleRequest(InventoryItemSelectionCycleRequestType.Next));
+                else
+                    Mediator.Send(new InventoryItemSelectionCycleRequest(InventoryItemSelectionCycleRequestType.Previous));
+            }
         }
     }
 }

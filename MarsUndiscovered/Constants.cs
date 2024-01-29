@@ -36,5 +36,9 @@
         public const float TileQuadWidth = 1f;
 
         public const float MapTileAnimationTime = 0.5f;
+        
+        // Action names
+        public const string InventoryItemSelectionCycleRequestNext = "Next Inventory Selection";
+        public const string InventoryItemSelectionCycleRequestPrevious = "Previous Inventory Selection";
     }
 }

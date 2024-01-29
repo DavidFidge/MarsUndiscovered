@@ -15,7 +15,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Views;
 
-public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>, IInventoryView, IRequestHandler<CloseGameInventoryContextRequest>
+public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscoveredView<TViewModel, TData>, IInventoryView,
+    IRequestHandler<CloseGameInventoryContextRequest>,
+    IRequestHandler<InventoryItemSelectionCycleRequest>
     where TViewModel : BaseInventoryViewModel<TData>
     where TData : BaseInventoryData, new()
 {
@@ -36,20 +38,19 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
     protected override void InitializeInternal()
     {
         InventoryContainerPanel = new Panel()
-            .Anchor(Anchor.CenterRight)
-            .Width(Constants.GameViewPanelWidth)
+            .Anchor(Anchor.Center)
             .SkinNone()
-            .NoPadding()
-            .Height(0.79f)
-            .Offset(new Vector2(20f, 120f));
+            .Size(0.8f, 0.8f)
+            .Offset(0.1f, 0.1f)
+            .NoPadding();
 
         InventoryItemDescriptionPanel = new Panel()
-            .Anchor(Anchor.TopLeft)
+            .Anchor(Anchor.TopRight)
+            .Offset(new Vector2(0.5f, 0f))
             .Width(0.5f)
             .Skin(PanelSkin.Alternative)
-            .AutoHeight()
-            .Hidden();
-
+            .AutoHeight();
+        
         InventoryItemDescriptionPanelText = new RichParagraph()
             .Anchor(Anchor.Auto);
 
@@ -58,10 +59,10 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         InventoryContainerPanel.AddChild(InventoryItemDescriptionPanel);
         
         InventoryPanel = new Panel()
-            .Anchor(Anchor.TopRight)
+            .Anchor(Anchor.TopLeft)
             .Width(0.5f)
             .Skin(PanelSkin.Alternative)
-            .AutoHeight();
+            .HeightOfParent();
 
         InventoryContainerPanel.AddChild(InventoryPanel);
 
@@ -123,16 +124,23 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         else
         {
             var item = InventoryItems.FirstOrDefault(i => i.InventoryItem?.Key == requestKey);
+            
+            SetFocus(item);
+        }
+    }
 
-            if (item != null)
+    protected void SetFocus(InventoryItemPanel item)
+    {
+        ClearFocus();
+
+        if (item != null)
+        {
+            foreach (var inventoryItemPanel in InventoryItems)
             {
-                foreach (var inventoryItemPanel in InventoryItems)
-                {
-                    inventoryItemPanel.OnInventoryPanelLeave();
-                }
-
-                item.OnInventoryPanelEnter();
+                inventoryItemPanel.OnInventoryPanelLeave();
             }
+
+            item.OnInventoryPanelEnter();
         }
     }
 
@@ -203,5 +211,97 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         {
             Hide();
         }
+    }
+
+    public Task<Unit> Handle(InventoryItemSelectionCycleRequest request, CancellationToken cancellationToken)
+    {
+        if (!InventoryItems.Any())
+            return Unit.Task;
+        
+        var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
+        var newFocusItem = focusItem;
+        
+        // Inventory items always holds 26 slots for each key which become visible and invisible
+        if (focusItem != null)
+        {
+            var index = InventoryItems.IndexOf(focusItem);
+
+            if (request.InventoryItemSelectionCycleRequestType == InventoryItemSelectionCycleRequestType.Next)
+            {
+                for (var i = index + 1; i < InventoryItems.Count; i++)
+                {
+                    if (InventoryItems[i].IsVisible())
+                    {
+                        focusItem = InventoryItems[i];
+                        break;
+                    }
+                }
+
+                if (focusItem == newFocusItem)
+                {
+                    for (var i = 0; i < index; i++)
+                    {
+                        if (InventoryItems[i].IsVisible())
+                        {
+                            focusItem = InventoryItems[i];
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (var i = index - 1; i >= 0; i--)
+                {
+                    if (InventoryItems[i].IsVisible())
+                    {
+                        focusItem = InventoryItems[i];
+                        break;
+                    }
+                }
+
+                if (focusItem == newFocusItem)
+                {
+                    for (var i = InventoryItems.Count - 1; i > index; i--)
+                    {
+                        if (InventoryItems[i].IsVisible())
+                        {
+                            focusItem = InventoryItems[i];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (request.InventoryItemSelectionCycleRequestType == InventoryItemSelectionCycleRequestType.Next)
+            {
+                for (var i = 0; i < InventoryItems.Count; i++)
+                {
+                    if (InventoryItems[i].IsVisible())
+                    {
+                        focusItem = InventoryItems[i];
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                for (var i = InventoryItems.Count - 1; i >= 0; i--)
+                {
+                    if (InventoryItems[i].IsVisible())
+                    {
+                        focusItem = InventoryItems[i];
+                        break;
+                    }
+                }
+            }
+        }
+ 
+        if (focusItem != null)
+            SetFocus(focusItem);
+        
+        return Unit.Task;
     }
 }
