@@ -110,10 +110,26 @@ public class InventoryItemPanel : Panel
         {
             _hasFocus = true;
             _coloredRectangle.FillColor(_backgroundColour);
-            _inventoryView.SetFocussedItem(_inventoryItem);
+            _inventoryView.AfterItemFocussed(_inventoryItem);
         }
     }
 
+    public void ShowKeyDescription()
+    {
+        if (_inventoryItem != null)
+        {
+            _key.Text = _inventoryItem.KeyDescription;
+        }
+    }
+
+    public void HideKeyDescription()
+    {
+        if (_inventoryItem != null)
+        {
+            _key.Text = "  ";
+        }
+    }
+    
     public void SetInventoryItem(InventoryItem inventoryItem, InventoryMode inventoryMode)
     {
         _coloredRectangle.FillColor(Color.Black);

@@ -32,6 +32,7 @@ namespace MarsUndiscovered.Messages
     [ActionMap(Name = "Inventory Item X", DefaultKey = Keys.X)]
     [ActionMap(Name = "Inventory Item Y", DefaultKey = Keys.Y)]
     [ActionMap(Name = "Inventory Item Z", DefaultKey = Keys.Z)]
+    [ActionMap(Name = "Inventory Item Enter", DefaultKey = Keys.Enter)]
     public class InventoryItemSelectionRequest : IRequest
     {
         public Keys Key { get; }

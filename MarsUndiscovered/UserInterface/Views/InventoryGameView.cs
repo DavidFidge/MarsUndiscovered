@@ -85,14 +85,52 @@ namespace MarsUndiscovered.UserInterface.Views
             InventoryItemDescriptionPanel.AddChild(InventoryItemButtonPanel);
         }
 
-        public override void SetFocussedItem(InventoryItem inventoryItem)
+        public override void AfterItemFocussed(InventoryItem inventoryItem)
         {
-            base.SetFocussedItem(inventoryItem);
+            base.AfterItemFocussed(inventoryItem);
 
             _equipButton.Enabled = inventoryItem.CanEquip;
             _unequipButton.Enabled = inventoryItem.CanUnequip;
             _dropButton.Enabled = inventoryItem.CanDrop;
             _applyButton.Enabled = inventoryItem.CanApply;
+
+            if (InventoryMode == InventoryMode.ReadOnly ||
+                InventoryMode == InventoryMode.Identify ||
+                InventoryMode == InventoryMode.Enchant)
+            {
+                _equipButton.Enabled = false;
+                _unequipButton.Enabled = false;
+                _dropButton.Enabled = false;
+                _applyButton.Enabled = false;
+            }
+            
+            if (InventoryMode == InventoryMode.Apply)
+            {
+                _equipButton.Enabled = false;
+                _unequipButton.Enabled = false;
+                _dropButton.Enabled = false;
+            }
+            
+            if (InventoryMode == InventoryMode.Drop)
+            {
+                _equipButton.Enabled = false;
+                _unequipButton.Enabled = false;
+                _applyButton.Enabled = false;
+            }
+            
+            if (InventoryMode == InventoryMode.Equip)
+            {
+                _unequipButton.Enabled = false;
+                _dropButton.Enabled = false;
+                _applyButton.Enabled = false;
+            }
+            
+            if (InventoryMode == InventoryMode.Unequip)
+            {
+                _equipButton.Enabled = false;
+                _dropButton.Enabled = false;
+                _applyButton.Enabled = false;
+            }
         }
 
         private void OnEquip(Entity entity)
@@ -170,6 +208,20 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             if (!IsVisible)
                 return Unit.Task;
+
+            var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
+
+            if (focusItem != null &&
+                InventoryMode != Views.InventoryMode.View &&
+                InventoryMode != Views.InventoryMode.ReadOnly)
+            {
+                if (request.Key == Keys.Enter)
+                   PerformInventoryModeAction(focusItem.InventoryItem);
+                else
+                    PerformFocusKeyActionSilentlyFail(focusItem.InventoryItem, request.Key);
+                
+                return Unit.Task;
+            }
             
             switch (InventoryMode)
             {
@@ -202,6 +254,21 @@ namespace MarsUndiscovered.UserInterface.Views
             }
 
             return Unit.Task;
+        }
+
+        protected void PerformFocusKeyActionSilentlyFail(InventoryItem focusItem, Keys requestKey)
+        {
+            if ((_actionMap.ActionIs<OpenGameInventoryRequest>(requestKey, OpenGameInventoryRequest.Equip) &&
+                 focusItem.CanEquip) ||
+                (_actionMap.ActionIs<OpenGameInventoryRequest>(requestKey, OpenGameInventoryRequest.Drop) &&
+                 focusItem.CanDrop) ||
+                (_actionMap.ActionIs<OpenGameInventoryRequest>(requestKey, OpenGameInventoryRequest.Unequip) &&
+                 focusItem.CanUnequip) ||
+                (_actionMap.ActionIs<OpenGameInventoryRequest>(requestKey, OpenGameInventoryRequest.Apply) &&
+                 focusItem.CanApply))
+            {
+                PerformFocusKeyAction(focusItem, requestKey);
+            }
         }
 
         protected override void PerformFocusKeyAction(InventoryItem focusItem, Keys requestKey)

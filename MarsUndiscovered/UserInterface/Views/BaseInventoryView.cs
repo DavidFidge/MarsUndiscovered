@@ -125,22 +125,8 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         {
             var item = InventoryItems.FirstOrDefault(i => i.InventoryItem?.Key == requestKey);
             
-            SetFocus(item);
-        }
-    }
-
-    protected void SetFocus(InventoryItemPanel item)
-    {
-        ClearFocus();
-
-        if (item != null)
-        {
-            foreach (var inventoryItemPanel in InventoryItems)
-            {
-                inventoryItemPanel.OnInventoryPanelLeave();
-            }
-
-            item.OnInventoryPanelEnter();
+            if (item != null)
+                item.OnInventoryPanelEnter();
         }
     }
 
@@ -153,10 +139,15 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         InventoryItemDescriptionPanel.Hidden();
     }
 
-    public virtual void SetFocussedItem(InventoryItem inventoryItem)
+    public virtual void AfterItemFocussed(InventoryItem inventoryItem)
     {
         if (inventoryItem != null)
         {
+            foreach (var item in InventoryItems)
+            {
+                item.HideKeyDescription();
+            }
+            
             InventoryItemDescriptionPanelText.Text =
                 $"{inventoryItem.ItemDescription}\n\n{inventoryItem.LongDescription}";
             InventoryItemDescriptionPanel.Visible();
@@ -169,6 +160,7 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         foreach (var inventoryItemPanel in InventoryItems)
         {
             inventoryItemPanel.OnInventoryPanelLeave();
+            inventoryItemPanel.ShowKeyDescription();
         }
     }
 
@@ -300,7 +292,7 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         }
  
         if (focusItem != null)
-            SetFocus(focusItem);
+            focusItem.OnInventoryPanelEnter();
         
         return Unit.Task;
     }
