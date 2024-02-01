@@ -116,6 +116,25 @@ namespace MarsUndiscovered.Game.Components.Maps
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
 
+        public override void CreatePrefabMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height,
+            int? upToStep = null)
+        {
+            Clear();
+
+            var generator = new Generator(width, height);
+
+            var prefabGeneration = new PrefabGeneration();
+            
+            var generationSteps = new GenerationStep[]
+            {
+                prefabGeneration
+            };
+
+            ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
+        }
+
+        // The generators create structures with tags. This method then extracts those
+        // structures and creates a map, converting the structures to walls, floors and doors.
         private void ExecuteMapSteps(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep,
             Generator generator, IEnumerable<GenerationStep> generationSteps)
         {
