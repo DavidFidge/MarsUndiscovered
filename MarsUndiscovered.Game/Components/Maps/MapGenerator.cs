@@ -15,9 +15,9 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public class MapGenerator : BaseMapGenerator
     {
-        public static string WallFloorTag = "WallFloor";
+        public static string WallFloorTag = "WallFloor"; // ArrayView of bool where true is floor and false is wall
         public static string TunnelsTag = "Tunnels";
-        public static string WallFloorTypeTag = "WallFloorType";
+        public static string WallFloorTypeTag = "WallFloorType"; // Similar to WallFloor but gives the actual type of wall or floor. It is an ArrayView of GameObjectType where the type is WallType or FloorType.
         public static string MiningFacilityAreaTag = "MiningFacilityArea";
         public static string MiningFacilityAreaWithPerimeterTag = "MiningFacilityAreaWithPerimeterTag";
         public static string DoorsTag = "Doors";
@@ -124,10 +124,12 @@ namespace MarsUndiscovered.Game.Components.Maps
             var generator = new Generator(width, height);
 
             var prefabGeneration = new PrefabGeneration();
+            var wallFloorTypeConverterGenerator = new WallFloorTypeConverterGenerator();
             
             var generationSteps = new GenerationStep[]
             {
-                prefabGeneration
+                prefabGeneration,
+                wallFloorTypeConverterGenerator
             };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);

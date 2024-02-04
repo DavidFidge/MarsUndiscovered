@@ -14,6 +14,12 @@ namespace MarsUndiscovered.Game.Components
 {
     public abstract class MarsGameObject : GameObject, IMarsGameObject
     {
+        public virtual char AsciiCharacter
+        {
+            get { return _asciiCharacter; }
+        }
+
+        protected char _asciiCharacter = ' ';
         public IGameWorld GameWorld { get; private set; }
         public IMediator Mediator { get; set; }
         public ILogger Logger { get; set; }

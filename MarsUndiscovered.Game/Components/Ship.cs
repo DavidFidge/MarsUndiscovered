@@ -8,15 +8,13 @@ namespace MarsUndiscovered.Game.Components
 {
     public class Ship : Indestructible, IMementoState<ShipSaveData>
     {
-        public char ShipPart { get; set; }
-
         public Ship(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
         }
 
         public Ship WithShipPart(char shipPart)
         {
-            ShipPart = shipPart;
+            _asciiCharacter = shipPart;
             return this;
         }
 
@@ -25,7 +23,7 @@ namespace MarsUndiscovered.Game.Components
             var memento = new Memento<ShipSaveData>(new ShipSaveData());
 
             base.PopulateSaveState(memento.State);
-            memento.State.ShipPart = ShipPart;
+            memento.State.ShipPart = _asciiCharacter;
 
             return memento;
         }
@@ -33,7 +31,7 @@ namespace MarsUndiscovered.Game.Components
         public void SetLoadState(IMemento<ShipSaveData> memento)
         {
             base.PopulateLoadState(memento.State);
-            ShipPart = memento.State.ShipPart;
+            _asciiCharacter = memento.State.ShipPart;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using FrigidRogue.WaveFunctionCollapse;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
 using NSubstitute;
 
@@ -20,13 +21,37 @@ public class PrefabMapGeneratorTests : BaseGameWorldIntegrationTests
     }
 
     [TestMethod]
-    public void Should_CreateMiningFacilityMap()
+    public void Should_CreatePrefabMap()
     {
         // Act
-        _mapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 50, 50);
+        _mapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 50, 11);
 
         // Assert
         var map = _mapGenerator.Map;
         Assert.IsNotNull(map);
+
+        var mapText = GameObjectWriter.WriteMapAscii(map);
+
+        var expectedResult = new[]
+        {
+            "##################################################",
+            "#.......##########################################",
+            "#.......###.......################################",
+            "#.......###.......################################",
+            "#.......###.......################################",
+            "#.......###.......################################",
+            "#.......###.......################################",
+            "#.......###.......################################",
+            "###########.......################################",
+            "##################################################",
+            "##################################################"
+        };
+
+        var actualResult = mapText.ToString().Split(Environment.NewLine).Reverse().Skip(1).Reverse().ToList();
+        
+        for (var i = 0; i < expectedResult.Length; i++)
+        {
+            Assert.AreEqual(expectedResult[i], actualResult[i]);
+        }
     }
 }

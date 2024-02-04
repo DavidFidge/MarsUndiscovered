@@ -8,6 +8,8 @@ namespace MarsUndiscovered.Game.Components
 {
     public class Floor : Terrain, IMementoState<FloorSaveData>
     {
+        public override char AsciiCharacter => FloorType.AsciiCharacter;
+
         public FloorType FloorType { get; set; }
 
         public Floor(IGameWorld gameWorld, uint id) : base(gameWorld, id)

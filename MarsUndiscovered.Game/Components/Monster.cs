@@ -29,6 +29,8 @@ namespace MarsUndiscovered.Game.Components
 {
     public class Monster : Actor, IMementoState<MonsterSaveData>
     {
+        public override char AsciiCharacter => Breed.AsciiCharacter;
+
         public Breed Breed { get; set; }
         public override string Name => Breed.Name;
         public override string Description => Breed.Description;

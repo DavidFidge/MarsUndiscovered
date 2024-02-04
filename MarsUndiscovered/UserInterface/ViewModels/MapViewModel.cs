@@ -318,11 +318,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     _indestructibleTiles[point].SetMapExit(((MapExit)indestructibleTile).Direction);
 
                 else if (indestructibleTile is Ship)
-                    _indestructibleTiles[point].SetShip(((Ship)indestructibleTile).ShipPart);
+                    _indestructibleTiles[point].SetShip(((Ship)indestructibleTile).AsciiCharacter);
                 
                 else if (indestructibleTile is MiningFacility)
                     _indestructibleTiles[point]
-                        .SetMiningFacility(((MiningFacility)indestructibleTile).MiningFacilitySection);
+                        .SetMiningFacility(((MiningFacility)indestructibleTile).AsciiCharacter);
                 else
                     throw new Exception($"Indestructible tile type {0} is not being drawn");
 

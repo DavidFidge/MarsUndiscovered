@@ -10,6 +10,7 @@ namespace MarsUndiscovered.Game.Components
 {
     public class MapExit : Indestructible, IMementoState<MapExitSaveData>
     {
+        public override char AsciiCharacter => Direction == Direction.Up ? '<' : '>';
         public MapExit Destination { get; set; }
         public Point LandingPosition { get; set; }
         public Direction Direction { get; set; }

@@ -7,6 +7,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.UserInterface.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -117,8 +118,11 @@ public class Assets : IAssets
         );
         
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MapExitUp.ToString(), mapExitUp);
-
-        var shipPartChars = "{_-`.+|( ";
+        
+        var shipPartChars = ShipGenerator.ShipPrefab.PrefabText
+            .SelectMany(s => s)
+            .Distinct()
+            .ToArray();
 
         foreach (char ch in shipPartChars)
         {
@@ -135,7 +139,10 @@ public class Assets : IAssets
             _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.Ship}{ch}", shipPart);
         }
 
-        var miningFacilitySectionChars = @"_()|#-`'.+:\/= ";
+        var miningFacilitySectionChars = MiningFacilityGenerator.MiningFacilityPrefab.PrefabText
+            .SelectMany(s => s)
+            .Distinct()
+            .ToArray();
 
         foreach (char ch in miningFacilitySectionChars)
         {

@@ -1,10 +1,29 @@
 using MarsUndiscovered.Game.Components.Factories;
+using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Extensions;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {
     public class ShipGenerator : BaseGameObjectGenerator, IShipGenerator
     {
+        public static Prefab ShipPrefab { get; private set; }
+        
+        static ShipGenerator()
+        {
+            ShipPrefab = new Prefab
+            {
+                PrefabText = new[]
+                {
+                    "XXXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXX.-+--.X",
+                    "XX.------`  |--`X",
+                    "X{ (|       |XXXX",
+                    "XX`------.  |--.X",
+                    "XXXXXXXXXX`-+--`X"
+                }
+            };
+        }
+        
         /// <summary>
         /// Creates the player's ship. Currently uses hardcoded positions.
         /// </summary>
@@ -12,16 +31,7 @@ namespace MarsUndiscovered.Game.Components.Maps
         /// <param name="shipCollection"></param>
         public void CreateShip(IGameObjectFactory gameObjectFactory, MarsMap map, ShipCollection shipCollection)
         {
-            var lines = new[]
-            {
-                "XXXXXXXXXXXXXXXXX",
-                "XXXXXXXXXX.-+--.X",
-                "XX.------`  |--`X",
-                "X{ (|       |XXXX",
-                "XX`------.  |--.X",
-                "XXXXXXXXXX`-+--`X"
-                
-            };
+            var lines = ShipPrefab.PrefabText;
             
             // ship is in the middle of the x axis
             var shipStartX = (map.Width / 2) - lines[0].Length / 2;

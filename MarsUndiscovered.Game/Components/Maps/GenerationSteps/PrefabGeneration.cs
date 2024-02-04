@@ -8,22 +8,9 @@ using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
 using Point = SadRogue.Primitives.Point;
-using Rectangle = SadRogue.Primitives.Rectangle;
 
 namespace MarsUndiscovered.Game.Components.GenerationSteps
 {
-    public class PrefabInstance
-    {
-        public Prefab Prefab { get; set; }
-        public Point Location { get; set; }
-    }
-    
-    public class Prefab
-    {
-        public string[] PrefabText { get; set; }
-        public Rectangle Bounds => new Rectangle(0, 0, PrefabText[0].Length, PrefabText.Length);
-    }
-    
     public class PrefabGeneration : GenerationStep
     {
         public List<Prefab> Prefabs { get; set; } = new();
@@ -70,7 +57,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             var prefabInstance2 = new PrefabInstance
             {
                 Prefab = RNG.RandomElement(Prefabs),
-                Location = new Point(20, 20)
+                Location = new Point(10, 1)
             };
 
             prefabInstances.Add(prefabInstance1);
@@ -87,9 +74,9 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                     {
                         var prefabChar = prefab.PrefabText[y][x];
                         
-                        var isWall = prefabChar == '#';
+                        var isFloor = prefabChar != '#';
                         
-                        wallFloorContext[location.X + x, location.Y + y] = isWall;
+                        wallFloorContext[location.X + x, location.Y + y] = isFloor;
                     }
                 }
             }

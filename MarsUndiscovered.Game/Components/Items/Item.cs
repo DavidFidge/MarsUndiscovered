@@ -8,6 +8,7 @@ namespace MarsUndiscovered.Game.Components
 {
     public class Item : MarsGameObject, IMementoState<ItemSaveData>
     {
+        public override char AsciiCharacter => ItemType.AsciiCharacter;
         public ItemType ItemType { get; set; }
         public int EnchantmentLevel { get; set; }
         public int CurrentRechargeDelay { get; set; }
