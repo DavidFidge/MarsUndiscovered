@@ -9,33 +9,35 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public class AStarTunnelCreator : ITunnelCreator
     {
+        private readonly ISettableGridView<bool> _allowedPoints;
         private readonly Distance _distanceMeasurement = Distance.Euclidean;
         public Distance DistanceMeasurement => _distanceMeasurement;
         
         private readonly bool _doubleWideDiagonal;
-        
+
         /// <summary>
-        /// Constructor. Takes the distance calculation to use, which determines whether <see cref="SadRogue.Primitives.Lines.Algorithm.Orthogonal" />
-        /// or <see cref="SadRogue.Primitives.Lines.Algorithm.Bresenham" /> is used to create the tunnel.
+        /// Constructor. Takes the distance measurement that the A* pathfinder will use. />
         /// </summary>
-        /// <param name="adjacencyRule">
-        /// Method of adjacency to respect when creating tunnels. Cannot be diagonal.
+        /// <param name="allowedPoints">The points on the map that the A* pathfinder is allowed to walk on.</param>
+        /// <param name="distanceMeasurement">
+        /// Distance measurement that will be passed into the A* pathfinder.
         /// </param>
         /// <param name="doubleWideDiagonal">Whether or not to create diagonals directly (false) or add extra points to turn it into a stepping pattern, which generally make it look nicer (true)</param>
-        public AStarTunnelCreator(Distance distanceMeasurement, bool doubleWideDiagonal = true)
+        public AStarTunnelCreator(ISettableGridView<bool> allowedPoints, Distance distanceMeasurement, bool doubleWideDiagonal = true)
         {
+            _allowedPoints = allowedPoints;
             _distanceMeasurement = distanceMeasurement;
             _doubleWideDiagonal = doubleWideDiagonal;
         }
 
         /// <inheritdoc />
-        public Area CreateTunnel(ISettableGridView<bool> allowedPoints, Point start, Point end)
+        public Area CreateTunnel(ISettableGridView<bool> map, Point start, Point end)
         {
             var area = new Area();
 
             var previous = Point.None;
 
-            var astar = new AStar(allowedPoints, _distanceMeasurement);
+            var astar = new AStar(_allowedPoints, _distanceMeasurement);
 
             var path = astar.ShortestPath(start, end);
 
@@ -47,6 +49,7 @@ namespace MarsUndiscovered.Game.Components.Maps
             foreach (var pos in path.StepsWithStart)
             {
                 area.Add(pos);
+                map[pos] = true;
 
                 if (_doubleWideDiagonal && previous != Point.None && pos.Y != previous.Y && pos.X != previous.X)
                 {
@@ -57,37 +60,38 @@ namespace MarsUndiscovered.Game.Components.Maps
                     if (direction == Direction.UpLeft)
                     {
                         wideningPos = previous + (-1, 0);
-                        if (!allowedPoints[wideningPos])
+                        if (!_allowedPoints[wideningPos])
                             wideningPos = previous + (0, -1);
-                        if (!allowedPoints[wideningPos])
+                        if (!_allowedPoints[wideningPos])
                             return new Area();
                     }
                     else if (direction == Direction.UpRight)
                     {
                         wideningPos = previous + (1, 0);
-                        if (!allowedPoints[wideningPos])
+                        if (!_allowedPoints[wideningPos])
                             wideningPos = previous + (0, -1);
-                        if (!allowedPoints[wideningPos])
+                        if (!_allowedPoints[wideningPos])
                             return new Area();
                     }
                     else if (direction == Direction.DownLeft)
                     {
                         wideningPos = previous + (-1, 0);
-                        if (!allowedPoints[wideningPos])
+                        if (!_allowedPoints[wideningPos])
                             wideningPos = previous + (0, 1);
-                        if (!allowedPoints[wideningPos])
+                        if (!_allowedPoints[wideningPos])
                             return new Area();
                     }
                     else if (direction == Direction.DownRight)
                     {
                         wideningPos = previous + (1, 0);
-                        if (!allowedPoints[wideningPos])
+                        if (!_allowedPoints[wideningPos])
                             wideningPos = previous + (0, 1);
-                        if (!allowedPoints[wideningPos])
+                        if (!_allowedPoints[wideningPos])
                             return new Area();
                     }
 
                     area.Add(wideningPos);
+                    map[wideningPos] = true;
                 }
 
                 previous = pos;
@@ -97,7 +101,7 @@ namespace MarsUndiscovered.Game.Components.Maps
         }
 
         /// <inheritdoc />
-        public Area CreateTunnel(ISettableGridView<bool> allowedPoints, int startX, int startY, int endX, int endY)
-            => CreateTunnel(allowedPoints, new Point(startX, startY), new Point(endX, endY));
+        public Area CreateTunnel(ISettableGridView<bool> _allowedPoints, int startX, int startY, int endX, int endY)
+            => CreateTunnel(_allowedPoints, new Point(startX, startY), new Point(endX, endY));
     }
 }

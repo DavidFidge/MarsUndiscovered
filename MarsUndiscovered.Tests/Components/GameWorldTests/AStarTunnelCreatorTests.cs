@@ -47,9 +47,7 @@ public class AStarTunnelCreatorTests : BaseGameWorldIntegrationTests
     public void Should_Dig_Double_Sized_DownLeft()
     {
         // Arrange
-        var tunnelCreator = new AStarTunnelCreator(Distance.Chebyshev);
-        
-        var map = new[]
+        var maskLines = new[]
         {
             "#######",
             "#####.#",
@@ -60,10 +58,14 @@ public class AStarTunnelCreatorTests : BaseGameWorldIntegrationTests
             "#######",
         };
         
-        var mask = new ArrayView<bool>(map.SelectMany(x => x.Select(y => y == '#')).ToArray(), map[0].Length);
+        var mask = new ArrayView<bool>(maskLines.SelectMany(x => x.Select(y => y == '#')).ToArray(), maskLines[0].Length);
+
+        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Chebyshev);
+
+        var map = new ArrayView<bool>(mask.Width, mask.Width);
         
         // Act
-        var result = tunnelCreator.CreateTunnel(mask, new Point(4, 2), new Point(2, 4));
+        var result = tunnelCreator.CreateTunnel(map, new Point(4, 2), new Point(2, 4));
         
         // Assert
         Assert.AreEqual(5, result.Count);
