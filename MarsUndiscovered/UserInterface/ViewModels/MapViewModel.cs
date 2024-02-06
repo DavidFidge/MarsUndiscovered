@@ -73,8 +73,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _mapEntity = _mapEntityFactory.Create();
 
             _mapEntity.Initialize(
-                Constants.TileQuadWidth,
-                Constants.TileQuadHeight
+                UiConstants.TileQuadWidth,
+                UiConstants.TileQuadHeight
             );
         }
 
@@ -480,8 +480,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             untranslatedMapCoords.Y = -(untranslatedMapCoords.Y - _mapEntity.MapHeight);
 
             var mapPosition = new Point(
-                (int)(untranslatedMapCoords.X / Constants.TileQuadWidth),
-                (int)(untranslatedMapCoords.Y / Constants.TileQuadHeight)
+                (int)(untranslatedMapCoords.X / UiConstants.TileQuadWidth),
+                (int)(untranslatedMapCoords.Y / UiConstants.TileQuadHeight)
             );
 
             return mapPosition;

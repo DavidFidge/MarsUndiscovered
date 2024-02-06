@@ -97,8 +97,8 @@ public class Assets : IAssets
 
         var mapExitDown = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             MapBitmapFont,
             '>',
             Color.Yellow,
@@ -109,8 +109,8 @@ public class Assets : IAssets
 
         var mapExitUp = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             MapBitmapFont,
             '<',
             Color.Yellow,
@@ -128,8 +128,8 @@ public class Assets : IAssets
         {
             var shipPart = new MapTileTexture(
                 _gameProvider.Game.GraphicsDevice,
-                Constants.TileWidth,
-                Constants.TileHeight,
+                UiConstants.TileWidth,
+                UiConstants.TileHeight,
                 MapBitmapFont,
                 ch,
                 Color.SteelBlue,
@@ -148,8 +148,8 @@ public class Assets : IAssets
         {
             var miningFacilitySection = new MapTileTexture(
                 _gameProvider.Game.GraphicsDevice,
-                Constants.TileWidth,
-                Constants.TileHeight,
+                UiConstants.TileWidth,
+                UiConstants.TileHeight,
                 MapBitmapFont,
                 ch,
                 Color.MediumPurple,
@@ -161,8 +161,8 @@ public class Assets : IAssets
         
         var player = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             MapBitmapFont,
             '@',
             Color.Yellow
@@ -177,8 +177,8 @@ public class Assets : IAssets
 
         var playerDead = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             MapBitmapFont,
             '@',
             Color.Gray
@@ -194,8 +194,8 @@ public class Assets : IAssets
         {
             var monster = new MapTileTexture(
                 _gameProvider.Game.GraphicsDevice,
-                Constants.TileWidth,
-                Constants.TileHeight,
+                UiConstants.TileWidth,
+                UiConstants.TileHeight,
                 MapBitmapFont,
                 breed.Value.AsciiCharacter,
                 breed.Value.ForegroundColour,
@@ -212,8 +212,8 @@ public class Assets : IAssets
 
         var fieldOfViewUnrevealedTexture = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             Color.Black
         );
 
@@ -222,8 +222,8 @@ public class Assets : IAssets
 
         var fieldOfViewHasBeenSeenTexture = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             Color.Black.WithTransparency(0.8f)
         );
 
@@ -232,8 +232,8 @@ public class Assets : IAssets
 
         var mouseHover = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             new Color(Color.LightYellow, 0.75f)
         );
 
@@ -241,8 +241,8 @@ public class Assets : IAssets
 
         var lightning = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             new Color(Color.White, 1f)
         );
 
@@ -250,8 +250,8 @@ public class Assets : IAssets
 
         var lineAttackNorthSouth = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             MapBitmapFont,
             '|',
             _lineAttackColour
@@ -261,8 +261,8 @@ public class Assets : IAssets
 
         var lineAttackEastWest = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             MapBitmapFont,
             '-',
             _lineAttackColour
@@ -272,8 +272,8 @@ public class Assets : IAssets
 
         var lineAttackNorthEastSouthWest = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             MapBitmapFont,
             '/',
             _lineAttackColour
@@ -284,8 +284,8 @@ public class Assets : IAssets
 
         var lineAttackNorthWestSouthEast = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             MapBitmapFont,
             '\\',
             _lineAttackColour
@@ -296,8 +296,8 @@ public class Assets : IAssets
 
         GoalMapTileTexture = new GoalMapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             GoalMapFont,
             Color.White
         );
@@ -314,8 +314,8 @@ public class Assets : IAssets
     {
         var wall = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
-            Constants.TileWidth,
-            Constants.TileHeight,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
             MapBitmapFont,
             gameObjectType.AsciiCharacter,
             gameObjectType.ForegroundColour,
@@ -348,8 +348,8 @@ public class Assets : IAssets
             .Select(asset =>
                 new MapTileTexture(
                     _gameProvider.Game.GraphicsDevice,
-                    Constants.TileWidth,
-                    Constants.TileHeight,
+                    UiConstants.TileWidth,
+                    UiConstants.TileHeight,
                     _gameProvider.Game.Content.Load<Texture2D>(asset)
                 )
             )

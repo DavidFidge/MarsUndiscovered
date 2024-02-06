@@ -50,11 +50,11 @@ public class MapTileGraphics
         {
             var spriteSheetAnimationCycle = new SpriteSheetAnimationCycle();
             spriteSheetAnimationCycle.IsLooping = true;
-            spriteSheetAnimationCycle.FrameDuration = Constants.MapTileAnimationTime;
+            spriteSheetAnimationCycle.FrameDuration = UiConstants.MapTileAnimationTime;
 
             for (var frameAtlasIndex = atlasIndex; frameAtlasIndex < atlasIndex + _rawMapTileTextures[key].Count; frameAtlasIndex++)
             {
-                var spriteSheetAnimationFrame = new SpriteSheetAnimationFrame(frameAtlasIndex, Constants.MapTileAnimationTime);
+                var spriteSheetAnimationFrame = new SpriteSheetAnimationFrame(frameAtlasIndex, UiConstants.MapTileAnimationTime);
                 spriteSheetAnimationCycle.Frames.Add(spriteSheetAnimationFrame);
             }
 
@@ -93,7 +93,7 @@ public class MapTileGraphics
 
         _accumulatedUpdateTime += gameTimeService.GameTime.ElapsedGameTime.TotalSeconds;
 
-        if (_accumulatedUpdateTime > Constants.MapTileAnimationTime)
+        if (_accumulatedUpdateTime > UiConstants.MapTileAnimationTime)
         {
             foreach (var animation in _spriteSheetMapTileTextures)
             {
@@ -144,11 +144,11 @@ public class MapTileGraphics
             perfectSquare++;
         }
 
-        var texture = new Texture2D(graphicsDevice, Constants.TileWidth * perfectSquare,
-            Constants.TileHeight * perfectSquare);
+        var texture = new Texture2D(graphicsDevice, UiConstants.TileWidth * perfectSquare,
+            UiConstants.TileHeight * perfectSquare);
 
         var tileIndex = 0;
-        var textureData = new Color[Constants.TileWidth * Constants.TileHeight];
+        var textureData = new Color[UiConstants.TileWidth * UiConstants.TileHeight];
 
         for (var y = 0; y < perfectSquare; y++)
         {
@@ -158,8 +158,8 @@ public class MapTileGraphics
 
                 nextTile.Texture2D.GetData(textureData);
 
-                var rectangle = new Rectangle(x * Constants.TileWidth, y * Constants.TileHeight, Constants.TileWidth,
-                    Constants.TileHeight);
+                var rectangle = new Rectangle(x * UiConstants.TileWidth, y * UiConstants.TileHeight, UiConstants.TileWidth,
+                    UiConstants.TileHeight);
 
                 texture.SetData(0, rectangle, textureData, 0, textureData.Length);
 
@@ -171,7 +171,7 @@ public class MapTileGraphics
                 break;
         }
 
-        var atlas = TextureAtlas.Create("Tiles", texture, Constants.TileWidth, Constants.TileHeight);
+        var atlas = TextureAtlas.Create("Tiles", texture, UiConstants.TileWidth, UiConstants.TileHeight);
 
         return atlas;
     }

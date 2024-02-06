@@ -41,7 +41,7 @@ namespace MarsUndiscovered.UserInterface.Views
             consolePanel.AddChild(consolePrompt);
 
             _consoleEntry = new TextInput()
-                .Size(new Vector2(0f, Constants.TextInputMinimalHeight * consolePanel.Size.Y))
+                .Size(new Vector2(0f, UiConstants.TextInputMinimalHeight * consolePanel.Size.Y))
                 .Anchor(Anchor.AutoInlineNoBreak)
                 .NoPadding()
                 .Skin(PanelSkin.Alternative)

@@ -1,6 +1,7 @@
 ﻿using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
+using GoRogue.MapGeneration.TunnelCreators;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components.Maps;
 using NGenerics.DataStructures.General;
@@ -20,19 +21,22 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
         public PrefabGeneration(string name = null)
             : base(name)
         {
+            // C = potential connection point
+            // # = wall
+            // . = floor
             var prefab1 = new Prefab
             {
                 PrefabText = new[]
                 {
-                    "#########",
-                    "#.......#",
-                    "#.......#",
-                    "#.......#",
-                    "#.......#",
-                    "#.......#",
-                    "#.......#",
-                    "#.......#",
-                    "#########"
+                    "#CCCCCCC#",
+                    "C.......C",
+                    "C.......C",
+                    "C.......C",
+                    "C.......C",
+                    "C.......C",
+                    "C.......C",
+                    "C.......C",
+                    "#CCCCCCC#"
                 }
             };
             
@@ -63,6 +67,8 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             prefabInstances.Add(prefabInstance1);
             prefabInstances.Add(prefabInstance2);
 
+            PrefabInstance lastPrefabInstance = null;
+            
             foreach (var prefabInstance in prefabInstances)
             {
                 var prefab = prefabInstance.Prefab;
@@ -79,6 +85,14 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                         wallFloorContext[location.X + x, location.Y + y] = isFloor;
                     }
                 }
+
+                if (lastPrefabInstance != null)
+                {
+                    var lineCreator = new DirectLineTunnelCreator(AdjacencyRule.Cardinals);
+                    //TODO tunnelling
+                }
+
+                lastPrefabInstance = prefabInstance;
             }
             
             yield return null;

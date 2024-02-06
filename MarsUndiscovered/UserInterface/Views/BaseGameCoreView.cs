@@ -40,8 +40,8 @@ namespace MarsUndiscovered.UserInterface.Views
                 
                 _renderTarget = new RenderTarget2D(
                     Game.GraphicsDevice,
-                    Constants.TileWidth * width,
-                    Constants.TileHeight * height,
+                    UiConstants.TileWidth * width,
+                    UiConstants.TileHeight * height,
                     false,
                     Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
                     Game.GraphicsDevice.PresentationParameters.DepthStencilFormat,

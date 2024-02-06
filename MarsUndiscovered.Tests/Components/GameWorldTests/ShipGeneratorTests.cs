@@ -53,7 +53,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             for (var x = 0; x < map.Width; x++)
             {
-                var currentObject = map.GetObjectAt(x, map.Height - 6 - Constants.ShipOffset);
+                var currentObject = map.GetObjectAt(x, map.Height - 6 - UiConstants.ShipOffset);
                 
                 Assert.IsTrue(currentObject is Wall || currentObject is Floor);
 
@@ -75,7 +75,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             
             for (var x = 0; x < map.Width; x++)
             {
-                var currentObject = map.GetObjectsAt(x, map.Height - Constants.ShipOffset - 1);
+                var currentObject = map.GetObjectsAt(x, map.Height - UiConstants.ShipOffset - 1);
                 foreach (var item in currentObject)
                 {
                     typesFound.Add(item.GetType());

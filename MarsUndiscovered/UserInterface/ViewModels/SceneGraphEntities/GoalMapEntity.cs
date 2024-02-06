@@ -26,8 +26,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             {
                 GoalMapTileTexture.Text = Text;
                 
-                var drawRegion = new Rectangle(Position.X * Constants.TileWidth, Position.Y * Constants.TileHeight,
-                    Constants.TileWidth, Constants.TileHeight);
+                var drawRegion = new Rectangle(Position.X * UiConstants.TileWidth, Position.Y * UiConstants.TileHeight,
+                    UiConstants.TileWidth, UiConstants.TileHeight);
 
                 GoalMapTileTexture.SpriteBatchDraw(spriteBatch, drawRegion);
             }
@@ -36,7 +36,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void Initialize(Point position)
         {
             Position = position;
-            Transform.ChangeTranslation(new Vector3(Position.X * Constants.TileQuadWidth, -Position.Y * Constants.TileQuadHeight, 0));
+            Transform.ChangeTranslation(new Vector3(Position.X * UiConstants.TileQuadWidth, -Position.Y * UiConstants.TileQuadHeight, 0));
             GoalMapTileTexture = Assets.GoalMapTileTexture;
         }
     }

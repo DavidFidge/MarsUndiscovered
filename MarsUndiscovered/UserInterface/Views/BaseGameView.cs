@@ -46,30 +46,30 @@ namespace MarsUndiscovered.UserInterface.Views
             // The rest of the space is for the game view
             LeftPanel = new Panel()
                 .Anchor(Anchor.TopLeft)
-                .Width(Constants.LeftPanelWidth)
+                .Width(UiConstants.LeftPanelWidth)
                 .SkinSimple()
-                .Height(Constants.HeightOfParent)
+                .Height(UiConstants.HeightOfParent)
                 .NoPadding();
             
             RootPanel.AddChild(LeftPanel);
 
             BottomPanel = new Panel()
                 .Anchor(Anchor.BottomRight)
-                .Width(Constants.GameViewPanelWidth)
+                .Width(UiConstants.GameViewPanelWidth)
                 .SkinSimple()
                 .NoPadding()
-                .Offset(new Vector2(Constants.LeftPanelWidth, 0f))
-                .Height(Constants.BottomPanelHeight);
+                .Offset(new Vector2(UiConstants.LeftPanelWidth, 0f))
+                .Height(UiConstants.BottomPanelHeight);
 
             RootPanel.AddChild(BottomPanel);
 
             GameViewPanel = new Panel()
                 .Anchor(Anchor.TopLeft)
-                .Width(Constants.GameViewPanelWidth)
+                .Width(UiConstants.GameViewPanelWidth)
                 .SkinNone()
                 .NoPadding()
-                .Height(Constants.GameViewPanelHeight)
-                .Offset(new Vector2(Constants.LeftPanelWidth));
+                .Height(UiConstants.GameViewPanelHeight)
+                .Offset(new Vector2(UiConstants.LeftPanelWidth));
 
             // This creates two sections in the game view that is used for 'popups' like game inventory
             HoverPanelLeft = new Panel()
@@ -118,7 +118,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _messageLog = new SelectList()
                 .SkinSimple()
                 .Anchor(Anchor.TopLeft)
-                .Height(Constants.MessageLogHeight)
+                .Height(UiConstants.MessageLogHeight)
                 .NoPadding();
 
             _messageLog.ExtraSpaceBetweenLines = -14;

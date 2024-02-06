@@ -13,5 +13,7 @@
         public const int IndestructiblesLayer = 3;
         public const int OutdoorAreaBorder = 2;
         public const int ShipOffset = 2;
+        
+        public const char ConnectorPrefab = 'C';
     }
 }

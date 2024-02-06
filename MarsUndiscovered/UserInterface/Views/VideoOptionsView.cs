@@ -61,7 +61,7 @@ namespace MarsUndiscovered.UserInterface.Views
             renderResolutionDropDown.SelectedIndex = Data.RenderResolutions.IndexOf(Data.SelectedRenderResolution);
             renderResolutionDropDown.AutoSetListHeight = true;
 
-            var isBorderlessWindowedCheckBox = new CheckBox("Borderless Windowed", offset: new Vector2(Constants.UiIndentLevel1, 0f))
+            var isBorderlessWindowedCheckBox = new CheckBox("Borderless Windowed", offset: new Vector2(UiConstants.UiIndentLevel1, 0f))
             {
                 Checked = Data.IsBorderlessWindowed,
                 OnValueChange = entity =>

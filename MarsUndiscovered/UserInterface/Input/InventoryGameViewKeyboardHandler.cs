@@ -20,7 +20,7 @@ namespace MarsUndiscovered.UserInterface.Input
             {
                 var actionName = ActionMap.ActionName<InventoryItemSelectionCycleRequest>(keyInFocus, keyboardModifier);
                 
-                if (actionName == Constants.InventoryItemSelectionCycleRequestNext)
+                if (actionName == UiConstants.InventoryItemSelectionCycleRequestNext)
                     Mediator.Send(new InventoryItemSelectionCycleRequest(InventoryItemSelectionCycleRequestType.Next));
                 else
                     Mediator.Send(new InventoryItemSelectionCycleRequest(InventoryItemSelectionCycleRequestType.Previous));
