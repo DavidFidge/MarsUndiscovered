@@ -5,6 +5,7 @@ using GoRogue.FOV;
 using GoRogue.Pathing;
 using Microsoft.Xna.Framework.Graphics;
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 using Serilog;
 using Serilog.Events;
 
@@ -279,6 +280,29 @@ namespace MarsUndiscovered.Game.Components
             }
 
             return stringBuilder;
+        }
+        
+        public static string[] WriteArrayView(ArrayView<bool> arrayView, char trueChar = '.', char falseChar = '#')
+        {
+            return WriteArrayView(arrayView, b => b ? trueChar : falseChar);
+        }
+        
+        public static string[] WriteArrayView<T>(ArrayView<T> arrayView, Func<T, char> converter)
+        {
+            var stringBuilder = new StringBuilder();
+
+            for (var y = 0; y < arrayView.Height; y++)
+            {
+                for (var x = 0; x < arrayView.Width; x++)
+                {
+                    stringBuilder.Append(converter(arrayView[x, y]));
+                }
+
+                if (y < arrayView.Height - 1)
+                    stringBuilder.AppendLine();
+            }
+
+            return stringBuilder.ToString().Split(Environment.NewLine);
         }
     }
 }
