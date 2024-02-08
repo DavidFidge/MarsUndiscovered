@@ -15,5 +15,8 @@
         public const int ShipOffset = 2;
         
         public const char ConnectorPrefab = 'C';
+        public const char UnusedPrefab = 'X';
+        public const char WallPrefab = '#';
+        public const char FloorPrefab = '.';
     }
 }

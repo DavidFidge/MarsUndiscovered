@@ -60,5 +60,18 @@ namespace MarsUndiscovered.Game.Extensions
         {
             return ToArrayView(list.ToArray(), list.Width, adapter);
         }
+        
+        public static ArrayView<TResult> ToArrayView<T, TResult>(this IGridView<T> list, Func<T, TResult> adapter)
+        {
+            if (list is ArrayView<T> a)
+            {
+                return ToArrayView(a, adapter);
+            }
+            
+            var arrayView = new ArrayView<T>(list.Width, list.Height);
+            arrayView.ApplyOverlay(c => list[c]);
+
+            return ToArrayView(arrayView, adapter);
+        }
     }
 }

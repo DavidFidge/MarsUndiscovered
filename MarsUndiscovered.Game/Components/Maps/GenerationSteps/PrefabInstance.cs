@@ -5,13 +5,32 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps;
 
 public class PrefabInstance
 {
-    public Prefab Prefab { get; set; }
-    public Point Location { get; set; }
+    public string[] PrefabText { get; set; }
+    public Prefab Prefab { get; init; }
+    public Point Location { get; init; }
+    public Area Area { get; init; }
 
+    public PrefabInstance(Prefab prefab, Point location)
+    {
+        PrefabText = prefab.PrefabText.ToArray();
+        Location = location;
+        Area = prefab.Area + Location;
+    }
+    
     public Point GetRandomConnectorPoint(IEnhancedRandom rng)
     {
-        var point = Prefab.GetRandomConnectorPoint(rng);
-        
-        return point + Location;
+        var points = GetPointsOfType(Constants.ConnectorPrefab);
+
+        return rng.RandomElement(points);
+    }
+
+    public List<Point> GetPointsOfType(char connectorPrefab)
+    {
+        return Prefab.GetPointsOfType(PrefabText, connectorPrefab);
+    }
+    
+    public char GetPrefabCharAt(Point point)
+    {
+        return PrefabText[point.Y][point.X];
     }
 }

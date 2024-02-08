@@ -10,18 +10,15 @@ namespace MarsUndiscovered.Game.Components.Maps
         
         static ShipGenerator()
         {
-            ShipPrefab = new Prefab
+            ShipPrefab = new Prefab(new[]
             {
-                PrefabText = new[]
-                {
-                    "XXXXXXXXXXXXXXXXX",
-                    "XXXXXXXXXX.-+--.X",
-                    "XX.------`  |--`X",
-                    "X{ (|       |XXXX",
-                    "XX`------.  |--.X",
-                    "XXXXXXXXXX`-+--`X"
-                }
-            };
+                "XXXXXXXXXXXXXXXXX",
+                "XXXXXXXXXX.-+--.X",
+                "XX.------`  |--`X",
+                "X{ (|       |XXXX",
+                "XX`------.  |--.X",
+                "XXXXXXXXXX`-+--`X"
+            });
         }
         
         /// <summary>

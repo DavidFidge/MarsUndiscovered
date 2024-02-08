@@ -11,29 +11,26 @@ namespace MarsUndiscovered.Game.Components.Maps
 
         static MiningFacilityGenerator()
         {
-            MiningFacilityPrefab = new Prefab
+            MiningFacilityPrefab = new Prefab(new[]
             {
-                PrefabText = new[]
-                {
-                    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-                    "XXXXXXXXXXXXXX___XXXXXXX___XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-                    "XXXXXXXXXXXXXX) (XXXXXXX) (XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-                    "XXXXXXXXXX___X| |XX___XX| |XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-                    "XXXXXXXXXX) (X| |XX) (XX| |XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-                    "XXXXXXXXXX| |X| |XX| |XX| |XXXXXXXX/'-._XXXXXXXX/'-._XXXXXXXXXX",
-                    "XXXXXX.___| |_| |__| |__| |_______/     `'-____/     `'-.___.XX",
-                    "XXXX /    | | | |  | |  | |      /            /            /|XX",
-                    "XXX /     | |      | |          /            /            / |XX",
-                    "XX /      | |      | |         |'-._        |'-._        /  |XX",
-                    "X /       | |      | |         |    `'-._   |    `'-._  /  .|XX",
-                    "X------------------------------+          `-+          `' /:|XX",
-                    "X|        .----------.              #-#          #-#    |/ :/XX",
-                    "X|       #   .  .  .  #             #-#          #-#    || /==X",
-                    "X|       | .  .  .  . |                                 ||/===X",
-                    "X|_______+____________+_________________________________|/XXXXX",
-                    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-                }
-            };
+                "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                "XXXXXXXXXXXXXX___XXXXXXX___XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                "XXXXXXXXXXXXXX) (XXXXXXX) (XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                "XXXXXXXXXX___X| |XX___XX| |XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                "XXXXXXXXXX) (X| |XX) (XX| |XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                "XXXXXXXXXX| |X| |XX| |XX| |XXXXXXXX/'-._XXXXXXXX/'-._XXXXXXXXXX",
+                "XXXXXX.___| |_| |__| |__| |_______/     `'-____/     `'-.___.XX",
+                "XXXX /    | | | |  | |  | |      /            /            /|XX",
+                "XXX /     | |      | |          /            /            / |XX",
+                "XX /      | |      | |         |'-._        |'-._        /  |XX",
+                "X /       | |      | |         |    `'-._   |    `'-._  /  .|XX",
+                "X------------------------------+          `-+          `' /:|XX",
+                "X|        .----------.              #-#          #-#    |/ :/XX",
+                "X|       #   .  .  .  #             #-#          #-#    || /==X",
+                "X|       | .  .  .  . |                                 ||/===X",
+                "X|_______+____________+_________________________________|/XXXXX",
+                "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            });
         }
 
         /// <summary>

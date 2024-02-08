@@ -1,14 +1,10 @@
-﻿using FrigidRogue.MonoGame.Core.Extensions;
-using GoRogue.MapGeneration;
-using GoRogue.MapGeneration.ContextComponents;
-using GoRogue.MapGeneration.TunnelCreators;
+﻿using GoRogue.MapGeneration;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components.Maps;
-using NGenerics.DataStructures.General;
+using MarsUndiscovered.Game.Extensions;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
-using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.Game.Components.GenerationSteps
 {
@@ -24,22 +20,21 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             // C = potential connection point
             // # = wall
             // . = floor
-            var prefab1 = new Prefab
+
+            var prefabText1 = new[]
             {
-                PrefabText = new[]
-                {
-                    "#CCCCCCC#",
-                    "C.......C",
-                    "C.......C",
-                    "C.......C",
-                    "C.......C",
-                    "C.......C",
-                    "C.......C",
-                    "C.......C",
-                    "#CCCCCCC#"
-                }
+                "#CCCCCCC#",
+                "C.......C",
+                "C.......C",
+                "C.......C",
+                "C.......C",
+                "C.......C",
+                "C.......C",
+                "C.......C",
+                "#CCCCCCC#"
             };
-            
+
+            var prefab1 = new Prefab(prefabText1);
             Prefabs.Add(prefab1);
         }
         
@@ -51,51 +46,71 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             );
 
             var prefabInstances = new List<PrefabInstance>();
-            
-            var prefabInstance1 = new PrefabInstance
-            {
-                Prefab = RNG.RandomElement(Prefabs),
-                Location = new Point(0, 0)
-            };
-            
-            var prefabInstance2 = new PrefabInstance
-            {
-                Prefab = RNG.RandomElement(Prefabs),
-                Location = new Point(10, 1)
-            };
 
-            prefabInstances.Add(prefabInstance1);
-            prefabInstances.Add(prefabInstance2);
-
-            PrefabInstance lastPrefabInstance = null;
+            var negatedWallFloorContext = wallFloorContext.ToArrayView(c => !c);
             
-            foreach (var prefabInstance in prefabInstances)
+            var availablePlacementAreas = MapAreaFinder.MapAreasFor(negatedWallFloorContext,AdjacencyRule.EightWay);
+
+            var failedPlacementCount = 0;
+            
+            while (failedPlacementCount < 10)
             {
-                var prefab = prefabInstance.Prefab;
-                var location = prefabInstance.Location;
+                var prefabPlaced = false;
+
+                var randomPrefab = RNG.RandomElement(Prefabs);
                 
-                for (var y = 0; y < prefab.Bounds.Height; y++)
+                var maxPotentialLocation = wallFloorContext.Bounds().Size - randomPrefab.Bounds.Size - 1;
+                var potentialBounds = new Rectangle(0, 0 , maxPotentialLocation.X, maxPotentialLocation.Y);
+                
+                // find random point
+                var failedNewPrefabPlacementCount = 0;
+
+                while (failedPlacementCount < 5)
                 {
-                    for (var x = 0; x < prefab.Bounds.Width; x++)
+                    var randomPoint = RNG.RandomPosition(potentialBounds);
+
+                    var newPrefab = new PrefabInstance(randomPrefab, randomPoint);
+
+                    var canPlace = availablePlacementAreas.FirstOrDefault(a => a.Contains(newPrefab.Area));
+
+                    if (canPlace != null)
                     {
-                        var prefabChar = prefab.PrefabText[y][x];
+                        prefabInstances.Add(newPrefab);
+                        canPlace.Remove(newPrefab.Area);
+                        prefabPlaced = true;
+
+                        foreach (var point in newPrefab.Area.ToList())
+                        {
+                            var isFloor = newPrefab.GetPrefabCharAt(point) == Constants.FloorPrefab;
                         
-                        var isFloor = prefabChar != '#';
-                        
-                        wallFloorContext[location.X + x, location.Y + y] = isFloor;
+                            wallFloorContext[point] = isFloor;
+                        }
+
+                        yield return null;
                     }
+
+                    failedNewPrefabPlacementCount++;
                 }
 
-                if (lastPrefabInstance != null)
-                {
-                    var lineCreator = new DirectLineTunnelCreator(AdjacencyRule.Cardinals);
-                    //TODO tunnelling
-                }
-
-                lastPrefabInstance = prefabInstance;
+                if (!prefabPlaced)
+                    failedPlacementCount++;
             }
-            
-            yield return null;
+
+            foreach (var prefab in prefabInstances)
+            {
+                var sourceConnectorPoint = prefab.GetRandomConnectorPoint(RNG);
+
+                var connectingPrefab = RNG.RandomElement(prefabInstances.Where(p => p != prefab).ToList());
+
+                var destinationConnectorPoint = prefab.GetRandomConnectorPoint(RNG);
+
+                // It is okay if the tunnel goes across existing tunnels, no need to update negatedWallFloorContext for each tunnel.
+                var tunnelCreator = new AStarTunnelCreator(negatedWallFloorContext, Distance.Euclidean);
+
+                tunnelCreator.CreateTunnel(wallFloorContext, sourceConnectorPoint, destinationConnectorPoint);
+
+                yield return null;
+            }
         }
     }
 }
