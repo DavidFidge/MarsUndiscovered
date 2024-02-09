@@ -282,6 +282,12 @@ namespace MarsUndiscovered.Game.Components
             return stringBuilder;
         }
         
+        
+        public static string[] WriteGridView(IGridView<bool> arrayView, char trueChar = '.', char falseChar = '#')
+        {
+            return WriteGridView(arrayView, b => b ? trueChar : falseChar);
+        }
+        
         public static string[] WriteArrayView(ArrayView<bool> arrayView, char trueChar = '.', char falseChar = '#')
         {
             return WriteArrayView(arrayView, b => b ? trueChar : falseChar);
@@ -289,16 +295,21 @@ namespace MarsUndiscovered.Game.Components
         
         public static string[] WriteArrayView<T>(ArrayView<T> arrayView, Func<T, char> converter)
         {
+            return WriteGridView(arrayView, converter);
+        }
+        
+        public static string[] WriteGridView<T>(IGridView<T> gridView, Func<T, char> converter)
+        {
             var stringBuilder = new StringBuilder();
 
-            for (var y = 0; y < arrayView.Height; y++)
+            for (var y = 0; y < gridView.Height; y++)
             {
-                for (var x = 0; x < arrayView.Width; x++)
+                for (var x = 0; x < gridView.Width; x++)
                 {
-                    stringBuilder.Append(converter(arrayView[x, y]));
+                    stringBuilder.Append(converter(gridView[x, y]));
                 }
 
-                if (y < arrayView.Height - 1)
+                if (y < gridView.Height - 1)
                     stringBuilder.AppendLine();
             }
 

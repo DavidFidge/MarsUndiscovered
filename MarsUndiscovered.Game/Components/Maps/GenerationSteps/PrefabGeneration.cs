@@ -88,6 +88,8 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                             wallFloorContext[point] = isFloor;
                         }
 
+                        var temp = GameObjectWriter.WriteGridView(wallFloorContext);
+
                         yield return null;
                         break;
                     }
@@ -99,18 +101,26 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                     failedPlacementCount++;
             }
 
+            var wallFloorContextSnapshot = wallFloorContext.ToArrayView(c => c);
+
             foreach (var prefab in prefabInstances)
             {
                 var sourceConnectorPoint = prefab.GetRandomConnectorPoint(RNG);
 
                 var connectingPrefab = RNG.RandomElement(prefabInstances.Where(p => p != prefab).ToList());
 
-                var destinationConnectorPoint = prefab.GetRandomConnectorPoint(RNG);
+                var destinationConnectorPoint = connectingPrefab.GetRandomConnectorPoint(RNG);
+
+                var tempNegated = GameObjectWriter.WriteGridView(negatedWallFloorContext);
 
                 // It is okay if the tunnel goes across existing tunnels, no need to update negatedWallFloorContext for each tunnel.
-                var tunnelCreator = new AStarTunnelCreator(negatedWallFloorContext, Distance.Euclidean);
+                var tunnelCreator = new AStarTunnelCreator(wallFloorContextSnapshot, Distance.Euclidean);
+
+                var temp1 = GameObjectWriter.WriteGridView(wallFloorContext);
 
                 tunnelCreator.CreateTunnel(wallFloorContext, sourceConnectorPoint, destinationConnectorPoint);
+                
+                var temp2 = GameObjectWriter.WriteGridView(wallFloorContext);
 
                 yield return null;
             }

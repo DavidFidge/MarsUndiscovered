@@ -26,7 +26,7 @@ public class PrefabInstance
 
     public List<Point> GetPointsOfType(char connectorPrefab)
     {
-        return Prefab.GetPointsOfType(PrefabText, connectorPrefab);
+        return Prefab.GetPointsOfType(PrefabText, connectorPrefab, Location);
     }
     
     public char GetPrefabCharAt(Point point)

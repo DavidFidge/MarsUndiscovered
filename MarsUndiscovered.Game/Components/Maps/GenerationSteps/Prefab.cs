@@ -17,14 +17,27 @@ public class Prefab
         _area = new Area();
         _area.Add(points);
     }
-
+    
     public static List<Point> GetPointsOfType(string[] prefabText, char c)
     {
-        return GetPointsOfType(prefabText, x => x == c);
+        return GetPointsOfType(prefabText, x => x == c, Point.Zero);
     }
-
+    
+    public static List<Point> GetPointsOfType(string[] prefabText, char c, Point offset)
+    {
+        return GetPointsOfType(prefabText, x => x == c, offset);
+    }
+    
     public static List<Point> GetPointsOfType(string[] prefabText, Func<char, bool> predicate)
     {
+        return GetPointsOfType(prefabText, predicate, Point.Zero);
+    }
+
+    public static List<Point> GetPointsOfType(string[] prefabText, Func<char, bool> predicate, Point offset)
+    {
+        if (offset == Point.None)
+            offset = Point.Zero;
+        
         var connectorPoints = new List<Point>();
         for (var y = 0; y < prefabText.Length; y++)
         {
@@ -32,7 +45,7 @@ public class Prefab
             {
                 if (predicate(prefabText[y][x]))
                 {
-                    connectorPoints.Add(new Point(x, y));
+                    connectorPoints.Add(new Point(x, y) + offset);
                 }
             }
         }
