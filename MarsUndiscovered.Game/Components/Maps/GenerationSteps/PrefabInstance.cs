@@ -31,6 +31,7 @@ public class PrefabInstance
     
     public char GetPrefabCharAt(Point point)
     {
-        return PrefabText[point.Y][point.X];
+        var originPoint = point - Location;
+        return PrefabText[originPoint.Y][originPoint.X];
     }
 }

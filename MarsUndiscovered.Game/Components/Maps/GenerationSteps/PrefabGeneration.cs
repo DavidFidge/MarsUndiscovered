@@ -49,7 +49,9 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
 
             var negatedWallFloorContext = wallFloorContext.ToArrayView(c => !c);
             
-            var availablePlacementAreas = MapAreaFinder.MapAreasFor(negatedWallFloorContext,AdjacencyRule.EightWay);
+            var availablePlacementAreas = MapAreaFinder
+                .MapAreasFor(negatedWallFloorContext,AdjacencyRule.EightWay)
+                .ToList();
 
             var failedPlacementCount = 0;
             
@@ -65,7 +67,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                 // find random point
                 var failedNewPrefabPlacementCount = 0;
 
-                while (failedPlacementCount < 5)
+                while (failedNewPrefabPlacementCount < 5)
                 {
                     var randomPoint = RNG.RandomPosition(potentialBounds);
 
@@ -87,6 +89,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                         }
 
                         yield return null;
+                        break;
                     }
 
                     failedNewPrefabPlacementCount++;
