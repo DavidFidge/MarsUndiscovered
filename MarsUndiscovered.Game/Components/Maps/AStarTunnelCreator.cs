@@ -9,7 +9,7 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public class AStarTunnelCreator : ITunnelCreator
     {
-        private readonly ISettableGridView<bool> _allowedPoints;
+        private readonly IGridView<bool> _allowedPoints;
         private readonly Distance _distanceMeasurement;
         private readonly bool _doubleWideDiagonal;
 
@@ -32,7 +32,7 @@ namespace MarsUndiscovered.Game.Components.Maps
         ///
         /// This value is not used if using Distance.Manhattan.
         /// </param>
-        public AStarTunnelCreator(ISettableGridView<bool> allowedPoints, Distance distanceMeasurement,
+        public AStarTunnelCreator(IGridView<bool> allowedPoints, Distance distanceMeasurement,
             bool doubleWideDiagonal = false)
         {
             _allowedPoints = allowedPoints;
