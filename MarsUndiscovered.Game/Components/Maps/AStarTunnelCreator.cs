@@ -1,5 +1,4 @@
-﻿using System;
-using GoRogue.MapGeneration.TunnelCreators;
+﻿using GoRogue.MapGeneration.TunnelCreators;
 using GoRogue.Pathing;
 
 using SadRogue.Primitives;
@@ -69,43 +68,43 @@ namespace MarsUndiscovered.Game.Components.Maps
 
                 if (_doubleWideDiagonal && !_distanceMeasurement.Equals(Distance.Manhattan) && previous != Point.None && pos.Y != previous.Y && pos.X != previous.X)
                 {
-                    Point wideningPos = Point.None;
+                    var wideningPos = Point.None;
 
                     var direction = Direction.GetDirection(previous, pos);
                     
                     if (direction == Direction.UpLeft)
                     {
                         wideningPos = previous + (-1, 0);
-                        if (!_allowedPoints[wideningPos])
+                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
                             wideningPos = previous + (0, -1);
-                        if (!_allowedPoints[wideningPos])
+                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
                             // Cannot widen path in neither x nor y direction
                             return new Area();
                     }
                     else if (direction == Direction.UpRight)
                     {
                         wideningPos = previous + (1, 0);
-                        if (!_allowedPoints[wideningPos])
+                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
                             wideningPos = previous + (0, -1);
-                        if (!_allowedPoints[wideningPos])
+                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
                             // Cannot widen path in neither x nor y direction
                             return new Area();
                     }
                     else if (direction == Direction.DownLeft)
                     {
                         wideningPos = previous + (-1, 0);
-                        if (!_allowedPoints[wideningPos])
+                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
                             wideningPos = previous + (0, 1);
-                        if (!_allowedPoints[wideningPos])
+                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
                             // Cannot widen path in neither x nor y direction
                             return new Area();
                     }
                     else if (direction == Direction.DownRight)
                     {
                         wideningPos = previous + (1, 0);
-                        if (!_allowedPoints[wideningPos])
+                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
                             wideningPos = previous + (0, 1);
-                        if (!_allowedPoints[wideningPos])
+                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
                             // Cannot widen path in neither x nor y direction
                             return new Area();
                     }
