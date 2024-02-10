@@ -26,6 +26,8 @@ namespace MarsUndiscovered.Game.Components.Maps
         public static string DoorsTag = "Doors";
         public static string AreasTag = "Areas";
         public static string AreasWallsDoorsTag = "AreasWallsDoors";
+        public static string PrefabTag = "Prefabs"; // ItemList<Prefab>
+
         
         private readonly IWaveFunctionCollapseGeneratorPasses _waveFunctionCollapseGeneratorPasses;
         private readonly IWaveFunctionCollapseGeneratorPassesContentLoader _waveFunctionCollapseGeneratorPassesContentLoader;

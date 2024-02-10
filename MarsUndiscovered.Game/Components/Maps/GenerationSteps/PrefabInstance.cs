@@ -1,8 +1,10 @@
-﻿using SadRogue.Primitives;
+﻿using System.Diagnostics;
+using SadRogue.Primitives;
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components.GenerationSteps;
 
+[DebuggerDisplay("Id: {Id} | Location: {Location}")]
 public class PrefabInstance
 {
     public string[] PrefabText { get; set; }
@@ -15,8 +17,11 @@ public class PrefabInstance
         PrefabText = prefab.PrefabText.ToArray();
         Location = location;
         Area = prefab.Area + Location;
+        Id = Guid.NewGuid();
     }
-    
+
+    public Guid Id { get; set; }
+
     public Point GetRandomConnectorPoint(IEnhancedRandom rng)
     {
         var points = GetPointsOfType(Constants.ConnectorPrefab);
