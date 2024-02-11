@@ -36,6 +36,10 @@ namespace MarsUndiscovered.Game.Installers
                     .ImplementedBy<MapGenerator>()
                     .LifestyleTransient(),
 
+                Component.For<IPrefabProvider>()
+                    .ImplementedBy<PrefabProvider>()
+                    .LifestyleTransient(),
+                
                 Component.For<ILevelGenerator>()
                     .ImplementedBy<LevelGenerator>()
                     .LifestyleTransient(),

@@ -32,16 +32,19 @@ namespace MarsUndiscovered.Game.Components.Maps
         private readonly IWaveFunctionCollapseGeneratorPasses _waveFunctionCollapseGeneratorPasses;
         private readonly IWaveFunctionCollapseGeneratorPassesContentLoader _waveFunctionCollapseGeneratorPassesContentLoader;
         private readonly IWaveFunctionCollapseGeneratorPassesRenderer _waveFunctionCollapseGeneratorPassesRenderer;
+        private readonly IPrefabProvider _prefabProvider;
 
         public MapGenerator(
             IWaveFunctionCollapseGeneratorPasses waveFunctionCollapseGeneratorPasses,
             IWaveFunctionCollapseGeneratorPassesContentLoader waveFunctionCollapseGeneratorPassesContentLoader,
-            IWaveFunctionCollapseGeneratorPassesRenderer waveFunctionCollapseGeneratorPassesRenderer
+            IWaveFunctionCollapseGeneratorPassesRenderer waveFunctionCollapseGeneratorPassesRenderer,
+            IPrefabProvider prefabProvider
             )
         {
             _waveFunctionCollapseGeneratorPasses = waveFunctionCollapseGeneratorPasses;
             _waveFunctionCollapseGeneratorPassesContentLoader = waveFunctionCollapseGeneratorPassesContentLoader;
             _waveFunctionCollapseGeneratorPassesRenderer = waveFunctionCollapseGeneratorPassesRenderer;
+            _prefabProvider = prefabProvider;
         }
 
         public override void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
@@ -127,8 +130,8 @@ namespace MarsUndiscovered.Game.Components.Maps
             Clear();
 
             var generator = new Generator(width, height);
-
-            var prefabGeneration = new PrefabGeneration();
+            var prefabGeneration = new PrefabGeneration(_prefabProvider);
+            
             var prefabConnectorGeneration = new PrefabConnectorGeneration();
             var wallFloorTypeConverterGenerator = new WallFloorTypeConverterGenerator();
 

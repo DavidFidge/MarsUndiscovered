@@ -3,43 +3,23 @@ using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Game.Extensions;
-using NGenerics.DataStructures.General;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-using ShaiRandom.Collections;
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components.GenerationSteps
 {
     public class PrefabGeneration : GenerationStep
     {
-        public List<Prefab> Prefabs { get; set; } = new();
+        private readonly IPrefabProvider _prefabProvider;
+        private List<Prefab> _prefabs => _prefabProvider.Prefabs;
         
         public IEnhancedRandom RNG { get; set; } = GlobalRandom.DefaultRNG;
-
-        public PrefabGeneration(string name = null)
+        
+        public PrefabGeneration(IPrefabProvider prefabProvider, string name = null)
             : base(name)
         {
-            // C = potential connection point
-            // # = wall - can be tunneled into (unused space)
-            // X = wall - cannot be tunneled into
-            // . = floor
-
-            var prefabText1 = new[]
-            {
-                "XCCCCCCCX",
-                "C.......C",
-                "C.......C",
-                "C.......C",
-                "C.......C",
-                "C.......C",
-                "C.......C",
-                "C.......C",
-                "XCCCCCCCX"
-            };
-
-            var prefab1 = new Prefab(prefabText1);
-            Prefabs.Add(prefab1);
+            _prefabProvider = prefabProvider;
         }
         
         protected override IEnumerator<object> OnPerform(GenerationContext generationContext)
@@ -85,7 +65,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             {
                 var prefabPlaced = false;
 
-                var randomPrefab = RNG.RandomElement(Prefabs);
+                var randomPrefab = RNG.RandomElement(_prefabs);
                 
                 var maxPotentialLocation = wallFloorContext.Bounds().Size - randomPrefab.Bounds.Size - 1;
                 var potentialBounds = new Rectangle(0, 0 , maxPotentialLocation.X, maxPotentialLocation.Y);
