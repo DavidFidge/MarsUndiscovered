@@ -8,6 +8,8 @@ namespace MarsUndiscovered.Game.Components
 {
     public class Door : MarsGameObject, IMementoState<DoorSaveData>
     {
+        public override char AsciiCharacter => DoorType.AsciiCharacter;
+
         public DoorType DoorType { get; set; }
         public bool IsOpen { get; set; }
 

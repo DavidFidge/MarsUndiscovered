@@ -89,7 +89,7 @@ namespace MarsUndiscovered.UserInterface.Views
                         : ((TextInput)entity).TextParagraph.Text.Substring(0, 50)));
             };
 
-            _uploadMorgueCheckBox = new CheckBox("Upload Morgue Files to Website", offset: new Vector2(Constants.UiIndentLevel1, 0f))
+            _uploadMorgueCheckBox = new CheckBox("Upload Morgue Files to Website", offset: new Vector2(UiConstants.UiIndentLevel1, 0f))
             {
                 Checked = Data.UploadMorgueFiles,
                 OnValueChange = entity =>
@@ -98,7 +98,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             _uploadMorgueCheckBox.AddTo(contentPanel);
 
-            _useAsciiTiles = new CheckBox("Use Ascii Tiles", offset: new Vector2(Constants.UiIndentLevel1, 0f))
+            _useAsciiTiles = new CheckBox("Use Ascii Tiles", offset: new Vector2(UiConstants.UiIndentLevel1, 0f))
             {
                 Checked = Data.UseAsciiTiles,
                 OnValueChange = entity =>
@@ -112,7 +112,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             _useAsciiTiles.AddTo(contentPanel);
 
-            _useAnimations = new CheckBox("Enable Animations", offset: new Vector2(Constants.UiIndentLevel1, 0f))
+            _useAnimations = new CheckBox("Enable Animations", offset: new Vector2(UiConstants.UiIndentLevel1, 0f))
             {
                 Checked = Data.UseAnimations,
                 OnValueChange = entity =>

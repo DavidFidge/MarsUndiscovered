@@ -8,15 +8,13 @@ namespace MarsUndiscovered.Game.Components
 {
     public class MiningFacility : Indestructible, IMementoState<MiningFacilitySaveData>
     {
-        public char MiningFacilitySection { get; set; }
-
         public MiningFacility(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
         }
 
         public MiningFacility WithMiningFacilitySection(char miningFacilitySection)
         {
-            MiningFacilitySection = miningFacilitySection;
+            _asciiCharacter = miningFacilitySection;
             return this;
         }
 
@@ -25,7 +23,7 @@ namespace MarsUndiscovered.Game.Components
             var memento = new Memento<MiningFacilitySaveData>(new MiningFacilitySaveData());
 
             base.PopulateSaveState(memento.State);
-            memento.State.MiningFacilitySection = MiningFacilitySection;
+            memento.State.MiningFacilitySection = _asciiCharacter;
 
             return memento;
         }
@@ -33,7 +31,7 @@ namespace MarsUndiscovered.Game.Components
         public void SetLoadState(IMemento<MiningFacilitySaveData> memento)
         {
             base.PopulateLoadState(memento.State);
-            MiningFacilitySection = memento.State.MiningFacilitySection;
+            _asciiCharacter = memento.State.MiningFacilitySection;
         }
     }
 }

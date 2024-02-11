@@ -3,11 +3,14 @@ using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
+using GoRogue.MapGeneration.Steps;
+using GoRogue.MapGeneration.TunnelCreators;
 using GoRogue.Random;
 
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Interfaces;
+using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using ShaiRandom.Collections;
 
@@ -15,14 +18,16 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public class MapGenerator : BaseMapGenerator
     {
-        public static string WallFloorTag = "WallFloor";
+        public static string WallFloorTag = "WallFloor"; // ArrayView of bool where true is floor and false is wall
         public static string TunnelsTag = "Tunnels";
-        public static string WallFloorTypeTag = "WallFloorType";
+        public static string WallFloorTypeTag = "WallFloorType"; // Similar to WallFloor but gives the actual type of wall or floor. It is an ArrayView of GameObjectType where the type is WallType or FloorType.
         public static string MiningFacilityAreaTag = "MiningFacilityArea";
         public static string MiningFacilityAreaWithPerimeterTag = "MiningFacilityAreaWithPerimeterTag";
         public static string DoorsTag = "Doors";
         public static string AreasTag = "Areas";
         public static string AreasWallsDoorsTag = "AreasWallsDoors";
+        public static string PrefabTag = "Prefabs"; // ItemList<Prefab>
+
         
         private readonly IWaveFunctionCollapseGeneratorPasses _waveFunctionCollapseGeneratorPasses;
         private readonly IWaveFunctionCollapseGeneratorPassesContentLoader _waveFunctionCollapseGeneratorPassesContentLoader;
@@ -116,6 +121,40 @@ namespace MarsUndiscovered.Game.Components.Maps
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
 
+        public override void CreatePrefabMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height,
+            int? upToStep = null)
+        {
+            Clear();
+
+            var generator = new Generator(width, height);
+
+            var prefabGeneration = new PrefabGeneration();
+            var prefabConnectorGeneration = new PrefabConnectorGeneration();
+            var wallFloorTypeConverterGenerator = new WallFloorTypeConverterGenerator();
+
+            var borderGenerationStepFloors = new BorderGenerationStep("BorderFloors", true);
+            borderGenerationStepFloors.Border = 3;
+            
+            var borderGenerationStepWalls = new BorderGenerationStep("BorderWalls", false);
+            borderGenerationStepWalls.Border = 3;
+            
+            var generationSteps = new GenerationStep[]
+            {
+                // This stops prefabs being placed within 3 squares of the edge of the map, so that when tunnels are created there is more room to connect them
+                // and the tunnels can fit between the edge of the map and the edge of prefabs.
+                borderGenerationStepFloors,
+                prefabGeneration,
+                // Revert the border
+                borderGenerationStepWalls,
+                prefabConnectorGeneration,
+                wallFloorTypeConverterGenerator
+            };
+
+            ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
+        }
+
+        // The generators create structures with tags. This method then extracts those
+        // structures and creates a map, converting the structures to walls, floors and doors.
         private void ExecuteMapSteps(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep,
             Generator generator, IEnumerable<GenerationStep> generationSteps)
         {
@@ -151,7 +190,7 @@ namespace MarsUndiscovered.Game.Components.Maps
                 var wallsFloorsBool = generator.Context
                     .GetFirst<ArrayView<bool>>(WallFloorTag)
                     .ToArray()
-                    .Select(b => b ? (GameObjectType)WallType.RockWall : FloorType.RockFloor)
+                    .Select(b => b ? FloorType.RockFloor : (GameObjectType)WallType.RockWall)
                     .ToArray();
 
                 wallsFloors = new ArrayView<GameObjectType>(wallsFloorsBool, generator.Context.Width);

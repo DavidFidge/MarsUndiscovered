@@ -7,6 +7,8 @@ namespace MarsUndiscovered.Game.Components;
 
 public class Machine : Indestructible, IMementoState<MachineSaveData>
 {
+    public override char AsciiCharacter => MachineType.AsciiCharacter;
+
     public MachineType MachineType { get; set; }
     public bool IsUsed { get; set; }
     

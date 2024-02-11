@@ -64,7 +64,7 @@ namespace MarsUndiscovered.Tests.Components
             {
                 PlayerPosition = new Point(MapGenerator.Map.Width / 2,
                     MapGenerator.Map.Height - 2 -
-                    (Constants.ShipOffset -
+                    (UiConstants.ShipOffset -
                      1)); // Start off underneath the ship, extra -1 for the current ship design as there's a blank space on the bottom line
             }
 

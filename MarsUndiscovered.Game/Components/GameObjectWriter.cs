@@ -5,35 +5,36 @@ using GoRogue.FOV;
 using GoRogue.Pathing;
 using Microsoft.Xna.Framework.Graphics;
 using SadRogue.Primitives;
-
+using SadRogue.Primitives.GridViews;
 using Serilog;
 using Serilog.Events;
+
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace MarsUndiscovered.Game.Components
 {
-    public static class DebugWriter
+    public static class GameObjectWriter
     {
-        public static void DumpFieldOfViewToFile(IFOV fieldOfView)
+        public static void WriteFieldOfViewToFile(IFOV fieldOfView)
         {
-            var stringBuilder = DumpFieldOfView(fieldOfView);
+            var stringBuilder = WriteFieldOfView(fieldOfView);
             
             WriteToTempFile("FieldOfView", stringBuilder);
         }
 
-        public static void DumpFieldOfViewToLog(IFOV fieldOfView, ILogger logger)
+        public static void WriteFieldOfViewToLog(IFOV fieldOfView, ILogger logger)
         {
             if (!logger.IsEnabled(LogEventLevel.Debug))
                 return;
 
             logger.Debug("Current of view:");
 
-            var stringBuilder = DumpFieldOfView(fieldOfView);
+            var stringBuilder = WriteFieldOfView(fieldOfView);
             
             WriteToLog(logger, stringBuilder);
         }
 
-        private static StringBuilder DumpFieldOfView(IFOV fieldOfView)
+        public static StringBuilder WriteFieldOfView(IFOV fieldOfView)
         {
             var stringBuilder = new StringBuilder();
 
@@ -53,9 +54,9 @@ namespace MarsUndiscovered.Game.Components
             return stringBuilder;
         }
 
-        public static void DumpGoalMapToFile(GoalMap goalMap)
+        public static void WriteGoalMapToFile(GoalMap goalMap)
         {
-            var stringBuilder = DumpGoalMap(goalMap);
+            var stringBuilder = WriteGoalMap(goalMap);
 
             WriteToTempFile("GoalMap", stringBuilder);
         }
@@ -68,19 +69,19 @@ namespace MarsUndiscovered.Game.Components
             File.WriteAllText(fileName, stringBuilder.ToString());
         }
 
-        public static void DumpGoalMapToLog(GoalMap goalMap, ILogger logger)
+        public static void WriteGoalMapToLog(GoalMap goalMap, ILogger logger)
         {
             if (!logger.IsEnabled(LogEventLevel.Debug))
                 return;
 
             logger.Debug("Goal Map:");
 
-            var stringBuilder = DumpGoalMap(goalMap);
+            var stringBuilder = WriteGoalMap(goalMap);
 
             WriteToLog(logger, stringBuilder);
         }
 
-        private static void WriteToLog(ILogger logger, StringBuilder stringBuilder)
+        public static void WriteToLog(ILogger logger, StringBuilder stringBuilder)
         {
             foreach (var line in stringBuilder.ToString().Split(Environment.NewLine))
             {
@@ -88,7 +89,7 @@ namespace MarsUndiscovered.Game.Components
             }
         }
 
-        private static StringBuilder DumpGoalMap(GoalMap goalMap)
+        public static StringBuilder WriteGoalMap(GoalMap goalMap)
         {
             var stringBuilder = new StringBuilder();
 
@@ -108,26 +109,26 @@ namespace MarsUndiscovered.Game.Components
             return stringBuilder;
         }
 
-        public static void DumpMapToFile(MarsMap map)
+        public static void WriteMapToFile(MarsMap map)
         {
-            var stringBuilder = DumpMap(map);
+            var stringBuilder = WriteMapUtc(map);
             
             WriteToTempFile("Map", stringBuilder);
         }
 
-        public static void DumpMapToLog(MarsMap map, ILogger logger)
+        public static void WriteMapToLog(MarsMap map, ILogger logger)
         {
             if (!logger.IsEnabled(LogEventLevel.Debug))
                 return;
 
             logger.Debug($"Map Level: {map.Level} | Id: {map.Id}");
 
-            var stringBuilder = DumpMap(map);
+            var stringBuilder = WriteMapUtc(map);
             
             WriteToLog(logger, stringBuilder);
         }
 
-        public static StringBuilder DumpTexture(Texture2D texture, Dictionary<Color, char> colourToChar)
+        public static StringBuilder WriteTexture(Texture2D texture, Dictionary<Color, char> colourToChar)
         {
             var data = new Color[texture.Width * texture.Height];
             texture.GetData(data);
@@ -150,26 +151,26 @@ namespace MarsUndiscovered.Game.Components
             return stringBuilder;
         }
         
-        public static void DumpTextureToFile(Texture2D texture, Dictionary<Color, char> colourToChar)
+        public static void WriteTextureToFile(Texture2D texture, Dictionary<Color, char> colourToChar)
         {
-            var stringBuilder = DumpTexture(texture, colourToChar);
+            var stringBuilder = WriteTexture(texture, colourToChar);
             
             WriteToTempFile("Texture", stringBuilder);
         }
         
-        public static void DumpTextureToLog(Texture2D texture, Dictionary<Color, char> colourToChar, ILogger logger)
+        public static void WriteTextureToLog(Texture2D texture, Dictionary<Color, char> colourToChar, ILogger logger)
         {
             if (!logger.IsEnabled(LogEventLevel.Debug))
                 return;
 
             logger.Debug("Texture:");
 
-            var stringBuilder = DumpTexture(texture, colourToChar);
+            var stringBuilder = WriteTexture(texture, colourToChar);
             
             WriteToLog(logger, stringBuilder);
         }
 
-        private static StringBuilder DumpMap(MarsMap map)
+        public static StringBuilder WriteMapUtc(MarsMap map)
         {
             var stringBuilder = new StringBuilder();
 
@@ -195,6 +196,47 @@ namespace MarsUndiscovered.Game.Components
                                 }
                             }
                         )
+                        .OfType<IMarsGameObject>()
+                        .ToList();
+
+                    var firstObject = gameObjects.First();
+
+                    stringBuilder.Append(firstObject.AsciiCharacter);
+                }
+
+                stringBuilder.AppendLine();
+            }
+
+            return stringBuilder;
+        }
+        
+        public static StringBuilder WriteMapAscii(MarsMap map)
+        {
+            var stringBuilder = new StringBuilder();
+
+            for (var y = 0; y < map.Height; y++)
+            {
+                for (var x = 0; x < map.Width; x++)
+                {
+                    var gameObjects = map
+                        .GetObjectsAt(x, y)
+                        .OrderBy(
+                            o =>
+                            {
+                                switch (o)
+                                {
+                                    case Indestructible _:
+                                        return 0;
+                                    case Actor _:
+                                        return 1;
+                                    case Item _:
+                                        return 2;
+                                    default:
+                                        return 99;
+                                }
+                            }
+                        )
+                        .OfType<IMarsGameObject>()
                         .ToList();
 
                     var firstObject = gameObjects.First();
@@ -203,32 +245,22 @@ namespace MarsUndiscovered.Game.Components
 
                     switch (firstObject)
                     {
-                        case MapExit mapExit:
-                            if (mapExit.Direction == Direction.Down)
-                                c = '>';
-                            else
-                                c = '<';
-                            break;
-                        case Ship ship:
-                            c = ship.ShipPart;
-                            break;
                         case Item item:
                             switch (item.ItemType)
                             {
                                 case NanoFlask _:
-                                    c = '૪';
+                                    c = '6';
                                     break;
                                 case Gadget _:
-                                    c = '⏻';
+                                    c = '2';
                                     break;
                                 case Weapon _:
-                                    c = '↑';
+                                    c = '1';
                                     break;
                                 case ShipRepairParts _:
-                                    c = '&';
+                                    c = '7';
                                     break;
                             }
-
                             break;
                         case Wall _:
                             c = '#';
@@ -236,21 +268,52 @@ namespace MarsUndiscovered.Game.Components
                         case Floor _:
                             c = '.';
                             break;
-                        case Player _:
-                            c = '@';
-                            break;
-                        case Monster monster:
-                            c = monster.Breed.AsciiCharacter;
+                        default:
+                            c = firstObject.AsciiCharacter;
                             break;
                     }
 
                     stringBuilder.Append(c);
                 }
-
+                
                 stringBuilder.AppendLine();
             }
 
             return stringBuilder;
+        }
+        
+        
+        public static string[] WriteGridView(IGridView<bool> arrayView, char trueChar = '.', char falseChar = '#')
+        {
+            return WriteGridView(arrayView, b => b ? trueChar : falseChar);
+        }
+        
+        public static string[] WriteArrayView(ArrayView<bool> arrayView, char trueChar = '.', char falseChar = '#')
+        {
+            return WriteArrayView(arrayView, b => b ? trueChar : falseChar);
+        }
+        
+        public static string[] WriteArrayView<T>(ArrayView<T> arrayView, Func<T, char> converter)
+        {
+            return WriteGridView(arrayView, converter);
+        }
+        
+        public static string[] WriteGridView<T>(IGridView<T> gridView, Func<T, char> converter)
+        {
+            var stringBuilder = new StringBuilder();
+
+            for (var y = 0; y < gridView.Height; y++)
+            {
+                for (var x = 0; x < gridView.Width; x++)
+                {
+                    stringBuilder.Append(converter(gridView[x, y]));
+                }
+
+                if (y < gridView.Height - 1)
+                    stringBuilder.AppendLine();
+            }
+
+            return stringBuilder.ToString().Split(Environment.NewLine);
         }
     }
 }

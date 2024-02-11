@@ -26,7 +26,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             Position = position;
             Transform.ChangeTranslation(
-                new Vector3(Position.X * Constants.TileQuadWidth, -Position.Y * Constants.TileQuadHeight, 0)
+                new Vector3(Position.X * UiConstants.TileQuadWidth, -Position.Y * UiConstants.TileQuadHeight, 0)
             );
         }
 
@@ -100,8 +100,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             if (IsVisible)
             {
-                var drawRegion = new Rectangle(Position.X * Constants.TileWidth, Position.Y * Constants.TileHeight,
-                    Constants.TileWidth, Constants.TileHeight);
+                var drawRegion = new Rectangle(Position.X * UiConstants.TileWidth, Position.Y * UiConstants.TileHeight,
+                    UiConstants.TileWidth, UiConstants.TileHeight);
 
                 MapTileTexture.SpriteBatchDraw(spriteBatch, drawRegion, Opacity);
             }

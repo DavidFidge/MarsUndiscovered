@@ -47,7 +47,7 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             LeftPanel = new Panel()
                 .Anchor(Anchor.TopLeft)
-                .Width(Constants.LeftPanelWidth)
+                .Width(UiConstants.LeftPanelWidth)
                 .SkinNone()
                 .NoPadding()
                 .Height(1f);
@@ -67,7 +67,11 @@ namespace MarsUndiscovered.UserInterface.Views
             new Button("Build New Mining Facility")
                 .SendOnClick(Mediator, new BuildWorldRequest { WorldGenerationTypeParams = new WorldGenerationTypeParams(MapType.MiningFacility)})
                 .AddTo(LeftPanel);
-     
+            
+            new Button("Build New Prefab Map")
+                .SendOnClick(Mediator, new BuildWorldRequest { WorldGenerationTypeParams = new WorldGenerationTypeParams(MapType.Prefab)})
+                .AddTo(LeftPanel);
+            
             new Button("Next Step")
                 .SendOnClick<NextWorldBuilderStepRequest>(Mediator)
                 .AddTo(LeftPanel);

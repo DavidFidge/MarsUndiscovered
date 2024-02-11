@@ -73,8 +73,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _mapEntity = _mapEntityFactory.Create();
 
             _mapEntity.Initialize(
-                Constants.TileQuadWidth,
-                Constants.TileQuadHeight
+                UiConstants.TileQuadWidth,
+                UiConstants.TileQuadHeight
             );
         }
 
@@ -318,11 +318,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     _indestructibleTiles[point].SetMapExit(((MapExit)indestructibleTile).Direction);
 
                 else if (indestructibleTile is Ship)
-                    _indestructibleTiles[point].SetShip(((Ship)indestructibleTile).ShipPart);
+                    _indestructibleTiles[point].SetShip(((Ship)indestructibleTile).AsciiCharacter);
                 
                 else if (indestructibleTile is MiningFacility)
                     _indestructibleTiles[point]
-                        .SetMiningFacility(((MiningFacility)indestructibleTile).MiningFacilitySection);
+                        .SetMiningFacility(((MiningFacility)indestructibleTile).AsciiCharacter);
                 else
                     throw new Exception($"Indestructible tile type {0} is not being drawn");
 
@@ -480,8 +480,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             untranslatedMapCoords.Y = -(untranslatedMapCoords.Y - _mapEntity.MapHeight);
 
             var mapPosition = new Point(
-                (int)(untranslatedMapCoords.X / Constants.TileQuadWidth),
-                (int)(untranslatedMapCoords.Y / Constants.TileQuadHeight)
+                (int)(untranslatedMapCoords.X / UiConstants.TileQuadWidth),
+                (int)(untranslatedMapCoords.Y / UiConstants.TileQuadHeight)
             );
 
             return mapPosition;

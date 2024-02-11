@@ -29,6 +29,12 @@ namespace MarsUndiscovered.Tests.Components
             GenerateHalfWallsToBlankMap(gameWorld, width, height, upToStep);
         }
 
+        public override void CreatePrefabMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height,
+            int? upToStep = null)
+        {
+            GenerateHalfWallsToBlankMap(gameWorld, width, height, upToStep);
+        }
+
         private void GenerateHalfWallsToBlankMap(IGameWorld gameWorld, int width, int height, int? upToStep)
         {
             if (upToStep != null && upToStep == 1)

@@ -29,6 +29,12 @@ namespace MarsUndiscovered.Tests.Components
             GenerateBlankMap(gameWorld, width, height);
         }
 
+        public override void CreatePrefabMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height,
+            int? upToStep = null)
+        {
+            GenerateBlankMap(gameWorld, width, height);
+        }
+
         private void GenerateBlankMap(IGameWorld gameWorld, int width, int height)
         {
             var arrayView = new ArrayView<IGameObject>(width, height);

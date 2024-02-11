@@ -8,6 +8,8 @@ namespace MarsUndiscovered.Game.Components
 {
     public class Wall : Terrain, IMementoState<WallSaveData>
     {
+        public override char AsciiCharacter => _wallType.AsciiCharacter;
+        
         private WallType _wallType;
         public WallType WallType
         {

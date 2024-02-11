@@ -6,5 +6,6 @@ namespace MarsUndiscovered.Game.Components
 {
     public interface IMarsGameObject : IGameObject, IBaseComponent
     {
+        public char AsciiCharacter { get; }
     }
 }

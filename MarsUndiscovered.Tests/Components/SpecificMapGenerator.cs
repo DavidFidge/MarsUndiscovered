@@ -34,6 +34,12 @@ namespace MarsUndiscovered.Tests.Components
             GenerateSpecificMap(gameWorld, width, height);
         }
 
+        public override void CreatePrefabMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height,
+            int? upToStep = null)
+        {
+            GenerateSpecificMap(gameWorld, width, height);
+        }
+
         private void GenerateSpecificMap(IGameWorld gameWorld, int width, int height)
         {
             var arrayView = new ArrayView<IGameObject>(width, height);

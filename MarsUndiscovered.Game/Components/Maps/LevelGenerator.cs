@@ -217,6 +217,41 @@ public class LevelGenerator : ILevelGenerator
         _gameWorld.AddMapToGame(MapGenerator.Map);
         var map = MapGenerator.Map;
         map.Level = 3;
+        
+        CreateMapExitToPreviousMap(map, previousMap);
+        CreateMapExitToNextMap(map);
+        
+        var probabilityTable = new ProbabilityTable<MonsterSpawner>(
+            new List<(MonsterSpawner monsterSpawner, double weight)>
+            {
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Rat")), 1),
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Roach")), 1),
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Blood Fly")), 1),
+                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Repair Droid"), RNG, 2, 4), 1),
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Cleaning Droid")), 1)
+            }
+        );
+            
+        probabilityTable.Random = RNG;
+
+        for (var i = 0; i < 5; i++)
+            probabilityTable.NextItem().Spawn(map);
+        
+        var itemsToPlace = RNG.NextInt(5, 10);
+        SpawnItems(itemsToPlace, map);
+        
+        var machinesToPlace = RNG.NextInt(1, 2);
+        SpawnMachines(machinesToPlace, map);
+
+        return map;
+    }
+    
+    private MarsMap CreateLevel4(MarsMap previousMap)
+    {
+        MapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60);
+        _gameWorld.AddMapToGame(MapGenerator.Map);
+        var map = MapGenerator.Map;
+        map.Level = 4;
 
         SpawnItem(new SpawnItemParams().OnMap(map.Id).WithItemType(ItemType.ShipRepairParts));
         SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Yendorian Master")).OnMap(map.Id));
@@ -239,7 +274,9 @@ public class LevelGenerator : ILevelGenerator
         
         var level1Map = CreateLevel1();
         var level2Map = CreateLevel2(level1Map);
-        CreateLevel3(level2Map);
+        var level3Map = CreateLevel3(level2Map);
+        
+        CreateLevel4(level3Map);
     }
 
     private void SetupItemWeightTable()
@@ -305,6 +342,9 @@ public class LevelGenerator : ILevelGenerator
                 break;
             case MapType.MiningFacility:
                 MapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60, step);
+                break;
+            case MapType.Prefab:
+                MapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60, step);
                 break;
         }
 

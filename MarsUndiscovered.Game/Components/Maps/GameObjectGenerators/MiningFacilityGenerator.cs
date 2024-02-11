@@ -1,19 +1,17 @@
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components.Factories;
+using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Extensions;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {
     public class MiningFacilityGenerator : BaseGameObjectGenerator, IMiningFacilityGenerator
     {
-        /// <summary>
-        /// Creates the mining facility that the player must enter on the first level
-        /// </summary>
-        /// <param name="gameObjectFactory"></param>
-        /// <param name="miningFacilityCollection"></param>
-        public void CreateMiningFacility(IGameObjectFactory gameObjectFactory, MarsMap map, MiningFacilityCollection miningFacilityCollection)
+        public static Prefab MiningFacilityPrefab { get; private set; }
+
+        static MiningFacilityGenerator()
         {
-            var lines = new[]
+            MiningFacilityPrefab = new Prefab(new[]
             {
                 "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 "XXXXXXXXXXXXXX___XXXXXXX___XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -32,7 +30,17 @@ namespace MarsUndiscovered.Game.Components.Maps
                 "X|       | .  .  .  . |                                 ||/===X",
                 "X|_______+____________+_________________________________|/XXXXX",
                 "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-            };
+            });
+        }
+
+        /// <summary>
+        /// Creates the mining facility that the player must enter on the first level
+        /// </summary>
+        /// <param name="gameObjectFactory"></param>
+        /// <param name="miningFacilityCollection"></param>
+        public void CreateMiningFacility(IGameObjectFactory gameObjectFactory, MarsMap map, MiningFacilityCollection miningFacilityCollection)
+        {
+            var lines = MiningFacilityPrefab.PrefabText;
             
             var miningFacilityStartX = GlobalRandom.DefaultRNG.NextInt(0, map.Width - lines[0].Length - 1);
             var miningFacilityStartY = 0;

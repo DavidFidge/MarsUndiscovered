@@ -4,7 +4,8 @@
     {
         Mine,
         Outdoor,
-        MiningFacility
+        MiningFacility,
+        Prefab
     }
     
     public class WorldGenerationTypeParams
