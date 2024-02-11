@@ -179,7 +179,7 @@ namespace MarsUndiscovered.Game.Components.Maps
                 var wallsFloorsBool = generator.Context
                     .GetFirst<ArrayView<bool>>(WallFloorTag)
                     .ToArray()
-                    .Select(b => b ? (GameObjectType)WallType.RockWall : FloorType.RockFloor)
+                    .Select(b => b ? FloorType.RockFloor : (GameObjectType)WallType.RockWall)
                     .ToArray();
 
                 wallsFloors = new ArrayView<GameObjectType>(wallsFloorsBool, generator.Context.Width);
