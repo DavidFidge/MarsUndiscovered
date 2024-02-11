@@ -306,6 +306,9 @@ public class LevelGenerator : ILevelGenerator
             case MapType.MiningFacility:
                 MapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60, step);
                 break;
+            case MapType.Prefab:
+                MapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60, step);
+                break;
         }
 
         _gameWorld.AddMapToGame(MapGenerator.Map);

@@ -129,11 +129,13 @@ namespace MarsUndiscovered.Game.Components.Maps
             var generator = new Generator(width, height);
 
             var prefabGeneration = new PrefabGeneration();
+            var prefabConnectorGeneration = new PrefabConnectorGeneration();
             var wallFloorTypeConverterGenerator = new WallFloorTypeConverterGenerator();
             
             var generationSteps = new GenerationStep[]
             {
                 prefabGeneration,
+                prefabConnectorGeneration,
                 wallFloorTypeConverterGenerator
             };
 

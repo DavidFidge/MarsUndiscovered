@@ -57,95 +57,12 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
 
             yield return null;
             
-            // TODO the tunnel connecting can go in a separate generator 
-            var prefabDistanceGraph = GetPrefabDistanceGraph(prefabInstances);
-
-            var prefabTunnelGraph = new Graph<PrefabInstance>(false);
-
-            foreach (var prefab in prefabInstances)
-            {
-                var prefabDistanceGraphVertex = prefabDistanceGraph.GetVertex(prefab);
-                var prefabTunnelGraphVertex = prefabTunnelGraph.GetVertex(prefab);
-
-                var toVertexesToExclude = prefabTunnelGraphVertex?.NeighboringVertices()
-                    .Select(e => e.Data)
-                    .ToList() ?? new List<PrefabInstance>();
-
-                // prefabs further out will have a weight of 1, the closest prefab will have a weight of prefabInstances.Count
-                var prefabDistanceWeights = prefabDistanceGraphVertex.NeighboringVertices()
-                    .Where(e => !toVertexesToExclude.Contains(e.Data))
-                    .OrderByDescending(e => e.Weight)
-                    .Select((e, index) => (e.Data, (double)index * 2 + 1))
-                    .ToList();
-                
-                var sourceConnectorPoint = prefab.GetRandomConnectorPoint(RNG);
-                
-                var prefabConnectionTries = 0;
-                
-                var probabilityTable = new ProbabilityTable<PrefabInstance>(prefabDistanceWeights)
-                {
-                    Random = RNG
-                };
-                
-                while (probabilityTable.Count > 0 && prefabConnectionTries < 10)
-                {
-                    var connectingPrefab = probabilityTable.NextItem();
-
-                    var destinationConnectorPoint = connectingPrefab.GetRandomConnectorPoint(RNG);
-
-                    // Create tunnel. At the moment we aren't updating freeSpaceForCreatingPrefabs, at this stage it is okay for tunnels to cross each other.
-                    var tunnelCreator = new AStarTunnelCreator(freeSpaceForCreatingPrefabs, Distance.Euclidean, true);
-
-                    var temp1 = GameObjectWriter.WriteGridView(wallFloorContext);
-
-                    var result = tunnelCreator.CreateTunnel(wallFloorContext, sourceConnectorPoint,
-                        destinationConnectorPoint);
-
-                    if (result.Any())
-                    {
-                        var edge = prefabTunnelGraph.AddEdge(prefabTunnelGraph.GetOrAddVertex(prefab), prefabTunnelGraph.GetOrAddVertex(connectingPrefab));
-                        edge.Tag = result;
-                        edge.Weight = result.Count;
-                        break;
-                    }
-
-                    prefabConnectionTries++;
-                }
-
-                var temp2 = GameObjectWriter.WriteGridView(wallFloorContext);
-
-                yield return null;
-            }
-            
-            var temp3 = GameObjectWriter.WriteGridView(wallFloorContext);
-            
-            var unconnectedPrefabs = prefabTunnelGraph.Vertices
-                .Where(v => v.Degree == 0)
-                .Select(v => v.Data)
-                .ToList();
-            
-            // Convert prefab back to wall
-            foreach (var prefab in unconnectedPrefabs)
-            {
-                foreach (var point in prefab.Area.ToList())
-                {
-                    wallFloorContext[point] = false;
-                }
-            }
-            
-            var temp4 = GameObjectWriter.WriteGridView(wallFloorContext);
-            
-            var connectedPrefabs = prefabTunnelGraph.Vertices
-                .Where(v => v.Degree > 0)
-                .Select(v => v.Data)
-                .ToList();
-            
             var prefabContext = generationContext.GetFirstOrNew<ItemList<PrefabInstance>>(
                 () => new ItemList<PrefabInstance>(),
                 MapGenerator.PrefabTag
             );
             
-            foreach (var item in connectedPrefabs)
+            foreach (var item in prefabInstances)
             {
                 prefabContext.Add(item, nameof(PrefabGeneration));
             }
@@ -210,31 +127,6 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                 if (!prefabPlaced)
                     failedPlacementCount++;
             }
-        }
-
-        private static Graph<PrefabInstance> GetPrefabDistanceGraph(List<PrefabInstance> prefabInstances)
-        {
-            var prefabDistanceGraph = new Graph<PrefabInstance>(false);
-
-            if (prefabInstances.Count == 0)
-                return new Graph<PrefabInstance>(false);
-            
-            else if (prefabInstances.Count == 1)
-            {
-                prefabDistanceGraph.AddVertex(prefabInstances[0]);
-                return prefabDistanceGraph;
-            }
-            
-            for (var inner = 0; inner < prefabInstances.Count - 1; inner++)
-            {
-                for (var outer = inner + 1; outer < prefabInstances.Count; outer++)
-                {
-                    var edge = prefabDistanceGraph.AddEdge(prefabDistanceGraph.GetOrAddVertex(prefabInstances[inner]), prefabDistanceGraph.GetOrAddVertex(prefabInstances[outer]));
-                    edge.Weight = Distance.Chebyshev.Calculate(prefabInstances[inner].Location, prefabInstances[outer].Location);
-                }
-            }
-
-            return prefabDistanceGraph;
         }
     }
 }
