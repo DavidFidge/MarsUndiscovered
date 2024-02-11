@@ -28,6 +28,8 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             );
             
             // Floors are True in wallFloorContext.  We need to build an area for the walls as the walls are the free areas that the prefabs can be placed in. So this can be done by negating so that walls are True.
+            // TODO this should not cut across 'C' prefab squares (C is a wall but a connector only and
+            // only start and end should become a tunnel)
             var freeSpaceForConnectingPrefabs = wallFloorContext.ToArrayView(c => !c);
             
             var prefabContext = generationContext.GetFirstOrNew<ItemList<PrefabInstance>>(
