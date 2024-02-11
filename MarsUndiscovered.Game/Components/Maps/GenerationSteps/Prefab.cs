@@ -13,7 +13,7 @@ public class Prefab
     public Prefab(string[] prefabText)
     {
         PrefabText = prefabText;
-        var points = GetPointsOfType(PrefabText, c => c != Constants.UnusedPrefab);
+        var points = GetPointsOfType(PrefabText, c => c != Constants.WallPrefab);
         _area = new Area();
         _area.Add(points);
     }

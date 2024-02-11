@@ -131,10 +131,21 @@ namespace MarsUndiscovered.Game.Components.Maps
             var prefabGeneration = new PrefabGeneration();
             var prefabConnectorGeneration = new PrefabConnectorGeneration();
             var wallFloorTypeConverterGenerator = new WallFloorTypeConverterGenerator();
+
+            var borderGenerationStepFloors = new BorderGenerationStep("BorderFloors", true);
+            borderGenerationStepFloors.Border = 3;
+            
+            var borderGenerationStepWalls = new BorderGenerationStep("BorderWalls", false);
+            borderGenerationStepWalls.Border = 3;
             
             var generationSteps = new GenerationStep[]
             {
+                // This stops prefabs being placed within 3 squares of the edge of the map, so that when tunnels are created there is more room to connect them
+                // and the tunnels can fit between the edge of the map and the edge of prefabs.
+                borderGenerationStepFloors,
                 prefabGeneration,
+                // Revert the border
+                borderGenerationStepWalls,
                 prefabConnectorGeneration,
                 wallFloorTypeConverterGenerator
             };

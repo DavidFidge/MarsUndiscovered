@@ -21,12 +21,13 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             : base(name)
         {
             // C = potential connection point
-            // # = wall
+            // # = wall - can be tunneled into (unused space)
+            // X = wall - cannot be tunneled into
             // . = floor
 
             var prefabText1 = new[]
             {
-                "#CCCCCCC#",
+                "XCCCCCCCX",
                 "C.......C",
                 "C.......C",
                 "C.......C",
@@ -34,7 +35,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                 "C.......C",
                 "C.......C",
                 "C.......C",
-                "#CCCCCCC#"
+                "XCCCCCCCX"
             };
 
             var prefab1 = new Prefab(prefabText1);
@@ -113,7 +114,9 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                             // if a floor, change the wall/floor context
                             wallFloorContext[point] = isFloor;
                             
-                            var isUnused = newPrefab.GetPrefabCharAt(point) == Constants.UnusedPrefab;
+                            // Any walls (#) in prefabs can be used by other prefabs.
+                            // (If X then it is a wall that is reserved)
+                            var isUnused = newPrefab.GetPrefabCharAt(point) == Constants.WallPrefab;
 
                             freeSpaceForCreatingPrefabs[point] = isUnused;
                         }
