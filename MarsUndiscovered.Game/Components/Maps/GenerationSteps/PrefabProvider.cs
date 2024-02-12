@@ -7,38 +7,48 @@ public class PrefabProvider : IPrefabProvider
 
     public PrefabProvider()
     {
+        // _prefabs.Add(new Prefab(new[]
+        // {
+        //     "XCCCCCCCX",
+        //     "C.......C",
+        //     "C.......C",
+        //     "C.......C",
+        //     "C.......C",
+        //     "C.......C",
+        //     "C.......C",
+        //     "C.......C",
+        //     "XCCCCCCCX"
+        // }));
+        //
+        // _prefabs.Add(new Prefab(new[]
+        // {
+        //     "XCCX",
+        //     "C..C",
+        //     "C..C",
+        //     "C..C",
+        //     "C..C",
+        //     "C..C",
+        //     "C..C",
+        //     "C..C",
+        //     "XCCX"
+        // }));
+        //
+        // _prefabs.Add(new Prefab(new[]
+        // {
+        //     "XCCX",
+        //     "C..C",
+        //     "C..C",
+        //     "XCCX"
+        // }));
+        //
         _prefabs.Add(new Prefab(new[]
         {
-            "XCCCCCCCX",
-            "C.......C",
-            "C.......C",
-            "C.......C",
-            "C.......C",
-            "C.......C",
-            "C.......C",
-            "C.......C",
-            "XCCCCCCCX"
-        }));
-        
-        _prefabs.Add(new Prefab(new[]
-        {
-            "XCCX",
-            "C..C",
-            "C..C",
-            "C..C",
-            "C..C",
-            "C..C",
-            "C..C",
-            "C..C",
-            "XCCX"
-        }));
-        
-        _prefabs.Add(new Prefab(new[]
-        {
-            "XCCX",
-            "C..C",
-            "C..C",
-            "XCCX"
+            "XCCCCCCX",
+            "C......C",
+            "X##....C",
+            "C......C",
+            "C......C",
+            "XCCCCCCX"
         }));
     }
 }

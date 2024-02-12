@@ -66,19 +66,21 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                 var prefabPlaced = false;
 
                 var randomPrefab = RNG.RandomElement(_prefabs);
-                
-                var maxPotentialLocation = wallFloorContext.Bounds().Size - randomPrefab.Bounds.Size - 1;
+
+                var maxSize = Math.Max(randomPrefab.Bounds.Width, randomPrefab.Bounds.Height);
+                var maxPotentialLocation = wallFloorContext.Bounds().Size - maxSize - 1;
                 var potentialBounds = new Rectangle(0, 0 , maxPotentialLocation.X, maxPotentialLocation.Y);
                 
                 // find random point
                 var failedNewPrefabPlacementCount = 0;
-
+                
                 while (failedNewPrefabPlacementCount < 5)
                 {
                     var randomPoint = RNG.RandomPosition(potentialBounds);
-
-                    var newPrefab = new PrefabInstance(randomPrefab, randomPoint);
-
+                    var randomDirection = RNG.RandomElement(AdjacencyRule.Cardinals.DirectionsOfNeighborsCache);
+                    
+                    var newPrefab = new PrefabInstance(randomPrefab, randomPoint, randomDirection);
+                    
                     var canPlace = availablePlacementAreas.FirstOrDefault(a => a.Contains(newPrefab.Area));
 
                     if (canPlace != null)

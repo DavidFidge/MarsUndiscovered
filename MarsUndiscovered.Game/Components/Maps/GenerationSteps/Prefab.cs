@@ -5,19 +5,14 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps;
 
 public class Prefab
 {
-    private readonly Area _area;
-    public Area Area => _area;
     public string[] PrefabText { get; init; }
     public Rectangle Bounds => new Rectangle(0, 0, PrefabText[0].Length, PrefabText.Length);
 
     public Prefab(string[] prefabText)
     {
         PrefabText = prefabText;
-        var points = GetPointsOfType(PrefabText, c => c != Constants.WallPrefab);
-        _area = new Area();
-        _area.Add(points);
     }
-    
+
     public static List<Point> GetPointsOfType(string[] prefabText, char c)
     {
         return GetPointsOfType(prefabText, x => x == c, Point.Zero);

@@ -2,6 +2,7 @@
 using FrigidRogue.WaveFunctionCollapse;
 using FrigidRogue.WaveFunctionCollapse.Options;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
+using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Components.Maps;
 using Microsoft.Xna.Framework.Graphics;
 using NSubstitute;
@@ -21,7 +22,8 @@ public class MapGeneratorTests : BaseGameWorldIntegrationTests
         base.Setup();
 
         _waveFunctionCollapseGeneratorPasses = Substitute.For<IWaveFunctionCollapseGeneratorPasses>();
-        _mapGenerator = new MapGenerator(_waveFunctionCollapseGeneratorPasses, null, null);
+        _mapGenerator = new MapGenerator(_waveFunctionCollapseGeneratorPasses, null, null,
+            new PrefabProvider());
     }
 
     [TestMethod]
