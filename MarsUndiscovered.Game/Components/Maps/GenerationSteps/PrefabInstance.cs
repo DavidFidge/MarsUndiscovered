@@ -57,7 +57,6 @@ public class PrefabInstance
         var points = GetPointsOfType(PrefabText, c => c != Constants.WallPrefab);
         
         Area = new Area { points };
-        Area += Location;
 
         Id = Guid.NewGuid();
     }
