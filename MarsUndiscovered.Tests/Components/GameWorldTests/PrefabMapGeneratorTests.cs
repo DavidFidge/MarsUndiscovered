@@ -32,6 +32,6 @@ public class PrefabMapGeneratorTests : BaseGameWorldIntegrationTests
         var map = _mapGenerator.Map;
         Assert.IsNotNull(map);
 
-        var mapText = GameObjectWriter.WriteMapAscii(map);
+        var mapText = GameObjectWriter.WriteMapAsciiArray(map);
     }
 }

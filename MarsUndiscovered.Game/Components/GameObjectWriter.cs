@@ -276,12 +276,18 @@ namespace MarsUndiscovered.Game.Components
                     stringBuilder.Append(c);
                 }
                 
-                stringBuilder.AppendLine();
+                
+                if (y < map.Height - 1)
+                    stringBuilder.AppendLine();
             }
 
             return stringBuilder;
         }
         
+        public static string[] WriteMapAsciiArray(MarsMap map)
+        {
+            return WriteMapAscii(map).ToString().Split(Environment.NewLine);
+        }
         
         public static string[] WriteGridView(IGridView<bool> arrayView, char trueChar = '.', char falseChar = '#')
         {

@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using FrigidRogue.MonoGame.Core.Extensions;
+using Microsoft.VisualBasic;
 using SadRogue.Primitives;
 using ShaiRandom.Generators;
 
@@ -12,44 +14,84 @@ public class PrefabInstance
     public Point Location { get; init; }
     public Area Area { get; init; }
     
-    public PrefabInstance(Prefab prefab, Point location, Direction rotation)
+    public PrefabInstance(Prefab prefab, Point location, Direction rotation, bool mirrored = false)
     {
+        Prefab = prefab;
+        
         if (rotation == Direction.Down)
         {
+            // this rotates and mirrors
             PrefabText = prefab.PrefabText.Reverse().ToArray();
+
+            if (!mirrored)
+            {
+                PrefabText = PrefabText
+                    .Select(t => t.ReverseString())
+                    .ToArray();
+            }
         }
         else if (rotation == Direction.Right)
         {
+            PrefabText = prefab.PrefabText;
+            
+            if (mirrored)
+            {
+                PrefabText = PrefabText
+                    .Select(t => t.ReverseString())
+                    .ToArray();
+            }
+            
             // rotate the string array right
-            var rotated = new string[prefab.PrefabText[0].Length];
+            var rotated = new string[PrefabText[0].Length];
             
             for (var i = 0; i < rotated.Length; i++)
             {
-                for (var j = 0; j < prefab.PrefabText.Length; j++)
+                for (var j = 0; j < PrefabText.Length; j++)
                 {
-                    rotated[i] += prefab.PrefabText[prefab.PrefabText.Length - j - 1][i];
+                    rotated[i] += PrefabText[PrefabText.Length - j - 1][i];
                 }
             }
+            
             PrefabText = rotated;
         }
         else if (rotation == Direction.Left)
         {
-            // rotate the string array right
-            var rotated = new string[prefab.PrefabText[0].Length];
+            // Rotate Left
+            PrefabText = prefab.PrefabText;
+            
+            if (mirrored)
+            {
+                PrefabText = PrefabText
+                    .Select(t => t.ReverseString())
+                    .ToArray();
+            }
+            
+            var rotated = new string[PrefabText[0].Length];
             
             for (var i = 0; i < rotated.Length; i++)
             {
-                for (var j = 0; j < prefab.PrefabText.Length; j++)
+                for (var j = PrefabText.Length - 1; j >= 0; j--)
                 {
-                    rotated[i] += prefab.PrefabText[prefab.PrefabText.Length - j - 1][i];
+                    rotated[i] += PrefabText[j][PrefabText[0].Length - i - 1];
                 }
             }
 
-            PrefabText = rotated.Reverse().ToArray();
+            PrefabText = rotated;
         }
         else
         {
-            PrefabText = prefab.PrefabText.ToArray();
+            PrefabText = prefab.PrefabText;
+            
+            if (mirrored)
+            {
+                PrefabText = PrefabText
+                    .Select(t => t.ReverseString())
+                    .ToArray();
+            }
+            else
+            {
+                PrefabText = PrefabText.ToArray();
+            }
         }
             
         Location = location;
