@@ -17,81 +17,55 @@ public class PrefabInstance
     public PrefabInstance(Prefab prefab, Point location, Direction rotation, bool mirrored = false)
     {
         Prefab = prefab;
+
+        PrefabText = prefab.PrefabText.ToArray();
+        
+        if (mirrored)
+        {
+            PrefabText = PrefabText
+                .Select(t => t.ReverseString())
+                .ToArray();
+        }
         
         if (rotation == Direction.Down)
         {
-            // this rotates and mirrors
-            PrefabText = prefab.PrefabText.Reverse().ToArray();
-
             if (!mirrored)
             {
                 PrefabText = PrefabText
                     .Select(t => t.ReverseString())
                     .ToArray();
             }
+            
+            PrefabText = PrefabText.Reverse().ToArray();
         }
-        else if (rotation == Direction.Right)
+        else if (rotation == Direction.Left)
         {
-            PrefabText = prefab.PrefabText;
-            
-            if (mirrored)
-            {
-                PrefabText = PrefabText
-                    .Select(t => t.ReverseString())
-                    .ToArray();
-            }
-            
-            // rotate the string array right
             var rotated = new string[PrefabText[0].Length];
             
-            for (var i = 0; i < rotated.Length; i++)
+            for (var i = rotated.Length - 1; i >= 0; i--)
             {
                 for (var j = 0; j < PrefabText.Length; j++)
                 {
-                    rotated[i] += PrefabText[PrefabText.Length - j - 1][i];
+                    rotated[i] += PrefabText[j][i];
                 }
             }
             
             PrefabText = rotated;
         }
-        else if (rotation == Direction.Left)
+        else if (rotation == Direction.Right)
         {
-            // Rotate Left
-            PrefabText = prefab.PrefabText;
-            
-            if (mirrored)
-            {
-                PrefabText = PrefabText
-                    .Select(t => t.ReverseString())
-                    .ToArray();
-            }
-            
+            // rotate the string array right
             var rotated = new string[PrefabText[0].Length];
             
             for (var i = 0; i < rotated.Length; i++)
             {
                 for (var j = PrefabText.Length - 1; j >= 0; j--)
                 {
-                    rotated[i] += PrefabText[j][PrefabText[0].Length - i - 1];
+                    rotated[i] += PrefabText[j][i];
                 }
             }
-
-            PrefabText = rotated;
-        }
-        else
-        {
-            PrefabText = prefab.PrefabText;
             
-            if (mirrored)
-            {
-                PrefabText = PrefabText
-                    .Select(t => t.ReverseString())
-                    .ToArray();
-            }
-            else
-            {
-                PrefabText = PrefabText.ToArray();
-            }
+            PrefabText = rotated;
         }
             
         Location = location;

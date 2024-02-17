@@ -1,8 +1,10 @@
 ﻿using FrigidRogue.WaveFunctionCollapse;
+using GoRogue.Random;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Components.Maps;
 using NSubstitute;
+using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests;
 
@@ -26,12 +28,16 @@ public class PrefabMapGeneratorTests : BaseGameWorldIntegrationTests
     public void Should_CreatePrefabMap()
     {
         // Act
-        _mapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 50, 50);
+        _mapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 50, 50, upToStep: 3);
+        
+        // var oldRandom = GlobalRandom.DefaultRNG;
+        //GlobalRandom.DefaultRNG = new KnownSeriesRandom(new int[] { 3, 6, 2, 4 });
 
         // Assert
         var map = _mapGenerator.Map;
         Assert.IsNotNull(map);
 
         var mapText = GameObjectWriter.WriteMapAsciiArray(map);
+        GameObjectWriter.WriteMapAsciiToFile(map);
     }
 }

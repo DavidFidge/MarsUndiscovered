@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 using GoRogue.FOV;
@@ -61,9 +62,13 @@ namespace MarsUndiscovered.Game.Components
             WriteToTempFile("GoalMap", stringBuilder);
         }
 
-        private static void WriteToTempFile(string filename, StringBuilder stringBuilder)
+        public static void WriteToTempFile(string filename, StringBuilder stringBuilder)
         {
-            var fileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(),
+            var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), filename);
+
+            Directory.CreateDirectory(path);
+            
+            var fileName = System.IO.Path.Combine(path,
                 $"{DateTime.Now.ToString("yyyy-MM-dd-hhmmss-FFFFFF")}-{filename}.txt");
 
             File.WriteAllText(fileName, stringBuilder.ToString());
@@ -287,6 +292,11 @@ namespace MarsUndiscovered.Game.Components
         public static string[] WriteMapAsciiArray(MarsMap map)
         {
             return WriteMapAscii(map).ToString().Split(Environment.NewLine);
+        }
+        
+        public static void WriteMapAsciiToFile(MarsMap map)
+        {
+            WriteToTempFile("Map", WriteMapAscii(map));
         }
         
         public static string[] WriteGridView(IGridView<bool> arrayView, char trueChar = '.', char falseChar = '#')
