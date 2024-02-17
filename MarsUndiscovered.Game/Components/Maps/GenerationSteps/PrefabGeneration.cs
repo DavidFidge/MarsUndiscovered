@@ -78,8 +78,9 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                 {
                     var randomPoint = RNG.RandomPosition(potentialBounds);
                     var randomDirection = RNG.RandomElement(AdjacencyRule.Cardinals.DirectionsOfNeighborsCache);
+                    var isMirrored = RNG.NextBool();
                     
-                    var newPrefab = new PrefabInstance(randomPrefab, randomPoint, randomDirection);
+                    var newPrefab = new PrefabInstance(randomPrefab, randomPoint, randomDirection, isMirrored);
                     
                     var canPlace = availablePlacementAreas.FirstOrDefault(a => a.Contains(newPrefab.Area));
 
