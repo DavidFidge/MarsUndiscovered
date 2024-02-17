@@ -46,7 +46,7 @@ public class PrefabInstance
             {
                 for (var j = 0; j < PrefabText.Length; j++)
                 {
-                    rotated[i] += PrefabText[j][i];
+                    rotated[rotated.Length - 1 - i] += PrefabText[j][i];
                 }
             }
             
