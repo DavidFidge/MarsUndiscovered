@@ -18,6 +18,7 @@ namespace MarsUndiscovered.Game.Components
         public bool IsCharged { get; set; }
         public Attack MeleeAttack { get; set; }
         public Attack LineAttack { get; set; }
+        public LaserAttack LaserAttack { get; set; }
         public int DamageShieldPercentage { get; set; }
         public int PushPullDistance { get; set; }
         public int PushPullRadius { get; set; }

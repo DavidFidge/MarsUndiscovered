@@ -53,6 +53,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     var lightningAttackAnimation = new LightningAnimation(new Lightning(lightningAttackCommand.Path));
                     Animations.Enqueue(lightningAttackAnimation);
                 }
+                if (commandResult.Command is LaserAttackCommand)
+                {
+                    var laserAttackCommand = commandResult.Command as LaserAttackCommand;
+
+                    var laserAttackAnimation = new LightningAnimation(new Lightning(lightningAttackCommand.Path));
+                    Animations.Enqueue(lightningAttackAnimation);
+                }
                 else if (commandResult.Command is LineAttackCommand)
                 {
                     var lineAttackCommand = commandResult.Command as LineAttackCommand;

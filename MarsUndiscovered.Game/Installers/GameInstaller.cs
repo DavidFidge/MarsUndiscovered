@@ -143,6 +143,9 @@ namespace MarsUndiscovered.Game.Installers
                 Component.For<ICommandFactory<LightningAttackCommand>>()
                     .AsFactory(),
 
+                Component.For<ICommandFactory<LaserAttackCommand>>()
+                    .AsFactory(),
+
                 Component.For<ICommandFactory<DeathCommand>>()
                     .AsFactory(),
 

@@ -24,6 +24,9 @@ namespace MarsUndiscovered.Game.Components
         public List<LightningAttackCommand> LightningAttackCommands { get; private set; } = new();
         public ICommandFactory<LightningAttackCommand> LightningAttackCommandFactory { get; set; }
 
+        public List<LaserAttackCommand> LaserAttackCommands { get; private set; } = new();
+        public ICommandFactory<LaserAttackCommand> LaserAttackCommandFactory { get; set; }
+        
         public List<WalkCommand> WalkCommands { get; private set; } = new();
         public ICommandFactory<WalkCommand> WalkCommandFactory { get; set; }
 

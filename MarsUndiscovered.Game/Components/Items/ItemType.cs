@@ -9,6 +9,7 @@ namespace MarsUndiscovered.Game.Components
         public static ForcePush ForcePush = new ForcePush();
         public static MagnesiumPipe MagnesiumPipe = new MagnesiumPipe();
         public static IronSpike IronSpike = new IronSpike();
+        public static LaserPistol LaserPistol = new LaserPistol();
         public static HealingBots HealingBots = new HealingBots();
         public static EnhancementBots EnhancementBots = new EnhancementBots();
         public static ShipRepairParts ShipRepairParts = new ShipRepairParts();

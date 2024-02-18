@@ -23,6 +23,7 @@ namespace MarsUndiscovered.Game.Components
 
         public virtual Attack MeleeAttack { get; protected set; }
         public virtual LightningAttack LightningAttack { get; protected set; }
+        public virtual LaserAttack LaserAttack { get; protected set; }
         public virtual Attack LineAttack { get; protected set; }
 
         public abstract bool IsWallTurret { get; }
