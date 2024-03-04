@@ -142,5 +142,12 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public void SetLaser(float opacity)
+        {
+            IsVisible = true;
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Laser.ToString());
+            Opacity = opacity;
+        }
     }
 }
