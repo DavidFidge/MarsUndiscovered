@@ -22,7 +22,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 {
     // MapViewModel is a child of Replay and Game view models and is thus registered as transient.
     // Any Notifications need to be registered on the parent and forwarded here.
-    public class MapViewModel
+    public interface IMapViewModel
+    {
+        ISceneGraph SceneGraph { get; }
+        int Width { get; }
+        int Height { get; }
+        void UpdateTile(Point point);
+        void UpdateAllTiles();
+        void ClearAnimationTile(Point point);
+        void ClearAnimationTiles(IEnumerable<Point> points);
+        void AnimateTile(Point point, Action<MapTileEntity> action);
+    }
+
+    public class MapViewModel : IMapViewModel
     {
         private readonly IAssets _assets;
         private readonly ISceneGraph _sceneGraph;

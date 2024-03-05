@@ -17,7 +17,7 @@ namespace MarsUndiscovered.UserInterface.Animation
             _path = path;
         }
 
-        public override void Update(IGameTimeService gameTimeService, MapViewModel mapViewModel)
+        public override void Update(IGameTimeService gameTimeService, IMapViewModel mapViewModel)
         {
             if (_path.Count <= 1)
             {
@@ -47,12 +47,12 @@ namespace MarsUndiscovered.UserInterface.Animation
             }
         }
 
-        private void ClearAnimationTiles(MapViewModel mapViewModel)
+        private void ClearAnimationTiles(IMapViewModel mapViewModel)
         {
             mapViewModel.ClearAnimationTiles(_path.Skip(1));
         }
 
-        public override void Finish(MapViewModel mapViewModel)
+        public override void Finish(IMapViewModel mapViewModel)
         {
             ClearAnimationTiles(mapViewModel);
         }

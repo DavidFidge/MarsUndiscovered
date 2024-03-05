@@ -6,22 +6,22 @@ namespace MarsUndiscovered.UserInterface.Animation
     public class FloatTween
     {
         private Tween<float> _tween;
-        private float _value;
-        public float Value => _value;
+        private readonly Tweener _tweener;
+        public float Value { get; set; }
 
         public bool IsComplete => _tween.IsComplete;
         
         public FloatTween(float start, float end, float duration)
         {
-            _value = start;
-            var tweener = new Tweener();
-            _tween = tweener.TweenTo(this, l => l._value, end, duration);
+            Value = start;
+            _tweener = new Tweener();
+            _tween = _tweener.TweenTo(this, l => l.Value, end, duration);
             _tween.Easing(EasingFunctions.Linear);
         }
         
         public void Update(IGameTimeService gameTimeService)
         {
-            _tween.Update((float)gameTimeService.GameTime.ElapsedRealTime.TotalSeconds);
+            _tweener.Update((float)gameTimeService.GameTime.ElapsedRealTime.TotalSeconds);
         }
     }
 }

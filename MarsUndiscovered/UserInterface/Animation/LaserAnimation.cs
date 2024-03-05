@@ -15,7 +15,7 @@ namespace MarsUndiscovered.UserInterface.Animation
             _path = path;
         }
 
-        public override void Update(IGameTimeService gameTimeService, MapViewModel mapViewModel)
+        public override void Update(IGameTimeService gameTimeService, IMapViewModel mapViewModel)
         {
             _floatTween.Update(gameTimeService);
             
@@ -24,7 +24,7 @@ namespace MarsUndiscovered.UserInterface.Animation
             IsComplete = _floatTween.IsComplete;
         }
 
-        private void AnimateLaserStreakTiles(MapViewModel mapViewModel)
+        private void AnimateLaserStreakTiles(IMapViewModel mapViewModel)
         {
             var index = 0;
 
@@ -35,12 +35,12 @@ namespace MarsUndiscovered.UserInterface.Animation
             }
         }
 
-        private void ClearAnimationTiles(MapViewModel mapViewModel)
+        private void ClearAnimationTiles(IMapViewModel mapViewModel)
         {
             mapViewModel.ClearAnimationTiles(_path.Steps);
         }
 
-        public override void Finish(MapViewModel mapViewModel)
+        public override void Finish(IMapViewModel mapViewModel)
         {
             ClearAnimationTiles(mapViewModel);
         }
