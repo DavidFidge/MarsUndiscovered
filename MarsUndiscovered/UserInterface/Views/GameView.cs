@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.View.Extensions;
@@ -18,7 +17,10 @@ using MarsUndiscovered.UserInterface.Input;
 using MediatR;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Sprites;
+using Button = GeonBit.UI.Entities.Button;
+using Panel = GeonBit.UI.Entities.Panel;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -43,7 +45,8 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<AutoExploreRequest>,
         IRequestHandler<EndRadioCommsRequest>,
         IRequestHandler<WizardModeNextLevelRequest>,
-        IRequestHandler<WizardModePreviousLevelRequest>
+        IRequestHandler<WizardModePreviousLevelRequest>,
+        IRequestHandler<HotBarItemRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -60,12 +63,15 @@ namespace MarsUndiscovered.UserInterface.Views
         private double _delayBetweenMove = 50;
         private Queue<RadioCommsItem> _radioCommsItems = new();
         private bool _isWaitingForRadioComms;
-        
+
         protected Panel RadioCommsPanel;
+        protected Panel HotBarPanel;
         protected RichParagraph RadioCommsMessage;
         protected RichParagraph RadioCommsSource;
         protected Image RadioCommsImage;
         protected AnimatedSprite RadioCommsAnimatedSprite;
+        protected HotBarItemPanel[] HotBarPanelItems { get; set; }
+
 
         public GameView(
             GameViewModel gameViewModel,
@@ -103,13 +109,68 @@ namespace MarsUndiscovered.UserInterface.Views
             CreateMessageLog();
             CreateStatusPanel();
             CreateRadioCommsPanel();
+            CreateHotBarPanel();
             SetupConsole();
             SetupInventoryGame();
             SetupChildPanel(_inGameOptionsView);
 
             _stopwatchProvider.Start();
         }
-        
+
+        protected void CreateHotBarPanel()
+        {
+            HotBarPanel = new Panel()
+                .Anchor(Anchor.BottomCenter)
+                .SkinNone()
+                .NoPadding()
+                .Height(UiConstants.HotBarHeight)
+                .WidthOfContainer();
+            
+            GameViewPanel.AddChild(HotBarPanel);
+
+            HotBarPanelItems = new HotBarItemPanel[10];
+            
+            for (var i = 0; i < 10; i++)
+            {
+                var hotBarItemPanel = new HotBarItemPanel(Assets, GetHotBarKey(i))
+                    .Anchor(Anchor.AutoInlineNoBreak)
+                    .SkinAlternative()
+                    .NoPadding()
+                    .Width(0.05f)
+                    .HeightOfParent();
+                
+                var separator = new Panel().Anchor(Anchor.AutoInlineNoBreak)
+                    .SkinNone()
+                    .NoPadding()
+                    .Width(0.01f)
+                    .HeightOfParent();
+                
+                HotBarPanelItems[i] = hotBarItemPanel;
+                HotBarPanel.AddChild(hotBarItemPanel);
+                
+                if (i != 9)
+                    HotBarPanel.AddChild(separator);
+            }
+        }
+
+        private Keys GetHotBarKey(int i)
+        {
+            return i switch
+            {
+                1 => Keys.D1,
+                2 => Keys.D2,
+                3 => Keys.D3,
+                4 => Keys.D4,
+                5 => Keys.D5,
+                6 => Keys.D6,
+                7 => Keys.D7,
+                8 => Keys.D8,
+                9 => Keys.D9,
+                0 => Keys.D0,
+                _ => throw new Exception()
+            };
+        }
+
         protected void CreateRadioCommsPanel()
         {
             RadioCommsPanel = new Panel()
@@ -491,6 +552,19 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(WizardModePreviousLevelRequest request, CancellationToken cancellationToken)
         {
             _viewModel.ForcePreviousLevel();
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(HotBarItemRequest request, CancellationToken cancellationToken)
+        {
+            var hotBarPanel = HotBarPanelItems.FirstOrDefault(i => i.Key == request.Key);
+
+            if (hotBarPanel.InventoryItem.CanRangeAttack)
+            {
+                // Go into "Shoot where" mode to get a square selection
+                // then call the range attack command from the view model
+            }
+            
             return Unit.Task;
         }
     }

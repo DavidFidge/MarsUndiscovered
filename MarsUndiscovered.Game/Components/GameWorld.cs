@@ -348,6 +348,14 @@ namespace MarsUndiscovered.Game.Components
             return result;
         }
 
+        public IList<CommandResult> RangeAttackRequest(RangeAttackRequestDetails rangeAttackRequestDetails)
+        {
+            var command = CommandCollection.CreateCommand<PlayerRangeAttackCommand>(this);
+            command.Initialise(rangeAttackRequestDetails.TargetPoint);
+
+            return ExecuteCommand(command).ToList();
+        }
+        
         protected IEnumerable<CommandResult> NextTurn()
         {
             LastMonstersInView = MonstersInView;

@@ -74,5 +74,6 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> IdentifyItemRequest(Keys requestKey);
         ICommandCollection CommandCollection { get; }
         void CancelIdentify();
+        IList<CommandResult> RangeAttackRequest(RangeAttackRequestDetails rangeAttackRequestDetails);
     }
 }

@@ -17,6 +17,18 @@ namespace MarsUndiscovered.Game.Commands
         {
         }
         
+        public void Initialise(Actor source, Point targetPoint)
+        {
+            var laserAttackPath = Lines.GetLine(source.Position, targetPoint).ToList();
+
+            laserAttackPath = laserAttackPath
+                .TakeWhile(p => p == source.Position || (source.CurrentMap.Contains(targetPoint) && source.CurrentMap.GetObjectsAt(p).All(o => o.IsGameObjectStrikeThrough())))
+                .ToList();
+
+            _data.SourceId = source.ID;
+            _data.Path = laserAttackPath;
+        }
+        
         protected override CommandResult ExecuteInternal()
         {
             if (Source.LaserAttack == null)
@@ -65,18 +77,6 @@ namespace MarsUndiscovered.Game.Commands
                 ((Actor)GameWorld.GameObjects[restore.Id]).Health = restore.Health;
                 ((Actor)GameWorld.GameObjects[restore.Id]).Shield = restore.Shield;
             }
-        }
-
-        public void Initialise(Actor source, Point targetPoint)
-        {
-            var laserAttackPath = Lines.GetLine(source.Position, targetPoint).ToList();
-
-            laserAttackPath = laserAttackPath
-                .TakeWhile(p => p == source.Position || (source.CurrentMap.Contains(targetPoint) && source.CurrentMap.GetObjectsAt(p).All(o => o.IsGameObjectStrikeThrough())))
-                .ToList();
-
-            _data.SourceId = source.ID;
-            _data.Path = laserAttackPath;
         }
 
         public IList<Actor> GetTargets()
