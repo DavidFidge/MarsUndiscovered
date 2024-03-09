@@ -77,5 +77,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (inventoryMode == InventoryMode.Identify)
                 GameWorldEndpoint.CancelIdentify();
         }
+
+        public void AssignHotBarItem(Keys inventoryItemKey, Keys requestKey)
+        {
+            GameWorldEndpoint.AssignHotBarItem(inventoryItemKey, requestKey);
+        }
     }
 }

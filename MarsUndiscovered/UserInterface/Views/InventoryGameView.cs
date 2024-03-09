@@ -15,7 +15,8 @@ namespace MarsUndiscovered.UserInterface.Views
 {
     public class InventoryGameView : BaseInventoryView<InventoryGameViewModel, InventoryGameData>,
         IRequestHandler<InventoryItemSelectionRequest>,
-        IRequestHandler<LeftClickInventoryGameViewRequest>
+        IRequestHandler<LeftClickInventoryGameViewRequest>,
+        IRequestHandler<AssignHotBarItemRequest>
     {
         private readonly IActionMap _actionMap;
         private Button _equipButton;
@@ -324,6 +325,16 @@ namespace MarsUndiscovered.UserInterface.Views
         protected override void ClosingInventoryNoAction()
         {
             _viewModel.ClosingInventoryNoAction(InventoryMode);
+        }
+
+        public Task<Unit> Handle(AssignHotBarItemRequest request, CancellationToken cancellationToken)
+        {
+            var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
+            
+            if (focusItem != null)
+                _viewModel.AssignHotBarItem(focusItem.InventoryItem.Key, request.Key);
+                
+            return Unit.Task;
         }
     }
 }

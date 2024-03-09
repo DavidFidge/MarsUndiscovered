@@ -355,7 +355,12 @@ namespace MarsUndiscovered.Game.Components
 
             return ExecuteCommand(command).ToList();
         }
-        
+
+        public void AssignHotBarItem(Keys inventoryItemKey, Keys requestKey)
+        {
+            Inventory.AssignHotkey(inventoryItemKey, requestKey);
+        }
+
         protected IEnumerable<CommandResult> NextTurn()
         {
             LastMonstersInView = MonstersInView;

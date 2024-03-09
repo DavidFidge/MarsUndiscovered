@@ -52,5 +52,6 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> EnchantItemRequest(Keys obj);
         IList<CommandResult> IdentifyItemRequest(Keys requestKey);
         void CancelIdentify();
+        void AssignHotBarItem(Keys inventoryItemKey, Keys requestKey);
     }
 }

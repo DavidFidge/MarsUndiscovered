@@ -23,6 +23,7 @@ namespace MarsUndiscovered.Game.Components
 
         public List<Item> Items { get; set; } = new List<Item>();
         public Dictionary<Keys, ItemGroup> ItemKeyAssignments { get; set; } = new Dictionary<Keys, ItemGroup>();
+        public Dictionary<Keys, Item> HotBarKeyAssignments { get; set; } = new Dictionary<Keys, Item>();
         public Dictionary<Item, string> CallItem { get; set; } = new Dictionary<Item, string>();
         public Dictionary<ItemType, string> CallItemType { get; set; } = new Dictionary<ItemType, string>();
         public ItemTypeDiscoveryCollection ItemTypeDiscoveries { get; set; } = new ItemTypeDiscoveryCollection();
@@ -87,7 +88,14 @@ namespace MarsUndiscovered.Game.Components
                             CanDrop = true,
                             CanUnequip = CanUnequip(item),
                             CanApply = CanApply(item),
-                            CanEnchant = CanEnchant(item)
+                            CanEnchant = CanEnchant(item),
+                            CanRangeAttack = CanRangeAttack(item),
+                            CanAssignHotKey = CanAssignHotkey(item),
+                            HotBarKey = HotBarKeyAssignments
+                                .Where(kvp => kvp.Value == item)
+                                .Select(kvp => kvp.Key)
+                                .DefaultIfEmpty(Keys.None)
+                                .FirstOrDefault()
                         };
                     }
                 ).ToList();
@@ -127,12 +135,21 @@ namespace MarsUndiscovered.Game.Components
 
             return null;
         }
+        
+        public Item GetItemForHotBarkey(Keys key)
+        {
+            if (HotBarKeyAssignments.ContainsKey(key))
+                return HotBarKeyAssignments[key];
 
+            return null;
+        }
+        
         public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var memento = new Memento<InventorySaveData>(new InventorySaveData());
             memento.State.ItemIds = Items.Select(i => i.ID).ToList();
             memento.State.ItemKeyAssignments = ItemKeyAssignments.ToDictionary(k => k.Key, v => v.Value.Select(i => i.ID).ToList());
+            memento.State.HotKeyAssignments = HotBarKeyAssignments.ToDictionary(k => k.Key, v => v.Value.ID);
             memento.State.CallItem = CallItem.ToDictionary(k => k.Key.ID, v => v.Value);
             memento.State.CallItemType = CallItemType.ToDictionary(k => k.Key.Name, v => v.Value);
             memento.State.ItemTypeDiscoveries = ItemTypeDiscoveries.ToDictionary(k => k.Key.Name, v => v.Value);
@@ -149,7 +166,10 @@ namespace MarsUndiscovered.Game.Components
 
             ItemKeyAssignments = inventorySaveData.State.ItemKeyAssignments
                 .ToDictionary(k => k.Key, v => new ItemGroup(v.Value.Select(i => gameWorld.Items[i]).ToList()));
-
+            
+            HotBarKeyAssignments = inventorySaveData.State.HotKeyAssignments
+                .ToDictionary(k => k.Key, v => Items.First(i => i.ID == v.Value));
+            
             CallItem = inventorySaveData.State.CallItem
                 .ToDictionary(k => gameWorld.Items[k.Key], v => v.Value);
 
@@ -171,12 +191,43 @@ namespace MarsUndiscovered.Game.Components
         {
             return GetEnumerator();
         }
-        
+
         public void Add(Item item)
         {
             Add(item, Keys.None);
         }
 
+        public void AssignHotkey(Keys itemKey, Keys hotkey)
+        {
+            var item = GetItemForKey(itemKey);
+            
+            if (item == null)
+                return;
+
+            if (!CanAssignHotkey(item))
+                return;
+            
+            ClearHotkeyForItem(item);
+
+            HotBarKeyAssignments[hotkey] = item;
+        }
+
+        private bool CanAssignHotkey(Item item)
+        {
+            return item.ItemType is Weapon || group;
+        }
+
+        public void ClearHotkeyForItem(Item item)
+        {
+            if (item == null)
+                return;
+            
+            if (HotBarKeyAssignments.ContainsValue(item))
+            {
+                HotBarKeyAssignments.Remove(HotBarKeyAssignments.First(kvp => kvp.Value == item).Key);
+            }
+        }
+        
         public void Add(Item item, Keys specificKey)
         {
             if (item == null)
@@ -207,6 +258,7 @@ namespace MarsUndiscovered.Game.Components
         {
             Items.Clear();
             ItemKeyAssignments.Clear();
+            HotBarKeyAssignments.Clear();
         }
 
         public bool Contains(Item item)
@@ -238,6 +290,9 @@ namespace MarsUndiscovered.Game.Components
                 ItemKeyAssignments.Remove(key);
             }
             
+            if (HotBarKeyAssignments.ContainsValue(item))
+                HotBarKeyAssignments.Remove(HotBarKeyAssignments.First(kvp => kvp.Value == item).Key);
+            
             _gameWorld.Player.RecalculateAttacks();
 
             return true;
@@ -255,6 +310,11 @@ namespace MarsUndiscovered.Game.Components
             }
             
             _gameWorld.Player.RecalculateAttacks();
+        }
+        
+        private bool CanRangeAttack(Item item)
+        {
+            return item.LaserAttack != null;
         }
 
         public bool CanEquip(Item item)
@@ -280,7 +340,7 @@ namespace MarsUndiscovered.Game.Components
 
             return false;
         }
-        
+
         public bool CanApply(Item item)
         {
             if (item == null)
@@ -291,7 +351,7 @@ namespace MarsUndiscovered.Game.Components
 
             return CanTypeBeApplied(item);
         }
-        
+
         public bool CanTypeBeApplied(Item item)
         {
             if (item.ItemType is Gadget or NanoFlask)
@@ -312,7 +372,7 @@ namespace MarsUndiscovered.Game.Components
 
             return CanTypeBeEnchanted(item);
         }
-        
+
         public bool CanTypeBeEnchanted(Item item)
         {
             if (item.ItemType is Gadget or Weapon)
@@ -322,7 +382,7 @@ namespace MarsUndiscovered.Game.Components
 
             return false;
         }
-        
+
         public bool IsEquipped(Item item)
         {
             if (item == null)
