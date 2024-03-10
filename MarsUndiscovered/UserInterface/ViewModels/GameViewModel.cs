@@ -8,7 +8,7 @@ using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Xna.Framework;
-
+using Microsoft.Xna.Framework.Input;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
@@ -127,6 +127,16 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             var result = GameWorldEndpoint.ForceLevelChange(ForceLevelChange.PreviousLevel);
             AfterTurnExecuted(result);
+        }
+
+        public void ApplyRequest(Keys requestKey)
+        {
+            this.GameWorldEndpoint.ApplyItemRequest(requestKey);
+        }
+
+        public List<InventoryItem> GetHotBarItems()
+        {
+            return GameWorldEndpoint.GetHotBarItems();
         }
     }
 }

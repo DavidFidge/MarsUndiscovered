@@ -46,7 +46,8 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<EndRadioCommsRequest>,
         IRequestHandler<WizardModeNextLevelRequest>,
         IRequestHandler<WizardModePreviousLevelRequest>,
-        IRequestHandler<HotBarItemRequest>
+        IRequestHandler<HotBarItemRequest>,
+        IRequestHandler<HotBarAssignmentsChangedRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -564,8 +565,17 @@ namespace MarsUndiscovered.UserInterface.Views
                 // Go into "Shoot where" mode to get a square selection
                 // then call the range attack command from the view model
             }
+            else if (hotBarPanel.InventoryItem.CanApply)
+            {
+                _viewModel.ApplyRequest(request.Key);
+            }
             
             return Unit.Task;
+        }
+
+        public Task<Unit> Handle(HotBarAssignmentsChangedRequest request, CancellationToken cancellationToken)
+        {
+            _viewModel.GetHotBarItems();
         }
     }
 }

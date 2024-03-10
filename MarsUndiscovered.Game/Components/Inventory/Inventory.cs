@@ -103,6 +103,15 @@ namespace MarsUndiscovered.Game.Components
             return inventoryItems;
         }
 
+        public List<InventoryItem> GetHotBarItems()
+        {
+            var inventoryItems = GetInventoryItems()
+                .Where(i => i.HotBarKey != Keys.None)
+                .ToList();
+
+            return inventoryItems;
+        }
+
         public Keys GetNextUnusedKey()
         {
             return CandidateKeys.First(k => !ItemKeyAssignments.ContainsKey(k));
@@ -214,7 +223,7 @@ namespace MarsUndiscovered.Game.Components
 
         private bool CanAssignHotkey(Item item)
         {
-            return item.ItemType is Weapon || group;
+            return !item.GroupsInInventory;
         }
 
         public void ClearHotkeyForItem(Item item)

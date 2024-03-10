@@ -361,6 +361,11 @@ namespace MarsUndiscovered.Game.Components
             Inventory.AssignHotkey(inventoryItemKey, requestKey);
         }
 
+        public List<InventoryItem> GetHotBarItems()
+        {
+            return Inventory.GetHotBarItems();
+        }
+
         protected IEnumerable<CommandResult> NextTurn()
         {
             LastMonstersInView = MonstersInView;
@@ -746,12 +751,20 @@ namespace MarsUndiscovered.Game.Components
 
         public IList<CommandResult> ApplyItemRequest(Keys itemKey)
         {
-            if (!Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
-                return null;
+            Item item;
+            
+            if (Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
+            {
+                item = itemGroup.First();
+            }
+            else
+            {
+                Inventory.HotBarKeyAssignments.TryGetValue(itemKey, out item);
+            }
 
             var applyItemCommand = CommandCollection.CreateCommand<ApplyItemCommand>(this);
 
-            applyItemCommand.Initialise(Player, itemGroup.First());
+            applyItemCommand.Initialise(Player, item);
 
             return ExecuteCommand(applyItemCommand).ToList();
         }

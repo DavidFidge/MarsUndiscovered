@@ -53,5 +53,6 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> IdentifyItemRequest(Keys requestKey);
         void CancelIdentify();
         void AssignHotBarItem(Keys inventoryItemKey, Keys requestKey);
+        List<InventoryItem> GetHotBarItems();
     }
 }

@@ -76,5 +76,6 @@ namespace MarsUndiscovered.Interfaces
         void CancelIdentify();
         IList<CommandResult> RangeAttackRequest(RangeAttackRequestDetails rangeAttackRequestDetails);
         void AssignHotBarItem(Keys inventoryItemKey, Keys requestKey);
+        List<InventoryItem> GetHotBarItems();
     }
 }

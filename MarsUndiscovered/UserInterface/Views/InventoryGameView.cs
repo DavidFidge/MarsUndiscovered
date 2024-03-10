@@ -330,10 +330,12 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(AssignHotBarItemRequest request, CancellationToken cancellationToken)
         {
             var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
-            
+
             if (focusItem != null)
+            {
                 _viewModel.AssignHotBarItem(focusItem.InventoryItem.Key, request.Key);
-                
+            }
+
             return Unit.Task;
         }
     }
