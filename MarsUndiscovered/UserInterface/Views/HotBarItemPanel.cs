@@ -39,6 +39,8 @@ public class HotBarItemPanel : Panel
             .WidthOfContainer();
 
         _keyText.Text = key.Display(KeyboardModifier.None);
+        _keyText.FillColor(Color.White);
+
         AddChild(_keyText);
 
         Key = key;
@@ -87,37 +89,20 @@ public class HotBarItemPanel : Panel
 
     public void SetInventoryItem(InventoryItem inventoryItem)
     {
-        if (_inventoryItem.ItemId == inventoryItem.ItemId)
+        if (_inventoryItem?.ItemId == inventoryItem.ItemId)
         {
             // Item is same, no need to do any updates for now
         }
         else
         {
             _inventoryItem = inventoryItem;
-
-            _keyText.Text = _inventoryItem.KeyDescription;
-            _keyText.FillColor(Color.White);
-            _keyText.RecalculateWidth(20);
-        
-            _keyText.CalcTextActualRectWithWrap();
-            this.Height(_keyText.GetTextDestRect().Height);
-
             _itemImage.Texture = _assets.GetStaticTexture(_inventoryItem.ItemType.GetAbstractTypeName());
-            _itemImage.Size((int)Size.Y, (int)Size.Y);
-
-            _description.Text = _inventoryItem.ItemDescription;
-            _description.Offset(_itemImage.Texture.Width, 0);
-
-            _description.FillColor(Color.White);
-            _description.RecalculateWidth();     
+            _itemImage.Size((int)Size.X * 0.75f, (int)Size.Y * 0.75f);
         }
     }
 
     public void SetNoInventory()
     {
-        _keyText.Text = string.Empty;
-        _keyText.CalcTextActualRectWithWrap();
-        this.Height(_keyText.GetTextDestRect().Height);
         _description.Text = String.Empty;
         _description.Offset(0, 0);
         _itemImage.Texture = null;

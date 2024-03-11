@@ -134,7 +134,12 @@ namespace MarsUndiscovered.UserInterface.Views
             
             for (var i = 0; i < 10; i++)
             {
-                var hotBarItemPanel = new HotBarItemPanel(Assets, GetHotBarKey(i))
+                var key = i + 1;
+                
+                if (key == 10)
+                    key = 0;
+                
+                var hotBarItemPanel = new HotBarItemPanel(Assets, GetHotBarKey(key))
                     .Anchor(Anchor.AutoInlineNoBreak)
                     .SkinAlternative()
                     .NoPadding()
@@ -586,7 +591,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 var hotBarItems = _viewModel.GetHotBarItems();
 
                 // Single refresh, supports adding a new item or removing an existing item
-                var hotBarPanel = HotBarPanelItems.FirstOrDefault(i => i.InventoryItem.ItemId == request.ItemId);
+                var hotBarPanel = HotBarPanelItems.FirstOrDefault(i => i.InventoryItem?.ItemId == request.ItemId);
                 hotBarPanel?.SetNoInventory();
 
                 var hotBarPanelItem = hotBarItems.FirstOrDefault(i => i.ItemId == request.ItemId);
