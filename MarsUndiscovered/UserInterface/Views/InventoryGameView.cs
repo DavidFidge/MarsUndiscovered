@@ -331,9 +331,18 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
 
-            if (focusItem != null)
+            if (focusItem != null && focusItem.InventoryItem.CanAssignHotKey)
             {
-                _viewModel.AssignHotBarItem(focusItem.InventoryItem.Key, request.Key);
+                if (focusItem.InventoryItem.HotBarKey == request.Key)
+                {
+                    _viewModel.RemoveHotBarItem(request.Key);
+                }
+                else
+                {
+                    _viewModel.AssignHotBarItem(focusItem.InventoryItem.Key, request.Key);
+                }
+
+                Mediator.Send(new RefreshHotBarRequest(focusItem.InventoryItem.ItemId));
             }
 
             return Unit.Task;

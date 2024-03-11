@@ -82,5 +82,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             GameWorldEndpoint.AssignHotBarItem(inventoryItemKey, requestKey);
         }
+
+        public void RemoveHotBarItem(Keys requestKey)
+        {
+            GameWorldEndpoint.RemoveHotBarItem(requestKey);
+        }
     }
 }

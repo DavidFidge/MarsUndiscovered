@@ -11,6 +11,7 @@ using MarsUndiscovered.UserInterface.ViewModels;
 using GeonBit.UI.Entities;
 
 using GoRogue.Pathing;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.UserInterface.Input;
 
@@ -47,7 +48,7 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<WizardModeNextLevelRequest>,
         IRequestHandler<WizardModePreviousLevelRequest>,
         IRequestHandler<HotBarItemRequest>,
-        IRequestHandler<HotBarAssignmentsChangedRequest>
+        IRequestHandler<RefreshHotBarRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -378,6 +379,8 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             base.ViewModelChanged();
 
+            RefreshHotBars();
+
             if (_viewModel.PlayerStatus.IsDead || _viewModel.PlayerStatus.IsVictorious)
             {
                 _viewModel.WriteAndSendMorgue();
@@ -558,8 +561,11 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(HotBarItemRequest request, CancellationToken cancellationToken)
         {
-            var hotBarPanel = HotBarPanelItems.FirstOrDefault(i => i.Key == request.Key);
+            var hotBarPanel = HotBarPanelItems.First(i => i.Key == request.Key);
 
+            if (hotBarPanel.InventoryItem == null)
+                return Unit.Task;
+            
             if (hotBarPanel.InventoryItem.CanRangeAttack)
             {
                 // Go into "Shoot where" mode to get a square selection
@@ -573,9 +579,47 @@ namespace MarsUndiscovered.UserInterface.Views
             return Unit.Task;
         }
 
-        public Task<Unit> Handle(HotBarAssignmentsChangedRequest request, CancellationToken cancellationToken)
+        public Task<Unit> Handle(RefreshHotBarRequest request, CancellationToken cancellationToken)
         {
-            _viewModel.GetHotBarItems();
+            if (request.ItemId != null)
+            {
+                var hotBarItems = _viewModel.GetHotBarItems();
+
+                // Single refresh, supports adding a new item or removing an existing item
+                var hotBarPanel = HotBarPanelItems.FirstOrDefault(i => i.InventoryItem.ItemId == request.ItemId);
+                hotBarPanel?.SetNoInventory();
+
+                var hotBarPanelItem = hotBarItems.FirstOrDefault(i => i.ItemId == request.ItemId);
+
+                if (hotBarPanelItem != null && hotBarPanelItem.HotBarKey != Keys.None)
+                {
+                    hotBarPanel = HotBarPanelItems.First(i => i.Key == hotBarPanelItem.HotBarKey);
+                    hotBarPanel.SetInventoryItem(hotBarPanelItem);
+                }
+            }
+            else
+            {
+                // Full refresh
+                RefreshHotBars();
+            }
+            
+            return Unit.Task;
+        }
+
+        private void RefreshHotBars()
+        {
+            // Full refresh
+            var hotBarItems = _viewModel.GetHotBarItems();
+
+            foreach (var hotBarPanel in HotBarPanelItems)
+            {
+                var hotBarPanelItem = hotBarItems.FirstOrDefault(i => i.HotBarKey == hotBarPanel.Key);
+
+                if (hotBarPanelItem != null)
+                    hotBarPanel.SetInventoryItem(hotBarPanelItem);
+                else
+                    hotBarPanel.SetNoInventory();
+            }
         }
     }
 }

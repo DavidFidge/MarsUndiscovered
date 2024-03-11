@@ -366,6 +366,11 @@ namespace MarsUndiscovered.Game.Components
             return Inventory.GetHotBarItems();
         }
 
+        public void RemoveHotBarItem(Keys requestKey)
+        {
+            Inventory.RemoveHotkey(requestKey);
+        }
+
         protected IEnumerable<CommandResult> NextTurn()
         {
             LastMonstersInView = MonstersInView;

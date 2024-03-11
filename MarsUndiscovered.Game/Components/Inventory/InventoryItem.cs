@@ -19,5 +19,6 @@ namespace MarsUndiscovered.Game.Components
         public bool CanEnchant { get; set; }
         public bool CanRangeAttack { get; set; }
         public bool CanAssignHotKey { get; set; }
+        public uint ItemId { get; set; }
     }
 }

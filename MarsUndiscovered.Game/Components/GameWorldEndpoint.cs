@@ -215,6 +215,11 @@ namespace MarsUndiscovered.Game.Components
             return GameWorld.GetHotBarItems();
         }
 
+        public void RemoveHotBarItem(Keys requestKey)
+        {
+            GameWorld.RemoveHotBarItem(requestKey);
+        }
+
         public void LoadReplay(string gameName)
         {
             GameWorld = _gameWorldFactory.Create();

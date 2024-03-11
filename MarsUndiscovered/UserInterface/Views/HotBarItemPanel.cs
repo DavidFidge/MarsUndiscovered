@@ -85,38 +85,32 @@ public class HotBarItemPanel : Panel
         // todo - hover effect
     }
 
-    public void SetInventoryItem(InventoryItem inventoryItem, InventoryMode inventoryMode)
+    public void SetInventoryItem(InventoryItem inventoryItem)
     {
-        _inventoryItem = inventoryItem;
-
-        _keyText.Text = _inventoryItem.KeyDescription;
-        _keyText.FillColor(Color.White);
-        _keyText.RecalculateWidth(20);
-        
-        _keyText.CalcTextActualRectWithWrap();
-        this.Height(_keyText.GetTextDestRect().Height);
-
-        _itemImage.Texture = _assets.GetStaticTexture(_inventoryItem.ItemType.GetAbstractTypeName());
-        _itemImage.Size((int)Size.Y, (int)Size.Y);
-
-        _description.Text = _inventoryItem.ItemDescription;
-        _description.Offset(_itemImage.Texture.Width, 0);
-
-        _description.FillColor(Color.White);
-        _description.RecalculateWidth();
-
-        if ((inventoryMode == InventoryMode.Equip && !inventoryItem.CanEquip) ||
-            (inventoryMode == InventoryMode.Unequip && !inventoryItem.CanUnequip) ||
-            (inventoryMode == InventoryMode.Drop && !inventoryItem.CanDrop) ||
-            (inventoryMode == InventoryMode.Apply && !inventoryItem.CanApply) ||
-            (inventoryMode == InventoryMode.Enchant && !inventoryItem.CanEnchant) ||
-            inventoryMode == InventoryMode.ReadOnly)
+        if (_inventoryItem.ItemId == inventoryItem.ItemId)
         {
-            _keyText.FillColor(Color.Gray);
-            _description.FillColor(Color.Gray);
+            // Item is same, no need to do any updates for now
         }
+        else
+        {
+            _inventoryItem = inventoryItem;
+
+            _keyText.Text = _inventoryItem.KeyDescription;
+            _keyText.FillColor(Color.White);
+            _keyText.RecalculateWidth(20);
         
-        this.Visible();
+            _keyText.CalcTextActualRectWithWrap();
+            this.Height(_keyText.GetTextDestRect().Height);
+
+            _itemImage.Texture = _assets.GetStaticTexture(_inventoryItem.ItemType.GetAbstractTypeName());
+            _itemImage.Size((int)Size.Y, (int)Size.Y);
+
+            _description.Text = _inventoryItem.ItemDescription;
+            _description.Offset(_itemImage.Texture.Width, 0);
+
+            _description.FillColor(Color.White);
+            _description.RecalculateWidth();     
+        }
     }
 
     public void SetNoInventory()

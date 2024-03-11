@@ -76,6 +76,7 @@ namespace MarsUndiscovered.Game.Components
 
                         return new InventoryItem
                         {
+                            ItemId = item.ID,
                             ItemDescription = item.GetDescription(
                                 itemTypeDiscovery,
                                 ItemKeyAssignments[key].Count
@@ -455,6 +456,16 @@ namespace MarsUndiscovered.Game.Components
                 return false;
 
             return true;
+        }
+
+        public void RemoveHotkey(Keys requestKey)
+        {
+            HotBarKeyAssignments.TryGetValue(requestKey, out var item);
+
+            if (item == null)
+                return;
+
+            ClearHotkeyForItem(item);
         }
     }
 }
