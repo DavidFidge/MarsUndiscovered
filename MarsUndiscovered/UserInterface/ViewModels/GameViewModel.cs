@@ -131,7 +131,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void ApplyRequest(Keys requestKey)
         {
-            this.GameWorldEndpoint.ApplyItemRequest(requestKey);
+            var applyItemResults = GameWorldEndpoint.ApplyItemRequest(requestKey);
+            AfterTurnExecuted(applyItemResults);
         }
 
         public List<InventoryItem> GetHotBarItems()
