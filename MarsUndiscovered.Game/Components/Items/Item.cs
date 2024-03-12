@@ -115,6 +115,11 @@ namespace MarsUndiscovered.Game.Components
             return ItemType.GetDescription(this, ItemDiscovery, itemTypeDiscovery, quantity);
         }
         
+        public string GetHotBarDescription(Item item)
+        {
+            return ItemType.GetHotBarDescription(item, ItemDiscovery);
+        }
+        
         public string GetDescriptionWithoutStatus(ItemTypeDiscovery itemTypeDiscovery)
         {
             return ItemType.GetDescription(this, ItemDiscovery, itemTypeDiscovery, 1, true, false);

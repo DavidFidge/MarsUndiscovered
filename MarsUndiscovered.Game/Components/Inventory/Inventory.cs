@@ -82,6 +82,7 @@ namespace MarsUndiscovered.Game.Components
                                 ItemKeyAssignments[key].Count
                             ),
                             ItemDiscoveredDescription = item.GetDiscoveredDescription(ItemKeyAssignments[key].Count),
+                            HotBarDescription = item.GetHotBarDescription(item),
                             ItemType = item.ItemType,
                             Key = key,
                             LongDescription = item.GetLongDescription(itemTypeDiscovery),

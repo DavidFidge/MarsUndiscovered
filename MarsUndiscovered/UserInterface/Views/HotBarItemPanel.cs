@@ -32,22 +32,30 @@ public class HotBarItemPanel : Panel
             .NoPadding()
             .WidthOfContainer()
             .Height(1);
-  
+
         _keyText = new Paragraph()
             .Anchor(Anchor.AutoInlineNoBreak)
-            .Offset(10, 5)
-            .WidthOfContainer();
-
+            .NoPadding()
+            .NoWrap()
+            .Offset(10, 5);
+        
         _keyText.Text = key.Display(KeyboardModifier.None);
         _keyText.FillColor(Color.White);
 
         AddChild(_keyText);
 
         Key = key;
+
+        var spacing = new Panel()
+            .NoPadding()
+            .SkinNone()
+            .Anchor(Anchor.AutoInlineNoBreak)
+            .Width(20);
+
+        AddChild(spacing);
         
         _description = new Paragraph()
             .Anchor(Anchor.AutoInlineNoBreak)
-            .NoPadding()
             .NoWrap()
             .WidthOfContainer();
 
@@ -66,6 +74,8 @@ public class HotBarItemPanel : Panel
             .Anchor(Anchor.Center)
             .NoPadding()
             .Offset(new Vector2(0, 0));
+
+        _keyText.RecalculateWidth();
         
         OnMouseEnter += OnHotBarItemPanelMouseEnter;
         OnMouseDown += OnHotBarItemPanelMouseDown;
@@ -97,7 +107,10 @@ public class HotBarItemPanel : Panel
         {
             _inventoryItem = inventoryItem;
             _itemImage.Texture = _assets.GetStaticTexture(_inventoryItem.ItemType.GetAbstractTypeName());
-            _itemImage.Size((int)Size.X * 0.75f, (int)Size.Y * 0.75f);
+            var rect = _itemImage.CalcDestRect();
+            _itemImage.Size(rect.Width * 0.5f, rect.Height * 0.5f);
+            _itemImage.Offset(0, rect.Height * 0.15f);
+            _description.Text = inventoryItem.HotBarDescription;
         }
     }
 

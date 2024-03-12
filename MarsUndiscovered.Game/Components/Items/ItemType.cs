@@ -50,6 +50,14 @@ namespace MarsUndiscovered.Game.Components
 
         public abstract string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true);
 
+        public string GetHotBarDescription(Item item, ItemDiscovery itemDiscovery)
+        {
+            if (!itemDiscovery.IsEnchantLevelDiscovered)
+                return "?";
+
+            return GetEnchantText(item);
+        }
+        
         protected string GetEnchantText(Item item)
         {
             if (item.EnchantmentLevel >= 0)

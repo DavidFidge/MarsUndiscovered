@@ -10,6 +10,7 @@ namespace MarsUndiscovered.Game.Components
         public string HotBarKeyDescription => $"{HotBarKey.ToString().ToLower()})";
         public string ItemDescription { get; set; }
         public string ItemDiscoveredDescription { get; set; }
+        public string HotBarDescription { get; set; }
         public string LongDescription { get; set; }
         public ItemType ItemType { get; set; }
         public bool CanEquip { get; set; }
