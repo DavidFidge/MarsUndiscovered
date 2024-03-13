@@ -516,8 +516,13 @@ namespace MarsUndiscovered.UserInterface.Views
                 return Unit.Task;
             
             StopAutoMovement();
+
+            var rect = BottomPanel.CalcDestRect();
+            HotBarPanel.Offset(0, -rect.Height);
+                
             _inventoryGameView.SetInventoryMode(request.InventoryMode);
             _inventoryGameView.Show();
+            
             return Unit.Task;
         }
 
@@ -525,8 +530,10 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             if (!IsVisible)
                 return Unit.Task;
-            
+
+            HotBarPanel.Offset(0, 0);
             _inventoryGameView.Hide();
+            
             return Unit.Task;
         }
 
