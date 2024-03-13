@@ -333,15 +333,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             if (focusItem != null && focusItem.InventoryItem.CanAssignHotKey)
             {
-                if (focusItem.InventoryItem.HotBarKey == request.Key)
-                {
-                    _viewModel.RemoveHotBarItem(request.Key);
-                }
-                else
-                {
-                    _viewModel.AssignHotBarItem(focusItem.InventoryItem.Key, request.Key);
-                }
-
+                _viewModel.AssignHotBarItem(focusItem.InventoryItem.Key, request.Key);
                 Mediator.Send(new RefreshHotBarRequest(focusItem.InventoryItem.ItemId));
             }
 

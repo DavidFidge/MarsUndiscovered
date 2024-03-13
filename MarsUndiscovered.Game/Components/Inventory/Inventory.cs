@@ -217,10 +217,19 @@ namespace MarsUndiscovered.Game.Components
 
             if (!CanAssignHotkey(item))
                 return;
+
+            var currentAssignedKey = Keys.None;
+            
+            if (HotBarKeyAssignments.ContainsValue(item))
+            {
+                currentAssignedKey = HotBarKeyAssignments.First(kvp => kvp.Value == item).Key;
+            }
             
             ClearHotkeyForItem(item);
 
-            HotBarKeyAssignments[hotkey] = item;
+            // if item was already assigned to this key then it just gets toggled off, don't re-add
+            if (currentAssignedKey != hotkey)
+                HotBarKeyAssignments[hotkey] = item;
         }
 
         private bool CanAssignHotkey(Item item)

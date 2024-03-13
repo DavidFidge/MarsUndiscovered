@@ -107,6 +107,7 @@ public class HotBarItemPanel : Panel
         {
             _inventoryItem = inventoryItem;
             _itemImage.Texture = _assets.GetStaticTexture(_inventoryItem.ItemType.GetAbstractTypeName());
+            _itemImage.Size(0, 0);
             var rect = _itemImage.CalcDestRect();
             _itemImage.Size(rect.Width * 0.5f, rect.Height * 0.5f);
             _itemImage.Offset(0, rect.Height * 0.15f);
@@ -120,6 +121,6 @@ public class HotBarItemPanel : Panel
         _description.Offset(0, 0);
         _itemImage.Texture = null;
         _itemImage.Size(0, 0);
-        this.Visible();
+        _inventoryItem = null;
     }
 }

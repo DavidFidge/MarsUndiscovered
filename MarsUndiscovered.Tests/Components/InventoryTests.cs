@@ -530,5 +530,24 @@ namespace MarsUndiscovered.Tests.Components
             // Assert
             Assert.AreEqual(0, _gameWorld.Inventory.HotBarKeyAssignments.Count);
         }
+        
+        [TestMethod]
+        public void Should_Remove_HotKey_When_Assigning_Same_Key()
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld);
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+
+            var itemKey = _gameWorld.Inventory.GetKeyForItem(item);
+            _gameWorld.Inventory.AssignHotkey(itemKey, Keys.D1);
+            
+            // Act
+            _gameWorld.Inventory.AssignHotkey(itemKey, Keys.D1);
+
+            // Assert
+            Assert.AreEqual(0, _gameWorld.Inventory.HotBarKeyAssignments.Count);
+        }
     }
 }
