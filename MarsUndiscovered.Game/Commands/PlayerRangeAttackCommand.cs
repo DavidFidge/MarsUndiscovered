@@ -10,24 +10,30 @@ namespace MarsUndiscovered.Game.Commands
     {
         public Point TargetPoint => _data.TargetPoint;
         public Player Player => GameWorld.Player;
-
+        public Item Item => GameWorld.Items[_data.ItemId];
+        
         public PlayerRangeAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
             EndsPlayerTurn = true;
             PersistForReplay = true;
         }
 
-        public void Initialise(Point targetPoint)
+        public void Initialise(Point targetPoint, Item item)
         {
+            _data.ItemId = item.ID;
             _data.TargetPoint = targetPoint;
         }
 
         protected override CommandResult ExecuteInternal()
         {
+            Player.RecalculateAttacksForItem(Item);
+            
             if (Player.LaserAttack != null)
             {
                 var laserAttackCommand = CommandCollection.CreateCommand<LaserAttackCommand>(GameWorld);
                 laserAttackCommand.Initialise(Player, TargetPoint);
+                
+                
                 return Result(CommandResult.Success(this, laserAttackCommand));
             }
 

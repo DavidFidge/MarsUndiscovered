@@ -34,6 +34,8 @@ namespace MarsUndiscovered.Game.Commands
             var newPlayerPosition = Player.Position + Direction;
             var map = Player.CurrentMap;
 
+            Player.RecalculateAttacksForItem(GameWorld.Inventory.EquippedWeapon);
+
             if (map.Bounds().Contains(newPlayerPosition))
             {
                 if (Player.LineAttack != null)

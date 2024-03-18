@@ -139,5 +139,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             return GameWorldEndpoint.GetHotBarItems();
         }
+
+        public void DoRangedAttack(InventoryItem selectedItem, Path currentMovePath)
+        {
+            var result = GameWorldEndpoint.DoRangedAttack(selectedItem.Key, currentMovePath);
+            AfterTurnExecuted(result);
+        }
     }
 }

@@ -220,6 +220,11 @@ namespace MarsUndiscovered.Game.Components
             GameWorld.RemoveHotBarItem(requestKey);
         }
 
+        public IList<CommandResult> DoRangedAttack(Keys requestKey, Path path)
+        {
+            return GameWorld.DoRangedAttack(requestKey, path);
+        }
+
         public void LoadReplay(string gameName)
         {
             GameWorld = _gameWorldFactory.Create();

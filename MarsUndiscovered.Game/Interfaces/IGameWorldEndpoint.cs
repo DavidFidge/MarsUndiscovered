@@ -55,5 +55,6 @@ namespace MarsUndiscovered.Interfaces
         void AssignHotBarItem(Keys inventoryItemKey, Keys requestKey);
         List<InventoryItem> GetHotBarItems();
         void RemoveHotBarItem(Keys requestKey);
+        IList<CommandResult> DoRangedAttack(Keys requestKey, Path path);
     }
 }

@@ -23,7 +23,7 @@ namespace MarsUndiscovered.Tests.Commands
             
             _gameWorld.SpawnMonster(spawnMonsterParams);
             var monster = _gameWorld.Monsters.Values.First();
-            _gameWorld.Player.MeleeAttack.DamageRange = new Range<int>(5, 5);
+            _gameWorld.Player.UnarmedAttack.DamageRange = new Range<int>(5, 5);
             var healthBefore = monster.Health;
 
             // Act
@@ -60,7 +60,7 @@ namespace MarsUndiscovered.Tests.Commands
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
             var monster = _gameWorld.Monsters.Values.First();
-            _gameWorld.Player.MeleeAttack.DamageRange = new Range<int>(5, 5);
+            _gameWorld.Player.UnarmedAttack.DamageRange = new Range<int>(5, 5);
             var healthBefore = monster.Health;
             monster.Shield = 1;
 
@@ -93,7 +93,7 @@ namespace MarsUndiscovered.Tests.Commands
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
             var monster = _gameWorld.Monsters.Values.First();
-            _gameWorld.Player.MeleeAttack.DamageRange = new Range<int>(5, 5);
+            _gameWorld.Player.UnarmedAttack.DamageRange = new Range<int>(5, 5);
             var healthBefore = monster.Health;
             monster.Shield = 6;
 
@@ -126,7 +126,7 @@ namespace MarsUndiscovered.Tests.Commands
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(0, 1)));
             var monster = _gameWorld.Monsters.Values.First();
-            _gameWorld.Player.MeleeAttack.DamageRange = new Range<int>(500000, 500000);
+            _gameWorld.Player.UnarmedAttack.DamageRange = new Range<int>(500000, 500000);
             var healthBefore = monster.Health;
 
             // Act

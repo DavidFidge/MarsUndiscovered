@@ -348,14 +348,6 @@ namespace MarsUndiscovered.Game.Components
             return result;
         }
 
-        public IList<CommandResult> RangeAttackRequest(RangeAttackRequestDetails rangeAttackRequestDetails)
-        {
-            var command = CommandCollection.CreateCommand<PlayerRangeAttackCommand>(this);
-            command.Initialise(rangeAttackRequestDetails.TargetPoint);
-
-            return ExecuteCommand(command).ToList();
-        }
-
         public void AssignHotBarItem(Keys inventoryItemKey, Keys requestKey)
         {
             Inventory.AssignHotkey(inventoryItemKey, requestKey);
@@ -369,6 +361,19 @@ namespace MarsUndiscovered.Game.Components
         public void RemoveHotBarItem(Keys requestKey)
         {
             Inventory.RemoveHotkey(requestKey);
+        }
+
+        public IList<CommandResult> DoRangedAttack(Keys requestKey, Path path)
+        {
+            var item = Inventory.GetItemForKey(requestKey);
+
+            if (item == null)
+                return new List<CommandResult>();
+            
+            var command = CommandCollection.CreateCommand<PlayerRangeAttackCommand>(this);
+            command.Initialise(path.End, item);
+            
+            return ExecuteCommand(command).ToList();
         }
 
         protected IEnumerable<CommandResult> NextTurn()

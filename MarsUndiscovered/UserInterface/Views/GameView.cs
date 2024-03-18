@@ -48,7 +48,9 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<WizardModeNextLevelRequest>,
         IRequestHandler<WizardModePreviousLevelRequest>,
         IRequestHandler<HotBarItemRequest>,
-        IRequestHandler<RefreshHotBarRequest>
+        IRequestHandler<RefreshHotBarRequest>,
+        IRequestHandler<LeftClickSquareChoiceGameViewRequest>,
+        IRequestHandler<CloseSquareChoiceRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -57,6 +59,8 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly GameViewGameOverMouseHandler _gameOverMouseHandler;
         private readonly GameViewRadioCommsKeyboardHandler _radioCommsKeyboardHandler;
         private readonly GameViewRadioCommsMouseHandler _gameViewRadioCommsMouseHandler;
+        private readonly SquareChoiceGameViewKeyboardHandler _squareChoiceGameViewKeyboardHandler;
+        private readonly SquareChoiceGameViewMouseHandler _squareChoiceGameViewMouseHandler;
         private readonly IStopwatchProvider _stopwatchProvider;
         private readonly Options _options;
         private Path _currentMovePath;
@@ -74,6 +78,8 @@ namespace MarsUndiscovered.UserInterface.Views
         protected AnimatedSprite RadioCommsAnimatedSprite;
         protected HotBarItemPanel[] HotBarPanelItems { get; set; }
 
+        private GameViewMode _gameViewMode = GameViewMode.Normal;
+        private InventoryItem _selectedItem;
 
         public GameView(
             GameViewModel gameViewModel,
@@ -84,6 +90,8 @@ namespace MarsUndiscovered.UserInterface.Views
             GameViewGameOverMouseHandler gameOverMouseHandler,
             GameViewRadioCommsKeyboardHandler radioCommsKeyboardHandler,
             GameViewRadioCommsMouseHandler gameViewRadioCommsMouseHandler,
+            SquareChoiceGameViewKeyboardHandler squareChoiceGameViewKeyboardHandler,
+            SquareChoiceGameViewMouseHandler squareChoiceGameViewMouseHandler,
             IGameCamera gameCamera,
             IStopwatchProvider stopwatchProvider,
             Options options
@@ -97,6 +105,8 @@ namespace MarsUndiscovered.UserInterface.Views
             _gameOverMouseHandler = gameOverMouseHandler;
             _radioCommsKeyboardHandler = radioCommsKeyboardHandler;
             _gameViewRadioCommsMouseHandler = gameViewRadioCommsMouseHandler;
+            _squareChoiceGameViewKeyboardHandler = squareChoiceGameViewKeyboardHandler;
+            _squareChoiceGameViewMouseHandler = squareChoiceGameViewMouseHandler;
             _stopwatchProvider = stopwatchProvider;
             _options = options;
         }
@@ -580,8 +590,7 @@ namespace MarsUndiscovered.UserInterface.Views
             
             if (hotBarPanel.InventoryItem.CanRangeAttack)
             {
-                // Go into "Shoot where" mode to get a square selection
-                // then call the range attack command from the view model
+                EnterRangeAttackMode(hotBarPanel.InventoryItem);
             }
             else if (hotBarPanel.InventoryItem.CanApply)
             {
@@ -589,6 +598,15 @@ namespace MarsUndiscovered.UserInterface.Views
             }
             
             return Unit.Task;
+        }
+
+        private void EnterRangeAttackMode(InventoryItem inventoryItem)
+        {
+            _gameViewMode = GameViewMode.RangeAttack;
+            _selectedItem = inventoryItem;
+                
+            StatusParagraph.Text = "Fire at what?";
+            GameInputService.ChangeInput(_squareChoiceGameViewMouseHandler, _squareChoiceGameViewKeyboardHandler);
         }
 
         public Task<Unit> Handle(RefreshHotBarRequest request, CancellationToken cancellationToken)
@@ -632,6 +650,30 @@ namespace MarsUndiscovered.UserInterface.Views
                 else
                     hotBarPanel.SetNoInventory();
             }
+        }
+
+        public Task<Unit> Handle(LeftClickSquareChoiceGameViewRequest request, CancellationToken cancellationToken)
+        {
+            var ray = _gameCamera.GetPointerRay(request.X, request.Y);
+            _currentMovePath = _viewModel.GetPathToDestination(ray);
+            
+            _viewModel.DoRangedAttack(_selectedItem, _currentMovePath);
+            
+            Mediator.Send(new CloseSquareChoiceRequest(), cancellationToken);
+            
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(CloseSquareChoiceRequest request, CancellationToken cancellationToken)
+        {
+            _gameViewMode = GameViewMode.Normal;
+            StatusParagraph.Text = String.Empty;
+            GameInputService.RevertInputUpToAndIncluding(_squareChoiceGameViewMouseHandler,
+                _squareChoiceGameViewKeyboardHandler);
+
+            _selectedItem = null;
+
+            return Unit.Task;
         }
     }
 }

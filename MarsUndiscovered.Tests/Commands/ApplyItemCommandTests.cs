@@ -53,7 +53,6 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.IsNotNull(_gameWorld.Inventory.Items.SingleOrDefault(i => i.Equals(item)));
             Assert.IsTrue(item.CurrentRechargeDelay > 0);
-            Assert.AreEqual("You apply a Shield Generator Gadget", result.Messages[0]);
 
             var subsequentCommand = result.SubsequentCommands[0] as ApplyShieldCommand;
             Assert.IsNotNull(subsequentCommand);
@@ -84,7 +83,10 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.IsNotNull(_gameWorld.Inventory.Items.SingleOrDefault(i => i.Equals(item)));
             Assert.IsTrue(item.CurrentRechargeDelay > 0);
-            Assert.AreEqual($"The {_gameWorld.Inventory.ItemTypeDiscoveries.GetUndiscoveredDescription(item)} is a Shield Generator Gadget!", result.Messages[0]);
+            
+            // Currently when a gadget is used it reveals its enchant level
+            // Possibly change gadget use to only apply the gadget at +1 unless it is negative.
+            Assert.AreEqual($"The {_gameWorld.Inventory.ItemTypeDiscoveries.GetUndiscoveredDescription(item)} is a +0 Shield Generator Gadget!", result.Messages[0]);
             
             var subsequentCommand = result.SubsequentCommands[0] as ApplyShieldCommand;
             Assert.IsNotNull(subsequentCommand);

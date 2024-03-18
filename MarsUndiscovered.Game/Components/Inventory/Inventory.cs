@@ -312,8 +312,6 @@ namespace MarsUndiscovered.Game.Components
             
             if (HotBarKeyAssignments.ContainsValue(item))
                 HotBarKeyAssignments.Remove(HotBarKeyAssignments.First(kvp => kvp.Value == item).Key);
-            
-            _gameWorld.Player.RecalculateAttacks();
 
             return true;
         }
@@ -323,13 +321,14 @@ namespace MarsUndiscovered.Game.Components
             if (!CanEquip(item))
                 return;
 
+            if (EquippedWeapon == item)
+                return;
+            
             if (item.ItemType is Weapon)
             {
                 EquippedWeapon = item;
                 item.IsEquipped = true;
             }
-            
-            _gameWorld.Player.RecalculateAttacks();
         }
         
         private bool CanRangeAttack(Item item)
@@ -420,8 +419,6 @@ namespace MarsUndiscovered.Game.Components
                 EquippedWeapon = null;
 
             item.IsEquipped = false;
-            
-            _gameWorld.Player.RecalculateAttacks();
         }
 
         public bool CanUnequip(Item item)

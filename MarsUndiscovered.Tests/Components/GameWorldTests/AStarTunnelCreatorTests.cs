@@ -62,7 +62,7 @@ public class AStarTunnelCreatorTests : BaseGameWorldIntegrationTests
         
         var mask = new ArrayView<bool>(maskChars.SelectMany(x => x.Select(y => y == '#')).ToArray(), maskChars[0].Length);
 
-        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Chebyshev);
+        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Chebyshev, true);
 
         var map = new ArrayView<bool>(mask.Width, mask.Width);
         
@@ -96,7 +96,7 @@ public class AStarTunnelCreatorTests : BaseGameWorldIntegrationTests
 
         var mask = new ArrayView<bool>(maskChars.SelectMany(x => x.Select(y => y == '#')).ToArray(), maskChars[0].Length);
         
-        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Chebyshev);
+        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Chebyshev, true);
 
         var map = new ArrayView<bool>(maskChars.SelectMany(x => x.Select(y => y == '.')).ToArray(), maskChars[0].Length);
 
@@ -130,7 +130,7 @@ public class AStarTunnelCreatorTests : BaseGameWorldIntegrationTests
 
         var mask = new ArrayView<bool>(maskChars.SelectMany(x => x.Select(y => y == '#')).ToArray(), maskChars[0].Length);
         
-        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Chebyshev);
+        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Chebyshev, true);
 
         var map = new ArrayView<bool>(maskChars.SelectMany(x => x.Select(y => y == '.')).ToArray(), maskChars[0].Length);
 
@@ -164,7 +164,7 @@ public class AStarTunnelCreatorTests : BaseGameWorldIntegrationTests
 
         var mask = new ArrayView<bool>(maskChars.SelectMany(x => x.Select(y => y == '#')).ToArray(), maskChars[0].Length);
         
-        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Chebyshev);
+        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Chebyshev, true);
 
         var map = new ArrayView<bool>(maskChars.SelectMany(x => x.Select(y => y == '.')).ToArray(), maskChars[0].Length);
 
@@ -195,7 +195,7 @@ public class AStarTunnelCreatorTests : BaseGameWorldIntegrationTests
         
         var mask = new ArrayView<bool>(maskChars.SelectMany(x => x.Select(y => y == '#')).ToArray(), maskChars[0].Length);
 
-        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Chebyshev);
+        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Chebyshev, true);
         
         var map = new ArrayView<bool>(maskChars.SelectMany(x => x.Select(y => y == '.')).ToArray(), maskChars[0].Length);
         
@@ -236,7 +236,7 @@ public class AStarTunnelCreatorTests : BaseGameWorldIntegrationTests
         
         var mask = new ArrayView<bool>(maskChars.SelectMany(x => x.Select(y => y == '#')).ToArray(), maskChars[0].Length);
 
-        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Euclidean);
+        var tunnelCreator = new AStarTunnelCreator(mask, Distance.Euclidean, true);
         
         var map = new ArrayView<bool>(maskChars.SelectMany(x => x.Select(y => y == '.')).ToArray(), maskChars[0].Length);
         

@@ -24,7 +24,7 @@ namespace MarsUndiscovered.Game.Components
         public bool IsVictorious { get; set; }
         public bool IsGameEndState => IsVictorious || IsDead;
 
-        private Attack _unarmedAttack = new Attack(new Range<int>(2, 5));
+        public Attack UnarmedAttack { get; set; } = new Attack(new Range<int>(2, 5));
 
         public override bool IsWallTurret { get; } = false;
 
@@ -63,27 +63,26 @@ namespace MarsUndiscovered.Game.Components
         {
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
             SetLoadState(playerSaveData);
-            RecalculateAttacks();
         }
 
-        public void RecalculateAttacks()
+        public void RecalculateAttacksForItem(Item item)
         {
             InitialiseAttacks();
 
-            var weapon = GameWorld.Inventory.EquippedWeapon;
-
-            if (weapon != null)
+            if (item != null)
             {
-                MeleeAttack = (Attack)weapon.MeleeAttack?.Clone();
-                LineAttack = (Attack)weapon.LineAttack?.Clone();
+                MeleeAttack = (Attack)item.MeleeAttack?.Clone();
+                LineAttack = (Attack)item.LineAttack?.Clone();
+                LaserAttack = (LaserAttack)item.LaserAttack?.Clone();
             }
         }
 
         private void InitialiseAttacks()
         {
-            MeleeAttack = (Attack)_unarmedAttack.Clone();
+            MeleeAttack = (Attack)UnarmedAttack.Clone();
             LineAttack = null;
             LightningAttack = null;
+            LaserAttack = null;
         }
     }
 }
