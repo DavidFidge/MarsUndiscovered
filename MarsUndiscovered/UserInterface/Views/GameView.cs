@@ -50,7 +50,8 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<HotBarItemRequest>,
         IRequestHandler<RefreshHotBarRequest>,
         IRequestHandler<LeftClickSquareChoiceGameViewRequest>,
-        IRequestHandler<CloseSquareChoiceRequest>
+        IRequestHandler<CloseSquareChoiceRequest>,
+        IRequestHandler<SquareChoiceMouseHoverViewRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -78,7 +79,6 @@ namespace MarsUndiscovered.UserInterface.Views
         protected AnimatedSprite RadioCommsAnimatedSprite;
         protected HotBarItemPanel[] HotBarPanelItems { get; set; }
 
-        private GameViewMode _gameViewMode = GameViewMode.Normal;
         private InventoryItem _selectedItem;
 
         public GameView(
@@ -602,7 +602,6 @@ namespace MarsUndiscovered.UserInterface.Views
 
         private void EnterRangeAttackMode(InventoryItem inventoryItem)
         {
-            _gameViewMode = GameViewMode.RangeAttack;
             _selectedItem = inventoryItem;
                 
             StatusParagraph.Text = "Fire at what?";
@@ -666,12 +665,20 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public Task<Unit> Handle(CloseSquareChoiceRequest request, CancellationToken cancellationToken)
         {
-            _gameViewMode = GameViewMode.Normal;
             StatusParagraph.Text = String.Empty;
             GameInputService.RevertInputUpToAndIncluding(_squareChoiceGameViewMouseHandler,
                 _squareChoiceGameViewKeyboardHandler);
 
             _selectedItem = null;
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(SquareChoiceMouseHoverViewRequest request, CancellationToken cancellationToken)
+        {  
+            var ray = _gameCamera.GetPointerRay(request.X, request.Y);
+
+            _viewModel.MapViewModel.ShowHoverForSquareChoice(ray);
 
             return Unit.Task;
         }

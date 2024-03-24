@@ -519,5 +519,23 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _assets.SetTileGraphicOptions(tileGraphicOptions);
             UpdateAllTiles();
         }
+
+        public void ShowHoverForSquareChoice(Ray ray)
+        {
+            // Currently this is identical to normal hover path code
+            UpdateMouseHoverPathTileVisibility(false);
+
+            var mapPosition = MousePointerRayToMapPosition(ray);
+
+            if (mapPosition == null)
+            {
+                _mouseHoverPath = null;
+                return;
+            }
+
+            _mouseHoverPath = _gameWorldEndpoint.GetPathToPlayer(mapPosition.Value);
+
+            UpdateMouseHoverPathTileVisibility(true); 
+        }
     }
 }
