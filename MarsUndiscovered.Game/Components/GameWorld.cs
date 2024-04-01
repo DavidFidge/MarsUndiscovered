@@ -13,6 +13,7 @@ using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Game.Components.SaveData;
+using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Game.ViewMessages;
 using Microsoft.Xna.Framework.Input;
 
@@ -363,7 +364,7 @@ namespace MarsUndiscovered.Game.Components
             Inventory.RemoveHotkey(requestKey);
         }
 
-        public IList<CommandResult> DoRangedAttack(Keys requestKey, Path path)
+        public IList<CommandResult> DoRangedAttack(Keys requestKey, Point target)
         {
             var item = Inventory.GetItemForKey(requestKey);
 
@@ -371,9 +372,31 @@ namespace MarsUndiscovered.Game.Components
                 return new List<CommandResult>();
             
             var command = CommandCollection.CreateCommand<PlayerRangeAttackCommand>(this);
-            command.Initialise(path.End, item);
+            command.Initialise(target, item);
             
             return ExecuteCommand(command).ToList();
+        }
+
+        public Path GetPathForRangedAttack(Point mapPosition)
+        {
+            var sourcePoint = Player.Position;
+            var rangeAttackPath = Lines.GetLine(sourcePoint, mapPosition).ToList();
+
+            rangeAttackPath = rangeAttackPath
+                .TakeWhile(p => p == sourcePoint || CurrentMap.GetObjectsAt(p).All(o => o.IsGameObjectStrikeThrough()))
+                .ToList();
+
+            return new Path(rangeAttackPath);
+        }
+
+        public InventoryItem GetEquippedItem()
+        {
+            var equippedItem = Inventory.EquippedWeapon;
+            
+            if (equippedItem == null)
+                return null;
+
+            return Inventory.GetInventoryItems().First(i => i.ItemId == Inventory.EquippedWeapon.ID);
         }
 
         protected IEnumerable<CommandResult> NextTurn()

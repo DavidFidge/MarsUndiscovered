@@ -11,7 +11,7 @@ namespace MarsUndiscovered.UserInterface.Animation
 
         public LaserAnimation(Path path)
         {
-            _floatTween = new FloatTween(0f, 1f, 1);
+            _floatTween = new FloatTween(0f, 1f, 0.5f);
             _path = path;
         }
 

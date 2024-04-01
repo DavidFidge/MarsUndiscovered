@@ -10,6 +10,7 @@ using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using SadRogue.Primitives;
+using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -140,10 +141,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             return GameWorldEndpoint.GetHotBarItems();
         }
 
-        public void DoRangedAttack(InventoryItem selectedItem, Path currentMovePath)
+        public void DoRangedAttack(InventoryItem selectedItem, Point target)
         {
-            var result = GameWorldEndpoint.DoRangedAttack(selectedItem.Key, currentMovePath);
+            var result = GameWorldEndpoint.DoRangedAttack(selectedItem.Key, target);
             AfterTurnExecuted(result);
+        }
+
+        public InventoryItem GetEquippedWeapon()
+        {
+            return GameWorldEndpoint.GetEquippedItem();
         }
     }
 }

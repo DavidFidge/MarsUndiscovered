@@ -533,7 +533,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 return;
             }
 
-            _mouseHoverPath = _gameWorldEndpoint.GetPathToPlayer(mapPosition.Value);
+            _mouseHoverPath = _gameWorldEndpoint.GetPathForRangedAttack(mapPosition.Value);
 
             UpdateMouseHoverPathTileVisibility(true); 
         }

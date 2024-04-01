@@ -51,7 +51,8 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<RefreshHotBarRequest>,
         IRequestHandler<LeftClickSquareChoiceGameViewRequest>,
         IRequestHandler<CloseSquareChoiceRequest>,
-        IRequestHandler<SquareChoiceMouseHoverViewRequest>
+        IRequestHandler<SquareChoiceMouseHoverViewRequest>,
+        IRequestHandler<RangeAttackEquippedWeaponRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -654,11 +655,16 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(LeftClickSquareChoiceGameViewRequest request, CancellationToken cancellationToken)
         {
             var ray = _gameCamera.GetPointerRay(request.X, request.Y);
-            _currentMovePath = _viewModel.GetPathToDestination(ray);
-            
-            _viewModel.DoRangedAttack(_selectedItem, _currentMovePath);
-            
-            Mediator.Send(new CloseSquareChoiceRequest(), cancellationToken);
+            var point = _viewModel.MapViewModel.MousePointerRayToMapPosition(ray);
+
+            if (point != null)
+            {
+                _viewModel.DoRangedAttack(_selectedItem, point.Value);
+
+                Mediator.Send(new CloseSquareChoiceRequest(), cancellationToken);
+            }
+
+            _viewModel.MapViewModel.ClearHover();
             
             return Unit.Task;
         }
@@ -680,6 +686,29 @@ namespace MarsUndiscovered.UserInterface.Views
 
             _viewModel.MapViewModel.ShowHoverForSquareChoice(ray);
 
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(RangeAttackEquippedWeaponRequest request, CancellationToken cancellationToken)
+        {
+            var equippedWeapon = _viewModel.GetEquippedWeapon();
+
+            if (equippedWeapon == null)
+            {
+                _viewModel.MessageStatus.AddMessages("No weapon equipped");
+                
+                return Unit.Task;
+            }
+
+            if (equippedWeapon.CanRangeAttack == false)
+            {
+                _viewModel.MessageStatus.AddMessages("Equipped weapon cannot perform a ranged attack");
+
+                return Unit.Task;
+            }
+            
+            EnterRangeAttackMode(equippedWeapon);
+            
             return Unit.Task;
         }
     }

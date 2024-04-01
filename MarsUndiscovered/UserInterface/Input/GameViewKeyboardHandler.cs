@@ -73,6 +73,9 @@ namespace MarsUndiscovered.UserInterface.Input
             }
             
             ProcessMovement(keyInFocus, keyboardModifier);
+            
+            if (ActionMap.ActionIs<RangeAttackEquippedWeaponRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new RangeAttackEquippedWeaponRequest());
         }
 
         public override void HandleKeyboardKeyRepeat(Keys repeatingKey, KeyboardModifier keyboardModifier)
