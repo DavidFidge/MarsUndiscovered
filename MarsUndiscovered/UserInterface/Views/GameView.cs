@@ -20,8 +20,10 @@ using MediatR;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Sprites;
+using SadRogue.Primitives;
 using Button = GeonBit.UI.Entities.Button;
 using Panel = GeonBit.UI.Entities.Panel;
+using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -52,7 +54,15 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<LeftClickSquareChoiceGameViewRequest>,
         IRequestHandler<CloseSquareChoiceRequest>,
         IRequestHandler<SquareChoiceMouseHoverViewRequest>,
-        IRequestHandler<RangeAttackEquippedWeaponRequest>
+        IRequestHandler<RangeAttackEquippedWeaponRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionDownRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionDownLeftRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionDownRightRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionLeftRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionRightRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionUpRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionUpLeftRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionUpRightRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -709,6 +719,67 @@ namespace MarsUndiscovered.UserInterface.Views
             
             EnterRangeAttackMode(equippedWeapon);
             
+            return Unit.Task;
+        }
+
+        private void MoveSquareChoice(Direction requestDirection)
+        {
+            _viewModel.MoveSquareChoice(requestDirection); 
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionDownRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionDownLeftRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionDownRightRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionLeftRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionRightRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionUpRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionUpLeftRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionUpRightRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
             return Unit.Task;
         }
     }

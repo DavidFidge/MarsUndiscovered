@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.Pathing;
@@ -150,6 +151,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public InventoryItem GetEquippedWeapon()
         {
             return GameWorldEndpoint.GetEquippedItem();
+        }
+
+        public void MoveSquareChoice(Direction requestDirection)
+        {
+            MapViewModel.MoveHover(requestDirection);
         }
     }
 }

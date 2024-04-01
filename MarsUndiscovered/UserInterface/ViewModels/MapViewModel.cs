@@ -14,9 +14,11 @@ using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
 using Point = SadRogue.Primitives.Point;
+using Rectangle = SadRogue.Primitives.Rectangle;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -65,6 +67,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public int Width => _width;
         public int Height => _height;
+        public Rectangle Bounds => Rectangle.WithPositionAndSize(Point.Zero, _width, _height);
 
         public MapViewModel(
             IAssets assets,
@@ -536,6 +539,31 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _mouseHoverPath = _gameWorldEndpoint.GetPathForRangedAttack(mapPosition.Value);
 
             UpdateMouseHoverPathTileVisibility(true); 
+        }
+
+        public void MoveHover(Direction requestDirection)
+        {
+            UpdateMouseHoverPathTileVisibility(false);
+            var playerPosition = _gameWorldEndpoint.GetPlayerPosition();
+            var currentSelection = Point.None;
+
+            if (_mouseHoverPath != null)
+                currentSelection = _mouseHoverPath.End;
+            
+            if (currentSelection == Point.None)
+                currentSelection = playerPosition + requestDirection;
+            else
+                currentSelection += requestDirection;
+
+            // If player tries to move outside map the current selection will remain
+            // unless the point is on the player themselves
+            if (Bounds.Contains(currentSelection))
+                _mouseHoverPath = _gameWorldEndpoint.GetPathForRangedAttack(currentSelection);
+            
+            if (playerPosition == currentSelection)
+                _mouseHoverPath = null;
+
+            UpdateMouseHoverPathTileVisibility(true);
         }
     }
 }
