@@ -21,6 +21,13 @@ namespace MarsUndiscovered.UserInterface.Input
             ProcessMoveSquare(keyInFocus, keyboardModifier);
         }
 
+        public override void HandleKeyboardKeyRepeat(Keys repeatingKey, KeyboardModifier keyboardModifier)
+        {
+            base.HandleKeyboardKeyRepeat(repeatingKey, keyboardModifier);
+            
+            ProcessMoveSquare(repeatingKey, keyboardModifier);
+        }
+
         private void ProcessMoveSquare(Keys keyInFocus, KeyboardModifier keyboardModifier)
         {
             if ((keyboardModifier & KeyboardModifier.Ctrl) == 0)
