@@ -15,6 +15,9 @@ namespace MarsUndiscovered.UserInterface.Input
             if (ActionMap.ActionIs<CloseSquareChoiceRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new CloseSquareChoiceRequest());
             
+            if (ActionMap.ActionIs<SquareChoiceSelectSquareRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new SquareChoiceSelectSquareRequest());
+            
             ProcessMoveSquare(keyInFocus, keyboardModifier);
         }
 

@@ -69,6 +69,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public int Height => _height;
         public Rectangle Bounds => Rectangle.WithPositionAndSize(Point.Zero, _width, _height);
 
+        public Path MouseHoverPath => _mouseHoverPath;
+        
         public MapViewModel(
             IAssets assets,
             ISceneGraph sceneGraph,

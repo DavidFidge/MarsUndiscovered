@@ -53,6 +53,7 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<RefreshHotBarRequest>,
         IRequestHandler<LeftClickSquareChoiceGameViewRequest>,
         IRequestHandler<CloseSquareChoiceRequest>,
+        IRequestHandler<SquareChoiceSelectSquareRequest>,
         IRequestHandler<SquareChoiceMouseHoverViewRequest>,
         IRequestHandler<RangeAttackEquippedWeaponRequest>,
         IRequestHandler<MoveSquareChoiceSelectionDownRequest>,
@@ -667,16 +668,21 @@ namespace MarsUndiscovered.UserInterface.Views
             var ray = _gameCamera.GetPointerRay(request.X, request.Y);
             var point = _viewModel.MapViewModel.MousePointerRayToMapPosition(ray);
 
+            DoRangedAttack(cancellationToken, point);
+            
+            return Unit.Task;
+        }
+
+        private void DoRangedAttack(CancellationToken cancellationToken, Point? point)
+        {
             if (point != null)
             {
                 _viewModel.DoRangedAttack(_selectedItem, point.Value);
 
+                _viewModel.MapViewModel.ClearHover();
+
                 Mediator.Send(new CloseSquareChoiceRequest(), cancellationToken);
             }
-
-            _viewModel.MapViewModel.ClearHover();
-            
-            return Unit.Task;
         }
 
         public Task<Unit> Handle(CloseSquareChoiceRequest request, CancellationToken cancellationToken)
@@ -779,6 +785,14 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(MoveSquareChoiceSelectionUpRightRequest request, CancellationToken cancellationToken)
         {
             MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(SquareChoiceSelectSquareRequest request, CancellationToken cancellationToken)
+        {
+            var point = _viewModel.MapViewModel.MouseHoverPath?.End;
+            DoRangedAttack(cancellationToken, point);
 
             return Unit.Task;
         }
