@@ -9,6 +9,7 @@ namespace MarsUndiscovered.Game.Components
         public static ForcePush ForcePush = new ForcePush();
         public static MagnesiumPipe MagnesiumPipe = new MagnesiumPipe();
         public static IronSpike IronSpike = new IronSpike();
+        public static LaserPistol LaserPistol = new LaserPistol();
         public static HealingBots HealingBots = new HealingBots();
         public static EnhancementBots EnhancementBots = new EnhancementBots();
         public static ShipRepairParts ShipRepairParts = new ShipRepairParts();
@@ -34,6 +35,7 @@ namespace MarsUndiscovered.Game.Components
             ItemTypes.Add(ShieldGenerator.Name, ShieldGenerator);
             ItemTypes.Add(MagnesiumPipe.Name, MagnesiumPipe);
             ItemTypes.Add(IronSpike.Name, IronSpike);
+            ItemTypes.Add(LaserPistol.Name, LaserPistol);
             ItemTypes.Add(HealingBots.Name, HealingBots);
             ItemTypes.Add(EnhancementBots.Name, EnhancementBots);
             ItemTypes.Add(ShipRepairParts.Name, ShipRepairParts);
@@ -49,6 +51,14 @@ namespace MarsUndiscovered.Game.Components
 
         public abstract string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true);
 
+        public string GetHotBarDescription(Item item, ItemDiscovery itemDiscovery)
+        {
+            if (!itemDiscovery.IsEnchantLevelDiscovered)
+                return "?";
+
+            return GetEnchantText(item);
+        }
+        
         protected string GetEnchantText(Item item)
         {
             if (item.EnchantmentLevel >= 0)

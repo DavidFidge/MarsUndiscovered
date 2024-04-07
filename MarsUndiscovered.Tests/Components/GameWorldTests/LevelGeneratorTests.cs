@@ -17,8 +17,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         [TestMethod]
         public void Should_Not_Block_Dungeon_With_Obstacles()
         {
+            // This test appears to be failing intermittently
             // Arrange
-            
             // Machine should only be placed at the end of the tunnel
             var lines = new[]
             {

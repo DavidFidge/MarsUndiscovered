@@ -248,6 +248,15 @@ public class Assets : IAssets
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Lightning.ToString(), lightning);
 
+        var laser = new MapTileTexture(
+            _gameProvider.Game.GraphicsDevice,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
+            new Color(Color.Red, 1f)
+        );
+
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Laser.ToString(), laser);
+        
         var lineAttackNorthSouth = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             UiConstants.TileWidth,

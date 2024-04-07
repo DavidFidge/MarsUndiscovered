@@ -149,8 +149,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var itemTypeDiscovery = newGameWorld.Inventory.ItemTypeDiscoveries[ItemType.HealingBots];
             Assert.IsTrue(itemTypeDiscovery.IsItemTypeDiscovered);
-            Assert.IsNull(newGameWorld.Player.MeleeAttack);
-            Assert.IsNotNull(newGameWorld.Player.LineAttack);
 
             var loadedItem5 = newGameWorld.Inventory.EquippedWeapon;
             Assert.AreEqual(item5.ID, loadedItem5.ID);

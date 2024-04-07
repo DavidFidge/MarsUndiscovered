@@ -24,6 +24,9 @@ namespace MarsUndiscovered.Game.Components
         public List<LightningAttackCommand> LightningAttackCommands { get; private set; } = new();
         public ICommandFactory<LightningAttackCommand> LightningAttackCommandFactory { get; set; }
 
+        public List<LaserAttackCommand> LaserAttackCommands { get; private set; } = new();
+        public ICommandFactory<LaserAttackCommand> LaserAttackCommandFactory { get; set; }
+        
         public List<WalkCommand> WalkCommands { get; private set; } = new();
         public ICommandFactory<WalkCommand> WalkCommandFactory { get; set; }
 
@@ -74,6 +77,9 @@ namespace MarsUndiscovered.Game.Components
         
         public List<ApplyForcePushCommand> ApplyForcePushCommand { get; private set; } = new();
         public ICommandFactory<ApplyForcePushCommand> ApplyForcePushCommandFactory { get; set; }
+        
+        public List<PlayerRangeAttackCommand> PlayerRangeAttackCommand { get; private set; } = new();
+        public ICommandFactory<PlayerRangeAttackCommand> PlayerRangeAttackCommandFactory { get; set; }
         
         private List<uint> _replayCommandIds = new();
         private Dictionary<uint, BaseGameActionCommand> _commandsById = new();

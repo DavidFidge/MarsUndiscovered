@@ -19,6 +19,7 @@ public enum TileGraphicType
     LineAttackNorthSouth,
     MouseHover,
     Lightning,
+    Laser,
     ShipRepairParts,
     FieldOfViewUnrevealedTexture,
     FieldOfViewHasBeenSeenTexture,

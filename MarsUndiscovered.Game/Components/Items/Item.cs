@@ -18,6 +18,7 @@ namespace MarsUndiscovered.Game.Components
         public bool IsCharged { get; set; }
         public Attack MeleeAttack { get; set; }
         public Attack LineAttack { get; set; }
+        public LaserAttack LaserAttack { get; set; }
         public int DamageShieldPercentage { get; set; }
         public int PushPullDistance { get; set; }
         public int PushPullRadius { get; set; }
@@ -112,6 +113,11 @@ namespace MarsUndiscovered.Game.Components
         public string GetDescription(ItemTypeDiscovery itemTypeDiscovery, int quantity)
         {
             return ItemType.GetDescription(this, ItemDiscovery, itemTypeDiscovery, quantity);
+        }
+        
+        public string GetHotBarDescription(Item item)
+        {
+            return ItemType.GetHotBarDescription(item, ItemDiscovery);
         }
         
         public string GetDescriptionWithoutStatus(ItemTypeDiscovery itemTypeDiscovery)

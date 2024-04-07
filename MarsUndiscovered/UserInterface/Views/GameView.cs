@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.View.Extensions;
@@ -12,13 +11,19 @@ using MarsUndiscovered.UserInterface.ViewModels;
 using GeonBit.UI.Entities;
 
 using GoRogue.Pathing;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.UserInterface.Input;
 
 using MediatR;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Sprites;
+using SadRogue.Primitives;
+using Button = GeonBit.UI.Entities.Button;
+using Panel = GeonBit.UI.Entities.Panel;
+using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -43,7 +48,24 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<AutoExploreRequest>,
         IRequestHandler<EndRadioCommsRequest>,
         IRequestHandler<WizardModeNextLevelRequest>,
-        IRequestHandler<WizardModePreviousLevelRequest>
+        IRequestHandler<WizardModePreviousLevelRequest>,
+        IRequestHandler<HotBarItemRequest>,
+        IRequestHandler<RefreshHotBarRequest>,
+        IRequestHandler<LeftClickSquareChoiceGameViewRequest>,
+        IRequestHandler<CloseSquareChoiceRequest>,
+        IRequestHandler<SquareChoiceSelectSquareRequest>,
+        IRequestHandler<SquareChoiceNextTargetRequest>,
+        IRequestHandler<SquareChoicePreviousTargetRequest>,
+        IRequestHandler<SquareChoiceMouseHoverViewRequest>,
+        IRequestHandler<RangeAttackEquippedWeaponRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionDownRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionDownLeftRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionDownRightRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionLeftRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionRightRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionUpRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionUpLeftRequest>,
+        IRequestHandler<MoveSquareChoiceSelectionUpRightRequest>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -52,6 +74,8 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly GameViewGameOverMouseHandler _gameOverMouseHandler;
         private readonly GameViewRadioCommsKeyboardHandler _radioCommsKeyboardHandler;
         private readonly GameViewRadioCommsMouseHandler _gameViewRadioCommsMouseHandler;
+        private readonly SquareChoiceGameViewKeyboardHandler _squareChoiceGameViewKeyboardHandler;
+        private readonly SquareChoiceGameViewMouseHandler _squareChoiceGameViewMouseHandler;
         private readonly IStopwatchProvider _stopwatchProvider;
         private readonly Options _options;
         private Path _currentMovePath;
@@ -62,10 +86,14 @@ namespace MarsUndiscovered.UserInterface.Views
         private bool _isWaitingForRadioComms;
         
         protected Panel RadioCommsPanel;
+        protected Panel HotBarPanel;
         protected RichParagraph RadioCommsMessage;
         protected RichParagraph RadioCommsSource;
         protected Image RadioCommsImage;
         protected AnimatedSprite RadioCommsAnimatedSprite;
+        protected HotBarItemPanel[] HotBarPanelItems { get; set; }
+
+        private InventoryItem _selectedItem;
 
         public GameView(
             GameViewModel gameViewModel,
@@ -76,6 +104,8 @@ namespace MarsUndiscovered.UserInterface.Views
             GameViewGameOverMouseHandler gameOverMouseHandler,
             GameViewRadioCommsKeyboardHandler radioCommsKeyboardHandler,
             GameViewRadioCommsMouseHandler gameViewRadioCommsMouseHandler,
+            SquareChoiceGameViewKeyboardHandler squareChoiceGameViewKeyboardHandler,
+            SquareChoiceGameViewMouseHandler squareChoiceGameViewMouseHandler,
             IGameCamera gameCamera,
             IStopwatchProvider stopwatchProvider,
             Options options
@@ -89,6 +119,8 @@ namespace MarsUndiscovered.UserInterface.Views
             _gameOverMouseHandler = gameOverMouseHandler;
             _radioCommsKeyboardHandler = radioCommsKeyboardHandler;
             _gameViewRadioCommsMouseHandler = gameViewRadioCommsMouseHandler;
+            _squareChoiceGameViewKeyboardHandler = squareChoiceGameViewKeyboardHandler;
+            _squareChoiceGameViewMouseHandler = squareChoiceGameViewMouseHandler;
             _stopwatchProvider = stopwatchProvider;
             _options = options;
         }
@@ -103,13 +135,73 @@ namespace MarsUndiscovered.UserInterface.Views
             CreateMessageLog();
             CreateStatusPanel();
             CreateRadioCommsPanel();
+            CreateHotBarPanel();
             SetupConsole();
             SetupInventoryGame();
             SetupChildPanel(_inGameOptionsView);
 
             _stopwatchProvider.Start();
         }
-        
+
+        protected void CreateHotBarPanel()
+        {
+            HotBarPanel = new Panel()
+                .Anchor(Anchor.BottomCenter)
+                .SkinNone()
+                .NoPadding()
+                .Height(UiConstants.HotBarHeight)
+                .WidthOfContainer();
+            
+            GameViewPanel.AddChild(HotBarPanel);
+
+            HotBarPanelItems = new HotBarItemPanel[10];
+            
+            for (var i = 0; i < 10; i++)
+            {
+                var key = i + 1;
+                
+                if (key == 10)
+                    key = 0;
+                
+                var hotBarItemPanel = new HotBarItemPanel(Assets, GetHotBarKey(key))
+                    .Anchor(Anchor.AutoInlineNoBreak)
+                    .SkinAlternative()
+                    .NoPadding()
+                    .Width(0.05f)
+                    .HeightOfParent();
+                
+                var separator = new Panel().Anchor(Anchor.AutoInlineNoBreak)
+                    .SkinNone()
+                    .NoPadding()
+                    .Width(0.01f)
+                    .HeightOfParent();
+                
+                HotBarPanelItems[i] = hotBarItemPanel;
+                HotBarPanel.AddChild(hotBarItemPanel);
+                
+                if (i != 9)
+                    HotBarPanel.AddChild(separator);
+            }
+        }
+
+        private Keys GetHotBarKey(int i)
+        {
+            return i switch
+            {
+                1 => Keys.D1,
+                2 => Keys.D2,
+                3 => Keys.D3,
+                4 => Keys.D4,
+                5 => Keys.D5,
+                6 => Keys.D6,
+                7 => Keys.D7,
+                8 => Keys.D8,
+                9 => Keys.D9,
+                0 => Keys.D0,
+                _ => throw new Exception()
+            };
+        }
+
         protected void CreateRadioCommsPanel()
         {
             RadioCommsPanel = new Panel()
@@ -316,6 +408,8 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             base.ViewModelChanged();
 
+            RefreshHotBars();
+
             if (_viewModel.PlayerStatus.IsDead || _viewModel.PlayerStatus.IsVictorious)
             {
                 _viewModel.WriteAndSendMorgue();
@@ -446,8 +540,13 @@ namespace MarsUndiscovered.UserInterface.Views
                 return Unit.Task;
             
             StopAutoMovement();
+
+            var rect = BottomPanel.CalcDestRect();
+            HotBarPanel.Offset(0, -rect.Height);
+                
             _inventoryGameView.SetInventoryMode(request.InventoryMode);
             _inventoryGameView.Show();
+            
             return Unit.Task;
         }
 
@@ -455,8 +554,10 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             if (!IsVisible)
                 return Unit.Task;
-            
+
+            HotBarPanel.Offset(0, 0);
             _inventoryGameView.Hide();
+            
             return Unit.Task;
         }
 
@@ -491,6 +592,261 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(WizardModePreviousLevelRequest request, CancellationToken cancellationToken)
         {
             _viewModel.ForcePreviousLevel();
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(HotBarItemRequest request, CancellationToken cancellationToken)
+        {
+            var hotBarPanel = HotBarPanelItems.First(i => i.Key == request.Key);
+
+            if (hotBarPanel.InventoryItem == null)
+                return Unit.Task;
+            
+            if (hotBarPanel.InventoryItem.CanRangeAttack)
+            {
+                EnterRangeAttackMode(hotBarPanel.InventoryItem);
+            }
+            else if (hotBarPanel.InventoryItem.CanApply)
+            {
+                _viewModel.ApplyRequest(request.Key);
+            }
+            
+            return Unit.Task;
+        }
+
+        private void EnterRangeAttackMode(InventoryItem inventoryItem)
+        {
+            _selectedItem = inventoryItem;
+                
+            StatusParagraph.Text = "Fire at what?";
+            GameInputService.ChangeInput(_squareChoiceGameViewMouseHandler, _squareChoiceGameViewKeyboardHandler);
+
+            Mediator.Send(new SquareChoiceNextTargetRequest());
+        }
+
+        public Task<Unit> Handle(RefreshHotBarRequest request, CancellationToken cancellationToken)
+        {
+            if (request.ItemId != null)
+            {
+                var hotBarItems = _viewModel.GetHotBarItems();
+
+                // Single refresh, supports adding a new item or removing an existing item
+                var hotBarPanel = HotBarPanelItems.FirstOrDefault(i => i.InventoryItem?.ItemId == request.ItemId);
+                hotBarPanel?.SetNoInventory();
+
+                var hotBarPanelItem = hotBarItems.FirstOrDefault(i => i.ItemId == request.ItemId);
+
+                if (hotBarPanelItem != null && hotBarPanelItem.HotBarKey != Keys.None)
+                {
+                    hotBarPanel = HotBarPanelItems.First(i => i.Key == hotBarPanelItem.HotBarKey);
+                    hotBarPanel.SetInventoryItem(hotBarPanelItem);
+                }
+            }
+            else
+            {
+                // Full refresh
+                RefreshHotBars();
+            }
+            
+            return Unit.Task;
+        }
+
+        private void RefreshHotBars()
+        {
+            // Full refresh
+            var hotBarItems = _viewModel.GetHotBarItems();
+
+            foreach (var hotBarPanel in HotBarPanelItems)
+            {
+                var hotBarPanelItem = hotBarItems.FirstOrDefault(i => i.HotBarKey == hotBarPanel.Key);
+
+                if (hotBarPanelItem != null)
+                    hotBarPanel.SetInventoryItem(hotBarPanelItem);
+                else
+                    hotBarPanel.SetNoInventory();
+            }
+        }
+
+        public Task<Unit> Handle(LeftClickSquareChoiceGameViewRequest request, CancellationToken cancellationToken)
+        {
+            var ray = _gameCamera.GetPointerRay(request.X, request.Y);
+            var point = _viewModel.MapViewModel.MousePointerRayToMapPosition(ray);
+
+            DoRangedAttack(cancellationToken, point);
+            
+            return Unit.Task;
+        }
+
+        private void DoRangedAttack(CancellationToken cancellationToken, Point? point)
+        {
+            if (point != null)
+            {
+                _viewModel.DoRangedAttack(_selectedItem, point.Value);
+
+                _viewModel.MapViewModel.ClearHover();
+
+                Mediator.Send(new CloseSquareChoiceRequest(), cancellationToken);
+            }
+        }
+
+        public Task<Unit> Handle(CloseSquareChoiceRequest request, CancellationToken cancellationToken)
+        {
+            StatusParagraph.Text = String.Empty;
+            GameInputService.RevertInputUpToAndIncluding(_squareChoiceGameViewMouseHandler,
+                _squareChoiceGameViewKeyboardHandler);
+
+            _selectedItem = null;
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(SquareChoiceMouseHoverViewRequest request, CancellationToken cancellationToken)
+        {  
+            var ray = _gameCamera.GetPointerRay(request.X, request.Y);
+
+            _viewModel.MapViewModel.ShowHoverForSquareChoice(ray);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(RangeAttackEquippedWeaponRequest request, CancellationToken cancellationToken)
+        {
+            var equippedWeapon = _viewModel.GetEquippedWeapon();
+
+            if (equippedWeapon == null)
+            {
+                _viewModel.MessageStatus.AddMessages("No weapon equipped");
+                
+                return Unit.Task;
+            }
+
+            if (equippedWeapon.CanRangeAttack == false)
+            {
+                _viewModel.MessageStatus.AddMessages("Equipped weapon cannot perform a ranged attack");
+
+                return Unit.Task;
+            }
+            
+            EnterRangeAttackMode(equippedWeapon);
+            
+            return Unit.Task;
+        }
+
+        private void MoveSquareChoice(Direction requestDirection)
+        {
+            _viewModel.MoveSquareChoice(requestDirection); 
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionDownRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionDownLeftRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionDownRightRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionLeftRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionRightRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionUpRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionUpLeftRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(MoveSquareChoiceSelectionUpRightRequest request, CancellationToken cancellationToken)
+        {
+            MoveSquareChoice(request.Direction);
+
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(SquareChoiceSelectSquareRequest request, CancellationToken cancellationToken)
+        {
+            var point = _viewModel.MapViewModel.MouseHoverPath?.End;
+            DoRangedAttack(cancellationToken, point);
+            _viewModel.RetainedSquareChoiceMonsterId = _viewModel.CurrentSquareChoiceMonsterId;
+            _viewModel.CurrentSquareChoiceMonsterId = null;
+            
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(SquareChoiceNextTargetRequest request, CancellationToken cancellationToken)
+        {
+            return GetNextSquareChoice(false);
+        }
+        
+        public Task<Unit> Handle(SquareChoicePreviousTargetRequest request, CancellationToken cancellationToken)
+        {
+            return GetNextSquareChoice(true);
+        }
+
+        private Task<Unit> GetNextSquareChoice(bool reverse)
+        {
+            if (_viewModel.CurrentSquareChoiceMonsterId == null)
+                _viewModel.CurrentSquareChoiceMonsterId = _viewModel.RetainedSquareChoiceMonsterId;
+            
+            if (!MonsterPanels.Any())
+                return Unit.Task;
+            
+            var monsterPanels = MonsterPanels.ToList();
+            
+            if (reverse)
+                monsterPanels.Reverse();
+
+            var panels = monsterPanels;
+            
+            if (_viewModel.CurrentSquareChoiceMonsterId != null)
+                panels = monsterPanels
+                    .SkipWhile(m => m.ActorStatus.ID != _viewModel.CurrentSquareChoiceMonsterId
+                        )
+                    .ToList();
+
+            if (!panels.Any())
+                panels = monsterPanels;
+            else
+                panels = panels.Skip(1).ToList();
+
+            var panel = panels.FirstOrDefault() ?? monsterPanels.FirstOrDefault();
+
+            if (panel == null)
+                return Unit.Task;
+
+            _viewModel.CurrentSquareChoiceMonsterId = panel.ActorStatus.ID;
+            _viewModel.MapViewModel.ShowHoverForSquareChoice(panel.ActorStatus.Position);
+            
             return Unit.Task;
         }
     }

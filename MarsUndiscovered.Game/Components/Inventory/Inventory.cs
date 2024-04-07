@@ -23,6 +23,7 @@ namespace MarsUndiscovered.Game.Components
 
         public List<Item> Items { get; set; } = new List<Item>();
         public Dictionary<Keys, ItemGroup> ItemKeyAssignments { get; set; } = new Dictionary<Keys, ItemGroup>();
+        public Dictionary<Keys, Item> HotBarKeyAssignments { get; set; } = new Dictionary<Keys, Item>();
         public Dictionary<Item, string> CallItem { get; set; } = new Dictionary<Item, string>();
         public Dictionary<ItemType, string> CallItemType { get; set; } = new Dictionary<ItemType, string>();
         public ItemTypeDiscoveryCollection ItemTypeDiscoveries { get; set; } = new ItemTypeDiscoveryCollection();
@@ -75,11 +76,13 @@ namespace MarsUndiscovered.Game.Components
 
                         return new InventoryItem
                         {
+                            ItemId = item.ID,
                             ItemDescription = item.GetDescription(
                                 itemTypeDiscovery,
                                 ItemKeyAssignments[key].Count
                             ),
                             ItemDiscoveredDescription = item.GetDiscoveredDescription(ItemKeyAssignments[key].Count),
+                            HotBarDescription = item.GetHotBarDescription(item),
                             ItemType = item.ItemType,
                             Key = key,
                             LongDescription = item.GetLongDescription(itemTypeDiscovery),
@@ -87,10 +90,26 @@ namespace MarsUndiscovered.Game.Components
                             CanDrop = true,
                             CanUnequip = CanUnequip(item),
                             CanApply = CanApply(item),
-                            CanEnchant = CanEnchant(item)
+                            CanEnchant = CanEnchant(item),
+                            CanRangeAttack = CanRangeAttack(item),
+                            CanAssignHotKey = CanAssignHotkey(item),
+                            HotBarKey = HotBarKeyAssignments
+                                .Where(kvp => kvp.Value == item)
+                                .Select(kvp => kvp.Key)
+                                .DefaultIfEmpty(Keys.None)
+                                .FirstOrDefault()
                         };
                     }
                 ).ToList();
+
+            return inventoryItems;
+        }
+
+        public List<InventoryItem> GetHotBarItems()
+        {
+            var inventoryItems = GetInventoryItems()
+                .Where(i => i.HotBarKey != Keys.None)
+                .ToList();
 
             return inventoryItems;
         }
@@ -127,12 +146,21 @@ namespace MarsUndiscovered.Game.Components
 
             return null;
         }
+        
+        public Item GetItemForHotBarkey(Keys key)
+        {
+            if (HotBarKeyAssignments.ContainsKey(key))
+                return HotBarKeyAssignments[key];
 
+            return null;
+        }
+        
         public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             var memento = new Memento<InventorySaveData>(new InventorySaveData());
             memento.State.ItemIds = Items.Select(i => i.ID).ToList();
             memento.State.ItemKeyAssignments = ItemKeyAssignments.ToDictionary(k => k.Key, v => v.Value.Select(i => i.ID).ToList());
+            memento.State.HotKeyAssignments = HotBarKeyAssignments.ToDictionary(k => k.Key, v => v.Value.ID);
             memento.State.CallItem = CallItem.ToDictionary(k => k.Key.ID, v => v.Value);
             memento.State.CallItemType = CallItemType.ToDictionary(k => k.Key.Name, v => v.Value);
             memento.State.ItemTypeDiscoveries = ItemTypeDiscoveries.ToDictionary(k => k.Key.Name, v => v.Value);
@@ -149,7 +177,10 @@ namespace MarsUndiscovered.Game.Components
 
             ItemKeyAssignments = inventorySaveData.State.ItemKeyAssignments
                 .ToDictionary(k => k.Key, v => new ItemGroup(v.Value.Select(i => gameWorld.Items[i]).ToList()));
-
+            
+            HotBarKeyAssignments = inventorySaveData.State.HotKeyAssignments
+                .ToDictionary(k => k.Key, v => Items.First(i => i.ID == v.Value));
+            
             CallItem = inventorySaveData.State.CallItem
                 .ToDictionary(k => gameWorld.Items[k.Key], v => v.Value);
 
@@ -171,12 +202,52 @@ namespace MarsUndiscovered.Game.Components
         {
             return GetEnumerator();
         }
-        
+
         public void Add(Item item)
         {
             Add(item, Keys.None);
         }
 
+        public void AssignHotkey(Keys itemKey, Keys hotkey)
+        {
+            var item = GetItemForKey(itemKey);
+            
+            if (item == null)
+                return;
+
+            if (!CanAssignHotkey(item))
+                return;
+
+            var currentAssignedKey = Keys.None;
+            
+            if (HotBarKeyAssignments.ContainsValue(item))
+            {
+                currentAssignedKey = HotBarKeyAssignments.First(kvp => kvp.Value == item).Key;
+            }
+            
+            ClearHotkeyForItem(item);
+
+            // if item was already assigned to this key then it just gets toggled off, don't re-add
+            if (currentAssignedKey != hotkey)
+                HotBarKeyAssignments[hotkey] = item;
+        }
+
+        private bool CanAssignHotkey(Item item)
+        {
+            return !item.GroupsInInventory;
+        }
+
+        public void ClearHotkeyForItem(Item item)
+        {
+            if (item == null)
+                return;
+            
+            if (HotBarKeyAssignments.ContainsValue(item))
+            {
+                HotBarKeyAssignments.Remove(HotBarKeyAssignments.First(kvp => kvp.Value == item).Key);
+            }
+        }
+        
         public void Add(Item item, Keys specificKey)
         {
             if (item == null)
@@ -207,6 +278,7 @@ namespace MarsUndiscovered.Game.Components
         {
             Items.Clear();
             ItemKeyAssignments.Clear();
+            HotBarKeyAssignments.Clear();
         }
 
         public bool Contains(Item item)
@@ -238,7 +310,8 @@ namespace MarsUndiscovered.Game.Components
                 ItemKeyAssignments.Remove(key);
             }
             
-            _gameWorld.Player.RecalculateAttacks();
+            if (HotBarKeyAssignments.ContainsValue(item))
+                HotBarKeyAssignments.Remove(HotBarKeyAssignments.First(kvp => kvp.Value == item).Key);
 
             return true;
         }
@@ -248,13 +321,19 @@ namespace MarsUndiscovered.Game.Components
             if (!CanEquip(item))
                 return;
 
+            if (EquippedWeapon == item)
+                return;
+            
             if (item.ItemType is Weapon)
             {
                 EquippedWeapon = item;
                 item.IsEquipped = true;
             }
-            
-            _gameWorld.Player.RecalculateAttacks();
+        }
+        
+        private bool CanRangeAttack(Item item)
+        {
+            return item.LaserAttack != null;
         }
 
         public bool CanEquip(Item item)
@@ -280,7 +359,7 @@ namespace MarsUndiscovered.Game.Components
 
             return false;
         }
-        
+
         public bool CanApply(Item item)
         {
             if (item == null)
@@ -291,7 +370,7 @@ namespace MarsUndiscovered.Game.Components
 
             return CanTypeBeApplied(item);
         }
-        
+
         public bool CanTypeBeApplied(Item item)
         {
             if (item.ItemType is Gadget or NanoFlask)
@@ -312,7 +391,7 @@ namespace MarsUndiscovered.Game.Components
 
             return CanTypeBeEnchanted(item);
         }
-        
+
         public bool CanTypeBeEnchanted(Item item)
         {
             if (item.ItemType is Gadget or Weapon)
@@ -322,7 +401,7 @@ namespace MarsUndiscovered.Game.Components
 
             return false;
         }
-        
+
         public bool IsEquipped(Item item)
         {
             if (item == null)
@@ -340,8 +419,6 @@ namespace MarsUndiscovered.Game.Components
                 EquippedWeapon = null;
 
             item.IsEquipped = false;
-            
-            _gameWorld.Player.RecalculateAttacks();
         }
 
         public bool CanUnequip(Item item)
@@ -386,6 +463,16 @@ namespace MarsUndiscovered.Game.Components
                 return false;
 
             return true;
+        }
+
+        public void RemoveHotkey(Keys requestKey)
+        {
+            HotBarKeyAssignments.TryGetValue(requestKey, out var item);
+
+            if (item == null)
+                return;
+
+            ClearHotkeyForItem(item);
         }
     }
 }

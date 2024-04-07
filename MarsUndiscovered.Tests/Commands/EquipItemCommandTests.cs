@@ -38,30 +38,6 @@ namespace MarsUndiscovered.Tests.Commands
         }
         
         [TestMethod]
-        public void EquipItemCommand_Should_Clone_Attacks_From_Weapon()
-        {
-            // Arrange
-            NewGameWithTestLevelGenerator(_gameWorld);
-
-            var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.IronSpike);
-
-            var commandFactory = Container.Resolve<ICommandCollection>();
-
-            var equipItemCommand = commandFactory.CreateCommand<EquipItemCommand>(_gameWorld);
-            equipItemCommand.Initialise(item);
-
-            // Act
-            var result = equipItemCommand.Execute();
-
-            // Assert
-            Assert.AreEqual(CommandResultEnum.Success, result.Result);
-            Assert.IsNotNull(_gameWorld.Player.LineAttack);
-            Assert.AreEqual(item.LineAttack.DamageRange.Min, _gameWorld.Player.LineAttack.DamageRange.Min);
-            Assert.AreEqual(item.LineAttack.DamageRange.Max, _gameWorld.Player.LineAttack.DamageRange.Max);
-            Assert.IsNull(_gameWorld.Player.MeleeAttack);
-        }
-
-        [TestMethod]
         public void EquipItemCommand_Should_Not_Equip_An_ItemType_That_Cannot_Be_Equipped()
         {
             // Arrange

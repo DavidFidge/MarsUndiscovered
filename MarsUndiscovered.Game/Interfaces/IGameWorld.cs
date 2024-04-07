@@ -74,5 +74,11 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> IdentifyItemRequest(Keys requestKey);
         ICommandCollection CommandCollection { get; }
         void CancelIdentify();
+        void AssignHotBarItem(Keys inventoryItemKey, Keys requestKey);
+        List<InventoryItem> GetHotBarItems();
+        void RemoveHotBarItem(Keys requestKey);
+        IList<CommandResult> DoRangedAttack(Keys requestKey, Point target);
+        Path GetPathForRangedAttack(Point mapPosition);
+        InventoryItem GetEquippedItem();
     }
 }

@@ -14,15 +14,29 @@ using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
 using Point = SadRogue.Primitives.Point;
+using Rectangle = SadRogue.Primitives.Rectangle;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
     // MapViewModel is a child of Replay and Game view models and is thus registered as transient.
     // Any Notifications need to be registered on the parent and forwarded here.
-    public class MapViewModel
+    public interface IMapViewModel
+    {
+        ISceneGraph SceneGraph { get; }
+        int Width { get; }
+        int Height { get; }
+        void UpdateTile(Point point);
+        void UpdateAllTiles();
+        void ClearAnimationTile(Point point);
+        void ClearAnimationTiles(IEnumerable<Point> points);
+        void AnimateTile(Point point, Action<MapTileEntity> action);
+    }
+
+    public class MapViewModel : IMapViewModel
     {
         private readonly IAssets _assets;
         private readonly ISceneGraph _sceneGraph;
@@ -53,7 +67,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public int Width => _width;
         public int Height => _height;
+        public Rectangle Bounds => Rectangle.WithPositionAndSize(Point.Zero, _width, _height);
 
+        public Path MouseHoverPath => _mouseHoverPath;
+        
         public MapViewModel(
             IAssets assets,
             ISceneGraph sceneGraph,
@@ -506,6 +523,58 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             _assets.SetTileGraphicOptions(tileGraphicOptions);
             UpdateAllTiles();
+        }
+
+        public void ShowHoverForSquareChoice(Ray ray)
+        {
+            // Currently this is identical to normal hover path code
+            UpdateMouseHoverPathTileVisibility(false);
+
+            var mapPosition = MousePointerRayToMapPosition(ray);
+
+            if (mapPosition == null)
+            {
+                _mouseHoverPath = null;
+                return;
+            }
+
+            _mouseHoverPath = _gameWorldEndpoint.GetPathForRangedAttack(mapPosition.Value);
+
+            UpdateMouseHoverPathTileVisibility(true); 
+        }
+        
+        public void ShowHoverForSquareChoice(Point point)
+        {
+            UpdateMouseHoverPathTileVisibility(false);
+
+            _mouseHoverPath = _gameWorldEndpoint.GetPathForRangedAttack(point);
+
+            UpdateMouseHoverPathTileVisibility(true);
+        }
+
+        public void MoveHover(Direction requestDirection)
+        {
+            UpdateMouseHoverPathTileVisibility(false);
+            var playerPosition = _gameWorldEndpoint.GetPlayerPosition();
+            var currentSelection = Point.None;
+
+            if (_mouseHoverPath != null)
+                currentSelection = _mouseHoverPath.End;
+            
+            if (currentSelection == Point.None)
+                currentSelection = playerPosition + requestDirection;
+            else
+                currentSelection += requestDirection;
+
+            // If player tries to move outside map the current selection will remain
+            // unless the point is on the player themselves
+            if (Bounds.Contains(currentSelection))
+                _mouseHoverPath = _gameWorldEndpoint.GetPathForRangedAttack(currentSelection);
+            
+            if (playerPosition == currentSelection)
+                _mouseHoverPath = null;
+
+            UpdateMouseHoverPathTileVisibility(true);
         }
     }
 }

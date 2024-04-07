@@ -8,13 +8,17 @@ using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Xna.Framework;
-
+using Microsoft.Xna.Framework.Input;
 using SadRogue.Primitives;
+using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class GameViewModel : BaseGameViewModel<GameData>
     {
+        public uint? CurrentSquareChoiceMonsterId { get; set; }
+        public uint? RetainedSquareChoiceMonsterId { get; set; }
+        
         public void NewGame(ulong? seed = null)
         {
             IsActive = false;
@@ -127,6 +131,33 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             var result = GameWorldEndpoint.ForceLevelChange(ForceLevelChange.PreviousLevel);
             AfterTurnExecuted(result);
+        }
+
+        public void ApplyRequest(Keys requestKey)
+        {
+            var applyItemResults = GameWorldEndpoint.ApplyItemRequest(requestKey);
+            AfterTurnExecuted(applyItemResults);
+        }
+
+        public List<InventoryItem> GetHotBarItems()
+        {
+            return GameWorldEndpoint.GetHotBarItems();
+        }
+
+        public void DoRangedAttack(InventoryItem selectedItem, Point target)
+        {
+            var result = GameWorldEndpoint.DoRangedAttack(selectedItem.Key, target);
+            AfterTurnExecuted(result);
+        }
+
+        public InventoryItem GetEquippedWeapon()
+        {
+            return GameWorldEndpoint.GetEquippedItem();
+        }
+
+        public void MoveSquareChoice(Direction requestDirection)
+        {
+            MapViewModel.MoveHover(requestDirection);
         }
     }
 }

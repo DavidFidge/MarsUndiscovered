@@ -124,7 +124,8 @@ namespace MarsUndiscovered.Game.Components
                 Health = Health,
                 MaxHealth = MaxHealth,
                 Name = Name,
-                Behaviour = MonsterState.ToString().ToSeparateWords()
+                Behaviour = MonsterState.ToString().ToSeparateWords(),
+                Position = Position
             };
 
             return monsterStatus;

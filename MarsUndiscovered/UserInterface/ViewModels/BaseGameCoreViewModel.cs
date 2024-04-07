@@ -4,6 +4,7 @@ using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
+using GoRogue.Pathing;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.ViewMessages;
 using MarsUndiscovered.Interfaces;
@@ -52,6 +53,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
                     var lightningAttackAnimation = new LightningAnimation(new Lightning(lightningAttackCommand.Path));
                     Animations.Enqueue(lightningAttackAnimation);
+                }
+                if (commandResult.Command is LaserAttackCommand)
+                {
+                    var laserAttackCommand = commandResult.Command as LaserAttackCommand;
+
+                    var laserAttackAnimation = new LaserAnimation(new Path(laserAttackCommand.Path));
+                    Animations.Enqueue(laserAttackAnimation);
                 }
                 else if (commandResult.Command is LineAttackCommand)
                 {

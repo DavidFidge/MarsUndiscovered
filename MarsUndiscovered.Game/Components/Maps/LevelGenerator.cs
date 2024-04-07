@@ -293,7 +293,8 @@ public class LevelGenerator : ILevelGenerator
         _weaponWeights = new List<(ItemType itemType, double weight)>
         {
             (ItemType.IronSpike, 1), 
-            (ItemType.MagnesiumPipe, 1) 
+            (ItemType.MagnesiumPipe, 1), 
+            (ItemType.LaserPistol, 10) 
         };
 
         _weaponProbabilityTable = new ProbabilityTable<ItemType>(_weaponWeights);

@@ -13,6 +13,7 @@ using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Game.Components.SaveData;
+using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Game.ViewMessages;
 using Microsoft.Xna.Framework.Input;
 
@@ -348,6 +349,56 @@ namespace MarsUndiscovered.Game.Components
             return result;
         }
 
+        public void AssignHotBarItem(Keys inventoryItemKey, Keys requestKey)
+        {
+            Inventory.AssignHotkey(inventoryItemKey, requestKey);
+        }
+
+        public List<InventoryItem> GetHotBarItems()
+        {
+            return Inventory.GetHotBarItems();
+        }
+
+        public void RemoveHotBarItem(Keys requestKey)
+        {
+            Inventory.RemoveHotkey(requestKey);
+        }
+
+        public IList<CommandResult> DoRangedAttack(Keys requestKey, Point target)
+        {
+            var item = Inventory.GetItemForKey(requestKey);
+
+            if (item == null)
+                return new List<CommandResult>();
+            
+            var command = CommandCollection.CreateCommand<PlayerRangeAttackCommand>(this);
+            command.Initialise(target, item);
+            
+            return ExecuteCommand(command).ToList();
+        }
+
+        public Path GetPathForRangedAttack(Point mapPosition)
+        {
+            var sourcePoint = Player.Position;
+            var rangeAttackPath = Lines.GetLine(sourcePoint, mapPosition).ToList();
+
+            rangeAttackPath = rangeAttackPath
+                .TakeWhile(p => p == sourcePoint || CurrentMap.GetObjectsAt(p).All(o => o.IsGameObjectStrikeThrough()))
+                .ToList();
+
+            return new Path(rangeAttackPath);
+        }
+
+        public InventoryItem GetEquippedItem()
+        {
+            var equippedItem = Inventory.EquippedWeapon;
+            
+            if (equippedItem == null)
+                return null;
+
+            return Inventory.GetInventoryItems().First(i => i.ItemId == Inventory.EquippedWeapon.ID);
+        }
+
         protected IEnumerable<CommandResult> NextTurn()
         {
             LastMonstersInView = MonstersInView;
@@ -647,7 +698,8 @@ namespace MarsUndiscovered.Game.Components
                 IsVictorious = Player.IsVictorious,
                 MaxHealth = Player.MaxHealth,
                 Shield = Player.Shield,
-                Name = Player.Name
+                Name = Player.Name,
+                Position = Player.Position
             };
         }
 
@@ -733,12 +785,20 @@ namespace MarsUndiscovered.Game.Components
 
         public IList<CommandResult> ApplyItemRequest(Keys itemKey)
         {
-            if (!Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
-                return null;
+            Item item;
+            
+            if (Inventory.ItemKeyAssignments.TryGetValue(itemKey, out var itemGroup))
+            {
+                item = itemGroup.First();
+            }
+            else
+            {
+                Inventory.HotBarKeyAssignments.TryGetValue(itemKey, out item);
+            }
 
             var applyItemCommand = CommandCollection.CreateCommand<ApplyItemCommand>(this);
 
-            applyItemCommand.Initialise(Player, itemGroup.First());
+            applyItemCommand.Initialise(Player, item);
 
             return ExecuteCommand(applyItemCommand).ToList();
         }

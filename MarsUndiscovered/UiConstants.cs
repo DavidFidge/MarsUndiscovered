@@ -18,6 +18,8 @@
         // Defined in relation to bottom panel. Both are currently leaving room for the status bar.
         public const float MessageLogHeight = 0.9f;
         public const float RadioCommsPanelHeight = 0.9f;
+        
+        public const float HotBarHeight = 0.08f;
 
         public const int ShipOffset = 2;
 

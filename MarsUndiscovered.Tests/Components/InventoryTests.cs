@@ -303,7 +303,39 @@ namespace MarsUndiscovered.Tests.Components
             Assert.AreEqual("b)", resultKeyB.KeyDescription);
             Assert.AreEqual("2 NanoFlasks of Healing Bots", resultKeyB.ItemDescription);
         }
+        
+        [TestMethod]
+        public void GetInventoryItems_CanAssignHotKey_Is_True_Only_For_NonConsumables()
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld);
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.HealingBots));
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.ShieldGenerator));
+            var item1 = _gameWorld.Items.Values.First();
+            var item2 = _gameWorld.Items.Values.Skip(1).First();
+            var item3 = _gameWorld.Items.Values.Skip(2).First();
 
+            _gameWorld.Inventory.Add(item1);
+            _gameWorld.Inventory.Add(item2);
+            _gameWorld.Inventory.Add(item3);
+
+            _gameWorld.Inventory.ItemTypeDiscoveries[ItemType.HealingBots].IsItemTypeDiscovered = true;
+
+            // Act
+            var result = _gameWorld.Inventory.GetInventoryItems();
+
+            // Assert
+            var resultKeyA = result.First(r => r.Key == Keys.A);
+            Assert.IsTrue(resultKeyA.CanAssignHotKey);
+            
+            var resultKeyB = result.First(r => r.Key == Keys.B);
+            Assert.IsFalse(resultKeyB.CanAssignHotKey);
+            
+            var resultKeyC = result.First(r => r.Key == Keys.C);
+            Assert.IsTrue(resultKeyC.CanAssignHotKey);
+        }
+        
         [TestMethod]
         public void Should_Equip_Weapon()
         {
@@ -437,6 +469,85 @@ namespace MarsUndiscovered.Tests.Components
 
             // Assert
             Assert.IsFalse(result);
+        }
+        
+        [TestMethod]
+        public void Should_Set_HotKey()
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld);
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+
+            var itemKey = _gameWorld.Inventory.GetKeyForItem(item);
+            
+            // Act
+            _gameWorld.Inventory.AssignHotkey(itemKey, Keys.D1);
+
+            // Assert
+            Assert.AreEqual(1, _gameWorld.Inventory.HotBarKeyAssignments.Count);
+            Assert.AreEqual(Keys.D1, _gameWorld.Inventory.HotBarKeyAssignments.First().Key);
+            Assert.AreEqual(item, _gameWorld.Inventory.HotBarKeyAssignments.First().Value);
+        }
+        
+        [TestMethod]
+        public void Should_Change_HotKey()
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld);
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+
+            var itemKey = _gameWorld.Inventory.GetKeyForItem(item);
+            _gameWorld.Inventory.AssignHotkey(itemKey, Keys.D1);
+            
+            // Act
+            _gameWorld.Inventory.AssignHotkey(itemKey, Keys.D2);
+
+            // Assert
+            Assert.AreEqual(1, _gameWorld.Inventory.HotBarKeyAssignments.Count);
+            Assert.AreEqual(Keys.D2, _gameWorld.Inventory.HotBarKeyAssignments.First().Key);
+            Assert.AreEqual(item, _gameWorld.Inventory.HotBarKeyAssignments.First().Value);
+        }
+        
+        [TestMethod]
+        public void Should_Remove_HotKey_When_Item_Removed_From_Inventory()
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld);
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+
+            var itemKey = _gameWorld.Inventory.GetKeyForItem(item);
+            _gameWorld.Inventory.AssignHotkey(itemKey, Keys.D1);
+            
+            // Act
+            _gameWorld.Inventory.Remove(item);
+
+            // Assert
+            Assert.AreEqual(0, _gameWorld.Inventory.HotBarKeyAssignments.Count);
+        }
+        
+        [TestMethod]
+        public void Should_Remove_HotKey_When_Assigning_Same_Key()
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld);
+            _gameWorld.SpawnItem(new SpawnItemParams().WithItemType(ItemType.MagnesiumPipe));
+            var item = _gameWorld.Items.Values.First();
+            _gameWorld.Inventory.Add(item);
+
+            var itemKey = _gameWorld.Inventory.GetKeyForItem(item);
+            _gameWorld.Inventory.AssignHotkey(itemKey, Keys.D1);
+            
+            // Act
+            _gameWorld.Inventory.AssignHotkey(itemKey, Keys.D1);
+
+            // Assert
+            Assert.AreEqual(0, _gameWorld.Inventory.HotBarKeyAssignments.Count);
         }
     }
 }

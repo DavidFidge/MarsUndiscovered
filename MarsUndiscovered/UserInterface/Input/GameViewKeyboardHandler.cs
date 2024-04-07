@@ -24,6 +24,11 @@ namespace MarsUndiscovered.UserInterface.Input
             if (ActionMap.ActionIs<OpenInGameOptionsRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new OpenInGameOptionsRequest());
 
+            if (ActionMap.ActionIs<HotBarItemRequest>(keyInFocus))
+            {
+                Mediator.Send(new HotBarItemRequest(keyInFocus));
+            }
+            
             if (ActionMap.ActionIs<OpenGameInventoryRequest>(keyInFocus, keyboardModifier))
             {
                 var actionName = ActionMap.ActionName<OpenGameInventoryRequest>(keyInFocus, keyboardModifier);
@@ -68,6 +73,9 @@ namespace MarsUndiscovered.UserInterface.Input
             }
             
             ProcessMovement(keyInFocus, keyboardModifier);
+            
+            if (ActionMap.ActionIs<RangeAttackEquippedWeaponRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new RangeAttackEquippedWeaponRequest());
         }
 
         public override void HandleKeyboardKeyRepeat(Keys repeatingKey, KeyboardModifier keyboardModifier)

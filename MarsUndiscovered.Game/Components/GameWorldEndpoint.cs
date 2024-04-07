@@ -205,6 +205,36 @@ namespace MarsUndiscovered.Game.Components
             GameWorld.CancelIdentify();
         }
 
+        public void AssignHotBarItem(Keys inventoryItemKey, Keys requestKey)
+        {
+            GameWorld.AssignHotBarItem(inventoryItemKey, requestKey);
+        }
+
+        public List<InventoryItem> GetHotBarItems()
+        {
+            return GameWorld.GetHotBarItems();
+        }
+
+        public void RemoveHotBarItem(Keys requestKey)
+        {
+            GameWorld.RemoveHotBarItem(requestKey);
+        }
+
+        public IList<CommandResult> DoRangedAttack(Keys requestKey, Point target)
+        {
+            return GameWorld.DoRangedAttack(requestKey, target);
+        }
+
+        public Path GetPathForRangedAttack(Point mapPosition)
+        {
+            return GameWorld.GetPathForRangedAttack(mapPosition);
+        }
+
+        public InventoryItem GetEquippedItem()
+        {
+            return GameWorld.GetEquippedItem();
+        }
+
         public void LoadReplay(string gameName)
         {
             GameWorld = _gameWorldFactory.Create();

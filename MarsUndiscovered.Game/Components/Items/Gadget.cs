@@ -8,12 +8,14 @@
         {
             AsciiCharacter = (char)237;
         }
-        
-        public override string GetDescription(Item item, ItemDiscovery itemDiscovery, ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
+
+        public override string GetDescription(Item item, ItemDiscovery itemDiscovery,
+            ItemTypeDiscovery itemTypeDiscovery, int quantity, bool includePrefix = true, bool includeStatus = true)
         {
             if (itemTypeDiscovery is { IsItemTypeDiscovered: false })
-                return $"{GetQuantityText(1, itemTypeDiscovery)} {itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeName()}";
-               
+                return
+                    $"{GetQuantityText(1, itemTypeDiscovery)} {itemTypeDiscovery.UndiscoveredName} {GetAbstractTypeName()}";
+
             if (!itemDiscovery.IsEnchantLevelDiscovered)
                 return $"{(includePrefix ? "A " : "")}{GetTypeDescription()}";
 

@@ -64,12 +64,11 @@ namespace MarsUndiscovered.UserInterface.Views
             RootPanel.AddChild(BottomPanel);
 
             GameViewPanel = new Panel()
-                .Anchor(Anchor.TopLeft)
+                .Anchor(Anchor.TopRight)
                 .Width(UiConstants.GameViewPanelWidth)
                 .SkinNone()
                 .NoPadding()
-                .Height(UiConstants.GameViewPanelHeight)
-                .Offset(new Vector2(UiConstants.LeftPanelWidth));
+                .Height(UiConstants.GameViewPanelHeight);
 
             // This creates two sections in the game view that is used for 'popups' like game inventory
             HoverPanelLeft = new Panel()

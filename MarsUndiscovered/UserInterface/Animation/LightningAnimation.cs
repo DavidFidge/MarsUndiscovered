@@ -33,7 +33,7 @@ namespace MarsUndiscovered.UserInterface.Animation
             _finalTween = tweener.TweenTo(finalLightning, from => from.From, finalLightning.To, finalLightningSpeed);
         }
 
-        public override void Update(IGameTimeService gameTimeService, MapViewModel mapViewModel)
+        public override void Update(IGameTimeService gameTimeService, IMapViewModel mapViewModel)
         {
             if (_tween.IsComplete)
             {
@@ -80,7 +80,7 @@ namespace MarsUndiscovered.UserInterface.Animation
             }
         }
 
-        private void AnimateLightningStreakTiles(MapViewModel mapViewModel)
+        private void AnimateLightningStreakTiles(IMapViewModel mapViewModel)
         {
             var index = 0;
 
@@ -91,12 +91,12 @@ namespace MarsUndiscovered.UserInterface.Animation
             }
         }
 
-        private void ClearAnimationTiles(MapViewModel mapViewModel)
+        private void ClearAnimationTiles(IMapViewModel mapViewModel)
         {
             mapViewModel.ClearAnimationTiles(_lightningStreak);
         }
 
-        public override void Finish(MapViewModel mapViewModel)
+        public override void Finish(IMapViewModel mapViewModel)
         {
             ClearAnimationTiles(mapViewModel);
         }

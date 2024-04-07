@@ -15,7 +15,10 @@ namespace MarsUndiscovered.UserInterface.Input
 
             if (ActionMap.ActionIs<InventoryItemSelectionRequest>(keyInFocus, keyboardModifier))
                 Mediator.Send(new InventoryItemSelectionRequest(keyInFocus));
-
+            
+            if (ActionMap.ActionIs<AssignHotBarItemRequest>(keyInFocus, keyboardModifier))
+                Mediator.Send(new AssignHotBarItemRequest(keyInFocus));
+            
             if (ActionMap.ActionIs<InventoryItemSelectionCycleRequest>(keyInFocus, keyboardModifier))
             {
                 var actionName = ActionMap.ActionName<InventoryItemSelectionCycleRequest>(keyInFocus, keyboardModifier);
