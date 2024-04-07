@@ -698,7 +698,8 @@ namespace MarsUndiscovered.Game.Components
                 IsVictorious = Player.IsVictorious,
                 MaxHealth = Player.MaxHealth,
                 Shield = Player.Shield,
-                Name = Player.Name
+                Name = Player.Name,
+                Position = Player.Position
             };
         }
 

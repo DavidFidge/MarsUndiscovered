@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.Pathing;
@@ -17,6 +16,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 {
     public class GameViewModel : BaseGameViewModel<GameData>
     {
+        public uint? CurrentSquareChoiceMonsterId { get; set; }
+        public uint? RetainedSquareChoiceMonsterId { get; set; }
+        
         public void NewGame(ulong? seed = null)
         {
             IsActive = false;

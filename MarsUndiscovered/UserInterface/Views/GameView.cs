@@ -54,6 +54,8 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<LeftClickSquareChoiceGameViewRequest>,
         IRequestHandler<CloseSquareChoiceRequest>,
         IRequestHandler<SquareChoiceSelectSquareRequest>,
+        IRequestHandler<SquareChoiceNextTargetRequest>,
+        IRequestHandler<SquareChoicePreviousTargetRequest>,
         IRequestHandler<SquareChoiceMouseHoverViewRequest>,
         IRequestHandler<RangeAttackEquippedWeaponRequest>,
         IRequestHandler<MoveSquareChoiceSelectionDownRequest>,
@@ -82,7 +84,7 @@ namespace MarsUndiscovered.UserInterface.Views
         private double _delayBetweenMove = 50;
         private Queue<RadioCommsItem> _radioCommsItems = new();
         private bool _isWaitingForRadioComms;
-
+        
         protected Panel RadioCommsPanel;
         protected Panel HotBarPanel;
         protected RichParagraph RadioCommsMessage;
@@ -618,6 +620,8 @@ namespace MarsUndiscovered.UserInterface.Views
                 
             StatusParagraph.Text = "Fire at what?";
             GameInputService.ChangeInput(_squareChoiceGameViewMouseHandler, _squareChoiceGameViewKeyboardHandler);
+
+            Mediator.Send(new SquareChoiceNextTargetRequest());
         }
 
         public Task<Unit> Handle(RefreshHotBarRequest request, CancellationToken cancellationToken)
@@ -793,7 +797,56 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             var point = _viewModel.MapViewModel.MouseHoverPath?.End;
             DoRangedAttack(cancellationToken, point);
+            _viewModel.RetainedSquareChoiceMonsterId = _viewModel.CurrentSquareChoiceMonsterId;
+            _viewModel.CurrentSquareChoiceMonsterId = null;
+            
+            return Unit.Task;
+        }
 
+        public Task<Unit> Handle(SquareChoiceNextTargetRequest request, CancellationToken cancellationToken)
+        {
+            return GetNextSquareChoice(false);
+        }
+        
+        public Task<Unit> Handle(SquareChoicePreviousTargetRequest request, CancellationToken cancellationToken)
+        {
+            return GetNextSquareChoice(true);
+        }
+
+        private Task<Unit> GetNextSquareChoice(bool reverse)
+        {
+            if (_viewModel.CurrentSquareChoiceMonsterId == null)
+                _viewModel.CurrentSquareChoiceMonsterId = _viewModel.RetainedSquareChoiceMonsterId;
+            
+            if (!MonsterPanels.Any())
+                return Unit.Task;
+            
+            var monsterPanels = MonsterPanels.ToList();
+            
+            if (reverse)
+                monsterPanels.Reverse();
+
+            var panels = monsterPanels;
+            
+            if (_viewModel.CurrentSquareChoiceMonsterId != null)
+                panels = monsterPanels
+                    .SkipWhile(m => m.ActorStatus.ID != _viewModel.CurrentSquareChoiceMonsterId
+                        )
+                    .ToList();
+
+            if (!panels.Any())
+                panels = monsterPanels;
+            else
+                panels = panels.Skip(1).ToList();
+
+            var panel = panels.FirstOrDefault() ?? monsterPanels.FirstOrDefault();
+
+            if (panel == null)
+                return Unit.Task;
+
+            _viewModel.CurrentSquareChoiceMonsterId = panel.ActorStatus.ID;
+            _viewModel.MapViewModel.ShowHoverForSquareChoice(panel.ActorStatus.Position);
+            
             return Unit.Task;
         }
     }

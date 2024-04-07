@@ -542,6 +542,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             UpdateMouseHoverPathTileVisibility(true); 
         }
+        
+        public void ShowHoverForSquareChoice(Point point)
+        {
+            UpdateMouseHoverPathTileVisibility(false);
+
+            _mouseHoverPath = _gameWorldEndpoint.GetPathForRangedAttack(point);
+
+            UpdateMouseHoverPathTileVisibility(true);
+        }
 
         public void MoveHover(Direction requestDirection)
         {
