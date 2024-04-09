@@ -4,6 +4,7 @@ using GoRogue.Random;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
+using MarsUndiscovered.Game.Components.Maps.MapPointChoiceRules;
 using NGenerics.Extensions;
 
 using SadRogue.Primitives;
@@ -15,7 +16,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
     public class LevelGeneratorTests : BaseGameWorldIntegrationTests
     {
         [TestMethod]
-        public void Should_Not_Block_Dungeon_With_Obstacles()
+        public void Should_Not_Block_Dungeon_With_Obstacles_Walls()
         {
             // This test appears to be failing intermittently
             // Arrange
@@ -30,14 +31,72 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var mapTemplate = new MapTemplate(lines, 0, 0);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, mapTemplate.Where(m => m.Char == '#').Select(m => m.Point).ToList());
 
-            // Act
-            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, mapWidth: mapTemplate.Bounds.Width, mapHeight: mapTemplate.Bounds.Height, machineCount: 2, playerPosition: new Point(0, 1));
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, mapWidth: mapTemplate.Bounds.Width, mapHeight: mapTemplate.Bounds.Height, machineCount: 0, playerPosition: new Point(0, 1));
+
+            var map = mapGenerator.Map;
+            var nonBlockingRule = new NonBlockingRule();
+            nonBlockingRule.AssignMap(map);
             
-            // Assert
-            Assert.AreEqual(2, _gameWorld.Machines.Count);
-            var machine = _gameWorld.Machines.First().Value;
+            // Act and Assert
+            for (var i = 0; i < map.Width - 1; i++)
+            {
+                var point = new Point(i, 1);
+                
+                var result = nonBlockingRule.IsValid(point);
+                
+                if (i == map.Width - 2 || i == 0)
+                    Assert.IsTrue(result);
+                else
+                    Assert.IsFalse(result);
+            }
+        }
+        
+        [TestMethod]
+        public void Should_Not_Block_Dungeon_With_Obstacles_Walls_And_NonWalkable_Objects()
+        {
+            // This test appears to be failing intermittently
+            // Arrange
+            // Machine should only be placed at the end of the tunnel
+            // M will be floors but will have machines placed on them later in the test
+            // machines cannot be moved past and should be treated as blocking
+            var lines = new[]
+            {
+                "#MMM#",
+                "....#",
+                "#####"
+            };
+
+            var mapTemplate = new MapTemplate(lines, 0, 0);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, mapTemplate.Where(m => m.Char == '#').Select(m => m.Point).ToList());
+
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, mapWidth: mapTemplate.Bounds.Width, mapHeight: mapTemplate.Bounds.Height, machineCount: 0, playerPosition: new Point(0, 1));
+
+            for (var x = 1; x <= 3; x++)
+            {
+                var machineParams = new SpawnMachineParams()
+                .WithMachineType(MachineType.Analyzer)
+                .AtPosition(new Point(x, 0))
+                .OnMap(_gameWorld.CurrentMap.Id);
+                
+                _gameWorld.SpawnMachine(machineParams);
+            }
             
-            Assert.AreEqual(new Point(16, 1), machine.Position);
+            var map = mapGenerator.Map;
+            var nonBlockingRule = new NonBlockingRule();
+            nonBlockingRule.AssignMap(map);
+            
+            // Act and Assert
+            for (var i = 0; i < map.Width - 1; i++)
+            {
+                var point = new Point(i, 1);
+                
+                var result = nonBlockingRule.IsValid(point);
+                
+                if (i == map.Width - 2 || i == 0)
+                    Assert.IsTrue(result);
+                else
+                    Assert.IsFalse(result);
+            }
         }
         
         [TestMethod]
