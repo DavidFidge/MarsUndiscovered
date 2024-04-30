@@ -106,8 +106,6 @@
 
 /copy:GeonBit.UI/themes/mars/styles/Entity-MouseHover.xml
 
-/copy:GeonBit.UI/themes/mars/styles/example.xml
-
 /copy:GeonBit.UI/themes/mars/styles/Header-Default.xml
 
 /copy:GeonBit.UI/themes/mars/styles/Header-MouseDown.xml
