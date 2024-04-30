@@ -9,8 +9,7 @@
         public const int DoorLayer = 1;
         public const int ActorLayer = 2;
         public const int ItemLayer = 3;
-        
-        public const int IndestructiblesLayer = 3;
+        public const int IndestructiblesLayer = 3; // same layer as items
         public const int OutdoorAreaBorder = 2;
         public const int ShipOffset = 2;
         

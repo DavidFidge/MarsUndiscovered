@@ -4,7 +4,8 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
 
 using GoRogue.GameFramework;
-
+using GoRogue.MapGeneration;
+using GoRogue.MapGeneration.Steps;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Game.Extensions;
@@ -14,6 +15,7 @@ using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
 using Point = SadRogue.Primitives.Point;
+using RectangleExtensions = SadRogue.Primitives.RectangleExtensions;
 
 namespace MarsUndiscovered.Game.Components
 {
@@ -274,31 +276,63 @@ namespace MarsUndiscovered.Game.Components
             // these could be treated as blocking squares.
             var neighbors = AdjacencyRule.EightWay.NeighborsClockwise(position);
             
-            // is blocking if there are more than one set of contiguous blocking points
-            var contiguousBlockingPoints = 0;
-            bool? lastWalkabilityView = null;
+            // Every blank square must be reachable by all other blank squares
+            // Not blocking:
+            // #.#
+            // .?.
+            // #.#
+            //
+            // Blocking:
+            // ###
+            // .?.
+            // ###
+            //
+            // Not blocking:
+            // ###
+            // .?.
+            // ..#
+            //
+            // Blocking:
+            // .##
+            // .?.
+            // .##
+            // Blocking:
+            // .#.
+            // .?.
+            // .#.
+            //
+            // Blocking:
+            // ##.
+            // .?#
+            // ..#
+            var walkablePoints = neighbors
+                .Select(WalkabilityOrFalseIfOffMap)
+                .Count(p => p);
+
+            // If there's none or one walkable point then it is not blocking
+            // because it would be a tunnel end
+            if (walkablePoints <= 1)
+                return false;
+
+            // Not blocking if more than 6 free squares as there can be no chokepoints
+            // if more than 6 free squares
+            if (walkablePoints > 6)
+                return false;
             
-            foreach (var neighbor in neighbors)
-            {
-                var pointWalkabilityView = WalkabilityOrFalseIfOffMap(neighbor); 
-                
-                if (lastWalkabilityView == null)
-                {
-                    lastWalkabilityView = pointWalkabilityView;
-                    continue;
-                }
+            var rectangle = this.RectangleForRadiusAndPoint(1, position);
+            var centre = position - rectangle.MinExtent;
+            
+            var walkabilitySubset = WalkabilityView.Subset(rectangle);
 
-                if (pointWalkabilityView ^ lastWalkabilityView.Value)
-                {
-                    contiguousBlockingPoints++;
-                    lastWalkabilityView = pointWalkabilityView;
-                }
+            // The centre point needs to be marked as false (non-walkable) since we are placing an obstacle there
+            walkabilitySubset[centre] = false;
+            
+            var areaFinder = new MapAreaFinder(walkabilitySubset, AdjacencyRule.EightWay);
 
-                if (contiguousBlockingPoints >= 3)
-                    return true;
-            }
-
-            return false;
+            var areas = areaFinder.MapAreas();
+            
+            // blocking if 2 or more areas
+            return areas.Count() >= 2;
         }
 
         private bool WalkabilityOrFalseIfOffMap(Point point)

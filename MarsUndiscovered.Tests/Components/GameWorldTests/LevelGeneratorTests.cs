@@ -18,9 +18,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         [TestMethod]
         public void Should_Not_Block_Dungeon_With_Obstacles_Walls()
         {
-            // This test appears to be failing intermittently
             // Arrange
-            // Machine should only be placed at the end of the tunnel
+            // Machine should only be placed at either end of the tunnel
             var lines = new[]
             {
                 "##################",
@@ -32,7 +31,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, mapTemplate.Where(m => m.Char == '#').Select(m => m.Point).ToList());
 
             NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, mapWidth: mapTemplate.Bounds.Width, mapHeight: mapTemplate.Bounds.Height, machineCount: 0, playerPosition: new Point(0, 1));
-
+            
             var map = mapGenerator.Map;
             var nonBlockingRule = new NonBlockingRule();
             nonBlockingRule.AssignMap(map);
@@ -50,13 +49,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                     Assert.IsFalse(result);
             }
         }
-        
+
         [TestMethod]
         public void Should_Not_Block_Dungeon_With_Obstacles_Walls_And_NonWalkable_Objects()
         {
-            // This test appears to be failing intermittently
+            // fix player blocking
             // Arrange
-            // Machine should only be placed at the end of the tunnel
+            // Machine should only be placed at either end of the tunnel
             // M will be floors but will have machines placed on them later in the test
             // machines cannot be moved past and should be treated as blocking
             var lines = new[]
@@ -81,7 +80,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 _gameWorld.SpawnMachine(machineParams);
             }
             
-            var map = mapGenerator.Map;
+            var map = _gameWorld.CurrentMap;
             var nonBlockingRule = new NonBlockingRule();
             nonBlockingRule.AssignMap(map);
             
