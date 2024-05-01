@@ -192,6 +192,7 @@ ENEMIES DEFEATED
 --------------------------------------------------------------------------------
 No enemies were defeated
 ";
+            morgue = morgue.ReplaceLineEndings();
             
             // Act
             _morgue.SnapshotMorgueExportData(_gameWorld, "Username12345!@#$%", true);
@@ -253,6 +254,8 @@ ENEMIES DEFEATED
 --------------------------------------------------------------------------------
 No enemies were defeated
 ";
+            morgue = morgue.ReplaceLineEndings();
+            
             _morgueFileWriter.ClearReceivedCalls();
 
             // Act

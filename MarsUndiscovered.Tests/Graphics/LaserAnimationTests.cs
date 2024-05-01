@@ -66,14 +66,14 @@ public class LaserAnimationsTests : BaseIntegrationTest
     }
     
     [TestMethod]
-    public void Opacity_Should_Be_Half_After_500_Milliseconds()
+    public void Opacity_Should_Be_Half_After_250_Milliseconds()
     {
         // Arrange
         var laserAnimation = new LaserAnimation(new Path(new[] { new Point(0, 0), new Point(1, 1)}));
         var mapViewModel = new TestMapViewModel();
 
         // Act
-        FakeStopwatchProvider.Elapsed = TimeSpan.FromMilliseconds(500);
+        FakeStopwatchProvider.Elapsed = TimeSpan.FromMilliseconds(250);
         FakeGameTimeService.Update(new GameTime());
 
         laserAnimation.Update(FakeGameTimeService, mapViewModel);

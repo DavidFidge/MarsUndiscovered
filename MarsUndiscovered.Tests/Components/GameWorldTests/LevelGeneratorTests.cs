@@ -24,7 +24,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             {
                 "##################",
                 ".................#",
-                "##################"
+                "##################",
+                ".................." // This line is needed to put the player on otherwise they get treated as walls and so point 1, 1 is treated as a tunnel end
             };
 
             var mapTemplate = new MapTemplate(lines, 0, 0);
@@ -35,6 +36,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var map = mapGenerator.Map;
             var nonBlockingRule = new NonBlockingRule();
             nonBlockingRule.AssignMap(map);
+            _gameWorld.Player.Position = new Point(0, 3);
             
             // Act and Assert
             for (var i = 0; i < map.Width - 1; i++)
@@ -53,7 +55,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         [TestMethod]
         public void Should_Not_Block_Dungeon_With_Obstacles_Walls_And_NonWalkable_Objects()
         {
-            // fix player blocking
             // Arrange
             // Machine should only be placed at either end of the tunnel
             // M will be floors but will have machines placed on them later in the test
@@ -62,7 +63,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             {
                 "#MMM#",
                 "....#",
-                "#####"
+                "#####",
+                "....." // This line is needed to put the player on otherwise they get treated as walls and so point 1, 1 is treated as a tunnel end
             };
 
             var mapTemplate = new MapTemplate(lines, 0, 0);
@@ -83,7 +85,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var map = _gameWorld.CurrentMap;
             var nonBlockingRule = new NonBlockingRule();
             nonBlockingRule.AssignMap(map);
-            
+            _gameWorld.Player.Position = new Point(0, 3);
             // Act and Assert
             for (var i = 0; i < map.Width - 1; i++)
             {
