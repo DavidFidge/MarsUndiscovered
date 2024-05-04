@@ -35,7 +35,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             var prefabInstances = prefabContext.Items.ToList();
             
             // Floors are True in wallFloorContext.  We need to build an area for the walls as the walls are the free areas that the prefabs can be placed in. So this can be done by negating so that walls are True.
-            var freeSpaceForConnectingPrefabs = wallFloorContext.ToArrayView(c => !c);
+            var freeSpaceForAStarConnectingPrefabs = wallFloorContext.ToArrayView(c => !c);
 
             foreach (var prefab in prefabInstances)
             {
@@ -47,22 +47,21 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                                               prefab.GetPrefabCharAt(point) == Constants.WallDoNotTunnel;
 
                     if (cannotTunnelThrough)
-                        freeSpaceForConnectingPrefabs[point] = false;
+                        freeSpaceForAStarConnectingPrefabs[point] = false;
                 }
             }
             
             var prefabDistanceGraph = GetPrefabDistanceGraph(prefabInstances);
 
-            var prefabTunnelGraph = new Graph<PrefabInstance>(false);
-
+            var connectedPrefabs =
+                prefabDistanceGraph.Vertices.ToDictionary(
+                    k => k.Data,
+                    v => new List<PrefabInstance>());
+            
             foreach (var prefab in prefabInstances)
             {
                 var prefabDistanceGraphVertex = prefabDistanceGraph.GetVertex(prefab);
-                var prefabTunnelGraphVertex = prefabTunnelGraph.GetVertex(prefab);
-
-                var toVertexesToExclude = prefabTunnelGraphVertex?.NeighboringVertices()
-                    .Select(e => e.Data)
-                    .ToList() ?? new List<PrefabInstance>();
+                var toVertexesToExclude = connectedPrefabs[prefab];
 
                 // prefabs further out will have a weight of 1, the closest prefab will have a weight of prefabInstances.Count
                 var prefabDistanceWeights = prefabDistanceGraphVertex.NeighboringVertices()
@@ -87,36 +86,82 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                     var destinationConnectorPoint = connectingPrefab.GetRandomConnectorPoint(RNG);
                     
                     // Allow the source and destination points to be cut through
-                    freeSpaceForConnectingPrefabs[sourceConnectorPoint] = true;
-                    freeSpaceForConnectingPrefabs[destinationConnectorPoint] = true;
+                    freeSpaceForAStarConnectingPrefabs[sourceConnectorPoint] = true;
+                    freeSpaceForAStarConnectingPrefabs[destinationConnectorPoint] = true;
                     
-                    // Create tunnel. At the moment we aren't updating freeSpaceForCreatingPrefabs, at this stage it is okay for tunnels to cross each other.
-                    var tunnelCreator = new AStarTunnelCreator(freeSpaceForConnectingPrefabs, Distance.Euclidean, true);
-
-                    var result = tunnelCreator.CreateTunnel(wallFloorContext, sourceConnectorPoint,
-                        destinationConnectorPoint);
+                    var result = TryCreateTunnel(
+                        freeSpaceForAStarConnectingPrefabs,
+                        wallFloorContext, sourceConnectorPoint,
+                        destinationConnectorPoint,
+                        connectedPrefabs,
+                        prefab,
+                        connectingPrefab);
 
                     if (result.Any())
                     {
-                        var edge = prefabTunnelGraph.AddEdge(prefabTunnelGraph.GetOrAddVertex(prefab), prefabTunnelGraph.GetOrAddVertex(connectingPrefab));
-                        edge.Tag = result;
-                        edge.Weight = result.Count;
-                        
                         yield return null;
                         break;
                     }
 
                     // could not cut through, need to disallow cutting through connection points
-                    freeSpaceForConnectingPrefabs[sourceConnectorPoint] = false;
-                    freeSpaceForConnectingPrefabs[destinationConnectorPoint] = false;
+                    freeSpaceForAStarConnectingPrefabs[sourceConnectorPoint] = false;
+                    freeSpaceForAStarConnectingPrefabs[destinationConnectorPoint] = false;
 
                     prefabConnectionTries++;
                 }
             }
             
-            var unconnectedPrefabs = prefabTunnelGraph.Vertices
-                .Where(v => v.Degree == 0)
-                .Select(v => v.Data)
+            yield return null;
+
+            // connect prefabs where their walls intersect
+            var overlappingPairs = new List<(PrefabInstance, PrefabInstance)>();
+
+            for (var i = 0; i < prefabInstances.Count - 1; i++)
+            {
+                for (var j = i + 1; j < prefabInstances.Count; j++)
+                {
+                    var prefab1 = prefabInstances[i];
+                    var prefab2 = prefabInstances[j];
+
+                    if (prefab1.Area.Intersects(prefab2.Area))
+                    {
+                        overlappingPairs.Add((prefab1, prefab2));
+                    }
+                }
+            }
+            
+            foreach (var (prefab1, prefab2) in overlappingPairs)
+            {
+                var intersection = Area.GetIntersection(prefab1.Area, prefab2.Area);
+
+                var intersectionConnectionPoints = intersection
+                    .Where(p => prefab1.GetPrefabCharAt(p) == Constants.ConnectorPrefab && prefab2.GetPrefabCharAt(p) == Constants.ConnectorPrefab)
+                    .ToList();
+                
+                if (!intersectionConnectionPoints.Any())
+                    continue;
+
+                var connectionPoint = RNG.RandomElement(intersectionConnectionPoints);
+         
+                var result = TryCreateTunnel(
+                    freeSpaceForAStarConnectingPrefabs,
+                    wallFloorContext,
+                    connectionPoint,
+                    connectionPoint,
+                    connectedPrefabs,
+                    prefab1,
+                    prefab2);
+
+                if (result.Any())
+                {
+                    yield return null;
+                }
+            }
+            
+            // remove unconnected prefabs
+            var unconnectedPrefabs = connectedPrefabs
+                .Where(kvp => kvp.Value.Count == 0)
+                .Select(kvp => kvp.Key)
                 .ToList();
             
             // Convert prefab back to wall
@@ -128,7 +173,31 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                 }
             }
         }
-        
+
+        private static Area TryCreateTunnel(
+            ArrayView<bool> freeSpaceForAStarConnectingPrefabs,
+            ISettableGridView<bool> wallFloorContext,
+            Point sourceConnectorPoint,
+            Point destinationConnectorPoint,
+            Dictionary<PrefabInstance, List<PrefabInstance>> prefabTunnelGraph,
+            PrefabInstance prefab,
+            PrefabInstance connectingPrefab)
+        {
+            // Create tunnel. At the moment we aren't updating freeSpaceForCreatingPrefabs, at this stage it is okay for tunnels to cross each other.
+            var tunnelCreator = new AStarTunnelCreator(freeSpaceForAStarConnectingPrefabs, Distance.Euclidean, true);
+
+            var result = tunnelCreator.CreateTunnel(wallFloorContext, sourceConnectorPoint,
+                destinationConnectorPoint);
+
+            if (result.Any())
+            {
+                prefabTunnelGraph[prefab].Add(connectingPrefab);
+                prefabTunnelGraph[connectingPrefab].Add(prefab);
+            }
+
+            return result;
+        }
+
         private static Graph<PrefabInstance> GetPrefabDistanceGraph(List<PrefabInstance> prefabInstances)
         {
             var prefabDistanceGraph = new Graph<PrefabInstance>(false);
@@ -136,7 +205,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             if (prefabInstances.Count == 0)
                 return new Graph<PrefabInstance>(false);
             
-            else if (prefabInstances.Count == 1)
+            if (prefabInstances.Count == 1)
             {
                 prefabDistanceGraph.AddVertex(prefabInstances[0]);
                 return prefabDistanceGraph;

@@ -67,9 +67,8 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
 
                 var randomPrefab = RNG.RandomElement(_prefabs);
 
-                var maxSize = Math.Max(randomPrefab.Bounds.Width, randomPrefab.Bounds.Height);
-                var maxPotentialLocation = wallFloorContext.Bounds().Size - maxSize - 1;
-                var potentialBounds = new Rectangle(0, 0 , maxPotentialLocation.X, maxPotentialLocation.Y);
+                var maxPotentialLocation = wallFloorContext.Bounds().MaxExtent - randomPrefab.Bounds.MaxExtent;
+                var potentialBounds = new Rectangle(Point.Zero, maxPotentialLocation);
                 
                 // find random point
                 var failedNewPrefabPlacementCount = 0;
@@ -82,12 +81,11 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                     
                     var newPrefab = new PrefabInstance(randomPrefab, randomPoint, randomDirection, isMirrored);
                     
-                    var canPlace = availablePlacementAreas.FirstOrDefault(a => a.Contains(newPrefab.Area));
+                    var canPlaceAvailableArea = availablePlacementAreas.FirstOrDefault(a => a.Contains(newPrefab.Area));
 
-                    if (canPlace != null)
+                    if (canPlaceAvailableArea != null)
                     {
                         prefabInstances.Add(newPrefab);
-                        canPlace.Remove(newPrefab.Area);
                         prefabPlaced = true;
 
                         foreach (var point in newPrefab.Area.ToList())
@@ -102,6 +100,13 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                             var isUnused = newPrefab.GetPrefabCharAt(point) == Constants.WallPrefab;
 
                             freeSpaceForCreatingPrefabs[point] = isUnused;
+
+                            if (isFloor)
+                            {
+                                // prefabs can overlap on its walls but not floors. Remove floor points
+                                // from future prefab placements.
+                                canPlaceAvailableArea.Remove(point);
+                            }
                         }
                         
                         break;

@@ -1,4 +1,5 @@
-﻿using FrigidRogue.WaveFunctionCollapse;
+﻿using FrigidRogue.MonoGame.Core.Extensions;
+using FrigidRogue.WaveFunctionCollapse;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.GenerationSteps;
@@ -11,7 +12,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests;
 [TestClass]
 public class PrefabMapGeneratorTests : BaseGameWorldIntegrationTests
 {
-    private MapGenerator _mapGenerator;
     private IWaveFunctionCollapseGeneratorPasses _waveFunctionCollapseGeneratorPasses;
 
     [TestInitialize]
@@ -20,24 +20,61 @@ public class PrefabMapGeneratorTests : BaseGameWorldIntegrationTests
         base.Setup();
 
         _waveFunctionCollapseGeneratorPasses = Substitute.For<IWaveFunctionCollapseGeneratorPasses>();
-        _mapGenerator = new MapGenerator(_waveFunctionCollapseGeneratorPasses, null, null,
-            new PrefabProvider());
     }
 
     [TestMethod]
     public void Should_CreatePrefabMap()
     {
-        // Act
-        _mapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 50, 50, upToStep: 3);
+        // Arrange
+        var mapGenerator = new MapGenerator(_waveFunctionCollapseGeneratorPasses, null, null,
+            new PrefabProvider());
         
-        // var oldRandom = GlobalRandom.DefaultRNG;
-        //GlobalRandom.DefaultRNG = new KnownSeriesRandom(new int[] { 3, 6, 2, 4 });
+        // Act
+        mapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 50, 50, upToStep: 3);
 
         // Assert
-        var map = _mapGenerator.Map;
+        var map = mapGenerator.Map;
         Assert.IsNotNull(map);
 
         var mapText = GameObjectWriter.WriteMapAsciiArray(map);
         GameObjectWriter.WriteMapAsciiToFile(map);
+    }
+    
+    [TestMethod]
+    public void Prefab_Maps_Should_Be_Able_To_Overlap()
+    {
+        var mapGenerator = new TestPrefabMapGenerator(_gameWorld.GameObjectFactory);
+        
+        // Act
+        var oldRandom = GlobalRandom.DefaultRNG;
+        
+        // map:
+        // #####
+        // #.#.#
+        // #####
+        var intSeries = new int[] { 0, 0, 0, 0, 0, 2, 0 };
+        var rngIntSeries = new int[1000];
+        intSeries.CopyTo(rngIntSeries, 0);
+        
+        var knownSeriesRandom = new KnownSeriesRandom(rngIntSeries,
+            boolSeries: new bool[] { false },
+            ulongSeries: new ulong[] { 0 });
+        
+        GlobalRandom.DefaultRNG = knownSeriesRandom;
+        
+        mapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 5, 3);
+
+        // Assert
+        var map = mapGenerator.Map;
+        Assert.IsNotNull(map);
+        
+        var mapText = GameObjectWriter.WriteMapAsciiArray(map);
+
+        var expectedMapText =
+            "#####" +
+            "#.#.#" +
+            "#####";
+            
+        Assert.AreEqual(mapText.Join(""), expectedMapText);
     }
 }

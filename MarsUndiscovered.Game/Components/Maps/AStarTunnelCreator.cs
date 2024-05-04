@@ -54,8 +54,14 @@ namespace MarsUndiscovered.Game.Components.Maps
 
             var previous = Point.None;
 
-            var aStar = new AStar(_allowedPoints, _distanceMeasurement);
+            if (tunnelStart == tunnelEnd)
+            {
+                area.Add(tunnelStart);
+                return area;
+            }
 
+            var aStar = new AStar(_allowedPoints, _distanceMeasurement);
+                
             var path = aStar.ShortestPath(tunnelStart, tunnelEnd);
 
             // No path found
