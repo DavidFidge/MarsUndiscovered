@@ -1,8 +1,8 @@
-﻿using FrigidRogue.MonoGame.Core.Extensions;
-using GoRogue.MapGeneration;
+﻿using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components.Maps;
+using MarsUndiscovered.Game.Extensions;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
@@ -31,25 +31,6 @@ public class AreaPerimeterDoorGeneration : GenerationStep
         _maxDoors = maxDoors;
     }
     
-    private bool HasNeighbouringFloorVerticallyOrHorizontally(Point point, ArrayView<GameObjectType> wallsFloorTypes, int width, int height)
-    {
-        var neighbours = point.Neighbours(width - 1, height - 1);
-        
-        if ((neighbours.Contains(point + Direction.Up) && wallsFloorTypes[(point + Direction.Up).ToIndex(width)] is FloorType) &&
-            (neighbours.Contains(point + Direction.Down) && wallsFloorTypes[(point + Direction.Down).ToIndex(width)] is FloorType))
-        {
-            return true;
-        }
-        
-        if ((neighbours.Contains(point + Direction.Left) && wallsFloorTypes[(point + Direction.Left).ToIndex(width)] is FloorType) &&
-            (neighbours.Contains(point + Direction.Right) && wallsFloorTypes[(point + Direction.Right).ToIndex(width)] is FloorType))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
     protected override IEnumerator<object> OnPerform(GenerationContext context)
     {
         var areas = context
@@ -65,8 +46,7 @@ public class AreaPerimeterDoorGeneration : GenerationStep
         {
             var validPerimeterPoints = area.PerimeterPositions(AdjacencyRule.EightWay)
                 .Where(p => wallsFloorTypes[p.ToIndex(context.Width)] is WallType)
-                .Where(p => HasNeighbouringFloorVerticallyOrHorizontally(p, wallsFloorTypes, context.Width,
-                    context.Height))
+                .Where(p => p.HasNeighbouringFloorVerticallyOrHorizontallyWithFloorTypeCheck(wallsFloorTypes))
                 .ToList();
 
             var doorsToCreate = RNG.NextInt(_minDoors, _maxDoors + 1);

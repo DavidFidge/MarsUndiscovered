@@ -57,70 +57,72 @@ namespace MarsUndiscovered.Game.Components.Maps
             if (tunnelStart == tunnelEnd)
             {
                 area.Add(tunnelStart);
-                return area;
             }
-
-            var aStar = new AStar(_allowedPoints, _distanceMeasurement);
-                
-            var path = aStar.ShortestPath(tunnelStart, tunnelEnd);
-
-            // No path found
-            if (path == null)
-                return area;
-            
-            foreach (var pos in path.StepsWithStart)
+            else
             {
-                area.Add(pos);
+                var aStar = new AStar(_allowedPoints, _distanceMeasurement);
 
-                if (_doubleWideDiagonal && !_distanceMeasurement.Equals(Distance.Manhattan) && previous != Point.None && pos.Y != previous.Y && pos.X != previous.X)
+                var path = aStar.ShortestPath(tunnelStart, tunnelEnd);
+
+                // No path found
+                if (path == null)
+                    return area;
+
+                foreach (var pos in path.StepsWithStart)
                 {
-                    var wideningPos = Point.None;
+                    area.Add(pos);
 
-                    var direction = Direction.GetDirection(previous, pos);
-                    
-                    if (direction == Direction.UpLeft)
+                    if (_doubleWideDiagonal && !_distanceMeasurement.Equals(Distance.Manhattan) &&
+                        previous != Point.None && pos.Y != previous.Y && pos.X != previous.X)
                     {
-                        wideningPos = previous + (-1, 0);
-                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
-                            wideningPos = previous + (0, -1);
-                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
-                            // Cannot widen path in neither x nor y direction
-                            return new Area();
-                    }
-                    else if (direction == Direction.UpRight)
-                    {
-                        wideningPos = previous + (1, 0);
-                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
-                            wideningPos = previous + (0, -1);
-                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
-                            // Cannot widen path in neither x nor y direction
-                            return new Area();
-                    }
-                    else if (direction == Direction.DownLeft)
-                    {
-                        wideningPos = previous + (-1, 0);
-                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
-                            wideningPos = previous + (0, 1);
-                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
-                            // Cannot widen path in neither x nor y direction
-                            return new Area();
-                    }
-                    else if (direction == Direction.DownRight)
-                    {
-                        wideningPos = previous + (1, 0);
-                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
-                            wideningPos = previous + (0, 1);
-                        if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
-                            // Cannot widen path in neither x nor y direction
-                            return new Area();
+                        var wideningPos = Point.None;
+
+                        var direction = Direction.GetDirection(previous, pos);
+
+                        if (direction == Direction.UpLeft)
+                        {
+                            wideningPos = previous + (-1, 0);
+                            if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
+                                wideningPos = previous + (0, -1);
+                            if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
+                                // Cannot widen path in neither x nor y direction
+                                return new Area();
+                        }
+                        else if (direction == Direction.UpRight)
+                        {
+                            wideningPos = previous + (1, 0);
+                            if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
+                                wideningPos = previous + (0, -1);
+                            if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
+                                // Cannot widen path in neither x nor y direction
+                                return new Area();
+                        }
+                        else if (direction == Direction.DownLeft)
+                        {
+                            wideningPos = previous + (-1, 0);
+                            if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
+                                wideningPos = previous + (0, 1);
+                            if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
+                                // Cannot widen path in neither x nor y direction
+                                return new Area();
+                        }
+                        else if (direction == Direction.DownRight)
+                        {
+                            wideningPos = previous + (1, 0);
+                            if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
+                                wideningPos = previous + (0, 1);
+                            if (!_allowedPoints.Contains(wideningPos) || !_allowedPoints[wideningPos])
+                                // Cannot widen path in neither x nor y direction
+                                return new Area();
+                        }
+
+                        area.Add(wideningPos);
                     }
 
-                    area.Add(wideningPos);
+                    previous = pos;
                 }
-
-                previous = pos;
             }
-
+            
             foreach (var point in area)
             {
                 map[point] = true;

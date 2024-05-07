@@ -17,5 +17,6 @@
         public const char WallDoNotTunnel = 'X';
         public const char WallPrefab = '#';
         public const char FloorPrefab = '.';
+        public const char DoorPrefab = 'D';
     }
 }

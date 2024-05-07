@@ -88,7 +88,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                         prefabInstances.Add(newPrefab);
                         prefabPlaced = true;
 
-                        foreach (var point in newPrefab.Area.ToList())
+                        foreach (var point in newPrefab.Area)
                         {
                             var isFloor = newPrefab.GetPrefabCharAt(point) == Constants.FloorPrefab;
                         

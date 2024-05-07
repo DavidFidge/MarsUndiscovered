@@ -53,7 +53,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             
             var prefabDistanceGraph = GetPrefabDistanceGraph(prefabInstances);
 
-            var connectedPrefabs =
+            var prefabConnections =
                 prefabDistanceGraph.Vertices.ToDictionary(
                     k => k.Data,
                     v => new List<PrefabInstance>());
@@ -61,7 +61,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             foreach (var prefab in prefabInstances)
             {
                 var prefabDistanceGraphVertex = prefabDistanceGraph.GetVertex(prefab);
-                var toVertexesToExclude = connectedPrefabs[prefab];
+                var toVertexesToExclude = prefabConnections[prefab];
 
                 // prefabs further out will have a weight of 1, the closest prefab will have a weight of prefabInstances.Count
                 var prefabDistanceWeights = prefabDistanceGraphVertex.NeighboringVertices()
@@ -85,27 +85,20 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
 
                     var destinationConnectorPoint = connectingPrefab.GetRandomConnectorPoint(RNG);
                     
-                    // Allow the source and destination points to be cut through
-                    freeSpaceForAStarConnectingPrefabs[sourceConnectorPoint] = true;
-                    freeSpaceForAStarConnectingPrefabs[destinationConnectorPoint] = true;
-                    
                     var result = TryCreateTunnel(
                         freeSpaceForAStarConnectingPrefabs,
                         wallFloorContext, sourceConnectorPoint,
                         destinationConnectorPoint,
-                        connectedPrefabs,
+                        prefabConnections,
                         prefab,
                         connectingPrefab);
 
                     if (result.Any())
                     {
-                        yield return null;
+                        // Interesting feature found - not breaking here creates a map that looks like it has 
+                        // been bored through.
                         break;
                     }
-
-                    // could not cut through, need to disallow cutting through connection points
-                    freeSpaceForAStarConnectingPrefabs[sourceConnectorPoint] = false;
-                    freeSpaceForAStarConnectingPrefabs[destinationConnectorPoint] = false;
 
                     prefabConnectionTries++;
                 }
@@ -148,18 +141,15 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                     wallFloorContext,
                     connectionPoint,
                     connectionPoint,
-                    connectedPrefabs,
+                    prefabConnections,
                     prefab1,
                     prefab2);
-
-                if (result.Any())
-                {
-                    yield return null;
-                }
             }
-            
+
+            yield return null;
+
             // remove unconnected prefabs
-            var unconnectedPrefabs = connectedPrefabs
+            var unconnectedPrefabs = prefabConnections
                 .Where(kvp => kvp.Value.Count == 0)
                 .Select(kvp => kvp.Key)
                 .ToList();
@@ -172,6 +162,8 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                     wallFloorContext[point] = false;
                 }
             }
+            
+            yield return null;
         }
 
         private static Area TryCreateTunnel(
@@ -179,11 +171,15 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
             ISettableGridView<bool> wallFloorContext,
             Point sourceConnectorPoint,
             Point destinationConnectorPoint,
-            Dictionary<PrefabInstance, List<PrefabInstance>> prefabTunnelGraph,
+            Dictionary<PrefabInstance, List<PrefabInstance>> prefabConnections,
             PrefabInstance prefab,
             PrefabInstance connectingPrefab)
         {
             // Create tunnel. At the moment we aren't updating freeSpaceForCreatingPrefabs, at this stage it is okay for tunnels to cross each other.
+            // Allow the source and destination points to be cut through
+            freeSpaceForAStarConnectingPrefabs[sourceConnectorPoint] = true;
+            freeSpaceForAStarConnectingPrefabs[destinationConnectorPoint] = true;
+            
             var tunnelCreator = new AStarTunnelCreator(freeSpaceForAStarConnectingPrefabs, Distance.Euclidean, true);
 
             var result = tunnelCreator.CreateTunnel(wallFloorContext, sourceConnectorPoint,
@@ -191,8 +187,14 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
 
             if (result.Any())
             {
-                prefabTunnelGraph[prefab].Add(connectingPrefab);
-                prefabTunnelGraph[connectingPrefab].Add(prefab);
+                prefabConnections[prefab].Add(connectingPrefab);
+                prefabConnections[connectingPrefab].Add(prefab);
+            }
+            else
+            {
+                // could not cut through, need to disallow cutting through connection points
+                freeSpaceForAStarConnectingPrefabs[sourceConnectorPoint] = false;
+                freeSpaceForAStarConnectingPrefabs[destinationConnectorPoint] = false;
             }
 
             return result;

@@ -123,6 +123,8 @@ namespace MarsUndiscovered.Game.Components.Maps
             
             var borderGenerationStepWalls = new BorderGenerationStep("BorderWalls", false);
             borderGenerationStepWalls.Border = 3;
+
+            var doorGenerator = new PrefabDoorGenerator();
             
             var generationSteps = new GenerationStep[]
             {
@@ -133,7 +135,8 @@ namespace MarsUndiscovered.Game.Components.Maps
                 // Revert the border
                 borderGenerationStepWalls,
                 prefabConnectorGeneration,
-                wallFloorTypeConverterGenerator
+                wallFloorTypeConverterGenerator,
+                doorGenerator
             };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);

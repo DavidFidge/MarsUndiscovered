@@ -1,5 +1,7 @@
+using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.GameFramework;
-
+using MarsUndiscovered.Game.Components;
+using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Game.Extensions
@@ -72,6 +74,50 @@ namespace MarsUndiscovered.Game.Extensions
             arrayView.ApplyOverlay(c => list[c]);
 
             return ToArrayView(arrayView, adapter);
+        }
+
+        public static bool HasNeighbouringFloorVerticallyOrHorizontallyWithFloorTypeCheck(this Point point, ArrayView<GameObjectType> wallsFloorTypes)
+        {
+            var width = wallsFloorTypes.Width;
+            var height = wallsFloorTypes.Height;
+            
+            var neighbours = point.Neighbours(width - 1, height - 1);
+        
+            if ((neighbours.Contains(point + Direction.Up) && wallsFloorTypes[(point + Direction.Up).ToIndex(width)] is FloorType) &&
+                (neighbours.Contains(point + Direction.Down) && wallsFloorTypes[(point + Direction.Down).ToIndex(width)] is FloorType))
+            {
+                return true;
+            }
+        
+            if ((neighbours.Contains(point + Direction.Left) && wallsFloorTypes[(point + Direction.Left).ToIndex(width)] is FloorType) &&
+                (neighbours.Contains(point + Direction.Right) && wallsFloorTypes[(point + Direction.Right).ToIndex(width)] is FloorType))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        
+        public static bool HasNeighbouringFloorVerticallyOrHorizontally<T>(this Point point, ArrayView<T> map)
+        {
+            var width = map.Width;
+            var height = map.Height;
+            
+            var neighbours = point.Neighbours(width - 1, height - 1);
+        
+            if (neighbours.Contains(point + Direction.Up) &&
+                neighbours.Contains(point + Direction.Down))
+            {
+                return true;
+            }
+        
+            if (neighbours.Contains(point + Direction.Left) &&
+                neighbours.Contains(point + Direction.Right))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
