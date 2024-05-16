@@ -25,7 +25,8 @@ namespace MarsUndiscovered.Game.Components
         public virtual LightningAttack LightningAttack { get; protected set; }
         public virtual LaserAttack LaserAttack { get; protected set; }
         public virtual Attack LineAttack { get; protected set; }
-
+        public bool CanConcuss { get; set; }
+        
         public abstract bool IsWallTurret { get; }
 
         public uint VisualRange { get; set; } = 20;
@@ -82,6 +83,10 @@ namespace MarsUndiscovered.Game.Components
             Shield = 0;
             
             Health -= damage;
+        }
+
+        public virtual void ApplyConcussion()
+        {
         }
     }
 }

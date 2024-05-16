@@ -7,10 +7,15 @@ namespace MarsUndiscovered.Game.Components
     {
         private Attack _meleeAttack = new Attack(new Range<int>(5, 9));
 
+        public MagnesiumPipe()
+        {
+            CanConcuss = true;
+        }
+
         public override void RecalculateProperties(Item item)
         {
             base.RecalculateProperties(item);
-
+            
             item.MeleeAttack = (Attack)_meleeAttack.Clone();
 
             var minDamage = item.MeleeAttack.DamageRangeBase.Min + item.EnchantmentLevel * 2;

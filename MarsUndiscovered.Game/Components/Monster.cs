@@ -42,6 +42,11 @@ namespace MarsUndiscovered.Game.Components
 
         public bool FriendlyFireAllies => Breed.FriendlyFireAllies;
         public bool UseGoalMapWander { get; set; } = false;
+
+        public bool CanBeConcussed => Breed.WeaknessToConcuss;
+        
+        public bool IsConcussed { get; set; }
+        
         public MonsterState MonsterState { get; set; }
 
         public Monster Leader => _leader;
@@ -125,7 +130,9 @@ namespace MarsUndiscovered.Game.Components
                 MaxHealth = MaxHealth,
                 Name = Name,
                 Behaviour = MonsterState.ToString().ToSeparateWords(),
-                Position = Position
+                Position = Position,
+                CanBeConcussed = CanBeConcussed,
+                IsConcussed = IsConcussed
             };
 
             return monsterStatus;
@@ -362,7 +369,7 @@ namespace MarsUndiscovered.Game.Components
                     monster =>
                     {
                         var attackCommand = _commandFactory.CreateCommand<MeleeAttackCommand>(GameWorld);
-                        attackCommand.Initialise(this, GameWorld.Player);
+                        attackCommand.Initialise(this, GameWorld.Player, null);
                         _nextCommands.Add(attackCommand);
 
                         return BehaviourStatus.Succeeded;
@@ -840,6 +847,14 @@ namespace MarsUndiscovered.Game.Components
         public void SetLeader(Monster monster)
         {
             _leader = monster;
+        }
+
+        public override void ApplyConcussion()
+        {
+            base.ApplyConcussion();
+
+            if (CanBeConcussed)
+                IsConcussed = true;
         }
     }
 }

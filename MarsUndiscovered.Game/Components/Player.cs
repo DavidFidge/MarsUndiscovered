@@ -68,12 +68,13 @@ namespace MarsUndiscovered.Game.Components
         public void RecalculateAttacksForItem(Item item)
         {
             InitialiseAttacks();
-
+            
             if (item != null)
             {
                 MeleeAttack = (Attack)item.MeleeAttack?.Clone();
                 LineAttack = (Attack)item.LineAttack?.Clone();
                 LaserAttack = (LaserAttack)item.LaserAttack?.Clone();
+                CanConcuss = item.CanConcuss;
             }
         }
 
@@ -83,6 +84,7 @@ namespace MarsUndiscovered.Game.Components
             LineAttack = null;
             LightningAttack = null;
             LaserAttack = null;
+            CanConcuss = false;
         }
     }
 }

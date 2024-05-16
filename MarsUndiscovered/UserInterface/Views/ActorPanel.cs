@@ -2,6 +2,7 @@
 
 using GeonBit.UI.Entities;
 using MarsUndiscovered.Game.Components.Dto;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -10,14 +11,15 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel Panel;
         protected HealthBar HealthBar;
         protected Label Name;
+        protected WeaknessesBar WeaknessesBar;
         public T ActorStatus { get; private set; }
 
-        public ActorPanel()
+        public ActorPanel(IAssets assets)
         {
-            CreatePanels();
+            CreatePanels(assets);
         }
 
-        public void CreatePanels()
+        public void CreatePanels(IAssets assets)
         {
             Panel = new Panel()
                 .SkinNone()
@@ -27,6 +29,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Anchor(Anchor.Auto);
 
             HealthBar = new HealthBar();
+            WeaknessesBar = new WeaknessesBar(assets);
 
             Name = new Label()
                 .NoPadding()
@@ -35,6 +38,7 @@ namespace MarsUndiscovered.UserInterface.Views
             
             Panel.AddChild(Name);
             HealthBar.AddAsChildTo(Panel);
+            WeaknessesBar.AddAsChildTo(Panel);
         }
 
         public virtual void Update(T actorStatus)
@@ -42,6 +46,7 @@ namespace MarsUndiscovered.UserInterface.Views
             ActorStatus = actorStatus;
             Name.Text = actorStatus.Name;
             HealthBar.UpdateHealth(actorStatus.Health, actorStatus.MaxHealth, actorStatus.Shield);
+            WeaknessesBar.Update(actorStatus);
         }
 
         public override void AddAsChildTo(Entity parent)

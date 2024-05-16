@@ -150,5 +150,42 @@ namespace MarsUndiscovered.Tests.Commands
             var deathCommand = attackCommand.CommandResult.SubsequentCommands.First() as DeathCommand;
             Assert.IsNotNull(deathCommand);
         }
+        
+        [TestMethod]
+        public void AttackCommand_With_Concussive_Weapon_Should_Concuss()
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
+
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(0, 1))
+                .WithState(MonsterState.Hunting);
+            
+            _gameWorld.SpawnMonster(spawnMonsterParams);
+            var monster = _gameWorld.Monsters.Values.First();
+            monster.Breed.WeaknessToConcuss = true;
+            
+            var item = SpawnItemAndAddToInventory(_gameWorld, ItemType.MagnesiumPipe);
+            _gameWorld.Inventory.Equip(item);
+
+            Assert.IsFalse(monster.IsConcussed);
+
+            // Act
+            _gameWorld.MoveRequest(Direction.Down);
+
+            // Assert
+            var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
+
+            Assert.AreEqual(CommandResultEnum.Success, walkCommand.CommandResult.Result);
+            Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
+
+            var attackCommand =
+                _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.First() as MeleeAttackCommand;
+            Assert.IsNotNull(attackCommand);
+            Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
+            Assert.AreSame(monster, attackCommand.Target);
+            Assert.IsTrue(monster.IsConcussed);
+        }
     }
 }

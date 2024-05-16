@@ -21,6 +21,9 @@ namespace MarsUndiscovered.Game.Components
         public Attack LineAttack { get; protected set; } = null;
         public LightningAttack LightningAttack { get; protected set; } = null;
         public int DetectionRange { get; set; }
+        
+        public bool CanConcuss { get; set; }
+        public bool WeaknessToConcuss { get; set; }
 
         static Breed()
         {
@@ -38,6 +41,8 @@ namespace MarsUndiscovered.Game.Components
                 breed.NameWithoutSpaces = breed.Name.RemoveSpaces();
                 breed.Description = csvBreed.Description.ToString();
                 breed.DetectionRange = int.Parse(csvBreed.DetectionRange.ToString());
+                breed.CanConcuss = bool.Parse(csvBreed.CanConcuss);
+                breed.WeaknessToConcuss = bool.Parse(csvBreed.WeaknessToConcuss);
                 
                 var bytes = int.Parse(csvBreed.CodePage437Character.ToString(), NumberStyles.HexNumber);
                 
