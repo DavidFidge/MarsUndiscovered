@@ -1,6 +1,7 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Interfaces;
 
@@ -47,6 +48,12 @@ namespace MarsUndiscovered.Game.Commands
             TurnDetails = (TurnDetails)memento.State.TurnDetails.Clone();
             AdvanceSequenceNumber = _data.AdvanceSequenceNumber;
             Id = _data.Id;
+        }
+
+        public void ApplyWeaknesses(Actor source, Actor target)
+        {
+            if (source.CanConcuss)
+                target.ApplyConcussion();
         }
     }
 }

@@ -9,6 +9,7 @@ using FrigidRogue.MonoGame.Core.View.Extensions;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.UserInterface.Data;
+using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Serialization;
@@ -23,6 +24,7 @@ public class Assets : IAssets
     // In Breeds.csv there is no alpha and the hex can by copied directly
     public static Color UserInterfaceColor = new Color(0xFF1E0097);
     private const string _tilesPrefix = "tiles";
+    private const string _iconsPrefix = "icons";
 
     public SpriteFont UiRegularFont { get; set; }
     public SpriteSheet ShipAiRadioComms { get; set; }
@@ -310,6 +312,8 @@ public class Assets : IAssets
             GoalMapFont,
             Color.White
         );
+        
+        CreateWeaknessIcons(assetsList);
 
         _asciiMapTileGraphics.Build(_gameProvider.Game.GraphicsDevice);
         _graphicalMapTileGraphics.Build(_gameProvider.Game.GraphicsDevice);
@@ -317,6 +321,22 @@ public class Assets : IAssets
         var gameOptionsData = _gameOptionsStore.GetFromStore<GameOptionsData>();
 
         SetTileGraphicOptions(new TileGraphicOptions(gameOptionsData.State));
+    }
+
+    private void CreateWeaknessIcons(string[] assetsList)
+    {
+        foreach (var weakness in Enum.GetNames(typeof(WeaknessesEnum)))
+        {
+            _graphicalMapTileGraphics.AddMapTileTextures(
+                $"{weakness}Active",
+                GetTileAssets(assetsList, $"{_iconsPrefix}/{weakness}Active")
+            );
+            
+            _graphicalMapTileGraphics.AddMapTileTextures(
+                $"{weakness}Inactive",
+                GetTileAssets(assetsList, $"{_iconsPrefix}/{weakness}Inactive")
+            );
+        }
     }
     
     private void CreateGameObjectTypeGraphics<T>(T gameObjectType, string[] assetsList, string assetKey) where T : GameObjectType
@@ -350,9 +370,26 @@ public class Assets : IAssets
 
     private MapTileTexture[] GetTileAssets(string[] assetsList, string pattern)
     {
-        return assetsList
+        var tiles = assetsList
             .Where(asset =>
                 Regex.Match(asset, $"{pattern}_", RegexOptions.IgnoreCase)
+                    .Success)
+            .Select(asset =>
+                new MapTileTexture(
+                    _gameProvider.Game.GraphicsDevice,
+                    UiConstants.TileWidth,
+                    UiConstants.TileHeight,
+                    _gameProvider.Game.Content.Load<Texture2D>(asset)
+                )
+            )
+            .ToArray();
+        
+        if (tiles.Any())
+            return tiles;
+
+        return assetsList
+            .Where(asset =>
+                Regex.Match(asset, $"{pattern}", RegexOptions.IgnoreCase)
                     .Success)
             .Select(asset =>
                 new MapTileTexture(

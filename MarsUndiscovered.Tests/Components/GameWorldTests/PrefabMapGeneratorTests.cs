@@ -70,11 +70,12 @@ public class PrefabMapGeneratorTests : BaseGameWorldIntegrationTests
         
         var mapText = GameObjectWriter.WriteMapAsciiArray(map);
 
+        // prefabs get joined at 2, 1
         var expectedMapText =
             "#####" +
-            "#.#.#" +
+            "#...#" +
             "#####";
             
-        Assert.AreEqual(mapText.Join(""), expectedMapText);
+        Assert.AreEqual(expectedMapText, mapText.Join(""));
     }
 }

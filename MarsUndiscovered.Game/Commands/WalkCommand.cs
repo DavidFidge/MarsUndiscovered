@@ -76,7 +76,7 @@ namespace MarsUndiscovered.Game.Commands
                     if (Player.MeleeAttack != null)
                     {
                         var command = CommandCollection.CreateCommand<MeleeAttackCommand>(GameWorld);
-                        command.Initialise(Player, actorAt);
+                        command.Initialise(Player, actorAt, GameWorld.Inventory.EquippedWeapon);
 
                         return Result(CommandResult.Success(this, command));
                     }

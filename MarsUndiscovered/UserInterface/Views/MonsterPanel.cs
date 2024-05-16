@@ -1,6 +1,7 @@
 ﻿using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI.Entities;
 using MarsUndiscovered.Game.Components.Dto;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -8,7 +9,7 @@ namespace MarsUndiscovered.UserInterface.Views
     {
         public Label Status { get; set; }
         
-        public MonsterPanel(MonsterStatus monsterStatus)
+        public MonsterPanel(MonsterStatus monsterStatus, IAssets assets) : base(assets)
         {
             Status = new Label()
                 .NoPadding()

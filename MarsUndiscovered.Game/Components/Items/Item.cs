@@ -26,6 +26,8 @@ namespace MarsUndiscovered.Game.Components
         public int MaxHealthIncrease { get; set; }
         public bool GroupsInInventory { get; set; }
         public bool HasBeenDropped { get; set; }
+        public bool CanConcuss { get; set; }
+        
         public ItemDiscovery ItemDiscovery { get; set; } = new ItemDiscovery();
 
         public Item(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.ItemLayer, true, true, () => id)
@@ -71,6 +73,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.MaxHealthIncrease = MaxHealthIncrease;
             memento.State.GroupsInInventory = GroupsInInventory;
             memento.State.HasBeenDropped = HasBeenDropped;
+            memento.State.CanConcuss = CanConcuss;
 
             if (memento.State.ItemDiscovery != null)
                 memento.State.ItemDiscovery = (ItemDiscovery)ItemDiscovery.Clone();
@@ -100,6 +103,7 @@ namespace MarsUndiscovered.Game.Components
             MaxHealthIncrease = memento.State.MaxHealthIncrease;
             GroupsInInventory = memento.State.GroupsInInventory;
             HasBeenDropped = memento.State.HasBeenDropped;
+            CanConcuss = memento.State.CanConcuss;
 
             if (ItemDiscovery != null)
                 ItemDiscovery = (ItemDiscovery)memento.State.ItemDiscovery.Clone();

@@ -1474,6 +1474,14 @@
 /processor:TextureProcessor
 /build:Maps/MiningFacility/Wall.png
 
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Icons/ConcussActive.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Icons/ConcussInactive.png
+
 # add new tiles automatically using tools\create-tilecontent.ps1
 # Note - when adding new tiles, must delete Content.xnb file as noted below.
 

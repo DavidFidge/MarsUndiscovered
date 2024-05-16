@@ -42,6 +42,11 @@ namespace MarsUndiscovered.Game.Components
 
         public bool FriendlyFireAllies => Breed.FriendlyFireAllies;
         public bool UseGoalMapWander { get; set; } = false;
+
+        public bool CanBeConcussed => Breed.WeaknessToConcuss;
+        
+        public bool IsConcussed { get; set; }
+        
         public MonsterState MonsterState { get; set; }
 
         public Monster Leader => _leader;
@@ -125,7 +130,9 @@ namespace MarsUndiscovered.Game.Components
                 MaxHealth = MaxHealth,
                 Name = Name,
                 Behaviour = MonsterState.ToString().ToSeparateWords(),
-                Position = Position
+                Position = Position,
+                CanBeConcussed = CanBeConcussed,
+                IsConcussed = IsConcussed
             };
 
             return monsterStatus;
@@ -258,6 +265,7 @@ namespace MarsUndiscovered.Game.Components
                 .Condition("map is not null", monster => CurrentMap != null)
                 .Condition("on same map as player", monster => CurrentMap.Equals(GameWorld.Player.CurrentMap))
                 .Selector("action selector")
+                    .Subtree(ConcussBehaviour())
                     .Subtree(MeleeAttackBehaviour())
                     .Subtree(LineAttackBehaviour())
                     .Subtree(LightningAttackBehaviour())
@@ -349,7 +357,27 @@ namespace MarsUndiscovered.Game.Components
 
            return behaviour;
         }
+        
+        private IBehaviour<Monster> ConcussBehaviour()
+        {
+            var behaviour = FluentBuilder.Create<Monster>()
+                .Sequence("concussed")
+                .Condition("is concussed", monster => monster.IsConcussed)
+                .Condition("roll", monster => GlobalRandom.DefaultRNG.NextInt(100) > 50)
+                .Do(
+                    "roll",
+                    monster =>
+                    {
+                        GameWorld.MessageLog.AddMessage($"{monster.Name} looks dazed (is concussed)");
+                        return BehaviourStatus.Succeeded;
+                    }
+                )
+                .End()
+                .Build();
 
+            return behaviour;
+        }
+        
         private IBehaviour<Monster> MeleeAttackBehaviour()
         {
             var behaviour = FluentBuilder.Create<Monster>()
@@ -362,7 +390,7 @@ namespace MarsUndiscovered.Game.Components
                     monster =>
                     {
                         var attackCommand = _commandFactory.CreateCommand<MeleeAttackCommand>(GameWorld);
-                        attackCommand.Initialise(this, GameWorld.Player);
+                        attackCommand.Initialise(this, GameWorld.Player, null);
                         _nextCommands.Add(attackCommand);
 
                         return BehaviourStatus.Succeeded;
@@ -840,6 +868,14 @@ namespace MarsUndiscovered.Game.Components
         public void SetLeader(Monster monster)
         {
             _leader = monster;
+        }
+
+        public override void ApplyConcussion()
+        {
+            base.ApplyConcussion();
+
+            if (CanBeConcussed)
+                IsConcussed = true;
         }
     }
 }

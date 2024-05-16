@@ -13,6 +13,8 @@ namespace MarsUndiscovered.Game.Components
         public static HealingBots HealingBots = new HealingBots();
         public static EnhancementBots EnhancementBots = new EnhancementBots();
         public static ShipRepairParts ShipRepairParts = new ShipRepairParts();
+        
+        public bool CanConcuss { get; set; }
 
         public ItemType()
         {
@@ -24,6 +26,7 @@ namespace MarsUndiscovered.Game.Components
 
         public virtual void RecalculateProperties(Item item)
         {
+            item.CanConcuss = CanConcuss;
             item.GroupsInInventory = GroupsInInventory;
         }
 

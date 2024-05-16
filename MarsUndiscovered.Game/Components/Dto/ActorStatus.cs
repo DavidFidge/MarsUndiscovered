@@ -10,5 +10,7 @@ namespace MarsUndiscovered.Game.Components.Dto
         public int MaxHealth { get; set; }
         public int Shield { get; set; }
         public Point Position { get; set; }
+        public bool CanBeConcussed { get; set; }
+        public bool IsConcussed { get; set; }
     }
 }

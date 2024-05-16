@@ -134,7 +134,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected void CreatePlayerPanel()
         {
-            PlayerPanel = new PlayerPanel();
+            PlayerPanel = new PlayerPanel(Assets);
             PlayerPanel.AddAsChildTo(LeftPanel);
         }
 
@@ -191,7 +191,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 select new
                 {
                     MonsterStatus = monsterStatus,
-                    MonsterPanel = subPanel ?? new MonsterPanel(monsterStatus)
+                    MonsterPanel = subPanel ?? new MonsterPanel(monsterStatus, this.Assets)
                 }).ToList();
 
             MonsterPanels.Clear();
