@@ -80,5 +80,6 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> DoRangedAttack(Keys requestKey, Point target);
         Path GetPathForRangedAttack(Point mapPosition);
         InventoryItem GetEquippedItem();
+        MessageLog MessageLog { get; }
     }
 }

@@ -52,7 +52,7 @@ namespace MarsUndiscovered.Game.Components
 
         public MarsMap CurrentMap => Maps.CurrentMap;
 
-        private readonly MessageLog _messageLog = new();
+        public MessageLog MessageLog { get; } = new();
 
         private readonly RadioComms _radioComms = new();
 
@@ -101,7 +101,7 @@ namespace MarsUndiscovered.Game.Components
 
             Inventory = new Inventory(this);
 
-            _radioComms.CreateGameStartMessages(_messageLog, Player);
+            _radioComms.CreateGameStartMessages(MessageLog, Player);
 
             ResetFieldOfView();
         }
@@ -428,7 +428,7 @@ namespace MarsUndiscovered.Game.Components
                     $"{i.GetDescriptionWithoutPrefix(Inventory.ItemTypeDiscoveries[i.ItemType])} has recharged")
                 .ToList();
 
-            _messageLog.AddMessages(rechargedItems);
+            MessageLog.AddMessages(rechargedItems);
         }
 
         protected void UpdateMonstersInView()
@@ -442,8 +442,8 @@ namespace MarsUndiscovered.Game.Components
         private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command)
         {
             var result = command.Execute();
-            _messageLog.AddMessages(result.Messages);
-            _radioComms.ProcessCommand(command, _messageLog);
+            MessageLog.AddMessages(result.Messages);
+            _radioComms.ProcessCommand(command, MessageLog);
 
             // Actions that are persisted for replay are those where the player triggers an action
             // that results in a change in the game world.  Actions that require user input
@@ -474,10 +474,10 @@ namespace MarsUndiscovered.Game.Components
 
         public IList<string> GetMessagesSince(int currentCount)
         {
-            if (currentCount == _messageLog.Count)
+            if (currentCount == MessageLog.Count)
                 return Array.Empty<string>();
 
-            return _messageLog
+            return MessageLog
                 .Skip(currentCount)
                 .Select(s => s.Message)
                 .ToList();
@@ -627,7 +627,7 @@ namespace MarsUndiscovered.Game.Components
             Player = GameObjectFactory.CreateGameObject<Player>(playerSaveData.State.Id);
             Player.LoadState(saveGameService, gameWorld);
 
-            _messageLog.LoadState(saveGameService, gameWorld);
+            MessageLog.LoadState(saveGameService, gameWorld);
             _radioComms.LoadState(saveGameService, gameWorld);
 
             Maps.LoadState(saveGameService, gameWorld);
@@ -653,7 +653,7 @@ namespace MarsUndiscovered.Game.Components
             MapExits.SaveState(saveGameService, gameWorld);
             Ships.SaveState(saveGameService, gameWorld);
             MiningFacilities.SaveState(saveGameService, gameWorld);
-            _messageLog.SaveState(saveGameService, gameWorld);
+            MessageLog.SaveState(saveGameService, gameWorld);
             _radioComms.SaveState(saveGameService, gameWorld);
             Player.SaveState(saveGameService, gameWorld);
             CommandCollection.SaveState(saveGameService, gameWorld);

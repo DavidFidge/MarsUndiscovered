@@ -265,6 +265,7 @@ namespace MarsUndiscovered.Game.Components
                 .Condition("map is not null", monster => CurrentMap != null)
                 .Condition("on same map as player", monster => CurrentMap.Equals(GameWorld.Player.CurrentMap))
                 .Selector("action selector")
+                    .Subtree(ConcussBehaviour())
                     .Subtree(MeleeAttackBehaviour())
                     .Subtree(LineAttackBehaviour())
                     .Subtree(LightningAttackBehaviour())
@@ -356,7 +357,27 @@ namespace MarsUndiscovered.Game.Components
 
            return behaviour;
         }
+        
+        private IBehaviour<Monster> ConcussBehaviour()
+        {
+            var behaviour = FluentBuilder.Create<Monster>()
+                .Sequence("concussed")
+                .Condition("is concussed", monster => monster.IsConcussed)
+                .Condition("roll", monster => GlobalRandom.DefaultRNG.NextInt(100) > 50)
+                .Do(
+                    "roll",
+                    monster =>
+                    {
+                        GameWorld.MessageLog.AddMessage($"{monster.Name} looks dazed (is concussed)");
+                        return BehaviourStatus.Succeeded;
+                    }
+                )
+                .End()
+                .Build();
 
+            return behaviour;
+        }
+        
         private IBehaviour<Monster> MeleeAttackBehaviour()
         {
             var behaviour = FluentBuilder.Create<Monster>()
