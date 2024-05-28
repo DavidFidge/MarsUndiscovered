@@ -6,6 +6,8 @@ using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.Steps;
+using GoRogue.SenseMapping;
+using GoRogue.SenseMapping.Sources;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Game.Extensions;
@@ -36,6 +38,9 @@ namespace MarsUndiscovered.Game.Components
 
         public int MapHeight => _mapHeight;
 
+        public SenseMap SenseMap { get; private set; }
+        public ISenseSource PlayerSenseSource;
+
         public MarsMap(IGameWorld gameWorld, int mapWidth, int mapHeight)
             : base(
                 mapWidth,
@@ -54,7 +59,7 @@ namespace MarsUndiscovered.Game.Components
             _mapHeight = mapHeight;
             SeenTiles = SeenTile.CreateArrayViewFromMap(this);
         }
-
+        
         public MarsMap WithTerrain(IEnumerable<Wall> walls, IEnumerable<Floor> floors)
         {
             Debug.Assert(floors != null && walls != null, "Walls and/or Floors must not be null");
@@ -240,7 +245,7 @@ namespace MarsUndiscovered.Game.Components
             SeenTiles = new ArrayView<SeenTile>(seenTiles, MapWidth);
             
             // If KeyNotFoundException happens here then the game object type SaveState or LoadState
-            // is not populating the id. Base game object classes populate the id for you (refer
+            // is not populating the id. Base game object classes populate the id for you (ref1er
             // to existing implementations).
             var gameObjectsOnMap = memento.State.GameObjectIds
                 .Select(g => _gameWorld.GameObjects[g])
@@ -262,6 +267,30 @@ namespace MarsUndiscovered.Game.Components
             {
                 gameObject.AfterMapLoaded();
             }
+        }
+
+        private void CreateSenseMap()
+        {
+            SenseMap = new SenseMap(this.TransparencyView.ToArrayView(b => b ? (double)0 : 1)); 
+            PlayerSenseSource = new RippleSenseSource(Point.None, 1, Distance.Chebyshev, RippleType.VeryLoose);
+            SenseMap.AddSenseSource(PlayerSenseSource);
+        }
+        
+        public void RecalculateSenseMap(int senseRange)
+        {
+            if (SenseMap == null)
+                CreateSenseMap();
+
+            if (PlayerSenseSource.Position == _gameWorld.Player.Position)
+                return;
+
+            if (_gameWorld.Player.Position == PlayerSenseSource.Position && senseRange == PlayerSenseSource.Radius) 
+                return;
+            
+            PlayerSenseSource.Position = _gameWorld.Player.Position;
+            PlayerSenseSource.Radius = senseRange;
+
+            SenseMap.Calculate();
         }
 
         // Returns whether a point will block movement between different areas of the map

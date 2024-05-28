@@ -8,6 +8,8 @@ using MarsUndiscovered.Interfaces;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
+using GoRogue.SenseMapping;
+using GoRogue.SenseMapping.Sources;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
@@ -69,7 +71,7 @@ namespace MarsUndiscovered.Game.Components
         }
 
         public Inventory Inventory { get; private set; }
-
+        
         private AutoExploreGoalMap _autoExploreGoalMap;
 
         // These are used while the replay is in progress

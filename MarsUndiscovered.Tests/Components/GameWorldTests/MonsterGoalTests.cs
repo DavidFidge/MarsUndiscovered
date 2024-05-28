@@ -4,9 +4,11 @@ using GoRogue.Random;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
+using MarsUndiscovered.Game.Extensions;
 using NGenerics.Extensions;
 
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
@@ -960,6 +962,145 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(wallPosition, lightningAttackCommand.Path[0]);
             Assert.AreEqual(new Point(2, 2), lightningAttackCommand.Path[1]);
             Assert.AreEqual(_gameWorld.Player.Position, lightningAttackCommand.Path[2]);
+        }
+        
+        [TestMethod]
+        public void Should_Keep_On_Hunting_Player_When_Player_Moves_To_Hidden_Spot()
+        {
+            // Arrange
+            // Monster hunting at 1, 3, player at 1, 1
+            var lines = new[]
+            {
+                "....",
+                "....",
+                ".##.",
+                "....",
+                "....",
+                "....",
+                "...."
+            };
+            
+            var mapTemplate = new MapTemplate(lines, 0, 0);
+            var mapGenerator = new SpecificMapGenerator(
+                _gameWorld.GameObjectFactory, 
+                mapTemplate.Where(m => m.Char == '#').Select(m => m.Point).ToList());
+
+            NewGameWithTestLevelGenerator(
+                _gameWorld,
+                mapGenerator,
+                mapWidth: mapTemplate.Bounds.Width,
+                mapHeight: mapTemplate.Bounds.Height,
+                playerPosition: new Point(1, 1));
+
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(1, 3)));
+
+            var monster = _gameWorld.Monsters.Values.First();
+            
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+            monster.MonsterState = MonsterState.Hunting;
+            _gameWorld.Player.SenseRange = 3;
+            
+            // Act
+            var result = _gameWorld.TestNextTurn().ToList();
+
+            // Assert
+            var senseMap = _gameWorld.CurrentMap.SenseMap.ResultView;
+
+            var expectedSenseMap = new[]
+            {
+                0.75d,  0.75d,  0.75d,   0.5d,
+                0.75d,     1d,  0.75d,   0.5d,
+                0.75d,  0.75d,  0.75d,   0.5d,
+                0.5d,   0.5d,  0.25d,  0.25d,
+                0.25d,  0.25d,  0.25d,     0d,
+                0d,     0d,     0d,     0d,
+                0d,     0d,     0d,     0d
+            };
+
+            var senseMapAsArray = senseMap.ToArrayView(x => x).ToArray();
+
+            var stringBuilder = new StringBuilder();
+            
+            senseMap.AddToStringBuilder(stringBuilder, elementSeparator: "d, ", fieldSize: 5);
+            stringBuilder.WriteToDebug();
+
+            for (var i = 0; i < expectedSenseMap.Length; i++)
+            {
+                Assert.AreEqual(expectedSenseMap[i], senseMapAsArray[i], 0.01);
+            }
+
+            Assert.AreEqual(new Point(0, 2), monster.Position);
+            Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
+        }
+        
+        [TestMethod]
+        public void Should_Revert_To_Wandering_When_Cannot_Sense_Player()
+        {
+            // Arrange
+            // Monster hunting at 3, 3, player at 3, 1
+            var lines = new[]
+            {
+                ".......",
+                ".......",
+                "..###..",
+                ".......",
+                ".......",
+                ".......",
+                "......."
+            };
+            
+            var mapTemplate = new MapTemplate(lines, 0, 0);
+            var mapGenerator = new SpecificMapGenerator(
+                _gameWorld.GameObjectFactory, 
+                mapTemplate.Where(m => m.Char == '#').Select(m => m.Point).ToList());
+
+            NewGameWithTestLevelGenerator(
+                _gameWorld,
+                mapGenerator,
+                mapWidth: mapTemplate.Bounds.Width,
+                mapHeight: mapTemplate.Bounds.Height,
+                playerPosition: new Point(3, 1));
+
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(3, 3)));
+
+            var monster = _gameWorld.Monsters.Values.First();
+            
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+            monster.MonsterState = MonsterState.Hunting;
+            _gameWorld.Player.SenseRange = 3;
+            
+            // Act
+            var result = _gameWorld.TestNextTurn().ToList();
+
+            // Assert
+            var senseMap = _gameWorld.CurrentMap.SenseMap.ResultView;
+
+            var expectedSenseMap = new[]
+            {
+                0.25d,   0.5d,  0.75d,  0.75d,  0.75d,   0.5d,  0.25,
+                0.25d,   0.5d,  0.75d,     1d,  0.75d,   0.5d,  0.25,
+                0.25d,   0.5d,  0.75d,  0.75d,  0.75d,   0.5d,  0.25,
+                0.25d,  0.25d,  0.25d,     0d,  0.25d,  0.25d,  0.25, // sense is 0 at monster location - monster cannot see player so reverts to wandering
+                0d,     0d,     0d,     0d,     0d,     0d,     0,
+                0d,     0d,     0d,     0d,     0d,     0d,     0,
+                0d,     0d,     0d,     0d,     0d,     0d,     0
+            };
+
+            var senseMapAsArray = senseMap.ToArrayView(x => x).ToArray();
+
+            var stringBuilder = new StringBuilder();
+            
+            senseMap.AddToStringBuilder(stringBuilder, elementSeparator: "d, ", fieldSize: 5);
+            stringBuilder.WriteToDebug();
+
+            for (var i = 0; i < expectedSenseMap.Length; i++)
+            {
+                Assert.AreEqual(expectedSenseMap[i], senseMapAsArray[i], 0.01);
+            }
+
+            Assert.AreEqual(MonsterState.Wandering, monster.MonsterState);
         }
     }
 }

@@ -282,6 +282,7 @@ namespace MarsUndiscovered.Game.Components
                     .Condition("is not a turret", monster => !IsWallTurret)
                     .Selector("move selector")
                         .Subtree(HuntBehaviour())
+                        .Subtree(ScentBehaviour())
                         .Subtree(FollowLeader())
                         .Subtree(WanderUsingAStarBehavior())
                         .Subtree(WanderUsingGoalMapBehavior())
@@ -647,6 +648,54 @@ namespace MarsUndiscovered.Game.Components
                                 // If we entered here then the monster would have switched to hunting while
                                 // adjacent to the player.  Do not move anywhere - next turn the monster
                                 // should perform an attack.
+                                return BehaviourStatus.Succeeded;
+                            }
+
+                            var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
+                            _nextCommands.Add(moveCommand);
+                         
+                            return BehaviourStatus.Succeeded;
+                        }
+                    )
+                .End()
+                .Build();
+
+            return behaviour;
+        }
+        
+        private IBehaviour<Monster> ScentBehaviour()
+        {
+            // If reaching here the player is not in field of view however monster has previously
+            // detected the player and is still hunting. The monster should continue to hunt the player
+            // if the player is within the scent map range.
+            var behaviour = FluentBuilder.Create<Monster>()
+                .Sequence("scent")
+                    .Condition("is hunting", monster => MonsterState == MonsterState.Hunting)
+                    .Condition("player is in scent range", monster =>
+                    {
+                        GameWorld.CurrentMap.RecalculateSenseMap(GameWorld.Player.SenseRange);
+
+                        var senseMapResult = GameWorld.CurrentMap.SenseMap.ResultView;
+
+                        if (senseMapResult[this.Position] <= 0)
+                            return false;
+
+                        return true;
+                    })
+                    .Do(
+                        "move towards player",
+                        monster =>
+                        {
+                            var nextDirection = Hunt();
+
+                            if (nextDirection == Direction.None)
+                                return BehaviourStatus.Failed;
+
+                            var actorsAtPosition = CurrentMap.GetObjectsAt<Actor>(Position + nextDirection);
+
+                            if (actorsAtPosition.Any())
+                            {
+                                // Blocked from moving by another actor
                                 return BehaviourStatus.Succeeded;
                             }
 
