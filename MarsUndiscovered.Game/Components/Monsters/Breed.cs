@@ -24,6 +24,7 @@ namespace MarsUndiscovered.Game.Components
         
         public bool CanConcuss { get; set; }
         public bool WeaknessToConcuss { get; set; }
+        public int SearchCooldown { get; set; }
 
         static Breed()
         {
@@ -41,6 +42,8 @@ namespace MarsUndiscovered.Game.Components
                 breed.NameWithoutSpaces = breed.Name.RemoveSpaces();
                 breed.Description = csvBreed.Description.ToString();
                 breed.DetectionRange = int.Parse(csvBreed.DetectionRange.ToString());
+                breed.SearchCooldown = int.Parse(csvBreed.SearchCooldown);
+
                 breed.CanConcuss = bool.Parse(csvBreed.CanConcuss);
                 breed.WeaknessToConcuss = bool.Parse(csvBreed.WeaknessToConcuss);
                 

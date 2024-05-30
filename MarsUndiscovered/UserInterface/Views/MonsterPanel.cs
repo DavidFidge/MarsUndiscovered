@@ -1,5 +1,6 @@
 ﻿using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI.Entities;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Interfaces;
 
@@ -25,6 +26,9 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             base.Update(actorStatus);
             Status.Text = actorStatus.Behaviour ?? String.Empty;
+            
+            if (actorStatus.Behaviour == MonsterState.Searching.ToString())
+                Status.Text = Status.Text + $": {actorStatus.SearchCooldown}";
         }
     }
 }

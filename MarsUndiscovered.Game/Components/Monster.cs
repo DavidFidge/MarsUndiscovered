@@ -47,6 +47,8 @@ namespace MarsUndiscovered.Game.Components
         
         public bool IsConcussed { get; set; }
         
+        public int SearchCooldown { get; set; }
+
         public MonsterState MonsterState { get; set; }
 
         public Monster Leader => _leader;
@@ -131,6 +133,7 @@ namespace MarsUndiscovered.Game.Components
                 Name = Name,
                 Behaviour = MonsterState.ToString().ToSeparateWords(),
                 Position = Position,
+                SearchCooldown = SearchCooldown,
                 CanBeConcussed = CanBeConcussed,
                 IsConcussed = IsConcussed
             };
@@ -282,7 +285,7 @@ namespace MarsUndiscovered.Game.Components
                     .Condition("is not a turret", monster => !IsWallTurret)
                     .Selector("move selector")
                         .Subtree(HuntBehaviour())
-                        .Subtree(ScentBehaviour())
+                        .Subtree(SearchingBehavior())
                         .Subtree(FollowLeader())
                         .Subtree(WanderUsingAStarBehavior())
                         .Subtree(WanderUsingGoalMapBehavior())
@@ -612,105 +615,108 @@ namespace MarsUndiscovered.Game.Components
                 .Sequence("hunt")
                     .Condition("player in field of view", monster => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
                     .Condition("player has been detected", monster =>
+                {
+                    if (MonsterState == MonsterState.Searching)
+                        MonsterState = MonsterState.Hunting; 
+                    
+                    if (MonsterState == MonsterState.Hunting)
+                        return true;
+                    
+                    var distance = CurrentMap.DistanceMeasurement.Calculate(Position, GameWorld.Player.Position);
+                    
+                    if (distance <= DetectionRange)
                     {
-                        if (MonsterState == MonsterState.Hunting)
-                            return true;
-                        
-                        var distance = CurrentMap.DistanceMeasurement.Calculate(Position, GameWorld.Player.Position);
-                        
-                        if (distance <= DetectionRange)
+                        if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
+                            MonsterState = MonsterState.Hunting;
+                    }
+                    if (distance <= DetectionRange / 2)
+                    {
+                        // perform a second roll if within half of detection range
+                        if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
+                            MonsterState = MonsterState.Hunting;
+                    }
+
+                    return MonsterState == MonsterState.Hunting;
+                })
+                .Do(
+                    "move towards player",
+                    monster =>
+                    {
+                        monster.SearchCooldown = monster.Breed.SearchCooldown;
+                        var nextDirection = Hunt();
+
+                        if (nextDirection == Direction.None)
+                            return BehaviourStatus.Failed;
+
+                        var actorsAtPosition = CurrentMap.GetObjectsAt<Actor>(Position + nextDirection);
+
+                        if (actorsAtPosition.Any())
                         {
-                            if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
-                                MonsterState = MonsterState.Hunting;
-                        }
-                        if (distance <= DetectionRange / 2)
-                        {
-                            // perform a second roll if within half of detection range
-                            if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
-                                MonsterState = MonsterState.Hunting;
-                        }
-
-                        return MonsterState == MonsterState.Hunting;
-                    })
-                    .Do(
-                        "move towards player",
-                        monster =>
-                        {
-                            var nextDirection = Hunt();
-
-                            if (nextDirection == Direction.None)
-                                return BehaviourStatus.Failed;
-
-                            var actorsAtPosition = CurrentMap.GetObjectsAt<Actor>(Position + nextDirection);
-
-                            if (actorsAtPosition.Any())
-                            {
-                                // If we entered here then the monster would have switched to hunting while
-                                // adjacent to the player.  Do not move anywhere - next turn the monster
-                                // should perform an attack.
-                                return BehaviourStatus.Succeeded;
-                            }
-
-                            var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
-                            _nextCommands.Add(moveCommand);
-                         
+                            // If we entered here then the monster would have switched to hunting while
+                            // adjacent to the player.  Do not move anywhere - next turn the monster
+                            // should perform an attack.
                             return BehaviourStatus.Succeeded;
                         }
-                    )
+
+                        var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
+                        _nextCommands.Add(moveCommand);
+                     
+                        return BehaviourStatus.Succeeded;
+                    }
+                )
                 .End()
                 .Build();
 
             return behaviour;
         }
         
-        private IBehaviour<Monster> ScentBehaviour()
+        private IBehaviour<Monster> SearchingBehavior()
         {
             // If reaching here the player is not in field of view however monster has previously
-            // detected the player and is still hunting. The monster should continue to hunt the player
-            // if the player is within the scent map range.
+            // detected the player and is still hunting/searching. The monster should continue to search for the player
+            // until a cooldown timer has expired
             var behaviour = FluentBuilder.Create<Monster>()
-                .Sequence("scent")
-                    .Condition("is hunting", monster => MonsterState == MonsterState.Hunting)
-                    .Condition("player is in scent range", monster =>
+                .Sequence("search")
+                    .Condition("is hunting", monster => MonsterState == MonsterState.Hunting || MonsterState == MonsterState.Searching)
+                    .Condition("cooldown not expired", monster =>
+                {
+                    monster.SearchCooldown--;
+
+                    if (monster.SearchCooldown <= 0)
+                        return false;
+                    
+                    return true;
+                })
+                .Do(
+                    "move towards player",
+                    monster =>
                     {
-                        GameWorld.CurrentMap.RecalculateSenseMap(GameWorld.Player.SenseRange);
+                        monster.MonsterState = MonsterState.Searching;
+                        
+                        var nextDirection = Hunt();
 
-                        var senseMapResult = GameWorld.CurrentMap.SenseMap.ResultView;
+                        if (nextDirection == Direction.None)
+                            return BehaviourStatus.Failed;
 
-                        if (senseMapResult[this.Position] <= 0)
-                            return false;
+                        var actorsAtPosition = CurrentMap.GetObjectsAt<Actor>(Position + nextDirection);
 
-                        return true;
-                    })
-                    .Do(
-                        "move towards player",
-                        monster =>
+                        if (actorsAtPosition.Any())
                         {
-                            var nextDirection = Hunt();
-
-                            if (nextDirection == Direction.None)
-                                return BehaviourStatus.Failed;
-
-                            var actorsAtPosition = CurrentMap.GetObjectsAt<Actor>(Position + nextDirection);
-
-                            if (actorsAtPosition.Any())
-                            {
-                                // Blocked from moving by another actor
-                                return BehaviourStatus.Succeeded;
-                            }
-
-                            var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
-                            _nextCommands.Add(moveCommand);
-                         
+                            // Blocked from moving by another actor
                             return BehaviourStatus.Succeeded;
                         }
-                    )
+
+                        var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
+                        _nextCommands.Add(moveCommand);
+
+                        return BehaviourStatus.Succeeded;
+                    })
                 .End()
                 .Build();
 
             return behaviour;
         }
-
+        
         public Direction Hunt()
         {
             _goalStates.Clear();

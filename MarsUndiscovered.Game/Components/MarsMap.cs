@@ -34,12 +34,11 @@ namespace MarsUndiscovered.Game.Components
         public IList<Wall> Walls { get; private set; }
         public IList<Floor> Floors { get; private set; }
 
+        private ArrayView<bool> _wallsArrayView;
+        
         public int MapWidth => _mapWidth;
 
         public int MapHeight => _mapHeight;
-
-        public SenseMap SenseMap { get; private set; }
-        public ISenseSource PlayerSenseSource;
 
         public MarsMap(IGameWorld gameWorld, int mapWidth, int mapHeight)
             : base(
@@ -268,31 +267,7 @@ namespace MarsUndiscovered.Game.Components
                 gameObject.AfterMapLoaded();
             }
         }
-
-        private void CreateSenseMap()
-        {
-            SenseMap = new SenseMap(this.TransparencyView.ToArrayView(b => b ? (double)0 : 1)); 
-            PlayerSenseSource = new RippleSenseSource(Point.None, 1, Distance.Chebyshev, RippleType.VeryLoose);
-            SenseMap.AddSenseSource(PlayerSenseSource);
-        }
         
-        public void RecalculateSenseMap(int senseRange)
-        {
-            if (SenseMap == null)
-                CreateSenseMap();
-
-            if (PlayerSenseSource.Position == _gameWorld.Player.Position)
-                return;
-
-            if (_gameWorld.Player.Position == PlayerSenseSource.Position && senseRange == PlayerSenseSource.Radius) 
-                return;
-            
-            PlayerSenseSource.Position = _gameWorld.Player.Position;
-            PlayerSenseSource.Radius = senseRange;
-
-            SenseMap.Calculate();
-        }
-
         // Returns whether a point will block movement between different areas of the map
         // if an obstacle is placed there.  Note that technically diagonals could be moved
         // around, but ideally we should exclude placing an item also if the player

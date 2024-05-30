@@ -4,5 +4,6 @@
     {
         public double DistanceFromPlayer { get; set; }
         public string Behaviour { get; set; }
+        public int SearchCooldown { get; set; }
     }
 }

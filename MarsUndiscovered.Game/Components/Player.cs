@@ -27,14 +27,12 @@ namespace MarsUndiscovered.Game.Components
         public Attack UnarmedAttack { get; set; } = new Attack(new Range<int>(2, 5));
 
         public override bool IsWallTurret { get; } = false;
-        public int SenseRange { get; set; }
 
         public Player(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
             MaxHealth = 100;
             Health = MaxHealth;
             RegenRate = 0.005m;
-            SenseRange = 5;
             InitialiseAttacks();
         }
 

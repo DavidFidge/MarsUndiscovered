@@ -965,7 +965,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
         
         [TestMethod]
-        public void Should_Keep_On_Hunting_Player_When_Player_Moves_To_Hidden_Spot()
+        public void Should_Search_Player_When_Player_Moves_To_Hidden_Spot()
         {
             // Arrange
             // Monster hunting at 1, 3, player at 1, 1
@@ -999,43 +999,19 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
             monster.MonsterState = MonsterState.Hunting;
-            _gameWorld.Player.SenseRange = 3;
+            monster.SearchCooldown = 2;
             
             // Act
             var result = _gameWorld.TestNextTurn().ToList();
 
             // Assert
-            var senseMap = _gameWorld.CurrentMap.SenseMap.ResultView;
-
-            var expectedSenseMap = new[]
-            {
-                0.75d,  0.75d,  0.75d,   0.5d,
-                0.75d,     1d,  0.75d,   0.5d,
-                0.75d,  0.75d,  0.75d,   0.5d,
-                0.5d,   0.5d,  0.25d,  0.25d,
-                0.25d,  0.25d,  0.25d,     0d,
-                0d,     0d,     0d,     0d,
-                0d,     0d,     0d,     0d
-            };
-
-            var senseMapAsArray = senseMap.ToArrayView(x => x).ToArray();
-
-            var stringBuilder = new StringBuilder();
-            
-            senseMap.AddToStringBuilder(stringBuilder, elementSeparator: "d, ", fieldSize: 5);
-            stringBuilder.WriteToDebug();
-
-            for (var i = 0; i < expectedSenseMap.Length; i++)
-            {
-                Assert.AreEqual(expectedSenseMap[i], senseMapAsArray[i], 0.01);
-            }
-
             Assert.AreEqual(new Point(0, 2), monster.Position);
-            Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
+            Assert.AreEqual(MonsterState.Searching, monster.MonsterState);
+            Assert.AreEqual(1, monster.SearchCooldown);
         }
         
         [TestMethod]
-        public void Should_Revert_To_Wandering_When_Cannot_Sense_Player()
+        public void Should_Revert_To_Wandering_When_Cooldown_Expired()
         {
             // Arrange
             // Monster hunting at 3, 3, player at 3, 1
@@ -1069,37 +1045,12 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
             monster.MonsterState = MonsterState.Hunting;
-            _gameWorld.Player.SenseRange = 3;
+            monster.SearchCooldown = 1;
             
             // Act
             var result = _gameWorld.TestNextTurn().ToList();
 
             // Assert
-            var senseMap = _gameWorld.CurrentMap.SenseMap.ResultView;
-
-            var expectedSenseMap = new[]
-            {
-                0.25d,   0.5d,  0.75d,  0.75d,  0.75d,   0.5d,  0.25,
-                0.25d,   0.5d,  0.75d,     1d,  0.75d,   0.5d,  0.25,
-                0.25d,   0.5d,  0.75d,  0.75d,  0.75d,   0.5d,  0.25,
-                0.25d,  0.25d,  0.25d,     0d,  0.25d,  0.25d,  0.25, // sense is 0 at monster location - monster cannot see player so reverts to wandering
-                0d,     0d,     0d,     0d,     0d,     0d,     0,
-                0d,     0d,     0d,     0d,     0d,     0d,     0,
-                0d,     0d,     0d,     0d,     0d,     0d,     0
-            };
-
-            var senseMapAsArray = senseMap.ToArrayView(x => x).ToArray();
-
-            var stringBuilder = new StringBuilder();
-            
-            senseMap.AddToStringBuilder(stringBuilder, elementSeparator: "d, ", fieldSize: 5);
-            stringBuilder.WriteToDebug();
-
-            for (var i = 0; i < expectedSenseMap.Length; i++)
-            {
-                Assert.AreEqual(expectedSenseMap[i], senseMapAsArray[i], 0.01);
-            }
-
             Assert.AreEqual(MonsterState.Wandering, monster.MonsterState);
         }
     }
