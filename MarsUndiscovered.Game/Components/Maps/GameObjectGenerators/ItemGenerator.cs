@@ -2,6 +2,7 @@
 using MarsUndiscovered.Game.Components.Maps.MapPointChoiceRules;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Game.ViewMessages;
+using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {
@@ -27,6 +28,9 @@ namespace MarsUndiscovered.Game.Components.Maps
                 spawnItemParams.AssignMap(map);
 
                 var position = GetPosition(spawnItemParams, map);
+                
+                if (position == Point.None)
+                    return;
                 
                 item.PositionedAt(position)
                     .AddToMap(map);

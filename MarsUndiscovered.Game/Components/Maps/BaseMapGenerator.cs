@@ -18,6 +18,7 @@ namespace MarsUndiscovered.Game.Components.Maps
         public static string AreasTag = "Areas";
         public static string AreasWallsDoorsTag = "AreasWallsDoors";
         public static string PrefabTag = "Prefabs"; // ItemList<Prefab>
+        public static string RubbleTag = "RubbleTag"; // ItemList<Prefab>
 
         public MarsMap Map { get; set; }
         public int Steps { get; set; }

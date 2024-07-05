@@ -2,6 +2,7 @@
 using MarsUndiscovered.Game.Components.Maps.MapPointChoiceRules;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Game.ViewMessages;
+using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Components.Maps
 {
@@ -28,6 +29,9 @@ namespace MarsUndiscovered.Game.Components.Maps
             spawnMonsterParams.AssignMap(map);
 
             var position = GetPosition(spawnMonsterParams, map);
+            
+            if (position == Point.None)
+                return;
             
             monster.PositionedAt(position);
 

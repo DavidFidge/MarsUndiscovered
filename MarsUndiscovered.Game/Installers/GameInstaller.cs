@@ -51,7 +51,11 @@ namespace MarsUndiscovered.Game.Installers
                 Component.For<IItemGenerator>()
                     .ImplementedBy<ItemGenerator>()
                     .LifestyleTransient(),
-
+                
+                Component.For<IFeatureGenerator>()
+                    .ImplementedBy<FeatureGenerator>()
+                    .LifestyleTransient(),
+                
                 Component.For<IMachineGenerator>()
                     .ImplementedBy<MachineGenerator>()
                     .LifestyleTransient(),

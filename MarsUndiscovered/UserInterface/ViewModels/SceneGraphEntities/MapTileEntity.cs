@@ -149,5 +149,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Laser.ToString());
             Opacity = opacity;
         }
+
+        public void SetFeature(FeatureType featureType)
+        {
+            MapTileTexture = Assets.GetMapTileTexture(featureType.Name);
+            IsVisible = true;
+        }
     }
 }

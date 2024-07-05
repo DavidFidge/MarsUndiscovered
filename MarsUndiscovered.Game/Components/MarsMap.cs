@@ -44,11 +44,12 @@ namespace MarsUndiscovered.Game.Components
             : base(
                 mapWidth,
                 mapHeight,
-                4,
+                6,
                 Distance.Chebyshev,
                 null,
                 UInt32.MaxValue,
-                2, // Terrain and Door layers can block transparency
+                7, // Terrain, Feature and Door layers can block transparency,
+                   // I think this has to be a bitmask, so 7 = bit 0, 1, 2 for layers 0, 1, 2 
                 0)
         {
             Id = Guid.NewGuid();

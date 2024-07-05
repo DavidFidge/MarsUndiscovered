@@ -30,6 +30,7 @@ public class LevelGenerator : ILevelGenerator
     public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
     public IMapExitGenerator MapExitGenerator { get; set; }
     public IMachineGenerator MachineGenerator { get; set; }
+    public IFeatureGenerator FeatureGenerator { get; set; }
     
     public IEnhancedRandom RNG { get; set; }
     
@@ -47,7 +48,12 @@ public class LevelGenerator : ILevelGenerator
     {
         ItemGenerator.SpawnItem(spawnItemParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Items);
     }
-
+    
+    private void SpawnFeature(SpawnFeatureParams spawnFeatureParams)
+    {
+        FeatureGenerator.SpawnFeature(spawnFeatureParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Features);
+    }
+    
     private void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
     {
         spawnMapExitParams.MapPointChoiceRules.Add(new WallAdjacentToFloorRule());
@@ -129,6 +135,16 @@ public class LevelGenerator : ILevelGenerator
         ShipGenerator.CreateShip(_gameWorld.GameObjectFactory, map, _gameWorld.Ships);
         MiningFacilityGenerator.CreateMiningFacility(_gameWorld.GameObjectFactory, map, _gameWorld.MiningFacilities);
 
+
+        for (var i = 0; i < 100; i++)
+        {
+            var rubbleParams = new SpawnFeatureParams()
+                .WithFeatureType(FeatureType.RubbleType)
+                .OnMap(map.Id);
+            
+            SpawnFeature(rubbleParams);
+        }
+        
         var pointsNextToBottomOfMiningFacility = _gameWorld.MiningFacilities.Values
             .Where(m => ((MarsMap)m.CurrentMap).Id == map.Id)
             .Select(m => m.Position)

@@ -224,7 +224,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             var itemTileEntity = _mapTileEntityFactory.Create(position);
             _itemTiles[position] = itemTileEntity;
-
+            
             var machineTileEntity = _mapTileEntityFactory.Create(position);
             _machineTiles[position] = machineTileEntity;
             
@@ -346,14 +346,23 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 return;
             }
             
-            var door = gameObjects.FirstOrDefault(go => go is Door);
+            // Below 4 share _terrainTiles
+            var door = gameObjects.FirstOrDefault(go => go is Door) as Door;
 
-            if (door != null)
+            if (door != null && !door.IsOpen)
             {
                 _terrainTiles[point].SetDoor(((Door)door).DoorType);
                 return;
             }
 
+            var feature = gameObjects.FirstOrDefault(go => go is Feature) as Feature;
+
+            if (feature != null)
+            {
+                _terrainTiles[point].SetFeature(feature.FeatureType);
+                return;
+            }
+            
             var floor = gameObjects.FirstOrDefault(go => go is Floor);
 
             if (floor != null)

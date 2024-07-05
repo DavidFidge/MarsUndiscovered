@@ -83,6 +83,11 @@ public class Assets : IAssets
             CreateGameObjectTypeGraphics(doorType.Value, assetsList, doorType.Key);
         }
         
+        foreach (var featureType in FeatureType.FeatureTypes)
+        {
+            CreateGameObjectTypeGraphics(featureType.Value, assetsList, featureType.Key);
+        }
+        
         foreach (var machineType in MachineType.MachineTypes)
         {
             CreateGameObjectTypeGraphics(machineType.Value, assetsList, machineType.Key);
@@ -341,7 +346,7 @@ public class Assets : IAssets
     
     private void CreateGameObjectTypeGraphics<T>(T gameObjectType, string[] assetsList, string assetKey) where T : GameObjectType
     {
-        var wall = new MapTileTexture(
+        var mapTileTexture = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             UiConstants.TileWidth,
             UiConstants.TileHeight,
@@ -351,7 +356,7 @@ public class Assets : IAssets
             gameObjectType.BackgroundColour
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(assetKey, wall);
+        _asciiMapTileGraphics.AddMapTileTextures(assetKey, mapTileTexture);
         _graphicalMapTileGraphics.AddMapTileTextures(
             assetKey,
             GetTileAssets(assetsList, $"{_tilesPrefix}/{assetKey}")
