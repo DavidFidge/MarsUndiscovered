@@ -115,14 +115,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         protected abstract void RefreshView();
 
-        public string GetGameObjectInformationAt(Ray pointerRay)
+        public string GetGameObjectTooltipAt(Ray pointerRay)
         {
             var point = MapViewModel.MousePointerRayToMapPosition(pointerRay);
 
             if (point == null)
                 return null;
 
-            var tooltip = GameWorldEndpoint.GetGameObjectInformationAt(point.Value);
+            var tooltip = GameWorldEndpoint.GetGameObjectTooltipAt(point.Value);
 
             return tooltip;
         }

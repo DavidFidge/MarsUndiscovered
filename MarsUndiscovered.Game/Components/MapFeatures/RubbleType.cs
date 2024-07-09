@@ -12,4 +12,9 @@ public class RubbleType : FeatureType
         
         AsciiCharacter = (char)0xb0;
     }
+
+    public override string GetAmbientText()
+    {
+        return "The floor is littered with rubble and boulders here. It will not restrict my movement.";
+    }
 }

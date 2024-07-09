@@ -84,7 +84,7 @@ namespace MarsUndiscovered.Game.Commands
                 }
             }
             
-            var message = $"A force field radiates out from you!";
+            var message = $"A force field radiates out from me!";
             var commandResult = CommandResult.Success(this, message);
             
             return Result(commandResult);

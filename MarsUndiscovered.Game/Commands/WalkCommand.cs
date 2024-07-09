@@ -83,7 +83,7 @@ namespace MarsUndiscovered.Game.Commands
                 }
 
                 if (actorAt != null)
-                    return Result(CommandResult.Exception(this, $"You bump into a {actorAt.Name}"));
+                    return Result(CommandResult.Exception(this, $"I bump into a {actorAt.Name}"));
 
                 var terrainAtDestination = map.GetTerrainAt(newPlayerPosition);
 
@@ -110,10 +110,10 @@ namespace MarsUndiscovered.Game.Commands
                     {
                         Player.IsVictorious = true;
                         GameWorld.Morgue.GameEnded();
-                        return Result(CommandResult.NoMove(this, "You board your ship, make hasty repairs to critical parts and fire the engines! You have escaped!"));
+                        return Result(CommandResult.NoMove(this, "I board my ship, make hasty repairs to critical parts and fire the engines! I have escaped!"));
                     }
 
-                    return Result(CommandResult.NoMove(this, "You don't have the parts you need to repair your ship!"));
+                    return Result(CommandResult.NoMove(this, "I don't have the parts I need to repair my ship!"));
                 }
                 
                 var machineAt = map.GetObjectAt<Machine>(newPlayerPosition);

@@ -17,7 +17,7 @@ public enum RadioCommsTypes
 
 public class RadioComms : List<RadioCommsEntry>, ISaveable
 {
-    public static string ShipAiSource = "INCOMING MESSAGE FROM YOUR SHIP AI";
+    public static string ShipAiSource = "INCOMING MESSAGE FROM MY SHIP AI";
     private int _seenCount;
     private Dictionary<RadioCommsTypes, RadioCommsPrefab> _radioCommsPrefabs = new();
 

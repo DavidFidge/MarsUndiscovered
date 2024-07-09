@@ -47,7 +47,7 @@ namespace MarsUndiscovered.Interfaces
         IList<MonsterStatus> GetStatusOfMonstersInView();
         PlayerStatus GetPlayerStatus();
         Path GetPathToPlayer(Point mapPosition);
-        string GetGameObjectInformationAt(Point point);
+        string GetGameObjectTooltipAt(Point point);
         void SpawnItem(SpawnItemParams spawnItemParams);
         List<InventoryItem> GetInventoryItems();
         IList<CommandResult> DropItemRequest(Keys itemKey);

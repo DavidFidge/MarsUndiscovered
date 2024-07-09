@@ -36,7 +36,7 @@ namespace MarsUndiscovered.Interfaces
         IList<MonsterStatus> GetStatusOfMonstersInView();
         PlayerStatus GetPlayerStatus();
         IList<string> GetMessagesSince(int messageLogCount);
-        string GetGameObjectInformationAt(Point point);
+        string GetGameObjectTooltipAt(Point point);
         IList<CommandResult> MoveRequest(Direction direction);
         IList<CommandResult> MoveRequest(Path path);
         AutoExploreResult AutoExploreRequest();

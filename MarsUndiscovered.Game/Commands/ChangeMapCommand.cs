@@ -49,7 +49,7 @@ namespace MarsUndiscovered.Game.Commands
                 GameWorld.ChangeMap(newMap);
 
                 var exitText = MapExit.Direction == Direction.Down ? "descend" : "ascend";
-                return Result(CommandResult.Success(this, $"You {exitText}"));
+                return Result(CommandResult.Success(this, $"I {exitText}"));
             }
             else
             {

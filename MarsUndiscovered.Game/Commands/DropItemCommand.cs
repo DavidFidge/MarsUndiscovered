@@ -39,7 +39,7 @@ namespace MarsUndiscovered.Game.Commands
 
             if (existingItem != null)
             {
-                return Result(CommandResult.NoMove(this, "Cannot drop item - there is another item in the way"));
+                return Result(CommandResult.NoMove(this, "I cannot drop this item - there is another item in the way"));
             }
             
             _data.ItemKey = GameWorld.Inventory.GetKeyForItem(Item);
@@ -54,7 +54,7 @@ namespace MarsUndiscovered.Game.Commands
             _data.OldHasBeenDropped = Item.HasBeenDropped;
             Item.HasBeenDropped = true;
 
-            return Result(CommandResult.Success(this, $"You drop {itemDescription}"));
+            return Result(CommandResult.Success(this, $"I drop {itemDescription}"));
         }
 
         protected override void UndoInternal()

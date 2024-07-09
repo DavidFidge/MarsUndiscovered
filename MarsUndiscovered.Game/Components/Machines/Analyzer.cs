@@ -10,5 +10,15 @@ namespace MarsUndiscovered.Game.Components
             BackgroundColour = Color.Cyan;
             AsciiCharacter = '?';
         }
+
+        public override string GetDescription()
+        {
+            return "An analyzer machine";
+        }
+
+        public override string GetLongDescription()
+        {
+            return "An analyzer machine that can be used to identify unknown items";
+        }
     }
 }

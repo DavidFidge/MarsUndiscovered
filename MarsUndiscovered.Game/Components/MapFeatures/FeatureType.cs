@@ -12,4 +12,9 @@ public abstract class FeatureType : GameObjectType
 
         FeatureTypes.Add(RubbleType.Name, RubbleType);
     }
+
+    public virtual string GetAmbientText()
+    {
+        return string.Empty;
+    }
 }

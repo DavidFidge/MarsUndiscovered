@@ -38,5 +38,10 @@ namespace MarsUndiscovered.Game.Components
 
             return this;
         }
+
+        public string GetAmbientText()
+        {
+            return FeatureType.GetAmbientText();
+        }
     }
 }

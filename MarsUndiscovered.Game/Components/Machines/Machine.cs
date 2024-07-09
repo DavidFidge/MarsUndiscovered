@@ -19,6 +19,7 @@ public class Machine : Indestructible, IMementoState<MachineSaveData>
     public Machine WithMachineType(MachineType machineType)
     {
         MachineType = machineType;
+        Description = machineType.GetLongDescription();
 
         return this;
     }

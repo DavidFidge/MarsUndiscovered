@@ -43,14 +43,14 @@ namespace MarsUndiscovered.Game.Commands
 
             if (!GameWorld.Inventory.CanPickUpItem)
             {
-                return Result(CommandResult.NoMove(this, $"Your inventory is too full to pick up {itemDescription}"));
+                return Result(CommandResult.NoMove(this, $"My inventory is too full to pick up {itemDescription}"));
             }
 
             GameWorld.Inventory.Add(Item);
             Item.CurrentMap.RemoveEntity(Item);
             Item.Position = Point.None;
 
-            return Result(CommandResult.Success(this, $"You pick up {itemDescription}"));
+            return Result(CommandResult.Success(this, $"I pick up {itemDescription}"));
         }
 
         protected override void UndoInternal()

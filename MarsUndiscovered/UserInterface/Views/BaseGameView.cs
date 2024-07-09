@@ -30,6 +30,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected RichParagraph StatusParagraph;
         protected RichParagraph HoverPanelLeftTooltip;
         protected RichParagraph HoverPanelRightTooltip;
+        protected RichParagraph AmbientParagraph;
         protected Panel GameViewPanel { get; set; }
         protected Panel HoverPanelLeft { get; set; }
         protected Panel HoverPanelRight { get; set; }
@@ -111,6 +112,20 @@ namespace MarsUndiscovered.UserInterface.Views
 
             BottomPanel.AddChild(StatusParagraph);
         }
+        
+        protected void CreateAmbientPanel()
+        {
+            AmbientParagraph = new RichParagraph()
+                .Anchor(Anchor.BottomLeft)
+                .NoPadding()
+                .Height(0.5f);
+
+            AmbientParagraph.BackgroundColor = Color.Black;
+
+            LeftPanel.AddChild(AmbientParagraph);
+
+            AmbientParagraph.Text = "Welcome to Mars Undiscovered!";
+        } 
      
         protected void CreateMessageLog()
         {
@@ -171,6 +186,7 @@ namespace MarsUndiscovered.UserInterface.Views
         private void UpdatePlayerStatus()
         {
             PlayerPanel.Update(_viewModel.PlayerStatus);
+            AmbientParagraph.Text = _viewModel.PlayerStatus.AmbientText;
         }
 
         protected void UpdateMonsterStatus()
@@ -217,7 +233,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             var ray = _gameCamera.GetPointerRay(notification.X, notification.Y);
 
-            var gameObjectInformation = _viewModel.GetGameObjectInformationAt(ray);
+            var gameObjectInformation = _viewModel.GetGameObjectTooltipAt(ray);
 
             if (!String.IsNullOrEmpty(gameObjectInformation))
             {

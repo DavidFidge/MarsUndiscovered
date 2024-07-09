@@ -125,9 +125,9 @@ namespace MarsUndiscovered.Game.Components
             return GameWorld.GetMessagesSince(messageLogCount);
         }
 
-        public string GetGameObjectInformationAt(Point point)
+        public string GetGameObjectTooltipAt(Point point)
         {
-            return GameWorld.GetGameObjectInformationAt(point);
+            return GameWorld.GetGameObjectTooltipAt(point);
         }
 
         public IList<CommandResult> MoveRequest(Direction direction)

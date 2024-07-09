@@ -35,10 +35,10 @@ namespace MarsUndiscovered.Game.Commands
 
             if (Item.ItemType is Weapon)
             {
-                return Result(CommandResult.Success(this, $"You sheathe {itemDescription}"));
+                return Result(CommandResult.Success(this, $"I sheathe {itemDescription}"));
             }
 
-            return Result(CommandResult.Success(this, $"You unequip {itemDescription}"));
+            return Result(CommandResult.Success(this, $"I unequip {itemDescription}"));
         }
 
         protected override void UndoInternal()

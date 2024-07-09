@@ -64,6 +64,16 @@ namespace MarsUndiscovered.Game.Components
             ItemTypeDiscoveries.CreateUndiscoveredItemTypeNames();
         }
 
+        public string GetItemDescription(Item item, int quantity)
+        {
+            ItemTypeDiscoveries.TryGetValue(item.ItemType, out var itemTypeDiscovery);
+
+            return item.GetDescription(
+                itemTypeDiscovery,
+                quantity
+            );
+        }
+
         public List<InventoryItem> GetInventoryItems()
         {
             var inventoryItems = ItemKeyAssignments.Keys
@@ -77,10 +87,7 @@ namespace MarsUndiscovered.Game.Components
                         return new InventoryItem
                         {
                             ItemId = item.ID,
-                            ItemDescription = item.GetDescription(
-                                itemTypeDiscovery,
-                                ItemKeyAssignments[key].Count
-                            ),
+                            ItemDescription = GetItemDescription(item, ItemKeyAssignments[key].Count),
                             ItemDiscoveredDescription = item.GetDiscoveredDescription(ItemKeyAssignments[key].Count),
                             HotBarDescription = item.GetHotBarDescription(item),
                             ItemType = item.ItemType,

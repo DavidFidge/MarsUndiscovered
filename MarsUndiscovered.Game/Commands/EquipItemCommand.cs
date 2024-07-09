@@ -48,15 +48,15 @@ namespace MarsUndiscovered.Game.Commands
             if (Item.ItemType is Weapon)
             {
                 if (!string.IsNullOrEmpty(currentItemDescription))
-                    currentItemDescription = $"; you sheathe {currentItemDescription}";
+                    currentItemDescription = $"; I sheathe {currentItemDescription}";
 
-                return Result(CommandResult.Success(this, $"You wield {itemDescription}{currentItemDescription}"));
+                return Result(CommandResult.Success(this, $"I wield {itemDescription}{currentItemDescription}"));
             }
 
             if (!string.IsNullOrEmpty(currentItemDescription))
-                currentItemDescription = $"; you unequip {currentItemDescription}";
+                currentItemDescription = $"; I unequip {currentItemDescription}";
 
-            return Result(CommandResult.Success(this, $"You equip {itemDescription}{currentItemDescription}"));
+            return Result(CommandResult.Success(this, $"I equip {itemDescription}{currentItemDescription}"));
         }
 
         protected override void UndoInternal()

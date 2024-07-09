@@ -134,12 +134,13 @@ namespace MarsUndiscovered.UserInterface.Views
             CreatePlayerPanel();
             CreateMessageLog();
             CreateStatusPanel();
+            CreateAmbientPanel();
             CreateRadioCommsPanel();
             CreateHotBarPanel();
             SetupConsole();
             SetupInventoryGame();
             SetupChildPanel(_inGameOptionsView);
-
+            
             _stopwatchProvider.Start();
         }
 

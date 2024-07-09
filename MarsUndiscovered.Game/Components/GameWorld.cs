@@ -1,3 +1,4 @@
+using System.Text;
 using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
@@ -706,7 +707,7 @@ namespace MarsUndiscovered.Game.Components
 
         public PlayerStatus GetPlayerStatus()
         {
-            return new PlayerStatus
+            var playerStatus = new PlayerStatus
             {
                 Health = Player.Health,
                 IsDead = Player.IsDead,
@@ -714,8 +715,16 @@ namespace MarsUndiscovered.Game.Components
                 MaxHealth = Player.MaxHealth,
                 Shield = Player.Shield,
                 Name = Player.Name,
-                Position = Player.Position
+                Position = Player.Position,
+                AmbientText = string.Empty
             };
+
+            var feature = CurrentMap.GetObjectAt<Feature>(Player.Position);
+
+            if (feature != null)
+                playerStatus.AmbientText = feature.GetAmbientText();
+
+            return playerStatus;
         }
 
         public IList<MonsterStatus> GetStatusOfMonstersInView()
@@ -742,19 +751,44 @@ namespace MarsUndiscovered.Game.Components
             return CurrentMap.AStar.ShortestPath(Player.Position, mapPosition);
         }
 
-        public string GetGameObjectInformationAt(Point point)
+        public string GetGameObjectTooltipAt(Point point)
         {
             if (!CurrentMap.Bounds().Contains(point))
                 return null;
+            
+            var text = new StringBuilder();
 
-            var monster = CurrentMap.GetObjectAt<Monster>(point);
+            var gameObjects = CurrentMap.GetObjectsAt(point);
 
-            if (monster != null)
+            if (gameObjects.FirstOrDefault(g => g is Machine) is Machine machine)
             {
-                return monster.GetInformation(Player);
+                text.AppendLine(machine.MachineType.GetLongDescription());
+                return text.ToString();
             }
 
-            return null;
+            if (gameObjects.FirstOrDefault(g => g is Machine) is MapExit mapExit)
+            {
+                text.AppendLine($"I see an exit going {mapExit.Direction}");
+
+                return text.ToString();
+            }
+            
+            if (gameObjects.FirstOrDefault(g => g is Monster) is Monster monster)
+            {
+                text.AppendLine(monster.GetInformation(Player));
+            }
+            
+            if (gameObjects.FirstOrDefault(g => g is Item) is Item item)
+            {
+                text.AppendLine(Inventory.GetItemDescription(item, 1));
+            }
+            
+            if (gameObjects.FirstOrDefault(g => g is Feature) is Feature feature)
+            {
+                text.AppendLine(feature.GetAmbientText());
+            }
+            
+            return text.ToString();
         }
 
         public List<InventoryItem> GetInventoryItems()

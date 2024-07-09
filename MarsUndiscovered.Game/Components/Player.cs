@@ -14,7 +14,7 @@ namespace MarsUndiscovered.Game.Components
         public override char AsciiCharacter => '@';
 
         public const int BaseHealth = 100;
-        public override string Name => "You";
+        public override string Name => "Me";
         public override string NameSpecificArticleLowerCase => Name.ToLower();
         public override string NameGenericArticleLowerCase => Name.ToLower();
         public override string NameSpecificArticleUpperCase => Name;

@@ -62,7 +62,7 @@ namespace MarsUndiscovered.Game.Commands
             }
             else
             {
-                message = $"You apply {GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(Item)}";
+                message = $"I apply {GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(Item)}";
             }
             
             Item.ResetRechargeDelay();

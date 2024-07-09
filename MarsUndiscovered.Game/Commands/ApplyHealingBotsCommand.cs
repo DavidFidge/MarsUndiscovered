@@ -28,7 +28,7 @@ namespace MarsUndiscovered.Game.Commands
             Target.MaxHealth += Source.MaxHealthIncrease;
             Target.Health = Target.MaxHealth;
 
-            var message = "You feel healthier. All your ailments are cured and your max health has increased.";
+            var message = "I feel healthier and all my ailments are cured.";
             var commandResult = CommandResult.Success(this, message);
 
             return Result(commandResult);

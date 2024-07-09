@@ -71,38 +71,41 @@ namespace MarsUndiscovered.Game.Components
         {
             var stringBuilder = new StringBuilder();
 
-            stringBuilder.AppendLine(Name);
+            stringBuilder.AppendLine($"I see a {Name}.");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine(Description);
+            stringBuilder.AppendLine($"My scanner says: \"{Description}\"");
             stringBuilder.AppendLine();
 
             var percentMaxDamage = 0;
             var percentMinDamage = 0;
             var maxDamage = 0;
-
+            
             if (MeleeAttack != null)
             {
                 maxDamage = MeleeAttack.DamageRange.Max;
-                percentMaxDamage = MeleeAttack.DamageRange.Max * 100 / player.MaxHealth;
-                percentMinDamage = MeleeAttack.DamageRange.Min * 100 / player.MaxHealth;
             }
             else if (LightningAttack != null)
             {
                 maxDamage = LightningAttack.Damage;
-                percentMaxDamage = LightningAttack.Damage * 100 / player.MaxHealth;
-                percentMinDamage = LightningAttack.Damage * 100 / player.MaxHealth;
             }
-
+            
             var defeatTurns = maxDamage > 0 ? player.Health / maxDamage : 999;
 
-            var percentText = percentMinDamage != percentMaxDamage
-                ? $"between {percentMinDamage}-{percentMaxDamage}%"
-                : $"{percentMinDamage}%";
+            var dangerText = "harmless";
+
+            if (defeatTurns <= 1)
+                dangerText = "deadly";
+            else if (defeatTurns <= 3)
+                dangerText = "dangerous";
+            else if (defeatTurns <= 5)
+                dangerText = "strong";
+            else if (defeatTurns <= 10)
+                dangerText = "weak";
 
             stringBuilder.AppendLine(
-                $"{NameSpecificArticleUpperCase} can hit you for {percentText} of your maximum health and, at worst, could defeat you in {defeatTurns} hits."
+                $"{NameSpecificArticleUpperCase} looks {dangerText}."
             );
-
+            
             return stringBuilder.ToString();
         }
 
