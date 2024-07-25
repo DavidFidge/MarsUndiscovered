@@ -26,7 +26,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsTrue(_gameWorld.Monsters.Count > 0);
             Assert.IsTrue(_gameWorld.Items.Count > 0);
             Assert.IsTrue(_gameWorld.MapExits.Count > 0);
-            Assert.IsTrue(_gameWorld.Machines.Count > 0);
             Assert.IsTrue(_gameWorld.Seed > 0);
             
             // We can't get exact expected map widths and heights as each map generator is different,

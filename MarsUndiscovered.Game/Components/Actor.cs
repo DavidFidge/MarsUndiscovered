@@ -5,14 +5,32 @@ namespace MarsUndiscovered.Game.Components
 {
     public abstract class Actor : MarsGameObject
     {
-        public virtual string NameSpecificArticleLowerCase => $"the {Name.ToLower()}";
-        public virtual string NameSpecificArticleUpperCase => $"The {Name.ToLower()}";
-        public virtual string NameGenericArticleLowerCase => $"{GenericArticleLowerCase} {Name.ToLower()}";
-        public virtual string NameGenericArticleUpperCase => $"{GenericArticleUpperCase} {Name.ToLower()}";
-        protected virtual string GenericArticleLowerCase => "a";
-        protected virtual string GenericArticleUpperCase => "A";
-        public virtual string PossessiveName => NameSpecificArticleLowerCase.EndsWith("s") ? $"{NameSpecificArticleLowerCase}'" : $"{NameSpecificArticleLowerCase}'s";
+        protected virtual string GenericArticle => "A";
+        protected virtual string SpecificArticle => "The";
+        
+        public virtual string ObjectiveName => Name;
+
+        // If this actor is represented by a proper noun then no article should be used for text
+        protected bool NameIsProperNoun { get; set; }
+        public virtual string PossessiveName => Name.EndsWith("s") ? $"{Name}'" : $"{Name}'s";
         public virtual string ToHaveConjugation => "has";
+
+        public virtual string GetSentenceName(bool midSentence, bool genericArticle)
+        {
+            if (NameIsProperNoun)
+            {
+                if (midSentence)
+                    return ObjectiveName.ToLower();
+                
+                return Name;
+            }
+
+            if (midSentence)
+                return genericArticle ? $"{GenericArticle.ToLower()} {Name.ToLower()}" : $"{SpecificArticle.ToLower()} {Name.ToLower()}";
+            
+            return genericArticle ? $"{GenericArticle} {Name.ToLower()}" : $"{SpecificArticle} {Name.ToLower()}";
+        }
+        
         public bool IsDead { get; set; } = false;
         public string IsDeadMessage { get; set; }
         public int Health { get; set; }

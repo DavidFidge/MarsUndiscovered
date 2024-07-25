@@ -138,7 +138,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.IsNull(_gameWorld.Inventory.Items.SingleOrDefault(i => i.Equals(item)));
             Assert.IsTrue(_gameWorld.CurrentMap.GetObjectsAt<Item>(_gameWorld.Player.Position).IsEmpty());
-            Assert.AreEqual("You apply a NanoFlask of Healing Bots", result.Messages[0]);
+            Assert.AreEqual("I apply a NanoFlask of Healing Bots", result.Messages[0]);
 
             var subsequentCommand = result.SubsequentCommands[0] as ApplyHealingBotsCommand;
             Assert.IsNotNull(subsequentCommand);
@@ -192,7 +192,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.IsNull(_gameWorld.Inventory.Items.SingleOrDefault(i => i.Equals(item)));
             Assert.IsTrue(_gameWorld.CurrentMap.GetObjectsAt<Item>(_gameWorld.Player.Position).IsEmpty());
-            Assert.AreEqual("You apply a NanoFlask of Enhancement Bots", result.Messages[0]);
+            Assert.AreEqual("I apply a NanoFlask of Enhancement Bots", result.Messages[0]);
 
             Assert.AreEqual(0, result.SubsequentCommands.Count);
             

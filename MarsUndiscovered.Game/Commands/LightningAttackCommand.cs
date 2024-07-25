@@ -42,7 +42,7 @@ namespace MarsUndiscovered.Game.Commands
                 
                 target.ApplyDamage(damage);
 
-                var message = $"{Source.NameSpecificArticleUpperCase} zapped {target.NameSpecificArticleLowerCase}";
+                var message = $"{Source.GetSentenceName(false, false)} zapped {target.GetSentenceName(true, false)}";
                 commandResult.Messages.Add(message);
                 
                 SetHuntingIfAttackedByPlayer(Source, target);
@@ -50,7 +50,7 @@ namespace MarsUndiscovered.Game.Commands
                 if (target.Health <= 0)
                 {
                     var deathCommand = CommandCollection.CreateCommand<DeathCommand>(GameWorld);
-                    deathCommand.Initialise(target, Source.NameGenericArticleLowerCase);
+                    deathCommand.Initialise(target, Source.GetSentenceName(false, true));
                     commandResult.SubsequentCommands.Add(deathCommand);
                 }
             }

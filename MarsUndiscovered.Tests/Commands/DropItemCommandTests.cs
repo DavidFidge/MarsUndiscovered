@@ -32,7 +32,7 @@ namespace MarsUndiscovered.Tests.Commands
             // Assert
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.AreSame(item, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
-            Assert.AreEqual("You drop a Magnesium Pipe", result.Messages[0]);
+            Assert.AreEqual("I drop a Magnesium Pipe", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsTrue(result.Command.EndsPlayerTurn);
@@ -70,7 +70,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
             Assert.AreNotSame(itemInInventory, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
             Assert.AreSame(item2, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
-            Assert.AreEqual("Cannot drop item - there is another item in the way", result.Messages[0]);
+            Assert.AreEqual("I cannot drop this item - there is another item in the way", result.Messages[0]);
         }
     }
 }

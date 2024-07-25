@@ -61,7 +61,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.IsTrue(_gameWorld.CurrentMap.GetObjectsAt(_gameWorld.Player.Position).Any(m => m is Player));
             Assert.IsTrue(_gameWorld.Player.IsDead);
             Assert.AreEqual("killed by a monster", _gameWorld.Player.IsDeadMessage);
-            Assert.AreEqual("You have died!", result.Messages[0]);
+            Assert.AreEqual("I have died!", result.Messages[0]);
             Assert.AreEqual("killed by a monster", ((DeathCommand)result.Command).KilledByMessage);
         }
     }

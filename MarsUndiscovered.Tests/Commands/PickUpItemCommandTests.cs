@@ -35,7 +35,7 @@ namespace MarsUndiscovered.Tests.Commands
             // Assert
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.IsFalse(_gameWorld.CurrentMap.GetObjectsAt(_gameWorld.Player.Position).Any(m => m is Item));
-            Assert.AreEqual("You pick up a Magnesium Pipe", result.Messages[0]);
+            Assert.AreEqual("I pick up a Magnesium Pipe", result.Messages[0]);
             
             Assert.IsFalse(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
@@ -74,7 +74,7 @@ namespace MarsUndiscovered.Tests.Commands
             // Assert
             Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
             Assert.IsTrue(_gameWorld.CurrentMap.GetObjectsAt(_gameWorld.Player.Position).Any(m => m is Item));
-            Assert.AreEqual("Your inventory is too full to pick up a Magnesium Pipe", result.Messages[0]);
+            Assert.AreEqual("My inventory is too full to pick up a Magnesium Pipe", result.Messages[0]);
         }
 
         [TestMethod]

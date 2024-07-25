@@ -29,7 +29,7 @@ namespace MarsUndiscovered.Tests.Commands
             // Assert
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.AreSame(item, _gameWorld.Inventory.EquippedWeapon);
-            Assert.AreEqual("You wield a Magnesium Pipe", result.Messages[0]);
+            Assert.AreEqual("I wield a Magnesium Pipe", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsTrue(result.Command.EndsPlayerTurn);
@@ -99,7 +99,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreSame(item2, _gameWorld.Inventory.EquippedWeapon);
             Assert.IsTrue(_gameWorld.Inventory.Items.Contains(item1));
             Assert.IsTrue(_gameWorld.Inventory.Items.Contains(item2));
-            Assert.AreEqual("You wield a Magnesium Pipe; you sheathe a Magnesium Pipe", result.Messages[0]);
+            Assert.AreEqual("I wield a Magnesium Pipe; I sheathe a Magnesium Pipe", result.Messages[0]);
         }
 
         [TestMethod]

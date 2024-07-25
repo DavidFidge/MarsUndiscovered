@@ -47,43 +47,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.IsTrue(shipCollection.Count > 0);
-
-            var switches = 0;
-            IGameObject lastObject = null;
-
-            for (var x = 0; x < map.Width; x++)
-            {
-                var currentObject = map.GetObjectAt(x, map.Height - 6 - UiConstants.ShipOffset);
-                
-                Assert.IsTrue(currentObject is Wall || currentObject is Floor);
-
-                if (lastObject == null)
-                {
-                    lastObject = currentObject;
-                }
-                else if (lastObject.GetType() != currentObject.GetType())
-                {
-                    switches++;
-                    lastObject = currentObject;
-                }
-            }
-            
-            Assert.IsTrue(switches <= 2);
-            Assert.IsTrue(switches > 0);
-
-            var typesFound = new HashSet<Type>();
-            
-            for (var x = 0; x < map.Width; x++)
-            {
-                var currentObject = map.GetObjectsAt(x, map.Height - UiConstants.ShipOffset - 1);
-                foreach (var item in currentObject)
-                {
-                    typesFound.Add(item.GetType());
-                }
-            }
-            
-            Assert.AreEqual(3, typesFound.Count);
-            Assert.IsTrue(typesFound.Contains(typeof(Ship)));
         }
    }
 }

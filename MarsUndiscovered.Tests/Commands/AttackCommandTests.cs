@@ -41,7 +41,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
 
             Assert.AreEqual(healthBefore - 5, monster.Health);
-            Assert.AreEqual("You hit the roach", attackCommand.CommandResult.Messages[0]);
+            Assert.AreEqual("I hit the roach", attackCommand.CommandResult.Messages[0]);
             Assert.AreSame(_gameWorld.Player, attackCommand.Source);
             Assert.AreSame(monster, attackCommand.Target);
             Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
@@ -80,7 +80,7 @@ namespace MarsUndiscovered.Tests.Commands
 
             Assert.AreEqual(healthBefore - 4, monster.Health);
             Assert.AreEqual(0, monster.Shield);
-            Assert.AreEqual("You hit the roach", attackCommand.CommandResult.Messages[0]);
+            Assert.AreEqual("I hit the roach", attackCommand.CommandResult.Messages[0]);
             Assert.AreSame(_gameWorld.Player, attackCommand.Source);
             Assert.AreSame(monster, attackCommand.Target);
         }
@@ -113,7 +113,7 @@ namespace MarsUndiscovered.Tests.Commands
 
             Assert.AreEqual(healthBefore, monster.Health);
             Assert.AreEqual(1, monster.Shield);
-            Assert.AreEqual("You hit the roach", attackCommand.CommandResult.Messages[0]);
+            Assert.AreEqual("I hit the roach", attackCommand.CommandResult.Messages[0]);
             Assert.AreSame(_gameWorld.Player, attackCommand.Source);
             Assert.AreSame(monster, attackCommand.Target);
         }

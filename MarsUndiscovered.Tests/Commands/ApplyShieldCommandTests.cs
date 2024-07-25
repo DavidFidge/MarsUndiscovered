@@ -32,7 +32,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             
             Assert.AreEqual((item.DamageShieldPercentage * _gameWorld.Player.MaxHealth) / 100, _gameWorld.Player.Shield);
-            Assert.AreEqual("A soft glow and rhythmic hum surrounds you", result.Messages[0]);
+            Assert.AreEqual("A soft glow and rhythmic hum surrounds me", result.Messages[0]);
             
             Assert.IsFalse(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);

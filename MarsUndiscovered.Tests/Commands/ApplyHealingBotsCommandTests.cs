@@ -33,7 +33,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(currentMaxHealth + item.MaxHealthIncrease, _gameWorld.Player.MaxHealth);
             Assert.AreEqual(_gameWorld.Player.MaxHealth, _gameWorld.Player.Health);
             Assert.AreEqual(100, item.HealPercentOfMax);
-            Assert.AreEqual("You feel healthier. All your ailments are cured and your max health has increased.", result.Messages[0]);
+            Assert.AreEqual("I feel healthier and all my ailments are cured.", result.Messages[0]);
             
             Assert.IsFalse(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);

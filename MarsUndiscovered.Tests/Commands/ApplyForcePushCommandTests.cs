@@ -96,7 +96,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(new Point(3, 6), monster3.Position);
             Assert.AreEqual(new Point(6, 3), monster4.Position);
             
-            Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
+            Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
@@ -187,7 +187,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(new Point(0, 6), monster3.Position);
             Assert.AreEqual(new Point(6, 0), monster4.Position);
             
-            Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
+            Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
@@ -248,7 +248,7 @@ namespace MarsUndiscovered.Tests.Commands
             
             Assert.AreEqual(new Point(3, 1), monster1.Position);
             
-            Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
+            Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
@@ -335,7 +335,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(new Point(1, 0), monster3.Position);
             Assert.AreEqual(new Point(1, 2), monster4.Position);
             
-            Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
+            Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
@@ -396,7 +396,7 @@ namespace MarsUndiscovered.Tests.Commands
             
             Assert.AreEqual(new Point(3, 1), monster1.Position);
            
-            Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
+            Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
@@ -457,7 +457,7 @@ namespace MarsUndiscovered.Tests.Commands
             
             Assert.AreEqual(new Point(3, 2), monster1.Position);
            
-            Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
+            Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
@@ -541,7 +541,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(new Point(4, 3), monster2.Position);
             Assert.AreEqual(new Point(4, 1), monster3.Position);
             
-            Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
+            Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
@@ -598,7 +598,7 @@ namespace MarsUndiscovered.Tests.Commands
             
             Assert.AreEqual(new Point(2, 1), monster1.Position);
             
-            Assert.AreEqual("A force field radiates out from you!", result.Messages[0]);
+            Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
             Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);

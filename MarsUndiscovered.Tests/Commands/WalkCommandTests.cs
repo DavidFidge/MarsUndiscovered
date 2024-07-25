@@ -96,7 +96,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
 
             Assert.IsTrue(monster.Health < healthBefore);
-            Assert.AreEqual("You hit the roach", attackCommand.CommandResult.Messages[0]);
+            Assert.AreEqual("I hit the roach", attackCommand.CommandResult.Messages[0]);
         }
 
         [TestMethod]
@@ -134,7 +134,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
 
             Assert.IsTrue(monster.Health < healthBefore);
-            Assert.AreEqual("You hit the tesla turret", attackCommand.CommandResult.Messages[0]);
+            Assert.AreEqual("I hit the tesla turret", attackCommand.CommandResult.Messages[0]);
         }
 
         [TestMethod]
@@ -272,7 +272,7 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(CommandResultEnum.Success, attackCommand.CommandResult.Result);
 
             Assert.IsTrue(monster.Health < healthBefore);
-            Assert.AreEqual("You hit the roach", attackCommand.CommandResult.Messages[0]);
+            Assert.AreEqual("I hit the roach", attackCommand.CommandResult.Messages[0]);
         }
 
         [TestMethod]
@@ -331,7 +331,7 @@ namespace MarsUndiscovered.Tests.Commands
             var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.NoMove, walkCommand.CommandResult.Result);
-            Assert.AreEqual("You board your ship, make hasty repairs to critical parts and fire the engines! You have escaped!", walkCommand.CommandResult.Messages.First());
+            Assert.AreEqual("I board my ship, make hasty repairs to critical parts and fire the engines! I have escaped!", walkCommand.CommandResult.Messages.First());
             Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
         }
         
@@ -357,7 +357,7 @@ namespace MarsUndiscovered.Tests.Commands
             var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.NoMove, walkCommand.CommandResult.Result);
-            Assert.AreEqual("You board your ship, make hasty repairs to critical parts and fire the engines! You have escaped!", walkCommand.CommandResult.Messages.First());
+            Assert.AreEqual("I board your ship, make hasty repairs to critical parts and fire the engines! I have escaped!", walkCommand.CommandResult.Messages.First());
             Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
         }
 
@@ -380,7 +380,7 @@ namespace MarsUndiscovered.Tests.Commands
             var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.NoMove, walkCommand.CommandResult.Result);
-            Assert.AreEqual("You don't have the parts you need to repair your ship!", walkCommand.CommandResult.Messages.First());
+            Assert.AreEqual("I don't have the parts I need to repair my ship!", walkCommand.CommandResult.Messages.First());
             Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
         }
     }

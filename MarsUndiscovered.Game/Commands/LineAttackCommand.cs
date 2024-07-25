@@ -47,13 +47,13 @@ namespace MarsUndiscovered.Game.Commands
 
                 SetHuntingIfAttackedByPlayer(Source, target);
                 
-                var message = $"{Source.NameSpecificArticleUpperCase} hit {target.NameSpecificArticleLowerCase}";
+                var message = $"{Source.GetSentenceName(false, false)} hit {target.GetSentenceName(true, false)}";
                 commandResult.Messages.Add(message);
 
                 if (target.Health <= 0)
                 {
                     var deathCommand = CommandCollection.CreateCommand<DeathCommand>(GameWorld);
-                    deathCommand.Initialise(target, Source.NameGenericArticleLowerCase);
+                    deathCommand.Initialise(target, Source.GetSentenceName(true, true));
                     commandResult.SubsequentCommands.Add(deathCommand);
                 }
             }

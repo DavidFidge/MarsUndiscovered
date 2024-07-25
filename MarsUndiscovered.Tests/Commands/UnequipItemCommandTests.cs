@@ -36,7 +36,7 @@ namespace MarsUndiscovered.Tests.Commands
             // Assert
             Assert.AreEqual(CommandResultEnum.Success, result.Result);
             Assert.IsNull(_gameWorld.Inventory.EquippedWeapon);
-            Assert.AreEqual("You sheathe a Magnesium Pipe", result.Messages[0]);
+            Assert.AreEqual("I sheathe a Magnesium Pipe", result.Messages[0]);
             Assert.AreNotEqual(item.MeleeAttack.DamageRange.Min, _gameWorld.Player.MeleeAttack.DamageRange.Min);
             Assert.AreNotEqual(item.MeleeAttack.DamageRange.Max, _gameWorld.Player.MeleeAttack.DamageRange.Max);
             

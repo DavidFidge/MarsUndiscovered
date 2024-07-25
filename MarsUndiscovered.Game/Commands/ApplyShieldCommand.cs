@@ -27,7 +27,7 @@ namespace MarsUndiscovered.Game.Commands
             _data.OldShieldAmount = Target.Shield;
             Target.Shield = shieldAmount;
 
-            var message = $"A soft glow and rhythmic hum surrounds {Target.NameSpecificArticleLowerCase}";
+            var message = $"A soft glow and rhythmic hum surrounds {Target.GetSentenceName(true, false)}";
             var commandResult = CommandResult.Success(this, message);
 
             return Result(commandResult);

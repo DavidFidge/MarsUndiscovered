@@ -103,7 +103,7 @@ namespace MarsUndiscovered.Game.Components
                 dangerText = "weak";
 
             stringBuilder.AppendLine(
-                $"{NameSpecificArticleUpperCase} looks {dangerText}."
+                $"{GetSentenceName(false, false)} looks {dangerText}."
             );
             
             return stringBuilder.ToString();

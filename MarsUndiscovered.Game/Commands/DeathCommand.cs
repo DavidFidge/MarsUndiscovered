@@ -29,7 +29,7 @@ namespace MarsUndiscovered.Game.Commands
 
         protected override CommandResult ExecuteInternal()
         {
-            var message = $"{Source.NameSpecificArticleUpperCase} {Source.ToHaveConjugation} died!";
+            var message = $"{Source.GetSentenceName(false, false)} {Source.ToHaveConjugation} died!";
             Source.IsDead = true;
             Source.IsDeadMessage = KilledByMessage;
 
