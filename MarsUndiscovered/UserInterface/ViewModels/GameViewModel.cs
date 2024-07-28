@@ -4,6 +4,7 @@ using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.Pathing;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.Views;
@@ -14,10 +15,47 @@ using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
-    public class GameViewModel : BaseGameViewModel<GameData>
+    public class GameViewModel : BaseGameCoreViewModel<GameData>
     {
         public uint? CurrentSquareChoiceMonsterId { get; set; }
         public uint? RetainedSquareChoiceMonsterId { get; set; }
+        
+        private List<RadioCommsItem> _radioCommsItems = new();
+        public PlayerStatus PlayerStatus { get; set; }
+        public IList<MonsterStatus> MonsterStatusInView { get; set; }
+
+        public MessagesStatus MessageStatus { get; set; }
+        
+        protected void SetUpViewModels()
+        {
+            MessageStatus = new MessagesStatus();
+            SetUpGameCoreViewModels();
+        }
+
+        protected override void RefreshView()
+        {
+            MonsterStatusInView = GameWorldEndpoint.GetStatusOfMonstersInView();
+            PlayerStatus = GameWorldEndpoint.GetPlayerStatus();
+            _radioCommsItems.AddRange(GameWorldEndpoint.GetNewRadioCommsItems());
+            MessageStatus.AddMessages(GameWorldEndpoint.GetMessagesSince(MessageStatus.SeenMessageCount));
+            MapViewModel.UpdateDebugTiles();
+        }
+
+        public IList<RadioCommsItem> GetNewRadioCommsItems()
+        {
+            var radioCommsItems = _radioCommsItems.ToList();
+            _radioCommsItems.Clear();
+            return radioCommsItems;
+        }
+
+        protected void FinishAnimations()
+        {
+            while (Animations.Any())
+            {
+                var animation = Animations.Dequeue();
+                animation.Finish(MapViewModel);
+            }
+        }
         
         public void NewGame(ulong? seed = null)
         {

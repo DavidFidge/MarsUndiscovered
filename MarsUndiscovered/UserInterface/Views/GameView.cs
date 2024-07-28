@@ -22,12 +22,13 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Sprites;
 using SadRogue.Primitives;
 using Button = GeonBit.UI.Entities.Button;
+using Color = Microsoft.Xna.Framework.Color;
 using Panel = GeonBit.UI.Entities.Panel;
 using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
-    public class GameView : BaseGameView<GameViewModel, GameData>,
+    public class GameView : BaseGameCoreView<GameViewModel, GameData>,
         IRequestHandler<OpenInGameOptionsRequest>,
         IRequestHandler<CloseInGameOptionsRequest>,
         IRequestHandler<OpenConsoleRequest>,
@@ -65,7 +66,8 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<MoveSquareChoiceSelectionRightRequest>,
         IRequestHandler<MoveSquareChoiceSelectionUpRequest>,
         IRequestHandler<MoveSquareChoiceSelectionUpLeftRequest>,
-        IRequestHandler<MoveSquareChoiceSelectionUpRightRequest>
+        IRequestHandler<MoveSquareChoiceSelectionUpRightRequest>,
+        INotificationHandler<MouseHoverViewNotification>
     {
         private readonly InGameOptionsView _inGameOptionsView;
         private readonly ConsoleView _consoleView;
@@ -94,6 +96,19 @@ namespace MarsUndiscovered.UserInterface.Views
         protected HotBarItemPanel[] HotBarPanelItems { get; set; }
 
         private InventoryItem _selectedItem;
+        
+        private SelectList _messageLog;
+        protected Panel LeftPanel;
+        protected Panel BottomPanel;
+        protected PlayerPanel PlayerPanel;
+        protected IList<MonsterPanel> MonsterPanels = new List<MonsterPanel>();
+        protected RichParagraph StatusParagraph;
+        protected RichParagraph HoverPanelLeftTooltip;
+        protected RichParagraph HoverPanelRightTooltip;
+        protected RichParagraph AmbientParagraph;
+        protected Panel GameViewPanel { get; set; }
+        protected Panel HoverPanelLeft { get; set; }
+        protected Panel HoverPanelRight { get; set; }
 
         public GameView(
             GameViewModel gameViewModel,
@@ -124,7 +139,188 @@ namespace MarsUndiscovered.UserInterface.Views
             _stopwatchProvider = stopwatchProvider;
             _options = options;
         }
+        
+        
+        protected void CreateLayoutPanels()
+        {
+            // This creates a three-sectioned layout
+            // A left panel for game information
+            // A bottom panel for messages
+            // The rest of the space is for the game view
+            LeftPanel = new Panel()
+                .Anchor(Anchor.TopLeft)
+                .Width(UiConstants.LeftPanelWidth)
+                .SkinSimple()
+                .Height(UiConstants.HeightOfParent)
+                .NoPadding();
+            
+            RootPanel.AddChild(LeftPanel);
 
+            BottomPanel = new Panel()
+                .Anchor(Anchor.BottomRight)
+                .Width(UiConstants.GameViewPanelWidth)
+                .SkinSimple()
+                .NoPadding()
+                .Offset(new Vector2(UiConstants.LeftPanelWidth, 0f))
+                .Height(UiConstants.BottomPanelHeight);
+
+            RootPanel.AddChild(BottomPanel);
+
+            GameViewPanel = new Panel()
+                .Anchor(Anchor.TopRight)
+                .Width(UiConstants.GameViewPanelWidth)
+                .SkinNone()
+                .NoPadding()
+                .Height(UiConstants.GameViewPanelHeight);
+
+            // This creates two sections in the game view that is used for 'popups' like game inventory
+            HoverPanelLeft = new Panel()
+                .Anchor(Anchor.TopLeft)
+                .Width(0.45f)
+                .Skin(PanelSkin.Alternative)
+                .AutoHeight()
+                .Hidden();
+
+            GameViewPanel.AddChild(HoverPanelLeft);
+
+            HoverPanelLeftTooltip = new RichParagraph();
+
+            HoverPanelLeft.AddChild(HoverPanelLeftTooltip);
+
+            HoverPanelRight = new Panel()
+                .Anchor(Anchor.TopRight)
+                .Width(0.45f)
+                .Skin(PanelSkin.Alternative)
+                .AutoHeight()
+                .Hidden();
+
+            HoverPanelRightTooltip = new RichParagraph();
+
+            HoverPanelRight.AddChild(HoverPanelRightTooltip);
+
+            GameViewPanel.AddChild(HoverPanelRight);
+
+            RootPanel.AddChild(GameViewPanel);
+        }
+
+        protected void CreateStatusPanel()
+        {
+            StatusParagraph = new RichParagraph()
+                .Anchor(Anchor.BottomCenter)
+                .NoPadding()
+                .Height(0.1f);
+
+            StatusParagraph.BackgroundColor = Color.Black;
+
+            BottomPanel.AddChild(StatusParagraph);
+        }
+        
+        protected void CreateAmbientPanel()
+        {
+            AmbientParagraph = new RichParagraph()
+                .Anchor(Anchor.BottomLeft)
+                .NoPadding()
+                .Height(0.5f);
+
+            AmbientParagraph.BackgroundColor = Color.Black;
+
+            LeftPanel.AddChild(AmbientParagraph);
+
+            AmbientParagraph.Text = "Welcome to Mars Undiscovered!";
+        } 
+     
+        protected void CreateMessageLog()
+        {
+            _messageLog = new SelectList()
+                .SkinSimple()
+                .Anchor(Anchor.TopLeft)
+                .Height(UiConstants.MessageLogHeight)
+                .NoPadding();
+
+            _messageLog.ExtraSpaceBetweenLines = -14;
+            _messageLog.LockSelection = true;
+            BottomPanel.AddChild(_messageLog);
+
+            _messageLog.OnListChange = entity =>
+            {
+                var list = (SelectList)entity;
+                if (list.Count > 100)
+                    list.RemoveItem(0);
+            };
+        }
+
+        protected void CreatePlayerPanel()
+        {
+            PlayerPanel = new PlayerPanel(Assets);
+            PlayerPanel.AddAsChildTo(LeftPanel);
+        }
+
+        protected void ResetViews()
+        {
+            _gameCamera.Reset();
+            _messageLog.ClearItems();
+            PlayerPanel.Reset();
+            
+            _isAutoExploring = false;
+            _currentMovePath = null;
+        }
+        
+        private void UpdateMessageLog()
+        {
+            var newMessages = _viewModel.MessageStatus.GetUnprocessedMessages();
+
+            if (newMessages.Any())
+            {
+                foreach (var message in newMessages)
+                    _messageLog.AddItem(message);
+
+                _messageLog.scrollToEnd();
+            }
+        }
+
+        private void UpdatePlayerStatus()
+        {
+            PlayerPanel.Update(_viewModel.PlayerStatus);
+            AmbientParagraph.Text = _viewModel.PlayerStatus.AmbientText;
+        }
+
+        protected void UpdateMonsterStatus()
+        {
+            foreach (var panel in MonsterPanels)
+            {
+                panel.RemoveFromParent();
+            }
+
+            var newMonsterStatuses = _viewModel.MonsterStatusInView
+                .OrderBy(m => m.DistanceFromPlayer)
+                .ToList();
+
+            var mergedMonsterPanelStatusQuery = (
+                from monsterStatus in newMonsterStatuses
+                join panel in MonsterPanels on monsterStatus.ID equals panel.ActorStatus.ID into gj
+                from subPanel in gj.DefaultIfEmpty()
+                select new
+                {
+                    MonsterStatus = monsterStatus,
+                    MonsterPanel = subPanel ?? new MonsterPanel(monsterStatus, this.Assets)
+                }).ToList();
+
+            MonsterPanels.Clear();
+
+            foreach (var monsterJoin in mergedMonsterPanelStatusQuery)
+            {
+                monsterJoin.MonsterPanel.Update(monsterJoin.MonsterStatus);
+
+                MonsterPanels.Add(monsterJoin.MonsterPanel);
+                monsterJoin.MonsterPanel.AddAsChildTo(LeftPanel);
+            }
+        }
+
+        protected string DelimitWithDashes(string text)
+        {
+            return $"--- {text} ---";
+        }
+        
         protected override void InitializeInternal()
         {
             base.InitializeInternal();
@@ -408,7 +604,12 @@ namespace MarsUndiscovered.UserInterface.Views
         protected override void ViewModelChanged()
         {
             base.ViewModelChanged();
+            
+            StatusParagraph.Text = String.Empty;
 
+            UpdateMonsterStatus();
+            UpdateMessageLog();
+            UpdatePlayerStatus();
             RefreshHotBars();
 
             if (_viewModel.PlayerStatus.IsDead || _viewModel.PlayerStatus.IsVictorious)
@@ -479,14 +680,40 @@ namespace MarsUndiscovered.UserInterface.Views
             }
         }
 
-        public override Task Handle(MouseHoverViewNotification notification, CancellationToken cancellationToken)
+        public Task Handle(MouseHoverViewNotification notification, CancellationToken cancellationToken)
         {
             if (!IsVisible)
                 return Unit.Task;
             
-            base.Handle(notification, cancellationToken);
+            if (!IsVisible)
+                return Unit.Task;
 
             var ray = _gameCamera.GetPointerRay(notification.X, notification.Y);
+
+            var gameObjectInformation = _viewModel.GetGameObjectTooltipAt(ray);
+
+            if (!String.IsNullOrEmpty(gameObjectInformation))
+            {
+                var direction = _viewModel.GetMapQuadrantOfRay(ray);
+
+                if (direction == Direction.Right || direction == Direction.DownRight || direction == Direction.UpRight)
+                {
+                    HoverPanelLeftTooltip.Text = gameObjectInformation;
+                    HoverPanelLeft.Visible = true;
+                    HoverPanelRight.Visible = false;
+                }
+                else
+                {
+                    HoverPanelRightTooltip.Text = gameObjectInformation;
+                    HoverPanelLeft.Visible = false;
+                    HoverPanelRight.Visible = true;
+                }
+            }
+            else
+            {
+                HoverPanelLeft.Visible = false;
+                HoverPanelRight.Visible = false;
+            }
 
             _viewModel.MapViewModel.ShowHover(ray);
 
@@ -570,14 +797,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _isAutoExploring = true;
             return Unit.Task;
         }
-
-        protected override void ResetViews()
-        {
-            base.ResetViews();
-            _isAutoExploring = false;
-            _currentMovePath = null;
-        }
-
+        
         public Task<Unit> Handle(EndRadioCommsRequest request, CancellationToken cancellationToken)
         {
             ProcessNextRadioComm();
