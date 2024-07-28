@@ -43,7 +43,6 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual("The roach hit me", attackCommandResult.Messages[0]);
             Assert.IsTrue(player.Health < healthBefore);
             
-            Assert.IsTrue(waitCommandResult.Command.PersistForReplay);
             Assert.IsTrue(waitCommandResult.Command.EndsPlayerTurn);
             Assert.IsFalse(waitCommandResult.Command.RequiresPlayerInput);
             Assert.IsFalse(waitCommandResult.Command.InterruptsMovement);
@@ -106,12 +105,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Assert
             Assert.AreNotSame(_gameWorld, newGameWorld);
-            Assert.AreEqual(2, newGameWorld.CommandCollection.GetReplayCommands().Length);
-            
-            var waitCommands = newGameWorld.CommandCollection.GetReplayCommands()
-                .Cast<WaitCommand>()
-                .ToList();
-            
+
+            var waitCommands = _gameWorld.CommandCollection.GetCommands<WaitCommand>();
+
             Assert.AreEqual(2, waitCommands.Count);
             Assert.AreEqual(_gameWorld.Player.Position, newGameWorld.Player.Position);
             Assert.AreEqual(new Point(0, 0), newGameWorld.Player.Position);

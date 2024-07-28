@@ -27,14 +27,11 @@ namespace MarsUndiscovered.UserInterface.Views
         IRequestHandler<CustomGameSeedRequest>,
         IRequestHandler<CancelCustomGameSeedRequest>,
         IRequestHandler<OpenLoadGameViewRequest>,
-        IRequestHandler<CloseLoadGameViewRequest>,
-        IRequestHandler<OpenLoadReplayViewRequest>,
-        IRequestHandler<CloseLoadReplayViewRequest>
+        IRequestHandler<CloseLoadGameViewRequest>
     {
         private readonly OptionsView _optionsView;
         private readonly CustomGameSeedView _customGameSeedView;
         private readonly LoadGameView _loadGameView;
-        private readonly LoadReplayView _loadReplayView;
         private readonly DeveloperToolsView _developerToolsView;
 
         private Panel _titleMenuPanel;
@@ -46,7 +43,6 @@ namespace MarsUndiscovered.UserInterface.Views
             OptionsView optionsView,
             CustomGameSeedView customGameSeedView,
             LoadGameView loadGameView,
-            LoadReplayView loadReplayView,
             DeveloperToolsView developerToolsView
             )
             : base(titleViewModel)
@@ -54,7 +50,6 @@ namespace MarsUndiscovered.UserInterface.Views
             _optionsView = optionsView;
             _customGameSeedView = customGameSeedView;
             _loadGameView = loadGameView;
-            _loadReplayView = loadReplayView;
             _developerToolsView = developerToolsView;
         }
 
@@ -83,11 +78,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 _titleMenuPanel,
                 "Load Game",
                 _loadGameView);
-
-            SetupChildPanelWithButton<OpenLoadReplayViewRequest, LoadReplayViewModel, LoadReplayData>(
-                _titleMenuPanel,
-                "Open Recording",
-                _loadReplayView);
 
             SetupChildPanelWithButton<OptionsButtonClickedRequest, OptionsViewModel, OptionsData>(
                 _titleMenuPanel,
@@ -144,16 +134,6 @@ namespace MarsUndiscovered.UserInterface.Views
         public Task<Unit> Handle(CloseLoadGameViewRequest request, CancellationToken cancellationToken)
         {
             return HideChildView(_loadGameView, _titleMenuPanel);
-        }
-
-        public Task<Unit> Handle(OpenLoadReplayViewRequest request, CancellationToken cancellationToken)
-        {
-            return ShowChildView(_loadReplayView, _titleMenuPanel);
-        }
-
-        public Task<Unit> Handle(CloseLoadReplayViewRequest request, CancellationToken cancellationToken)
-        {
-            return HideChildView(_loadReplayView, _titleMenuPanel);
         }
 
         public override void Draw()

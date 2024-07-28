@@ -42,8 +42,6 @@ namespace MarsUndiscovered.Interfaces
         Guid GameId { get; }
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
         void SpawnMapExit(SpawnMapExitParams spawnMapExitParams);
-        LoadGameResult LoadReplay(string saveGameName);
-        ReplayCommandResult ExecuteNextReplayCommand();
         IList<MonsterStatus> GetStatusOfMonstersInView();
         PlayerStatus GetPlayerStatus();
         Path GetPathToPlayer(Point mapPosition);

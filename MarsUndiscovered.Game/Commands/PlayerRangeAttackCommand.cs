@@ -15,7 +15,6 @@ namespace MarsUndiscovered.Game.Commands
         public PlayerRangeAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
             EndsPlayerTurn = true;
-            PersistForReplay = true;
         }
 
         public void Initialise(Point targetPoint, Item item)
@@ -38,7 +37,6 @@ namespace MarsUndiscovered.Game.Commands
             }
 
             EndsPlayerTurn = false;
-            PersistForReplay = false;
             
             return Result(CommandResult.Exception(this, $"Ranged weapon not equipped"));
         }

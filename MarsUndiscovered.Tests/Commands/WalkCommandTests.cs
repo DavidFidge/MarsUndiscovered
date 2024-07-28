@@ -20,7 +20,6 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(Direction.Down);
 
             // Assert
-            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
             Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 1), _gameWorld.Player.Position);
 
@@ -35,7 +34,6 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.IsNotNull(moveCommand);
             Assert.AreEqual(CommandResultEnum.Success, moveCommand.CommandResult.Result);
             
-            Assert.IsTrue(walkCommand.PersistForReplay);
             Assert.IsTrue(walkCommand.EndsPlayerTurn);
             Assert.IsFalse(walkCommand.RequiresPlayerInput);
             Assert.IsFalse(walkCommand.InterruptsMovement);
@@ -54,7 +52,6 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(Direction.Right);
 
             // Assert
-            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
             Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<MoveCommand>().Count);
             Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
@@ -79,7 +76,6 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(Direction.Down);
 
             // Assert
-            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
             Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<MoveCommand>().Count);
             Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
@@ -117,7 +113,6 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(Direction.Down);
 
             // Assert
-            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
             Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<MoveCommand>().Count);
             Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
@@ -153,12 +148,9 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Assert
             Assert.AreNotSame(_gameWorld, newGameWorld);
-            Assert.AreEqual(2, newGameWorld.CommandCollection.GetReplayCommands().Length);
 
-            var walkCommands = newGameWorld.CommandCollection.GetReplayCommands()
-                .Cast<WalkCommand>()
-                .ToList();
-            
+            var walkCommands = newGameWorld.CommandCollection.GetCommands<WalkCommand>();
+
             Assert.AreEqual(2, walkCommands.Count);
             Assert.AreEqual(_gameWorld.Player.Position, newGameWorld.Player.Position);
             Assert.AreEqual(new Point(0, 2), newGameWorld.Player.Position);
@@ -255,7 +247,6 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.MoveRequest(path);
 
             // Assert
-            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
             Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<MoveCommand>().Count);
             Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
@@ -302,7 +293,6 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.IsTrue(result1[1].Command is MoveCommand); // Player move
             Assert.IsTrue(result1[2].Command is MoveCommand); // Monster move
 
-            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
             Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
             Assert.AreEqual(new Point(0, 1), _gameWorld.Player.Position);
             Assert.AreEqual(new Point(0, 2), monster.Position);
@@ -325,7 +315,6 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Assert
             Assert.IsTrue(_gameWorld.Player.IsVictorious);
-            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
             Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
 
             var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
@@ -351,7 +340,6 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Assert
             Assert.IsTrue(_gameWorld.Player.IsVictorious);
-            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
             Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
 
             var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
@@ -374,7 +362,6 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Assert
             Assert.IsFalse(_gameWorld.Player.IsVictorious);
-            Assert.AreEqual(1, _gameWorld.CommandCollection.GetReplayCommands().Length);
             Assert.AreEqual(1, _gameWorld.CommandCollection.GetCommands<WalkCommand>().Count);
 
             var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];

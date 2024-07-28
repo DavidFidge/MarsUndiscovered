@@ -40,7 +40,6 @@ public class EnchantItemCommandTests : BaseGameWorldIntegrationTests
         Assert.IsTrue(currentMeleeAttack.Max < magnesiumPipe.MeleeAttack.DamageRange.Max);
         Assert.IsTrue(currentMeleeAttack.Min < magnesiumPipe.MeleeAttack.DamageRange.Min);
         
-        Assert.IsTrue(result.Command.PersistForReplay);
         Assert.IsTrue(result.Command.EndsPlayerTurn);
         Assert.IsFalse(result.Command.RequiresPlayerInput);
         Assert.IsFalse(result.Command.InterruptsMovement);
@@ -72,7 +71,6 @@ public class EnchantItemCommandTests : BaseGameWorldIntegrationTests
         Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
         Assert.AreEqual(currentEnchant, healingBots.EnchantmentLevel);
         
-        Assert.IsTrue(result.Command.PersistForReplay);
         Assert.IsTrue(result.Command.EndsPlayerTurn);
         Assert.IsFalse(result.Command.RequiresPlayerInput);
         Assert.IsFalse(result.Command.InterruptsMovement);

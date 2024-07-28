@@ -55,7 +55,6 @@ namespace MarsUndiscovered.Installers
             RegisterTitleView(container, store);
             RegisterCustomGameSeedView(container, store);
             RegisterLoadGameView(container, store);
-            RegisterLoadReplayView(container, store);
             RegisterOptionsView(container, store);
             RegisterVideoOptionsView(container, store);
             RegisterGameOptionsView(container, store);
@@ -65,7 +64,6 @@ namespace MarsUndiscovered.Installers
             RegisterWorldBuilderOptionsView(container, store);
             RegisterConsoleView(container, store);
             RegisterGameView(container, store);
-            RegisterReplayView(container, store);
             RegisterWorldBuilderView(container, store);
             RegisterSaveGameView(container, store);
             RegisterInventoryGameView(container, store);
@@ -182,16 +180,6 @@ namespace MarsUndiscovered.Installers
             );
         }
 
-        private void RegisterLoadReplayView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<LoadReplayView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, LoadReplayViewKeyboardHandler>()),
-
-                Component.For<LoadReplayViewModel>()
-            );
-        }
-
         private void RegisterCustomGameSeedView(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
@@ -275,17 +263,6 @@ namespace MarsUndiscovered.Installers
             );
         }
 
-        private void RegisterReplayView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<ReplayView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, ReplayViewKeyboardHandler>())
-                    .DependsOn(Dependency.OnComponent<IMouseHandler, ReplayViewMouseHandler>()),
-
-                Component.For<ReplayViewModel>()
-            );
-        }
-        
         private void RegisterWorldBuilderView(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(

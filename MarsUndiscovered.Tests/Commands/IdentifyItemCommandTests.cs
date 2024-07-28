@@ -39,7 +39,6 @@ public class IdentifyItemCommandTests : BaseGameWorldIntegrationTests
         Assert.IsTrue(magnesiumPipe.ItemDiscovery.IsEnchantLevelDiscovered);
         Assert.IsTrue(magnesiumPipe.ItemDiscovery.IsItemSpecialDiscovered);
         
-        Assert.IsTrue(result.Command.PersistForReplay);
         Assert.IsTrue(result.Command.EndsPlayerTurn);
         Assert.IsFalse(result.Command.RequiresPlayerInput);
         Assert.IsFalse(result.Command.InterruptsMovement);
@@ -78,7 +77,6 @@ public class IdentifyItemCommandTests : BaseGameWorldIntegrationTests
         Assert.IsTrue(magnesiumPipe.ItemDiscovery.IsEnchantLevelDiscovered);
         Assert.IsTrue(magnesiumPipe.ItemDiscovery.IsItemSpecialDiscovered);
         
-        Assert.IsFalse(result.Command.PersistForReplay);
         Assert.IsFalse(result.Command.EndsPlayerTurn);
         Assert.IsFalse(result.Command.RequiresPlayerInput);
         Assert.IsFalse(result.Command.InterruptsMovement);

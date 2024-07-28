@@ -81,7 +81,6 @@ namespace MarsUndiscovered.Game.Components
         public List<PlayerRangeAttackCommand> PlayerRangeAttackCommand { get; private set; } = new();
         public ICommandFactory<PlayerRangeAttackCommand> PlayerRangeAttackCommandFactory { get; set; }
         
-        private List<uint> _replayCommandIds = new();
         private Dictionary<uint, BaseGameActionCommand> _commandsById = new();
         private Dictionary<Type, PropertyInfo> _commandListProperties;
         
@@ -96,8 +95,7 @@ namespace MarsUndiscovered.Game.Components
             {
                 State = new CommandCollectionSaveData
                 {
-                    NextId = _nextId,
-                    ReplayCommandIds = _replayCommandIds.ToList()
+                    NextId = _nextId
                 }
             };
         }
@@ -105,7 +103,6 @@ namespace MarsUndiscovered.Game.Components
         public void SetLoadState(IMemento<CommandCollectionSaveData> memento)
         {
             _nextId = memento.State.NextId;
-            _replayCommandIds = memento.State.ReplayCommandIds.ToList();
         }
 
         public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
@@ -132,7 +129,6 @@ namespace MarsUndiscovered.Game.Components
             var memento = saveGameService.GetFromStore<CommandCollectionSaveData>();
             
             _nextId = memento.State.NextId;
-            _replayCommandIds = memento.State.ReplayCommandIds.ToList();
             
             foreach (var commandListProperty in _commandListProperties)
             {
@@ -140,12 +136,10 @@ namespace MarsUndiscovered.Game.Components
                 var method = this.GetType().GetMethod("LoadCommandList");
 
                 var commandTypeSaveData = commandListProperty.Key.BaseType.GetGenericArguments().First();
-                
-                var commandList = commandListProperty.Value.GetValue(this);
 
                 var genericMethod = method.MakeGenericMethod(commandListProperty.Key, commandTypeSaveData);
                 
-                genericMethod.Invoke(this, new object[] { commandList, saveGameService, gameWorld });
+                genericMethod.Invoke(this, new object[] { saveGameService, gameWorld });
             }
         }
 
@@ -180,7 +174,7 @@ namespace MarsUndiscovered.Game.Components
         }
 
         // Called via reflection
-        public void LoadCommandList<T, TSaveData>(List<T> commands, ISaveGameService saveGameService, IGameWorld gameWorld)
+        public void LoadCommandList<T, TSaveData>(ISaveGameService saveGameService, IGameWorld gameWorld)
             where T : BaseMarsGameActionCommand<TSaveData>
             where TSaveData : BaseCommandSaveData, new()
         {
@@ -191,8 +185,6 @@ namespace MarsUndiscovered.Game.Components
                 var command = CreateCommand<T>(gameWorld, memento.State.Id);
                 
                 command.SetLoadState(memento);
-
-                commands.Add(command);
             }
         }
         
@@ -230,42 +222,6 @@ namespace MarsUndiscovered.Game.Components
 
             return command;
         }
-        
-        // Usually commands are created by the factories in this class but when replaying
-        // the command is already created. This method is used to add it to the collection
-        public void ReprocessReplayCommand<T>(T command) where T : BaseGameActionCommand
-        {
-            if (_nextId != command.Id)
-            {
-                throw new Exception(
-                    $"Expected _nextId {_nextId} to be equal to the command being replayed: {command.Id}");
-            }
-            
-            _commandsById.Add(command.Id, command);
-            
-            // command.GetType is used here instead of typeof(T) because
-            // the parameter passed in is a BaseGameActionCommand rather than
-            // the actual concrete type.
-            var commandListProperty = _commandListProperties[command.GetType()];
-            
-            var commandList = (IList)commandListProperty.GetValue(this);
-
-            commandList.Add(command);
-            _nextId++;
-        }
-
-        public void AddReplayCommand(BaseGameActionCommand command)
-        {
-            _replayCommandIds.Add(command.Id);
-        }
-
-        public BaseGameActionCommand[] GetReplayCommands()
-        {
-            return _replayCommandIds
-                .Select(r => _commandsById[r])
-                .OrderBy(c => c.TurnDetails.SequenceNumber)
-                .ToArray();
-        }
 
         public T GetLastCommand<T>()
         {
@@ -294,7 +250,6 @@ namespace MarsUndiscovered.Game.Components
             }
 
             _nextId = 1;
-            _replayCommandIds.Clear();
             _commandsById.Clear();
         }
 

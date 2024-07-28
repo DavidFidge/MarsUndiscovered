@@ -14,7 +14,6 @@ namespace MarsUndiscovered.Game.Commands
         public IdentifyItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
             EndsPlayerTurn = true;
-            PersistForReplay = true;
         }
 
         public void Initialise(Item item)
@@ -29,7 +28,6 @@ namespace MarsUndiscovered.Game.Commands
             if (isIdentified)
             {
                 EndsPlayerTurn = false;
-                PersistForReplay = false;
                 
                 return Result(CommandResult.NoMove(this,
                     $"The {GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionWithoutPrefix(Item)} is already identified."));

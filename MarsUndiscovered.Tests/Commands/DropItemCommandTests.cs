@@ -34,7 +34,6 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreSame(item, _gameWorld.CurrentMap.GetObjectAt<Item>(_gameWorld.Player.Position));
             Assert.AreEqual("I drop a Magnesium Pipe", result.Messages[0]);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsTrue(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);

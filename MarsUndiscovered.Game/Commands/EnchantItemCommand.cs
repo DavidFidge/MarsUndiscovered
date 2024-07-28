@@ -15,7 +15,6 @@ namespace MarsUndiscovered.Game.Commands
         public EnchantItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
             EndsPlayerTurn = true;
-            PersistForReplay = true;
         }
 
         public void Initialise(Item target)

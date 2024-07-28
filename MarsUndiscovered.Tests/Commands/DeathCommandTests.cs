@@ -34,7 +34,6 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual("The roach has died!", result.Messages[0]);
             Assert.AreEqual("killed by you", ((DeathCommand)result.Command).KilledByMessage);
             
-            Assert.IsFalse(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);

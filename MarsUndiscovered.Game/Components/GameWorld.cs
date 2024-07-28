@@ -75,10 +75,6 @@ namespace MarsUndiscovered.Game.Components
         public Inventory Inventory { get; private set; }
         
         private AutoExploreGoalMap _autoExploreGoalMap;
-
-        // These are used while the replay is in progress
-        private BaseGameActionCommand[] _replayHistoricalCommands;
-        private int _replayHistoricalCommandIndex;
         
         public GameWorld()
         {
@@ -459,14 +455,6 @@ namespace MarsUndiscovered.Game.Components
             MessageLog.AddMessages(result.Messages);
             _radioComms.ProcessCommand(command, MessageLog);
 
-            // Actions that are persisted for replay are those where the player triggers an action
-            // that results in a change in the game world.  Actions that require user input
-            // should not be persisted as they are not needed for replays and subsequent actions
-            // generated such as all monster turns should not be persisted as they can be recreated
-            // using the rng seed.
-            if (command.PersistForReplay)
-                CommandCollection.AddReplayCommand(command);
-
             yield return result;
 
             foreach (var subsequentCommand in result.SubsequentCommands)
@@ -591,30 +579,11 @@ namespace MarsUndiscovered.Game.Components
                 // Load the command collection, store the replay commands from it then
                 // re-initialise it to clear it out for the replay execution
                 CommandCollection.LoadState(SaveGameService, this);
-
-                _replayHistoricalCommands = CommandCollection.GetReplayCommands();
-                _replayHistoricalCommandIndex = 0;
                 
                 CommandCollection.Initialise();
             }
 
             return loadGameResult;
-        }
-
-        public ReplayCommandResult ExecuteNextReplayCommand()
-        {
-            if (_replayHistoricalCommandIndex < _replayHistoricalCommands.Length)
-            {
-                var command = _replayHistoricalCommands[_replayHistoricalCommandIndex++];
-                CommandCollection.ReprocessReplayCommand(command);
-         
-                var commandResults = ExecuteCommand(command).ToList();
-                var replayCommandResult = new ReplayCommandResult(commandResults);
-
-                return replayCommandResult;
-            }
-
-            return ReplayCommandResult.NoMoreCommands();
         }
 
         public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)

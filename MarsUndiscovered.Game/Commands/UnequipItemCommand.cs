@@ -14,7 +14,6 @@ namespace MarsUndiscovered.Game.Commands
         public UnequipItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
             EndsPlayerTurn = true;
-            PersistForReplay = true;
         }
 
         public void Initialise(Item item)

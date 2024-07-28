@@ -31,7 +31,6 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreSame(item, _gameWorld.Inventory.EquippedWeapon);
             Assert.AreEqual("I wield a Magnesium Pipe", result.Messages[0]);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsTrue(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);

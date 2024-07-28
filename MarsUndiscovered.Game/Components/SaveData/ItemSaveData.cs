@@ -9,6 +9,7 @@
         public bool IsEquipped { get; set; }
         public Attack MeleeAttack { get; set; }
         public Attack LineAttack { get; set; }
+        public LaserAttack LaserAttack { get; set; }
         public int DamageShieldPercentage { get; set; }
         public int TotalRechargeDelay { get; set; }
         public int HealPercentOfMax { get; set; }

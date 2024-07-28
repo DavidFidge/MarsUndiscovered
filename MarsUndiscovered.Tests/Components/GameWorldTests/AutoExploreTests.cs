@@ -186,7 +186,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.AreEqual(new Point(0, 0), _gameWorld.Player.Position);
-            Assert.AreEqual(0, _gameWorld.CommandCollection.GetReplayCommands().Length);
             Assert.IsFalse(result.MovementInterrupted);
         }
 
@@ -257,7 +256,6 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.AreEqual(playerPosition, _gameWorld.Player.Position);
-            Assert.AreEqual(0, _gameWorld.CommandCollection.GetReplayCommands().Length);
             Assert.AreEqual(0, result.Path.LengthWithStart);
             Assert.IsFalse(result.MovementInterrupted);
         }

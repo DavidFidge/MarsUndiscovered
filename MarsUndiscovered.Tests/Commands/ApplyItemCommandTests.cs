@@ -57,7 +57,6 @@ namespace MarsUndiscovered.Tests.Commands
             var subsequentCommand = result.SubsequentCommands[0] as ApplyShieldCommand;
             Assert.IsNotNull(subsequentCommand);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsTrue(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
@@ -196,7 +195,6 @@ namespace MarsUndiscovered.Tests.Commands
 
             Assert.AreEqual(0, result.SubsequentCommands.Count);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsTrue(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);

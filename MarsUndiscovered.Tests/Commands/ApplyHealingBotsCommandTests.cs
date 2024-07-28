@@ -35,7 +35,6 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(100, item.HealPercentOfMax);
             Assert.AreEqual("I feel healthier and all my ailments are cured.", result.Messages[0]);
             
-            Assert.IsFalse(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);

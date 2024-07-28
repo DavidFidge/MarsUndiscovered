@@ -98,7 +98,6 @@ namespace MarsUndiscovered.Tests.Commands
             
             Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
@@ -189,7 +188,6 @@ namespace MarsUndiscovered.Tests.Commands
             
             Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
@@ -250,7 +248,6 @@ namespace MarsUndiscovered.Tests.Commands
             
             Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
@@ -337,7 +334,6 @@ namespace MarsUndiscovered.Tests.Commands
             
             Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
@@ -398,7 +394,6 @@ namespace MarsUndiscovered.Tests.Commands
            
             Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
@@ -459,7 +454,6 @@ namespace MarsUndiscovered.Tests.Commands
            
             Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
@@ -543,7 +537,6 @@ namespace MarsUndiscovered.Tests.Commands
             
             Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
@@ -600,7 +593,6 @@ namespace MarsUndiscovered.Tests.Commands
             
             Assert.AreEqual("A force field radiates out from me!", result.Messages[0]);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);

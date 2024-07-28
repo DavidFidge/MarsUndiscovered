@@ -22,8 +22,7 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Item source, Point point, int pushDistance, int radius)
         {
-            this.PersistForReplay = true;
-            this.EndsPlayerTurn = false;
+           this.EndsPlayerTurn = false;
             _data.SourceId = source.ID;
             _data.Point = point;
             _data.PushDistance = pushDistance;
@@ -78,7 +77,6 @@ namespace MarsUndiscovered.Game.Commands
                 {
                     var moveCommand = GameWorld.CommandCollection.CreateCommand<MoveCommand>(this.GameWorld);
                     moveCommand.Initialise(actor, new Tuple<Point, Point>(actor.Position, selectedPoint));
-                    moveCommand.PersistForReplay = false;
                     
                     moveCommand.Execute();
                 }

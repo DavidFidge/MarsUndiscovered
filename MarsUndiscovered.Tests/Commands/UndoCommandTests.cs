@@ -23,8 +23,8 @@ namespace MarsUndiscovered.Tests.Commands
             _gameWorld.SpawnMachine(machineParams);
 
             var machine = machineParams.Result;
-            
-            var commandFactory = Container.Resolve<ICommandCollection>();
+
+            var commandFactory = _gameWorld.CommandCollection;
 
             var applyMachineCommand = commandFactory.CreateCommand<ApplyMachineCommand>(_gameWorld);
             applyMachineCommand.Initialise(machine);
@@ -45,7 +45,6 @@ namespace MarsUndiscovered.Tests.Commands
          
             Assert.IsFalse(machine.IsUsed);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);

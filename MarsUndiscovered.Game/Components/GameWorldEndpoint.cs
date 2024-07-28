@@ -150,11 +150,6 @@ namespace MarsUndiscovered.Game.Components
             return GameWorld.GetPlayerPosition();
         }
 
-        public ReplayCommandResult ExecuteNextReplayCommand()
-        {
-            return GameWorld.ExecuteNextReplayCommand();
-        }
-
         public void AfterProgressiveWorldGeneration()
         {
             GameWorld.AfterProgressiveWorldGeneration();
@@ -233,12 +228,6 @@ namespace MarsUndiscovered.Game.Components
         public InventoryItem GetEquippedItem()
         {
             return GameWorld.GetEquippedItem();
-        }
-
-        public void LoadReplay(string gameName)
-        {
-            GameWorld = _gameWorldFactory.Create();
-            GameWorld.LoadReplay(gameName);
         }
 
         public void SpawnItem(SpawnItemParams spawnItemParams)

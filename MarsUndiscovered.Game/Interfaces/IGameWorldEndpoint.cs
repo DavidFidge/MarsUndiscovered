@@ -18,7 +18,6 @@ namespace MarsUndiscovered.Interfaces
     {
         SaveGameResult SaveGame(string saveGameName, bool overwrite);
         public void LoadGame(string filename);
-        public void LoadReplay(string filename);
         void NewGame(ulong? seed = null);
         ProgressiveWorldGenerationResult ProgressiveWorldGeneration(ulong? seed, int step, WorldGenerationTypeParams worldGenerationTypeParams);
         void AfterCreateGame();
@@ -41,7 +40,6 @@ namespace MarsUndiscovered.Interfaces
         IList<CommandResult> MoveRequest(Path path);
         AutoExploreResult AutoExploreRequest();
         Point GetPlayerPosition();
-        ReplayCommandResult ExecuteNextReplayCommand();
         void AfterProgressiveWorldGeneration();
         Task SendPendingMorgues();
         void SnapshotMorgue(string username, bool uploadMorgueFiles);

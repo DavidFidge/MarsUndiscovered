@@ -40,7 +40,6 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreNotEqual(item.MeleeAttack.DamageRange.Min, _gameWorld.Player.MeleeAttack.DamageRange.Min);
             Assert.AreNotEqual(item.MeleeAttack.DamageRange.Max, _gameWorld.Player.MeleeAttack.DamageRange.Max);
             
-            Assert.IsTrue(result.Command.PersistForReplay);
             Assert.IsTrue(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);

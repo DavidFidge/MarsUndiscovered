@@ -11,7 +11,6 @@ namespace MarsUndiscovered.Game.Commands
         public WaitCommand(IGameWorld gameWorld) : base(gameWorld)
         {
             EndsPlayerTurn = true;
-            PersistForReplay = true;
         }
 
         public void Initialise(Actor actor)

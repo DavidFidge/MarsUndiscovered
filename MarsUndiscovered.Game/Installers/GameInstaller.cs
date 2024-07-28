@@ -130,7 +130,8 @@ namespace MarsUndiscovered.Game.Installers
                     .AsFactory(),
 
                 Component.For<ICommandCollection>()
-                    .ImplementedBy<CommandCollection>(),
+                    .ImplementedBy<CommandCollection>()
+                    .LifeStyle.Transient,
 
                 Component.For<ICommandFactory<MoveCommand>>()
                    .AsFactory(),

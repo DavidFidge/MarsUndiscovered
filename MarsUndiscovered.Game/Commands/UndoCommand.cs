@@ -12,7 +12,6 @@ namespace MarsUndiscovered.Game.Commands
         public UndoCommand(IGameWorld gameWorld) : base(gameWorld)
         {
             EndsPlayerTurn = false;
-            PersistForReplay = true;
         }
 
         public void Initialise(uint commandId)
