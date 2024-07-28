@@ -332,7 +332,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (indestructibleTile != null)
             {
                 if (indestructibleTile is MapExit)
-                    _indestructibleTiles[point].SetMapExit(((MapExit)indestructibleTile).Direction);
+                    _indestructibleTiles[point].SetMapExit(((MapExit)indestructibleTile).AsciiCharacter);
 
                 else if (indestructibleTile is Ship)
                     _indestructibleTiles[point].SetShip(((Ship)indestructibleTile).AsciiCharacter);

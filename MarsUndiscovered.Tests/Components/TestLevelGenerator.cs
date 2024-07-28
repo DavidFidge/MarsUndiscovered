@@ -134,7 +134,7 @@ namespace MarsUndiscovered.Tests.Components
             SpawnMapExit(
                 new SpawnMapExitParams()
                     .OnMap(map.Id)
-                    .WithDirection(Direction.Down)
+                    .WithDirection(MapExitDirection.Down)
             );
         }
 
@@ -145,7 +145,7 @@ namespace MarsUndiscovered.Tests.Components
             
             var mapExit = SpawnMapExit(new SpawnMapExitParams()
                 .OnMap(currentMap.Id)
-                .WithDirection(Direction.Up));
+                .WithDirection(MapExitDirection.Up));
 
             if (mapExit != null)
                 LinkMapExit(previousMap, mapExit);
@@ -153,7 +153,7 @@ namespace MarsUndiscovered.Tests.Components
 
         private void LinkMapExit(MarsMap previousMap, MapExit mapExit)
         {
-            var previousMapExit = _gameWorld.MapExits.Values.First(me => Equals(me.CurrentMap, previousMap) && me.Direction == Direction.Down);
+            var previousMapExit = _gameWorld.MapExits.Values.First(me => Equals(me.CurrentMap, previousMap) && me.Direction == MapExitDirection.Down);
             mapExit.Destination = previousMapExit;
             previousMapExit.Destination = mapExit;
         }

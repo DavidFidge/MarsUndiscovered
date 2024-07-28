@@ -60,9 +60,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
         }
 
-        public void SetMapExit(Direction direction)
+        public void SetMapExit(char mapExit)
         {
-            MapTileTexture = Assets.GetMapTileTexture(direction == Direction.Down ? TileGraphicType.MapExitDown.ToString() : TileGraphicType.MapExitUp.ToString());
+            MapTileTexture = Assets.GetMapTileTexture($"{TileGraphicType.MapExit}{mapExit}");
             IsVisible = true;
         }
 

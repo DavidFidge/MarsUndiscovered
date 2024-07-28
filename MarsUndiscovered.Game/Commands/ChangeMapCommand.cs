@@ -47,9 +47,8 @@ namespace MarsUndiscovered.Game.Commands
             if (GameObject is Player)
             {
                 GameWorld.ChangeMap(newMap);
-
-                var exitText = MapExit.Direction == Direction.Down ? "descend" : "ascend";
-                return Result(CommandResult.Success(this, $"I {exitText}"));
+                
+                return Result(CommandResult.Success(this, MapExit.ExitText));
             }
             else
             {

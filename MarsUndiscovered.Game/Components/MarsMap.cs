@@ -33,8 +33,6 @@ namespace MarsUndiscovered.Game.Components
 
         public IList<Wall> Walls { get; private set; }
         public IList<Floor> Floors { get; private set; }
-
-        private ArrayView<bool> _wallsArrayView;
         
         public int MapWidth => _mapWidth;
 

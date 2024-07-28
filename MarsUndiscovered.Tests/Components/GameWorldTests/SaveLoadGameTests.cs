@@ -267,8 +267,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(mapExit2, mapExit1.Destination);
             Assert.AreEqual(mapExit1, mapExit2.Destination);
 
-            Assert.AreEqual(Direction.Down, mapExit1.Direction);
-            Assert.AreEqual(Direction.Up, mapExit2.Direction);
+            Assert.AreEqual(MapExitDirection.Down, mapExit1.Direction);
+            Assert.AreEqual(MapExitDirection.Up, mapExit2.Direction);
 
             Assert.AreNotEqual(Point.None, mapExit1.LandingPosition);
             Assert.AreNotEqual(Point.None, mapExit2.LandingPosition);

@@ -357,7 +357,7 @@ namespace MarsUndiscovered.Tests.Commands
             var walkCommand = _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0];
 
             Assert.AreEqual(CommandResultEnum.NoMove, walkCommand.CommandResult.Result);
-            Assert.AreEqual("I board your ship, make hasty repairs to critical parts and fire the engines! I have escaped!", walkCommand.CommandResult.Messages.First());
+            Assert.AreEqual("I board my ship, make hasty repairs to critical parts and fire the engines! I have escaped!", walkCommand.CommandResult.Messages.First());
             Assert.AreEqual(0, _gameWorld.CommandCollection.GetCommands<WalkCommand>()[0].CommandResult.SubsequentCommands.Count);
         }
 

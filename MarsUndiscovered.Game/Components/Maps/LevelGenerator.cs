@@ -73,7 +73,7 @@ public class LevelGenerator : ILevelGenerator
         SpawnMapExit(
             new SpawnMapExitParams()
                 .OnMap(map.Id)
-                .WithDirection(Direction.Down)
+                .WithDirection(MapExitDirection.Down)
         );
     }
 
@@ -81,7 +81,7 @@ public class LevelGenerator : ILevelGenerator
     {
         var spawnMapExitParams = new SpawnMapExitParams()
             .OnMap(currentMap.Id)
-            .WithDirection(Direction.Up);
+            .WithDirection(MapExitDirection.Up);
         
         SpawnMapExit(spawnMapExitParams);
 
@@ -90,7 +90,7 @@ public class LevelGenerator : ILevelGenerator
 
     private void LinkMapExit(MarsMap previousMap, MapExit mapExit)
     {
-        var previousMapExit = _gameWorld.MapExits.Values.First(me => Equals(me.CurrentMap, previousMap) && me.Direction == Direction.Down);
+        var previousMapExit = _gameWorld.MapExits.Values.First(me => Equals(me.CurrentMap, previousMap) && me.Direction == MapExitDirection.Down);
         mapExit.Destination = previousMapExit;
         previousMapExit.Destination = mapExit;
     }
@@ -155,7 +155,7 @@ public class LevelGenerator : ILevelGenerator
 
         var spawnMapExitParams = new SpawnMapExitParams()
             .OnMap(map.Id)
-            .WithDirection(Direction.Down);
+            .WithDirection(MapExitDirection.Down);
         
         spawnMapExitParams.MapPointChoiceRules.Add(new RestrictedSetRule(pointsNextToBottomOfMiningFacility));
         SpawnMapExitWithoutDefaultRules(spawnMapExitParams);

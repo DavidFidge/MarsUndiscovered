@@ -102,30 +102,23 @@ public class Assets : IAssets
             CreateGameObjectTypeGraphics(itemType, assetsList, itemType.GetAbstractTypeName());
         }
 
-        var mapExitDown = new MapTileTexture(
-            _gameProvider.Game.GraphicsDevice,
-            UiConstants.TileWidth,
-            UiConstants.TileHeight,
-            MapBitmapFont,
-            '>',
-            Color.Yellow,
-            Color.SaddleBrown
-        );
+        foreach (var mapExitDirection in Enum.GetValues<MapExitDirection>())
+        {
+            var mapExitChar = MapExit.GetAsciiCharacter(mapExitDirection);
 
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MapExitDown.ToString(), mapExitDown);
+            var mapExit = new MapTileTexture(
+                _gameProvider.Game.GraphicsDevice,
+                UiConstants.TileWidth,
+                UiConstants.TileHeight,
+                MapBitmapFont,
+                mapExitChar,
+                Color.Yellow,
+                Color.SaddleBrown
+            );
 
-        var mapExitUp = new MapTileTexture(
-            _gameProvider.Game.GraphicsDevice,
-            UiConstants.TileWidth,
-            UiConstants.TileHeight,
-            MapBitmapFont,
-            '<',
-            Color.Yellow,
-            Color.SaddleBrown
-        );
-        
-        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MapExitUp.ToString(), mapExitUp);
-        
+            _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.MapExit}{mapExitChar}", mapExit);
+        }
+
         var shipPartChars = ShipGenerator.ShipPrefab.PrefabText
             .SelectMany(s => s)
             .Distinct()

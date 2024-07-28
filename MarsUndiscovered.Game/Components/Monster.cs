@@ -76,8 +76,6 @@ namespace MarsUndiscovered.Game.Components
             stringBuilder.AppendLine($"My scanner says: \"{Description}\"");
             stringBuilder.AppendLine();
 
-            var percentMaxDamage = 0;
-            var percentMinDamage = 0;
             var maxDamage = 0;
             
             if (MeleeAttack != null)

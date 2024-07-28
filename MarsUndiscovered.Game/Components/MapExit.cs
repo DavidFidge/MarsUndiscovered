@@ -10,10 +10,80 @@ namespace MarsUndiscovered.Game.Components
 {
     public class MapExit : Indestructible, IMementoState<MapExitSaveData>
     {
-        public override char AsciiCharacter => Direction == Direction.Up ? '<' : '>';
+        public static char GetAsciiCharacter(MapExitDirection direction)
+        {
+            switch (direction)
+            {
+                case MapExitDirection.North:
+                    return (char)0x1E;
+                case MapExitDirection.South:
+                    return (char)0x1F;
+                case MapExitDirection.East:
+                    return (char)0x10;
+                case MapExitDirection.West:
+                    return (char)0x11;
+                case MapExitDirection.Up:
+                    return (char)0x18;
+                case MapExitDirection.Down:
+                    return (char)0x19;
+                default:
+                    return ' ';
+            }
+        }
+
+        public override char AsciiCharacter => GetAsciiCharacter(Direction);
+        
+        public string ExitText
+        {
+            get
+            {
+                switch (Direction)
+                {
+                    case MapExitDirection.North:
+                        return "I walk north";
+                    case MapExitDirection.South:
+                        return "I walk south";
+                    case MapExitDirection.East:
+                        return "I walk east";
+                    case MapExitDirection.West:
+                        return "I walk west";
+                    case MapExitDirection.Up:
+                        return "I ascend";
+                    case MapExitDirection.Down:
+                        return "I descend";
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
+                
+        public string HoverText
+        {
+            get
+            {
+                switch (Direction)
+                {
+                    case MapExitDirection.North:
+                        return "An exit north";
+                    case MapExitDirection.South:
+                        return "An exit south";
+                    case MapExitDirection.East:
+                        return "An exit east";
+                    case MapExitDirection.West:
+                        return "An exit west";
+                    case MapExitDirection.Up:
+                        return "A stairway upwards";
+                    case MapExitDirection.Down:
+                        return "A stairway downwards";
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
+
         public MapExit Destination { get; set; }
         public Point LandingPosition { get; set; }
-        public Direction Direction { get; set; }
+        public MapExitDirection Direction { get; set; }
 
         public MapExit(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
@@ -31,7 +101,7 @@ namespace MarsUndiscovered.Game.Components
             return this;
         }
 
-        public MapExit WithDirection(Direction direction)
+        public MapExit WithDirection(MapExitDirection direction)
         {
             Direction = direction;
             return this;
