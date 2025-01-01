@@ -27,7 +27,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
                 MapGenerator.WallFloorTag
             );
             
-            var prefabContext = generationContext.GetFirstOrNew<ItemList<PrefabInstance>>(
+            var prefabContext = generationContext.GetFirstOrNew(
                 () => new ItemList<PrefabInstance>(),
                 MapGenerator.PrefabTag
             );

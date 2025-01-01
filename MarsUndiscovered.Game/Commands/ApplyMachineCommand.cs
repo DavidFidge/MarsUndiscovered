@@ -1,5 +1,4 @@
 using FrigidRogue.MonoGame.Core.Components;
-
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 
@@ -23,7 +22,7 @@ namespace MarsUndiscovered.Game.Commands
         {
             if (Machine.IsUsed)
             {
-                return Result(CommandResult.NoMove(this, $"The machine no longer has power and lies dormant."));
+                return Result(CommandResult.NoMove(this, "The machine no longer has power and lies dormant."));
             }
 
             _data.OldIsUsed = Machine.IsUsed;

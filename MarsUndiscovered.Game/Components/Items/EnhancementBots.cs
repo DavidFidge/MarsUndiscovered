@@ -26,12 +26,12 @@ namespace MarsUndiscovered.Game.Components
             var stringBuilder = new StringBuilder();
             
             stringBuilder.AppendLine(
-                $"The swirling blue steamy liquid inside this flask are filled with enhancement nanobots. The nanobots will enhance the object using the intent of the user and the will of the nanobots.");
+                "The swirling blue steamy liquid inside this flask are filled with enhancement nanobots. The nanobots will enhance the object using the intent of the user and the will of the nanobots.");
             
             stringBuilder.AppendLine();
 
             stringBuilder.Append(
-                $"The enhancement level of an item is increased by {{{{L_BLUE}}}}1{{{{DEFAULT}}}}.");
+                "The enhancement level of an item is increased by {{L_BLUE}}1{{DEFAULT}}.");
 
             return stringBuilder.ToString();
         }

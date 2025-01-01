@@ -1,5 +1,4 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
-
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 
@@ -25,7 +24,7 @@ namespace MarsUndiscovered.Game.Commands
         protected override CommandResult ExecuteInternal()
         {
             if (!_canEquipType)
-                return Result(CommandResult.NoMove(this, $"Cannot equip this type of item"));
+                return Result(CommandResult.NoMove(this, "Cannot equip this type of item"));
 
             var previousItem = GameWorld.Inventory.GetEquippedItemOfType(Item.ItemType);
             _data.PreviousItemId = previousItem?.ID;
@@ -38,7 +37,7 @@ namespace MarsUndiscovered.Game.Commands
             _data.IsAlreadyEquipped = GameWorld.Inventory.IsEquipped(Item);
 
             if (_isAlreadyEquipped)
-                return Result(CommandResult.NoMove(this, $"Item is already equipped"));
+                return Result(CommandResult.NoMove(this, "Item is already equipped"));
 
             GameWorld.Inventory.Unequip(_previousItem);
             GameWorld.Inventory.Equip(Item);

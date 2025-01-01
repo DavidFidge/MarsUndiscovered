@@ -1,9 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
-
 using GoRogue.Pathing;
-
-using MarsUndiscovered.Game.Commands;
-
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 

@@ -9,7 +9,7 @@ public struct MapTemplateItem
 
     public MapTemplateItem(char c, Point point)
     {
-        Char = @c;
+        Char = c;
         Point = point;
     }
 }

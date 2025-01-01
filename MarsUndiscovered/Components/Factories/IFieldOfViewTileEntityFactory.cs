@@ -1,5 +1,4 @@
 ﻿using MarsUndiscovered.UserInterface.ViewModels;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Components

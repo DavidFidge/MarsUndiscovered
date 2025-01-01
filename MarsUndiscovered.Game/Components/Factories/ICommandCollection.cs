@@ -1,5 +1,4 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Components.Factories

@@ -1,10 +1,8 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
-using MarsUndiscovered.UserInterface.Views;
-
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.View;
 using MarsUndiscovered.Messages;
-using MediatR;
+using MarsUndiscovered.UserInterface.Views;
 
 namespace MarsUndiscovered.UserInterface.Screens
 {
@@ -18,13 +16,12 @@ namespace MarsUndiscovered.UserInterface.Screens
             _worldBuilderView = worldBuilderView;
         }
 
-        public Task<Unit> Handle(WorldBuilderRequest request, CancellationToken cancellationToken)
+        public void Handle(WorldBuilderRequest request)
         {
             _worldBuilderView.LoadWorldBuilder();
 
             UserInterface.ShowScreen(this);
 
-            return Unit.Task;
         }
     }
 }

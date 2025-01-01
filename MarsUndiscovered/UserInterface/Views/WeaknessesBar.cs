@@ -1,5 +1,4 @@
 using FrigidRogue.MonoGame.Core.View.Extensions;
-
 using GeonBit.UI.Entities;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Interfaces;

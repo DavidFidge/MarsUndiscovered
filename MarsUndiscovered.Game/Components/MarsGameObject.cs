@@ -1,13 +1,8 @@
 using GoRogue.Components;
 using GoRogue.GameFramework;
-
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;
-
-using MediatR;
-
 using SadRogue.Primitives;
-
 using Serilog;
 
 namespace MarsUndiscovered.Game.Components

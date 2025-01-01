@@ -1,15 +1,12 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
-using MarsUndiscovered.Messages;
-using MarsUndiscovered.UserInterface.Data;
-
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.MonoGame.Core.View.Interfaces;
-
-using MediatR;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Data;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -60,7 +57,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 Data.SelectedRenderResolution = RenderResolution.Default;
         }
 
-        public Task<Unit> Handle(
+        public void Handle(
             SetDisplayModeRequest request,
             CancellationToken cancellationToken
         )
@@ -78,18 +75,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             }
 
             SetGraphicsDisplayMode();
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(SetRenderResolutionRequest request, CancellationToken cancellationToken)
+        public void Handle(SetRenderResolutionRequest request)
         {
             Data.SelectedRenderResolution = request.RenderResolution;
 
             _userInterface.RenderResolution = Data.SelectedRenderResolution;
             _gameCamera.RenderResolution = Data.SelectedRenderResolution;
-
-            return Unit.Task;
         }
 
         private void SetGraphicsDisplayMode()
@@ -107,32 +100,24 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 .SetDisplayMode(displaySettings);
         }
 
-        public Task<Unit> Handle(SaveVideoOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(SaveVideoOptionsRequest request)
         {
             _gameOptionsStore.SaveToStore(new Memento<VideoOptionsData>(Data));
-
-            return Unit.Task;
         }
 
-        public Task<Unit> HandleIsFullScreen(InterfaceRequest<VideoOptionsData> request, CancellationToken cancellationToken)
+        public void HandleIsFullScreen(InterfaceRequest<VideoOptionsData> request)
         {
             SetGraphicsDisplayMode();
-
-            return Unit.Task;
         }
 
-        public Task<Unit> HandleIsVerticalSync(InterfaceRequest<VideoOptionsData> request, CancellationToken cancellationToken)
+        public void HandleIsVerticalSync(InterfaceRequest<VideoOptionsData> request)
         {
             SetGraphicsDisplayMode();
-
-            return Unit.Task;
         }
 
-        public Task<Unit> HandleIsBorderlessWindowed(InterfaceRequest<VideoOptionsData> request, CancellationToken cancellationToken)
+        public void HandleIsBorderlessWindowed(InterfaceRequest<VideoOptionsData> request)
         {
             SetGraphicsDisplayMode();
-
-            return Unit.Task;
         }
     }
 }

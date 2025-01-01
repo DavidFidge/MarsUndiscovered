@@ -1,6 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;
 
@@ -21,7 +20,7 @@ namespace MarsUndiscovered.Game.Components
         {
             var memento = new Memento<DoorSaveData>(new DoorSaveData());
 
-            base.PopulateSaveState(memento.State);
+            PopulateSaveState(memento.State);
             memento.State.DoorTypeName = DoorType.Name;
             memento.State.IsOpen = IsOpen;
 
@@ -30,7 +29,7 @@ namespace MarsUndiscovered.Game.Components
 
         public void SetLoadState(IMemento<DoorSaveData> memento)
         {
-            base.PopulateLoadState(memento.State);
+            PopulateLoadState(memento.State);
             DoorType = DoorType.DoorTypes[memento.State.DoorTypeName];
             IsOpen = memento.State.IsOpen;
         }

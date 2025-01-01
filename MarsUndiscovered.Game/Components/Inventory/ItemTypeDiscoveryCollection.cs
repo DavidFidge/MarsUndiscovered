@@ -49,7 +49,7 @@ public class ItemTypeDiscoveryCollection : Dictionary<ItemType, ItemTypeDiscover
 
     public bool IsItemTypeDiscovered(ItemType itemType)
     {
-        if (!this.ContainsKey(itemType))
+        if (!ContainsKey(itemType))
             return true;
         
         return this[itemType].IsItemTypeDiscovered;
@@ -72,13 +72,13 @@ public class ItemTypeDiscoveryCollection : Dictionary<ItemType, ItemTypeDiscover
     
     public void SetItemTypeDiscovered(ItemType itemType)
     {
-        if (this.ContainsKey(itemType))
+        if (ContainsKey(itemType))
             this[itemType].IsItemTypeDiscovered = true;
     }
     
     public void SetItemTypeUndiscovered(ItemType itemType)
     {   
-        if (this.ContainsKey(itemType))
+        if (ContainsKey(itemType))
             this[itemType].IsItemTypeDiscovered = false;
     }
 

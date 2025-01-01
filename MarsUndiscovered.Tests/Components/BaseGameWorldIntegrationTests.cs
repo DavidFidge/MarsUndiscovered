@@ -1,5 +1,4 @@
 using System.ComponentModel.Design;
-using System.Windows.Forms.VisualStyles;
 using Castle.MicroKernel.Registration;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using MarsUndiscovered.Game.Components;

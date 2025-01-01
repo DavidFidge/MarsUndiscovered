@@ -1,10 +1,8 @@
 ﻿using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
-
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Components.Maps;
-
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using ShaiRandom.Collections;
@@ -41,7 +39,7 @@ public class InternalWallsGenerationTests : BaseTest
         
         internalWallsGeneration.RNG = random;
         
-        var wallsFloorTypes = context.GetFirstOrNew<ArrayView<GameObjectType>>(
+        var wallsFloorTypes = context.GetFirstOrNew(
             () => new ArrayView<GameObjectType>(context.Width, context.Height),
             MapGenerator.WallFloorTypeTag);
 
@@ -108,7 +106,7 @@ public class InternalWallsGenerationTests : BaseTest
         
         internalWallsGeneration.RNG = random;
         
-        var wallsFloorTypes = context.GetFirstOrNew<ArrayView<GameObjectType>>(
+        var wallsFloorTypes = context.GetFirstOrNew(
             () => new ArrayView<GameObjectType>(context.Width, context.Height),
             MapGenerator.WallFloorTypeTag);
 
@@ -173,7 +171,7 @@ public class InternalWallsGenerationTests : BaseTest
         
         internalWallsGeneration.RNG = random;
         
-        var wallsFloorTypes = context.GetFirstOrNew<ArrayView<GameObjectType>>(
+        var wallsFloorTypes = context.GetFirstOrNew(
             () => new ArrayView<GameObjectType>(context.Width, context.Height),
             MapGenerator.WallFloorTypeTag);
 
@@ -242,7 +240,7 @@ public class InternalWallsGenerationTests : BaseTest
         
         internalWallsGeneration.RNG = random;
         
-        var wallsFloorTypes = context.GetFirstOrNew<ArrayView<GameObjectType>>(
+        var wallsFloorTypes = context.GetFirstOrNew(
             () => new ArrayView<GameObjectType>(context.Width, context.Height),
             MapGenerator.WallFloorTypeTag);
 
@@ -308,7 +306,7 @@ public class InternalWallsGenerationTests : BaseTest
             
         internalWallsGeneration.RNG = random;
         
-        var wallsFloorTypes = context.GetFirstOrNew<ArrayView<GameObjectType>>(
+        var wallsFloorTypes = context.GetFirstOrNew(
             () => new ArrayView<GameObjectType>(context.Width, context.Height),
             MapGenerator.WallFloorTypeTag);
 

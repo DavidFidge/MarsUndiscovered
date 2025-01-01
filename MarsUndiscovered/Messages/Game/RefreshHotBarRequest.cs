@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 
 namespace MarsUndiscovered.Messages
 {
@@ -14,6 +15,6 @@ namespace MarsUndiscovered.Messages
         }
 
         // If null then refresh all
-        public uint? ItemId { get; set; } = null;
+        public uint? ItemId { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
 using FrigidRogue.MonoGame.Core.Services;
 
 namespace MarsUndiscovered.UserInterface.Data

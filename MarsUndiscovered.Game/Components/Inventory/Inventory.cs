@@ -1,12 +1,9 @@
 ﻿using System.Collections;
-
 using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
-
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;
-
 using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.Game.Components

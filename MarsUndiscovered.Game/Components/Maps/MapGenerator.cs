@@ -3,7 +3,6 @@ using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
 using GoRogue.MapGeneration;
 using GoRogue.Random;
-
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Interfaces;
@@ -80,9 +79,9 @@ namespace MarsUndiscovered.Game.Components.Maps
                 _waveFunctionCollapseGeneratorPassesRenderer
             );
 
-            var miningFacilityAreaFinder = new GenericAreaFinder<GameObjectType>((t) => t == FloorType.MiningFacilityFloor, MiningFacilityAreaTag, WallFloorTypeTag, areasComponentTag: AreasTag);
+            var miningFacilityAreaFinder = new GenericAreaFinder<GameObjectType>(t => t == FloorType.MiningFacilityFloor, MiningFacilityAreaTag, WallFloorTypeTag, areasComponentTag: AreasTag);
             
-            var miningFacilityAreaWithPerimeter = new GenericAreaFinder<GameObjectType>((t) => t == FloorType.MiningFacilityFloor || t == WallType.MiningFacilityWall, MiningFacilityAreaWithPerimeterTag, WallFloorTypeTag, areasComponentTag: AreasTag);
+            var miningFacilityAreaWithPerimeter = new GenericAreaFinder<GameObjectType>(t => t == FloorType.MiningFacilityFloor || t == WallType.MiningFacilityWall, MiningFacilityAreaWithPerimeterTag, WallFloorTypeTag, areasComponentTag: AreasTag);
 
             var probabilityTable = new ProbabilityTable<int>(
                 new List<(int item, double weight)> { (1, 5), (2, 1) }
@@ -118,7 +117,7 @@ namespace MarsUndiscovered.Game.Components.Maps
             var prefabConnectorGeneration = new PrefabConnectorGeneration();
             var wallFloorTypeConverterGenerator = new WallFloorTypeConverterGenerator();
 
-            var borderGenerationStepFloors = new BorderGenerationStep("BorderFloors", true);
+            var borderGenerationStepFloors = new BorderGenerationStep("BorderFloors");
             borderGenerationStepFloors.Border = 3;
             
             var borderGenerationStepWalls = new BorderGenerationStep("BorderWalls", false);

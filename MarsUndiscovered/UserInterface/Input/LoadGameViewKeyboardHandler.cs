@@ -1,9 +1,6 @@
 ﻿using FrigidRogue.MonoGame.Core.UserInterface;
-
 using InputHandlers.Keyboard;
-
 using MarsUndiscovered.Messages;
-
 using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input

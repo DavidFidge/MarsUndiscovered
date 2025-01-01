@@ -1,14 +1,11 @@
 ﻿using System.Globalization;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
-
-using MarsUndiscovered.Messages;
-using MarsUndiscovered.UserInterface.ViewModels;
-using MarsUndiscovered.UserInterface.Data;
-
 using FrigidRogue.MonoGame.Core.View.Extensions;
-
 using GeonBit.UI.Entities;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Data;
+using MarsUndiscovered.UserInterface.ViewModels;
 using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views

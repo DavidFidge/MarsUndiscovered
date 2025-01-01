@@ -1,6 +1,6 @@
-﻿using MarsUndiscovered.Messages;
-using InputHandlers.Keyboard;
+﻿using InputHandlers.Keyboard;
 using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Xna.Framework.Input;
 

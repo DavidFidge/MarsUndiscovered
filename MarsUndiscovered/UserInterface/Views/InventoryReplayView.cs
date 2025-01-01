@@ -1,9 +1,8 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
-using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -16,11 +15,9 @@ namespace MarsUndiscovered.UserInterface.Views
         {
         }
         
-        public Task<Unit> Handle(LeftClickInventoryReplayViewRequest request, CancellationToken cancellationToken)
+        public void Handle(LeftClickInventoryReplayViewRequest request)
         {
             HideIfMouseOver();
-
-            return Unit.Task;
         }
     }
 }

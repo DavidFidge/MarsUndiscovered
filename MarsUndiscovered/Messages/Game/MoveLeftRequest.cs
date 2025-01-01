@@ -1,7 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.UserInterface;
-
 using Microsoft.Xna.Framework.Input;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Messages

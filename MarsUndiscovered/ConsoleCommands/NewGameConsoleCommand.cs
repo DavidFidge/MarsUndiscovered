@@ -1,6 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.ConsoleCommands;
-
 using MarsUndiscovered.Messages;
 
 namespace MarsUndiscovered.ConsoleCommands
@@ -8,10 +7,6 @@ namespace MarsUndiscovered.ConsoleCommands
     [ConsoleCommand(Name = "NewGame")]
     public class NewGameConsoleCommand : BaseConsoleCommand
     {
-        public NewGameConsoleCommand()
-        {
-        }
-
         public override void Execute(ConsoleCommand consoleCommand)
         {
             uint? seed = null;

@@ -1,10 +1,8 @@
 ﻿using FrigidRogue.MonoGame.Core.View.Extensions;
 using GeonBit.UI;
+using GeonBit.UI.Entities;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
-
-using GeonBit.UI.Entities;
-
 using Microsoft.Xna.Framework;
 
 namespace MarsUndiscovered.UserInterface.Views

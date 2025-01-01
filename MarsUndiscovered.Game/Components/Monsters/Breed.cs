@@ -1,8 +1,8 @@
-﻿using System.Globalization;
+﻿using System.Drawing;
+using System.Globalization;
 using System.IO;
 using CsvHelper;
 using FrigidRogue.MonoGame.Core.Extensions;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace MarsUndiscovered.Game.Components
@@ -17,9 +17,9 @@ namespace MarsUndiscovered.Game.Components
         public bool FriendlyFireAllies { get; set; } = true;
 
         public static Dictionary<string, Breed> Breeds;
-        public Attack MeleeAttack { get; protected set; } = null;
-        public Attack LineAttack { get; protected set; } = null;
-        public LightningAttack LightningAttack { get; protected set; } = null;
+        public Attack MeleeAttack { get; protected set; }
+        public Attack LineAttack { get; protected set; }
+        public LightningAttack LightningAttack { get; protected set; }
         public int DetectionRange { get; set; }
         
         public bool CanConcuss { get; set; }
@@ -52,14 +52,14 @@ namespace MarsUndiscovered.Game.Components
                 breed.AsciiCharacter = (char)bytes;
                 
                 var foregroundColour = csvBreed.ForegroundColour.ToString();
-                System.Drawing.Color sysDrawingForegroundColour = System.Drawing.ColorTranslator.FromHtml(foregroundColour);
-                breed.ForegroundColour = new Color(sysDrawingForegroundColour.R, sysDrawingForegroundColour.G, sysDrawingForegroundColour.B, sysDrawingForegroundColour.A);
+                Color sysDrawingForegroundColour = ColorTranslator.FromHtml(foregroundColour);
+                breed.ForegroundColour = new Microsoft.Xna.Framework.Color(sysDrawingForegroundColour.R, sysDrawingForegroundColour.G, sysDrawingForegroundColour.B, sysDrawingForegroundColour.A);
                 
                 if (!string.IsNullOrEmpty(csvBreed.BackgroundColour))
                 {
                     var backgroundColour = csvBreed.BackgroundColour.ToString();
-                    System.Drawing.Color sysDrawingBackgroundColour = System.Drawing.ColorTranslator.FromHtml(backgroundColour);
-                    breed.BackgroundColour = new Color(sysDrawingBackgroundColour.R, sysDrawingBackgroundColour.G, sysDrawingBackgroundColour.B, sysDrawingBackgroundColour.A);
+                    Color sysDrawingBackgroundColour = ColorTranslator.FromHtml(backgroundColour);
+                    breed.BackgroundColour = new Microsoft.Xna.Framework.Color(sysDrawingBackgroundColour.R, sysDrawingBackgroundColour.G, sysDrawingBackgroundColour.B, sysDrawingBackgroundColour.A);
                 }
 
                 breed.MaxHealth = int.Parse(csvBreed.MaxHealth.ToString());

@@ -28,7 +28,7 @@ public class Machine : Indestructible, IMementoState<MachineSaveData>
     {
         var memento = new Memento<MachineSaveData>(new MachineSaveData());
 
-        base.PopulateSaveState(memento.State);
+        PopulateSaveState(memento.State);
 
         memento.State.MachineTypeName = MachineType.Name;
         memento.State.IsUsed = IsUsed;
@@ -38,7 +38,7 @@ public class Machine : Indestructible, IMementoState<MachineSaveData>
 
     public void SetLoadState(IMemento<MachineSaveData> memento)
     {
-        base.PopulateLoadState(memento.State);
+        PopulateLoadState(memento.State);
         IsUsed = memento.State.IsUsed;
         MachineType = MachineType.MachineTypes[memento.State.MachineTypeName];
     }

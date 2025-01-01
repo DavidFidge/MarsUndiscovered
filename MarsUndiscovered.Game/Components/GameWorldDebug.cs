@@ -1,6 +1,6 @@
 using FrigidRogue.MonoGame.Core.Components;
-using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Game.Components.Maps;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Components
 {

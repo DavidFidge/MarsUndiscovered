@@ -20,7 +20,7 @@ public class PrefabDoorGenerator : GenerationStep
     
     protected override IEnumerator<object> OnPerform(GenerationContext generationContext)
     {
-        var prefabContext = generationContext.GetFirstOrNew<ItemList<PrefabInstance>>(
+        var prefabContext = generationContext.GetFirstOrNew(
             () => new ItemList<PrefabInstance>(),
             PrefabTag
         );

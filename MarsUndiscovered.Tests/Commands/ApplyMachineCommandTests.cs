@@ -3,7 +3,6 @@ using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Tests.Components;
-using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Tests.Commands
 {

@@ -2,22 +2,15 @@
 using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
 using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
-using GoRogue.MapGeneration.Steps;
-using GoRogue.SenseMapping;
-using GoRogue.SenseMapping.Sources;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
-
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-
 using Point = SadRogue.Primitives.Point;
-using RectangleExtensions = SadRogue.Primitives.RectangleExtensions;
 
 namespace MarsUndiscovered.Game.Components
 {
@@ -101,7 +94,7 @@ namespace MarsUndiscovered.Game.Components
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((MarsMap)obj);
         }
 

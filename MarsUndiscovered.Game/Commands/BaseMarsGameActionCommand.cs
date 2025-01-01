@@ -4,7 +4,6 @@ using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Interfaces;
-
 using Newtonsoft.Json;
 
 namespace MarsUndiscovered.Game.Commands

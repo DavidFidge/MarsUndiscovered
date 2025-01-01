@@ -1,7 +1,6 @@
 ﻿using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using MarsUndiscovered.UserInterface.ViewModels;
-
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Tweening;
 using Point = SadRogue.Primitives.Point;
@@ -86,7 +85,7 @@ namespace MarsUndiscovered.UserInterface.Animation
 
             foreach (var point in _lightningStreak.Reverse())
             {
-                mapViewModel.AnimateTile(point, (mapTileEntity) => mapTileEntity.SetLightning(_lightningOpacity[index]));
+                mapViewModel.AnimateTile(point, mapTileEntity => mapTileEntity.SetLightning(_lightningOpacity[index]));
                 index++;
             }
         }

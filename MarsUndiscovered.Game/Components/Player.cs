@@ -1,10 +1,8 @@
 ﻿using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
-
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;
-
 using MonoGame.Extended;
 
 namespace MarsUndiscovered.Game.Components
@@ -38,7 +36,7 @@ namespace MarsUndiscovered.Game.Components
         {
             var memento = new Memento<PlayerSaveData>(new PlayerSaveData());
 
-            base.PopulateSaveState(memento.State);
+            PopulateSaveState(memento.State);
 
             memento.State.IsVictorious = IsVictorious;
 
@@ -47,7 +45,7 @@ namespace MarsUndiscovered.Game.Components
 
         public void SetLoadState(IMemento<PlayerSaveData> memento)
         {
-            base.PopulateLoadState(memento.State);
+            PopulateLoadState(memento.State);
 
             IsVictorious = memento.State.IsVictorious;
         }

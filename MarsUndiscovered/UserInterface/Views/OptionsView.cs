@@ -1,15 +1,10 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
-
+using FrigidRogue.MonoGame.Core.Components.Mediator;
+using FrigidRogue.MonoGame.Core.View.Extensions;
+using GeonBit.UI.Entities;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
-
-using FrigidRogue.MonoGame.Core.View.Extensions;
-
-using GeonBit.UI.Entities;
-
-using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -53,22 +48,22 @@ namespace MarsUndiscovered.UserInterface.Views
                 .AddTo(_optionsMenuPanel);
         }
 
-        public Task<Unit> Handle(OpenVideoOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(OpenVideoOptionsRequest request)
         {
             return ShowChildViewWithRootSwap(_videoOptionsView, _optionsMenuPanel);
         }
 
-        public Task<Unit> Handle(CloseVideoOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(CloseVideoOptionsRequest request)
         {
             return HideChildView(_videoOptionsView, _optionsMenuPanel);
         }
         
-        public Task<Unit> Handle(OpenGameOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(OpenGameOptionsRequest request)
         {
             return ShowChildViewWithRootSwap(_gameOptionsView, _optionsMenuPanel);
         }
 
-        public Task<Unit> Handle(CloseGameOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(CloseGameOptionsRequest request)
         {
             return HideChildView(_gameOptionsView, _optionsMenuPanel);
         }

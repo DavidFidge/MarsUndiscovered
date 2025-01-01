@@ -1,7 +1,5 @@
 ﻿using InputHandlers.Keyboard;
-
 using MarsUndiscovered.Messages;
-
 using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input

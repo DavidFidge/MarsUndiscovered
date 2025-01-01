@@ -22,7 +22,7 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Item source, Point point, int pushDistance, int radius)
         {
-           this.EndsPlayerTurn = false;
+           EndsPlayerTurn = false;
             _data.SourceId = source.ID;
             _data.Point = point;
             _data.PushDistance = pushDistance;
@@ -52,14 +52,14 @@ namespace MarsUndiscovered.Game.Commands
             foreach (var actor in actors)
             {
                 var maxDistanceOut = Math.Max(
-                    Math.Abs(this.Point.X - actor.Position.X),
-                    Math.Abs(this.Point.Y - actor.Position.Y));
+                    Math.Abs(Point.X - actor.Position.X),
+                    Math.Abs(Point.Y - actor.Position.Y));
                
-                var newPosition = Vector2.Lerp(this.Point.ToVector(), actor.Position.ToVector(), (this.PushDistance / (float)maxDistanceOut) + 1f);
+                var newPosition = Vector2.Lerp(Point.ToVector(), actor.Position.ToVector(), (PushDistance / (float)maxDistanceOut) + 1f);
 
                 var newPoint = newPosition
                     .FromVectorRounded()
-                    .Clamp(this.GameWorld.CurrentMap.Bounds());
+                    .Clamp(GameWorld.CurrentMap.Bounds());
 
                 var line = Lines.GetBresenhamLine(actor.Position, newPoint);
 
@@ -67,7 +67,7 @@ namespace MarsUndiscovered.Game.Commands
                 
                 foreach (var linePoint in line.Skip(1))
                 {
-                    if (this.GameWorld.CurrentMap.AnyBlockingObjectsAt(linePoint))
+                    if (GameWorld.CurrentMap.AnyBlockingObjectsAt(linePoint))
                         break;
 
                     selectedPoint = linePoint;
@@ -75,14 +75,14 @@ namespace MarsUndiscovered.Game.Commands
 
                 if (selectedPoint != actor.Position)
                 {
-                    var moveCommand = GameWorld.CommandCollection.CreateCommand<MoveCommand>(this.GameWorld);
+                    var moveCommand = GameWorld.CommandCollection.CreateCommand<MoveCommand>(GameWorld);
                     moveCommand.Initialise(actor, new Tuple<Point, Point>(actor.Position, selectedPoint));
                     
                     moveCommand.Execute();
                 }
             }
             
-            var message = $"A force field radiates out from me!";
+            var message = "A force field radiates out from me!";
             var commandResult = CommandResult.Success(this, message);
             
             return Result(commandResult);

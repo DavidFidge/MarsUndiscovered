@@ -1,7 +1,5 @@
-using System.Diagnostics.Eventing.Reader;
 using System.Text;
 using Castle.Core.Internal;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Extensions;

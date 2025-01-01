@@ -1,7 +1,5 @@
 using FrigidRogue.MonoGame.Core.Components;
-
 using GoRogue.GameFramework;
-
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.ViewMessages;
 using MarsUndiscovered.Interfaces;
@@ -50,11 +48,9 @@ namespace MarsUndiscovered.Game.Commands
                 
                 return Result(CommandResult.Success(this, MapExit.ExitText));
             }
-            else
-            {
-                Mediator.Publish(new MapTileChangedNotification(GameObject.Position));
-                return Result(CommandResult.Success(this));
-            }
+
+            Mediator.Publish(new MapTileChangedNotification(GameObject.Position));
+            return Result(CommandResult.Success(this));
         }
 
         protected override void UndoInternal()

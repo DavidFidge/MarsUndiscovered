@@ -1,7 +1,5 @@
 using FrigidRogue.MonoGame.Core.Extensions;
-
 using Microsoft.Xna.Framework;
-
 using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.UserInterface.Animation

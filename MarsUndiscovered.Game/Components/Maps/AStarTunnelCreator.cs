@@ -1,6 +1,5 @@
 ﻿using GoRogue.MapGeneration.TunnelCreators;
 using GoRogue.Pathing;
-
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 

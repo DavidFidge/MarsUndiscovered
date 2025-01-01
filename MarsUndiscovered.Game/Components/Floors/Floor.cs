@@ -1,6 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;
 
@@ -20,7 +19,7 @@ namespace MarsUndiscovered.Game.Components
         {
             var memento = new Memento<FloorSaveData>(new FloorSaveData());
 
-            base.PopulateSaveState(memento.State);
+            PopulateSaveState(memento.State);
             memento.State.FloorTypeName = FloorType.Name;
 
             return memento;
@@ -28,7 +27,7 @@ namespace MarsUndiscovered.Game.Components
 
         public void SetLoadState(IMemento<FloorSaveData> memento)
         {
-            base.PopulateLoadState(memento.State);
+            PopulateLoadState(memento.State);
             FloorType = FloorType.FloorTypes[memento.State.FloorTypeName];
         }
     }

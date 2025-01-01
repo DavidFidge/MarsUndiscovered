@@ -110,10 +110,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.TestResetFieldOfView();
 
             // Act
-            var result1 = _gameWorld.AutoExploreRequest(true);
-            var result2 = _gameWorld.AutoExploreRequest(true);
-            var result3 = _gameWorld.AutoExploreRequest(true);
-            var result4 = _gameWorld.AutoExploreRequest(true);
+            var result1 = _gameWorld.AutoExploreRequest();
+            var result2 = _gameWorld.AutoExploreRequest();
+            var result3 = _gameWorld.AutoExploreRequest();
+            var result4 = _gameWorld.AutoExploreRequest();
 
             // Assert
             Assert.AreEqual(new Point(1, 3), result3.Path.GetStepWithStart(0));

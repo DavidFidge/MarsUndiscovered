@@ -1,7 +1,6 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Commands
@@ -38,7 +37,7 @@ namespace MarsUndiscovered.Game.Commands
 
             EndsPlayerTurn = false;
             
-            return Result(CommandResult.Exception(this, $"Ranged weapon not equipped"));
+            return Result(CommandResult.Exception(this, "Ranged weapon not equipped"));
         }
 
         protected override void UndoInternal()

@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-using SadRogue.Primitives;
+﻿using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Commands
 {

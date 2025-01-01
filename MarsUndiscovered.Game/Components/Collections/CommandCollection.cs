@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Reflection;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
@@ -113,14 +112,14 @@ namespace MarsUndiscovered.Game.Components
             // call SaveCommandList for each of properties using reflection
             foreach (var commandListProperty in _commandListProperties)
             {
-                var method = this.GetType().GetMethod("SaveCommandList");
+                var method = GetType().GetMethod("SaveCommandList");
 
                 var commandTypeSaveData = commandListProperty.Key.BaseType.GetGenericArguments().First();
                 var commandList = commandListProperty.Value.GetValue(this);
                 
                 var genericMethod = method.MakeGenericMethod(commandListProperty.Key, commandTypeSaveData);
                 
-                genericMethod.Invoke(this, new object[] { commandList, saveGameService });
+                genericMethod.Invoke(this, new[] { commandList, saveGameService });
             }
         }
 
@@ -133,7 +132,7 @@ namespace MarsUndiscovered.Game.Components
             foreach (var commandListProperty in _commandListProperties)
             {
                 // Call LoadCommandsList for each property using reflection
-                var method = this.GetType().GetMethod("LoadCommandList");
+                var method = GetType().GetMethod("LoadCommandList");
 
                 var commandTypeSaveData = commandListProperty.Key.BaseType.GetGenericArguments().First();
 
@@ -145,8 +144,7 @@ namespace MarsUndiscovered.Game.Components
 
         private Dictionary<Type, PropertyInfo> GetCommandListProperties()
         {
-            var commandListProperties = this
-                .GetType()
+            var commandListProperties = GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.PropertyType.IsAssignableTo(typeof(IList)))
                 .Where(p => p.PropertyType.GetGenericArguments().Any())
@@ -201,7 +199,7 @@ namespace MarsUndiscovered.Game.Components
             var factoryName = $"{typeof(T).Name}Factory";
             
             // use reflection to look up property called factoryName
-            var factory = (ICommandFactory<T>)this.GetType().GetProperty(factoryName)?.GetValue(this);
+            var factory = (ICommandFactory<T>)GetType().GetProperty(factoryName)?.GetValue(this);
             
             if (factory == null)
             {

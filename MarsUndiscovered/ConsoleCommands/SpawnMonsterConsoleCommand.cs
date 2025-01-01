@@ -11,10 +11,6 @@ namespace MarsUndiscovered.ConsoleCommands
     {
         public IGameWorldConsoleCommandEndpoint GameWorldConsoleCommandEndpoint { get; set; }
 
-        public SpawnMonsterConsoleCommand()
-        {
-        }
-
         public override void Execute(ConsoleCommand consoleCommand)
         {
             if (consoleCommand.Params.Any())
