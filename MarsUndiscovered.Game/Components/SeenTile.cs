@@ -1,10 +1,7 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
 using GoRogue.GameFramework;
-
 using MarsUndiscovered.Game.Components.SaveData;
-
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 

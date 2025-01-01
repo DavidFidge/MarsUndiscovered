@@ -31,7 +31,7 @@ namespace MarsUndiscovered.Game.Components
             return genericArticle ? $"{GenericArticle} {Name.ToLower()}" : $"{SpecificArticle} {Name.ToLower()}";
         }
         
-        public bool IsDead { get; set; } = false;
+        public bool IsDead { get; set; }
         public string IsDeadMessage { get; set; }
         public int Health { get; set; }
         public int MaxHealth { get; set; }

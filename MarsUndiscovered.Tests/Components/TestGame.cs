@@ -1,10 +1,8 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.Services;
-using MediatR;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,14 +11,12 @@ namespace MarsUndiscovered.Tests.Components;
 
 public class TestGame : IGame
 {
-    public Task<Unit> Handle(QuitToDesktopRequest request, CancellationToken cancellationToken)
+    public void Handle(QuitToDesktopRequest request)
     {
-        return Unit.Task;
     }
 
-    public Task<Unit> Handle(ToggleFullScreenRequest request, CancellationToken cancellationToken)
+    public void Handle(ToggleFullScreenRequest request)
     {
-        return Unit.Task;
     }
 
     public void Dispose()

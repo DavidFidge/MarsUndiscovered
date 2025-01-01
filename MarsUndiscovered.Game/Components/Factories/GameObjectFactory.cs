@@ -1,11 +1,8 @@
 using Castle.MicroKernel;
 using Castle.Windsor;
-
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
-
 using GoRogue.GameFramework;
-
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;
 
@@ -23,7 +20,7 @@ namespace MarsUndiscovered.Game.Components.Factories
             _gameWorld = gameWorld;
         }
 
-        public uint LastId { get; private set; } = 0;
+        public uint LastId { get; private set; }
         public IDictionary<uint, IGameObject> GameObjects { get; } = new Dictionary<uint, IGameObject>();
 
         private uint GetNextId()

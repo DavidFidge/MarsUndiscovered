@@ -1,9 +1,7 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;
-
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Components
@@ -111,7 +109,7 @@ namespace MarsUndiscovered.Game.Components
         {
             var memento = new Memento<MapExitSaveData>(new MapExitSaveData());
 
-            base.PopulateSaveState(memento.State);
+            PopulateSaveState(memento.State);
 
             memento.State.DestinationId = Destination.ID;
             memento.State.LandingPosition = LandingPosition;
@@ -122,7 +120,7 @@ namespace MarsUndiscovered.Game.Components
 
         public void SetLoadState(IMemento<MapExitSaveData> memento)
         {
-            base.PopulateLoadState(memento.State);
+            PopulateLoadState(memento.State);
 
             LandingPosition = memento.State.LandingPosition;
             Direction = memento.State.Direction;

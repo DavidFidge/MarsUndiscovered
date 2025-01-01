@@ -1,14 +1,12 @@
 ﻿using System.Threading;
-
-using MarsUndiscovered.Messages;
-using MarsUndiscovered.Messages.Console;
-using MarsUndiscovered.UserInterface.Data;
-using MarsUndiscovered.UserInterface.ViewModels;
-
 using FrigidRogue.MonoGame.Core.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Messages;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.Messages.Console;
+using MarsUndiscovered.UserInterface.Data;
+using MarsUndiscovered.UserInterface.ViewModels;
 using NSubstitute;
 
 namespace MarsUndiscovered.Tests.ViewModels
@@ -48,7 +46,7 @@ namespace MarsUndiscovered.Tests.ViewModels
 
             // Act
             _consoleViewModel.Data.Command = "Test";
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             // Assert
             Assert.AreEqual(1, _consoleViewModel.Data.LastCommands.Count);
@@ -68,7 +66,7 @@ namespace MarsUndiscovered.Tests.ViewModels
 
             // Act
             _consoleViewModel.Data.Command = "Test";
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             // Assert
             Assert.AreEqual(1, _consoleViewModel.Data.LastCommands.Count);
@@ -89,7 +87,7 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Act
             _consoleViewModel.Data.Command = "Test";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             // Assert
             _consoleViewModel.Mediator
@@ -108,7 +106,7 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Act
             _consoleViewModel.Data.Command = "Test";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             // Assert
             Assert.AreEqual(String.Empty, _consoleViewModel.Data.Command);
@@ -125,7 +123,7 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Act
             _consoleViewModel.Data.Command = "Test";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             // Assert
             _consoleViewModel.Mediator
@@ -141,7 +139,7 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Act
             _consoleViewModel.Data.Command = command;
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             // Assert
             _consoleViewModel.Mediator
@@ -158,7 +156,7 @@ namespace MarsUndiscovered.Tests.ViewModels
             _consoleViewModel.Data.Command = "X";
 
             // Act
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
 
             // Assert
             Assert.AreEqual("X", _consoleViewModel.Data.Command);
@@ -171,7 +169,7 @@ namespace MarsUndiscovered.Tests.ViewModels
             _consoleViewModel.Data.Command = "X";
 
             // Act
-            _consoleViewModel.Handle(new RecallConsoleHistoryForwardRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryForwardRequest());
 
             // Assert
             Assert.AreEqual("X", _consoleViewModel.Data.Command);
@@ -183,12 +181,12 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Arrange
             _consoleViewModel.Data.Command = "History1";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             _consoleViewModel.Data.Command = "X";
 
             // Act
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
 
             // Assert
             Assert.AreEqual("History1", _consoleViewModel.Data.Command);
@@ -200,13 +198,13 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Arrange
             _consoleViewModel.Data.Command = "History1";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             _consoleViewModel.Data.Command = "X";
 
             // Act
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
 
             // Assert
             Assert.AreEqual("History1", _consoleViewModel.Data.Command);
@@ -218,18 +216,18 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Arrange
             _consoleViewModel.Data.Command = "History1";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             _consoleViewModel.Data.Command = "History2";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             _consoleViewModel.Data.Command = "X";
 
             // Act
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
 
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
 
             // Assert
             Assert.AreEqual("History1", _consoleViewModel.Data.Command);
@@ -241,18 +239,18 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Arrange
             _consoleViewModel.Data.Command = "History1";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             _consoleViewModel.Data.Command = "History2";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             _consoleViewModel.Data.Command = "X";
 
             // Act
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
-            _consoleViewModel.Handle(new RecallConsoleHistoryForwardRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
+            _consoleViewModel.Handle(new RecallConsoleHistoryForwardRequest());
 
             // Assert
             Assert.AreEqual("History2", _consoleViewModel.Data.Command);
@@ -264,13 +262,13 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Arrange
             _consoleViewModel.Data.Command = "History1";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             _consoleViewModel.Data.Command = "X";
 
             // Act
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
-            _consoleViewModel.Handle(new RecallConsoleHistoryForwardRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
+            _consoleViewModel.Handle(new RecallConsoleHistoryForwardRequest());
 
             // Assert
             Assert.AreEqual(String.Empty, _consoleViewModel.Data.Command);
@@ -282,14 +280,14 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Arrange
             _consoleViewModel.Data.Command = "History1";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             _consoleViewModel.Data.Command = "X";
 
             // Act
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
-            _consoleViewModel.Handle(new RecallConsoleHistoryForwardRequest(), new CancellationToken());
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
+            _consoleViewModel.Handle(new RecallConsoleHistoryForwardRequest());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
 
             // Assert
             Assert.AreEqual("History1", _consoleViewModel.Data.Command);
@@ -301,24 +299,24 @@ namespace MarsUndiscovered.Tests.ViewModels
             // Arrange
             _consoleViewModel.Data.Command = "History1";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             _consoleViewModel.Data.Command = "History2";
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
 
-            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new ExecuteConsoleCommandRequest());
 
             // Act and Assert
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
             Assert.AreEqual("History2", _consoleViewModel.Data.Command);
 
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
             Assert.AreEqual("History2", _consoleViewModel.Data.Command);
 
-            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest(), new CancellationToken());
+            _consoleViewModel.Handle(new RecallConsoleHistoryBackRequest());
             Assert.AreEqual("History1", _consoleViewModel.Data.Command);
         }
     }

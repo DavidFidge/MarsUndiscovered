@@ -1,5 +1,5 @@
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using MarsUndiscovered.Game.Components;
-using MediatR;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 

@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using MarsUndiscovered.Game.Components;
 using NSubstitute;
+
 #pragma warning disable CS4014
 
 namespace MarsUndiscovered.Tests.Components.MorgueTests;

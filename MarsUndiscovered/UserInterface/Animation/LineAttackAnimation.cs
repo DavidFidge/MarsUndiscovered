@@ -32,7 +32,7 @@ namespace MarsUndiscovered.UserInterface.Animation
                 
                 foreach (var point in _path.Skip(1))
                 {
-                    mapViewModel.AnimateTile(point, (mapTileEntity) => mapTileEntity.SetLineAttack(direction));
+                    mapViewModel.AnimateTile(point, mapTileEntity => mapTileEntity.SetLineAttack(direction));
                 }
             }
             else

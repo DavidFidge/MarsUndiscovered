@@ -6,7 +6,6 @@ using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
-
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Graphics;
@@ -16,7 +15,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-
 using Point = SadRogue.Primitives.Point;
 using Rectangle = SadRogue.Primitives.Rectangle;
 
@@ -351,7 +349,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             if (door != null && !door.IsOpen)
             {
-                _terrainTiles[point].SetDoor(((Door)door).DoorType);
+                _terrainTiles[point].SetDoor(door.DoorType);
                 return;
             }
 

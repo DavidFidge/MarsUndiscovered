@@ -1,20 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-
 using Castle.Facilities.TypedFactory;
-
-using MarsUndiscovered.Components;
-using MarsUndiscovered.Graphics;
-using MarsUndiscovered.Interfaces;
-using MarsUndiscovered.UserInterface.Input;
-using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
-using MarsUndiscovered.UserInterface.ViewModels;
-using MarsUndiscovered.UserInterface.Views;
-
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Graphics.Map;
@@ -23,10 +12,15 @@ using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
 using FrigidRogue.MonoGame.Core.UserInterface;
 using FrigidRogue.MonoGame.Core.View.Interfaces;
-
 using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
-
+using MarsUndiscovered.Components;
+using MarsUndiscovered.Graphics;
+using MarsUndiscovered.Interfaces;
+using MarsUndiscovered.UserInterface.Input;
+using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
+using MarsUndiscovered.UserInterface.ViewModels;
+using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Extensions.Configuration;
 
 namespace MarsUndiscovered.Installers

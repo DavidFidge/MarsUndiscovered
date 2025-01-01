@@ -1,6 +1,5 @@
 ﻿using GoRogue.SenseMapping;
 using GoRogue.SenseMapping.Sources;
-using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;

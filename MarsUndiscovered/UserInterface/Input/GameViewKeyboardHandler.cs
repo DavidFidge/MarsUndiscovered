@@ -1,8 +1,6 @@
-﻿using MarsUndiscovered.Messages;
-using InputHandlers.Keyboard;
-
+﻿using InputHandlers.Keyboard;
+using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Views;
-
 using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input
@@ -10,9 +8,9 @@ namespace MarsUndiscovered.UserInterface.Input
     public class GameViewKeyboardHandler : BaseGameViewKeyboardHandler
     {
         private readonly Options _options;
-        private Keys? _ctrlArrowKey = null;
+        private Keys? _ctrlArrowKey;
 
-        public GameViewKeyboardHandler(Options options) : base()
+        public GameViewKeyboardHandler(Options options)
         {
             _options = options;
         }

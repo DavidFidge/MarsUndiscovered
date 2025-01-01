@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using FrigidRogue.MonoGame.Core.Components.Mediator;
 using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.ViewMessages

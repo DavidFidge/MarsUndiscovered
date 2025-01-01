@@ -4,13 +4,9 @@ using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
-using MarsUndiscovered.Interfaces;
-
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
-using GoRogue.SenseMapping;
-using GoRogue.SenseMapping.Sources;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
@@ -18,11 +14,12 @@ using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Game.ViewMessages;
+using MarsUndiscovered.Interfaces;
 using Microsoft.Xna.Framework.Input;
-
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
+using Random = System.Random;
 
 namespace MarsUndiscovered.Game.Components
 {
@@ -85,7 +82,7 @@ namespace MarsUndiscovered.Game.Components
         {
             unchecked
             {
-                var seedingRandom = new System.Random();
+                var seedingRandom = new Random();
                 return (ulong)seedingRandom.Next() ^ (ulong)seedingRandom.Next() << 21 ^ (ulong)seedingRandom.Next() << 42;
             }
         }

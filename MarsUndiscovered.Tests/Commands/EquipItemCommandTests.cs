@@ -57,7 +57,7 @@ namespace MarsUndiscovered.Tests.Commands
 
             // Assert
             Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
-            Assert.AreEqual($"Cannot equip this type of item", result.Messages[0]);
+            Assert.AreEqual("Cannot equip this type of item", result.Messages[0]);
         }
 
         [TestMethod]

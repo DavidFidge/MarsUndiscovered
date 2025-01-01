@@ -4,11 +4,8 @@ using GoRogue.Random;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
-using MarsUndiscovered.Game.Extensions;
 using NGenerics.Extensions;
-
 using SadRogue.Primitives;
-using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
@@ -246,7 +243,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Act
             var oldRandom = GlobalRandom.DefaultRNG;
-            GlobalRandom.DefaultRNG = new KnownSeriesRandom(new int[] { 3, 6, 2, 4 });
+            GlobalRandom.DefaultRNG = new KnownSeriesRandom(new[] { 3, 6, 2, 4 });
 
             var result1 = monster1.NextTurn(_gameWorld.CommandCollection).ToList();
             var result2 = monster2.NextTurn(_gameWorld.CommandCollection).ToList();
@@ -336,7 +333,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            GlobalRandom.DefaultRNG = new KnownSeriesRandom(new int[] { 2, 0 });
+            GlobalRandom.DefaultRNG = new KnownSeriesRandom(new[] { 2, 0 });
             var result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
 
             // Assert
@@ -345,7 +342,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Map with Path");
-            monster.CurrentMap.WalkabilityView.AddToStringBuilderWithPathGrid(stringBuilder, monster.GetWanderPath(), 1, (obj) => obj ? "." : "#");
+            monster.CurrentMap.WalkabilityView.AddToStringBuilderWithPathGrid(stringBuilder, monster.GetWanderPath(), 1, obj => obj ? "." : "#");
             Console.Write(stringBuilder.ToString());
 
             var path = monster.GetWanderPath();
@@ -401,7 +398,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             monster.ResetFieldOfViewAndSeenTiles();
             
             var oldRandom = GlobalRandom.DefaultRNG;
-            GlobalRandom.DefaultRNG = new KnownSeriesRandom(new int[] { 2, 1 });
+            GlobalRandom.DefaultRNG = new KnownSeriesRandom(new[] { 2, 1 });
             var result = monster.NextTurn(_gameWorld.CommandCollection).ToList();
             monster.Position = ((MoveCommand)result[0]).FromTo.Item2;
 
@@ -427,7 +424,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Map with Path");
-            monster.CurrentMap.WalkabilityView.AddToStringBuilderWithPathGrid(stringBuilder, monster.GetWanderPath(), 1, (obj) => obj ? "." : "#");
+            monster.CurrentMap.WalkabilityView.AddToStringBuilderWithPathGrid(stringBuilder, monster.GetWanderPath(), 1, obj => obj ? "." : "#");
             Console.Write(stringBuilder.ToString());
 
             var path = monster.GetWanderPath();

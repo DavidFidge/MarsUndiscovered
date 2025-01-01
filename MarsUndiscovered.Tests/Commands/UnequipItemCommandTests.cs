@@ -67,7 +67,7 @@ namespace MarsUndiscovered.Tests.Commands
             // Assert
             Assert.AreEqual(CommandResultEnum.NoMove, result.Result);
             Assert.IsNull(_gameWorld.Inventory.EquippedWeapon);
-            Assert.AreEqual($"Item is already unequipped", result.Messages[0]);
+            Assert.AreEqual("Item is already unequipped", result.Messages[0]);
         }
     }
 }

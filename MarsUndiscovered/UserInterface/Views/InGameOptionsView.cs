@@ -1,13 +1,10 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Components.Mediator;
+using FrigidRogue.MonoGame.Core.View.Extensions;
+using GeonBit.UI.Entities;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
-
-using FrigidRogue.MonoGame.Core.View.Extensions;
-
-using GeonBit.UI.Entities;
-using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -60,34 +57,34 @@ namespace MarsUndiscovered.UserInterface.Views
                 .AddTo(_inGameOptionsMenuPanel);
         }
 
-        public Task<Unit> Handle(OpenSaveGameViewRequest request, CancellationToken cancellationToken)
+        public void Handle(OpenSaveGameViewRequest request)
         {
-            return ShowChildView(_saveGameView, _inGameOptionsMenuPanel);
+            ShowChildView(_saveGameView, _inGameOptionsMenuPanel);
         }
 
-        public Task<Unit> Handle(CloseSaveGameViewRequest request, CancellationToken cancellationToken)
+        public void Handle(CloseSaveGameViewRequest request)
         {
-            return HideChildView(_saveGameView, _inGameOptionsMenuPanel);
+            HideChildView(_saveGameView, _inGameOptionsMenuPanel);
         }
 
-        public Task<Unit> Handle(OpenInGameVideoOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(OpenInGameVideoOptionsRequest request)
         {
-            return ShowChildViewWithRootSwap(_videoOptionsView, _inGameOptionsMenuPanel);
+            ShowChildViewWithRootSwap(_videoOptionsView, _inGameOptionsMenuPanel);
         }
 
-        public Task<Unit> Handle(CloseInGameVideoOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(CloseInGameVideoOptionsRequest request)
         {
-            return HideChildView(_videoOptionsView, _inGameOptionsMenuPanel);
+            HideChildView(_videoOptionsView, _inGameOptionsMenuPanel);
         }
 
-        public Task<Unit> Handle(OpenInGameGameOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(OpenInGameGameOptionsRequest request)
         {
-            return ShowChildViewWithRootSwap(_gameOptionsView, _inGameOptionsMenuPanel);
+            ShowChildViewWithRootSwap(_gameOptionsView, _inGameOptionsMenuPanel);
         }
 
-        public Task<Unit> Handle(CloseInGameGameOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(CloseInGameGameOptionsRequest request)
         {
-            return HideChildView(_gameOptionsView, _inGameOptionsMenuPanel);
+            HideChildView(_gameOptionsView, _inGameOptionsMenuPanel);
         }
     }
 }

@@ -1,22 +1,17 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.View.Extensions;
-
-using MarsUndiscovered.Messages;
-using MarsUndiscovered.UserInterface.Data;
-using MarsUndiscovered.UserInterface.ViewModels;
-
 using GeonBit.UI.Entities;
-
 using GoRogue.Pathing;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Dto;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.Input;
-
-using MediatR;
-
+using MarsUndiscovered.UserInterface.ViewModels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Sprites;
@@ -82,7 +77,7 @@ namespace MarsUndiscovered.UserInterface.Views
         private readonly Options _options;
         private Path _currentMovePath;
         private bool _isAutoExploring;
-        private double _lastMoveTime = 0;
+        private double _lastMoveTime;
         private double _delayBetweenMove = 50;
         private Queue<RadioCommsItem> _radioCommsItems = new();
         private bool _isWaitingForRadioComms;
@@ -302,7 +297,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 select new
                 {
                     MonsterStatus = monsterStatus,
-                    MonsterPanel = subPanel ?? new MonsterPanel(monsterStatus, this.Assets)
+                    MonsterPanel = subPanel ?? new MonsterPanel(monsterStatus, Assets)
                 }).ToList();
 
             MonsterPanels.Clear();
@@ -487,118 +482,93 @@ namespace MarsUndiscovered.UserInterface.Views
             _isAutoExploring = false;
         }
 
-        public Task<Unit> Handle(OpenInGameOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(OpenInGameOptionsRequest request)
         {
             StopAutoMovement();
             _inGameOptionsView.Show();
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(CloseInGameOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(CloseInGameOptionsRequest request)
         {
             StopAutoMovement();
             _inGameOptionsView.Hide();
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(OpenConsoleRequest request, CancellationToken cancellationToken)
+        public void Handle(OpenConsoleRequest request)
         {
             StopAutoMovement();
             _consoleView.Show();
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(CloseConsoleRequest request, CancellationToken cancellationToken)
+        public void Handle(CloseConsoleRequest request)
         {
             _consoleView.Hide();
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(LeftClickViewRequest request, CancellationToken cancellationToken)
+        public void Handle(LeftClickViewRequest request)
         {
             StopAutoMovement();
             var ray = _gameCamera.GetPointerRay(request.X, request.Y);
             _currentMovePath = _viewModel.GetPathToDestination(ray);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(RightClickViewRequest request, CancellationToken cancellationToken)
+        public void Handle(RightClickViewRequest request)
         {
             StopAutoMovement();
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveUpRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveUpRequest request)
         {
             StopAutoMovement();
             _viewModel.Move(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveDownRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveDownRequest request)
         {
             StopAutoMovement();
             _viewModel.Move(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveLeftRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveLeftRequest request)
         {
             StopAutoMovement();
             _viewModel.Move(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveRightRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveRightRequest request)
         {
             StopAutoMovement();
             _viewModel.Move(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveUpLeftRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveUpLeftRequest request)
         {
             StopAutoMovement();
             _viewModel.Move(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveUpRightRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveUpRightRequest request)
         {
             StopAutoMovement();
             _viewModel.Move(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveDownLeftRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveDownLeftRequest request)
         {
             StopAutoMovement();
             _viewModel.Move(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveDownRightRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveDownRightRequest request)
         {
             StopAutoMovement();
             _viewModel.Move(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveWaitRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveWaitRequest request)
         {
             StopAutoMovement();
             _viewModel.Move(request.Direction);
-
-            return Unit.Task;
         }
 
         protected override void ViewModelChanged()
@@ -680,13 +650,13 @@ namespace MarsUndiscovered.UserInterface.Views
             }
         }
 
-        public Task Handle(MouseHoverViewNotification notification, CancellationToken cancellationToken)
+        public void Handle(MouseHoverViewNotification notification)
         {
             if (!IsVisible)
-                return Unit.Task;
+                return;
             
             if (!IsVisible)
-                return Unit.Task;
+                return;
 
             var ray = _gameCamera.GetPointerRay(notification.X, notification.Y);
 
@@ -716,8 +686,6 @@ namespace MarsUndiscovered.UserInterface.Views
             }
 
             _viewModel.MapViewModel.ShowHover(ray);
-
-            return Unit.Task;
         }
 
         public override void Update()
@@ -762,10 +730,10 @@ namespace MarsUndiscovered.UserInterface.Views
             }
         }
 
-        public Task<Unit> Handle(OpenGameInventoryRequest request, CancellationToken cancellationToken)
+        public void Handle(OpenGameInventoryRequest request)
         {
             if (!IsVisible)
-                return Unit.Task;
+                return;
             
             StopAutoMovement();
 
@@ -774,54 +742,46 @@ namespace MarsUndiscovered.UserInterface.Views
                 
             _inventoryGameView.SetInventoryMode(request.InventoryMode);
             _inventoryGameView.Show();
-            
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(CloseGameInventoryRequest request, CancellationToken cancellationToken)
+        public void Handle(CloseGameInventoryRequest request)
         {
             if (!IsVisible)
-                return Unit.Task;
+                return;
 
             HotBarPanel.Offset(0, 0);
             _inventoryGameView.Hide();
-            
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(AutoExploreRequest request, CancellationToken cancellationToken)
+        public void Handle(AutoExploreRequest request)
         {
             if (!IsVisible)
-                return Unit.Task;
+                return;
             
             _isAutoExploring = true;
-            return Unit.Task;
         }
         
-        public Task<Unit> Handle(EndRadioCommsRequest request, CancellationToken cancellationToken)
+        public void Handle(EndRadioCommsRequest request)
         {
             ProcessNextRadioComm();
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(WizardModeNextLevelRequest request, CancellationToken cancellationToken)
+        public void Handle(WizardModeNextLevelRequest request)
         {
             _viewModel.ForceNextLevel();
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(WizardModePreviousLevelRequest request, CancellationToken cancellationToken)
+        public void Handle(WizardModePreviousLevelRequest request)
         {
             _viewModel.ForcePreviousLevel();
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(HotBarItemRequest request, CancellationToken cancellationToken)
+        public void Handle(HotBarItemRequest request)
         {
             var hotBarPanel = HotBarPanelItems.First(i => i.Key == request.Key);
 
             if (hotBarPanel.InventoryItem == null)
-                return Unit.Task;
+                return;
             
             if (hotBarPanel.InventoryItem.CanRangeAttack)
             {
@@ -831,8 +791,6 @@ namespace MarsUndiscovered.UserInterface.Views
             {
                 _viewModel.ApplyRequest(request.Key);
             }
-            
-            return Unit.Task;
         }
 
         private void EnterRangeAttackMode(InventoryItem inventoryItem)
@@ -845,7 +803,7 @@ namespace MarsUndiscovered.UserInterface.Views
             Mediator.Send(new SquareChoiceNextTargetRequest());
         }
 
-        public Task<Unit> Handle(RefreshHotBarRequest request, CancellationToken cancellationToken)
+        public void Handle(RefreshHotBarRequest request)
         {
             if (request.ItemId != null)
             {
@@ -868,8 +826,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 // Full refresh
                 RefreshHotBars();
             }
-            
-            return Unit.Task;
         }
 
         private void RefreshHotBars()
@@ -888,17 +844,15 @@ namespace MarsUndiscovered.UserInterface.Views
             }
         }
 
-        public Task<Unit> Handle(LeftClickSquareChoiceGameViewRequest request, CancellationToken cancellationToken)
+        public void Handle(LeftClickSquareChoiceGameViewRequest request)
         {
             var ray = _gameCamera.GetPointerRay(request.X, request.Y);
             var point = _viewModel.MapViewModel.MousePointerRayToMapPosition(ray);
 
-            DoRangedAttack(cancellationToken, point);
-            
-            return Unit.Task;
+            DoRangedAttack(point);
         }
 
-        private void DoRangedAttack(CancellationToken cancellationToken, Point? point)
+        private void DoRangedAttack(Point? point)
         {
             if (point != null)
             {
@@ -906,31 +860,27 @@ namespace MarsUndiscovered.UserInterface.Views
 
                 _viewModel.MapViewModel.ClearHover();
 
-                Mediator.Send(new CloseSquareChoiceRequest(), cancellationToken);
+                Mediator.Send(new CloseSquareChoiceRequest());
             }
         }
 
-        public Task<Unit> Handle(CloseSquareChoiceRequest request, CancellationToken cancellationToken)
+        public void Handle(CloseSquareChoiceRequest request)
         {
             StatusParagraph.Text = String.Empty;
             GameInputService.RevertInputUpToAndIncluding(_squareChoiceGameViewMouseHandler,
                 _squareChoiceGameViewKeyboardHandler);
 
             _selectedItem = null;
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(SquareChoiceMouseHoverViewRequest request, CancellationToken cancellationToken)
+        public void Handle(SquareChoiceMouseHoverViewRequest request)
         {  
             var ray = _gameCamera.GetPointerRay(request.X, request.Y);
 
             _viewModel.MapViewModel.ShowHoverForSquareChoice(ray);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(RangeAttackEquippedWeaponRequest request, CancellationToken cancellationToken)
+        public void Handle(RangeAttackEquippedWeaponRequest request)
         {
             var equippedWeapon = _viewModel.GetEquippedWeapon();
 
@@ -938,19 +888,17 @@ namespace MarsUndiscovered.UserInterface.Views
             {
                 _viewModel.MessageStatus.AddMessages("No weapon equipped");
                 
-                return Unit.Task;
+                return;
             }
 
             if (equippedWeapon.CanRangeAttack == false)
             {
                 _viewModel.MessageStatus.AddMessages("Equipped weapon cannot perform a ranged attack");
 
-                return Unit.Task;
+                return;
             }
             
             EnterRangeAttackMode(equippedWeapon);
-            
-            return Unit.Task;
         }
 
         private void MoveSquareChoice(Direction requestDirection)
@@ -958,89 +906,71 @@ namespace MarsUndiscovered.UserInterface.Views
             _viewModel.MoveSquareChoice(requestDirection); 
         }
 
-        public Task<Unit> Handle(MoveSquareChoiceSelectionDownRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveSquareChoiceSelectionDownRequest request)
         {
             MoveSquareChoice(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveSquareChoiceSelectionDownLeftRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveSquareChoiceSelectionDownLeftRequest request)
         {
             MoveSquareChoice(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveSquareChoiceSelectionDownRightRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveSquareChoiceSelectionDownRightRequest request)
         {
             MoveSquareChoice(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveSquareChoiceSelectionLeftRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveSquareChoiceSelectionLeftRequest request)
         {
             MoveSquareChoice(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveSquareChoiceSelectionRightRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveSquareChoiceSelectionRightRequest request)
         {
             MoveSquareChoice(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveSquareChoiceSelectionUpRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveSquareChoiceSelectionUpRequest request)
         {
             MoveSquareChoice(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveSquareChoiceSelectionUpLeftRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveSquareChoiceSelectionUpLeftRequest request)
         {
             MoveSquareChoice(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(MoveSquareChoiceSelectionUpRightRequest request, CancellationToken cancellationToken)
+        public void Handle(MoveSquareChoiceSelectionUpRightRequest request)
         {
             MoveSquareChoice(request.Direction);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(SquareChoiceSelectSquareRequest request, CancellationToken cancellationToken)
+        public void Handle(SquareChoiceSelectSquareRequest request)
         {
             var point = _viewModel.MapViewModel.MouseHoverPath?.End;
-            DoRangedAttack(cancellationToken, point);
+            DoRangedAttack(point);
             _viewModel.RetainedSquareChoiceMonsterId = _viewModel.CurrentSquareChoiceMonsterId;
             _viewModel.CurrentSquareChoiceMonsterId = null;
-            
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(SquareChoiceNextTargetRequest request, CancellationToken cancellationToken)
+        public void Handle(SquareChoiceNextTargetRequest request)
         {
-            return GetNextSquareChoice(false);
+            GetNextSquareChoice(false);
         }
         
-        public Task<Unit> Handle(SquareChoicePreviousTargetRequest request, CancellationToken cancellationToken)
+        public void Handle(SquareChoicePreviousTargetRequest request)
         {
-            return GetNextSquareChoice(true);
+            GetNextSquareChoice(true);
         }
 
-        private Task<Unit> GetNextSquareChoice(bool reverse)
+        private void GetNextSquareChoice(bool reverse)
         {
             if (_viewModel.CurrentSquareChoiceMonsterId == null)
                 _viewModel.CurrentSquareChoiceMonsterId = _viewModel.RetainedSquareChoiceMonsterId;
             
             if (!MonsterPanels.Any())
-                return Unit.Task;
+                return;
             
             var monsterPanels = MonsterPanels.ToList();
             
@@ -1063,12 +993,10 @@ namespace MarsUndiscovered.UserInterface.Views
             var panel = panels.FirstOrDefault() ?? monsterPanels.FirstOrDefault();
 
             if (panel == null)
-                return Unit.Task;
+                return;
 
             _viewModel.CurrentSquareChoiceMonsterId = panel.ActorStatus.ID;
             _viewModel.MapViewModel.ShowHoverForSquareChoice(panel.ActorStatus.Position);
-            
-            return Unit.Task;
         }
     }
 }

@@ -19,7 +19,7 @@ public class InventoryItemPanel : Panel
     private InventoryItem _inventoryItem;
     private ColoredRectangle _coloredRectangle;
     private Color _backgroundColour;
-    private bool _hasFocus = false;
+    private bool _hasFocus;
     private Image _itemImage;
 
     public InventoryItemPanel(IInventoryView inventoryView, IAssets assets)

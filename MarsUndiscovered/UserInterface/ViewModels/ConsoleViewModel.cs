@@ -1,15 +1,11 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
-
-using MarsUndiscovered.Messages;
-using MarsUndiscovered.Messages.Console;
-using MarsUndiscovered.UserInterface.Data;
-
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Interfaces.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.UserInterface;
-
-using MediatR;
+using MarsUndiscovered.Messages;
+using MarsUndiscovered.Messages.Console;
+using MarsUndiscovered.UserInterface.Data;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -27,7 +23,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _consoleCommandServiceFactory = consoleCommandServiceFactory;
         }
 
-        public Task<Unit> Handle(ExecuteConsoleCommandRequest request, CancellationToken cancellationToken)
+        public void Handle(ExecuteConsoleCommandRequest request)
         {
             if (!String.IsNullOrEmpty(Data.Command))
             {
@@ -54,11 +50,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
                 Notify();
             }
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(RecallConsoleHistoryBackRequest request, CancellationToken cancellationToken)
+        public void Handle(RecallConsoleHistoryBackRequest request)
         {
             if (_historyRecallItem == null)
             {
@@ -75,11 +69,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 Data.Command = _historyRecallItem.Value.ToString();
                 Notify();
             }
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(RecallConsoleHistoryForwardRequest request, CancellationToken cancellationToken)
+        public void Handle(RecallConsoleHistoryForwardRequest request)
         {
             if (_historyRecallItem != null)
             {
@@ -96,8 +88,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
                 Notify();
             }
-
-            return Unit.Task;
         }
     }
 }

@@ -1,16 +1,11 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
-
+using FrigidRogue.MonoGame.Core.Components.Mediator;
+using FrigidRogue.MonoGame.Core.View.Extensions;
+using GeonBit.UI.Entities;
+using GeonBit.UI.Entities.TextValidators;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
-
-using FrigidRogue.MonoGame.Core.View.Extensions;
-
-using GeonBit.UI.Entities;
-using GeonBit.UI.Entities.TextValidators;
-
-using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -61,12 +56,10 @@ namespace MarsUndiscovered.UserInterface.Views
                 .AddTo(_customGameSeedPanel);
         }
 
-        public Task<Unit> Handle(CustomGameSeedEnterKeyRequest request, CancellationToken cancellationToken)
+        public void Handle(CustomGameSeedEnterKeyRequest request)
         {
             if (_customSeed.Value.Length > 0)
                 _startGameButton.OnClick.Invoke(_startGameButton);
-
-            return Unit.Task;
         }
 
         public override void Show()

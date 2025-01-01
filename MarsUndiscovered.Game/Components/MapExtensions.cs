@@ -1,5 +1,4 @@
 using GoRogue.GameFramework;
-
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
@@ -22,7 +21,7 @@ namespace MarsUndiscovered.Game.Components
         public static IList<T> GetTerrainAround<T>(this Map map, Point position, AdjacencyRule adjacencyRule) where T : Terrain
         {
             return adjacencyRule.Neighbors(position)
-                .Where(p => map.Bounds().Contains((Point)p))
+                .Where(p => map.Bounds().Contains(p))
                 .Select(map.GetTerrainAt<T>)
                 .Where(s => s != null)
                 .ToList();

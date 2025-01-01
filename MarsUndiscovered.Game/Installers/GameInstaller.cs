@@ -1,13 +1,8 @@
 ﻿using System.Reflection;
-
 using Castle.Facilities.TypedFactory;
-
-using MarsUndiscovered.Interfaces;
-
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.WaveFunctionCollapse;
@@ -18,6 +13,7 @@ using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Components.Maps;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Installers
 {

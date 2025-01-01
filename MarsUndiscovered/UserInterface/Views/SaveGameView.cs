@@ -1,17 +1,12 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.Services;
-
+using FrigidRogue.MonoGame.Core.View.Extensions;
+using GeonBit.UI.Entities;
+using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
-
-using FrigidRogue.MonoGame.Core.View.Extensions;
-
-using GeonBit.UI.Entities;
-
-using MarsUndiscovered.Interfaces;
-using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -89,11 +84,11 @@ namespace MarsUndiscovered.UserInterface.Views
             _saveGameName.Value = _gameWorldEndpoint.GetSeed();
         }
 
-        public Task<Unit> Handle(SaveGameRequest request, CancellationToken cancellationToken)
+        public void Handle(SaveGameRequest request)
         {
             // We don't want the 's' key to save the game when use is entering a save game name
             if (request.FromHotkey && _saveGameName.IsFocused)
-                return Unit.Task;
+                return;
 
             if (_saveGameName.Value != null)
             {
@@ -115,8 +110,6 @@ namespace MarsUndiscovered.UserInterface.Views
                     Mediator.Send(new CloseSaveGameViewRequest());
                 }
             }
-
-            return Unit.Task;
         }
     }
 }

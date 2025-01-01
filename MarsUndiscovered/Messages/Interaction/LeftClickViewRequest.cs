@@ -1,5 +1,4 @@
-﻿using MediatR;
-
+﻿
 namespace MarsUndiscovered.Messages
 {
     public class LeftClickViewRequest : BaseClickViewRequest

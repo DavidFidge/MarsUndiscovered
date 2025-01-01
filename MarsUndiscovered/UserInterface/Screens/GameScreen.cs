@@ -1,10 +1,8 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
-using MarsUndiscovered.UserInterface.Views;
-
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.View;
 using MarsUndiscovered.Messages;
-using MediatR;
+using MarsUndiscovered.UserInterface.Views;
 
 namespace MarsUndiscovered.UserInterface.Screens
 {
@@ -19,22 +17,18 @@ namespace MarsUndiscovered.UserInterface.Screens
             _gameView = gameView;
         }
 
-        public Task<Unit> Handle(NewGameRequest request, CancellationToken cancellationToken)
+        public void Handle(NewGameRequest request)
         {
             UserInterface.ShowScreen(this);
 
             _gameView.NewGame(request.Seed);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(LoadGameRequest request, CancellationToken cancellationToken)
+        public void Handle(LoadGameRequest request)
         {
             UserInterface.ShowScreen(this);
 
             _gameView.LoadGame(request.Filename);
-
-            return Unit.Task;
         }
     }
 }

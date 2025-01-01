@@ -1,5 +1,4 @@
 using FrigidRogue.MonoGame.Core.Components;
-
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands

@@ -1,16 +1,12 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
-
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.View.Extensions;
-
+using GeonBit.UI.Entities;
+using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
-
-using GeonBit.UI.Entities;
-using MarsUndiscovered.Game.Components;
-using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Views
 {
@@ -88,36 +84,30 @@ namespace MarsUndiscovered.UserInterface.Views
             _viewModel.BuildWorld(new WorldGenerationTypeParams(MapType.Outdoor));
         }
 
-        public Task<Unit> Handle(BuildWorldRequest request, CancellationToken cancellationToken)
+        public void Handle(BuildWorldRequest request)
         {
             _viewModel.BuildWorld(request.WorldGenerationTypeParams);
             UpdateMapRenderTarget(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
-
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(OpenWorldBuilderOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(OpenWorldBuilderOptionsRequest request)
         {
             _worldBuilderOptionsView.Show();
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(CloseWorldBuilderOptionsRequest request, CancellationToken cancellationToken)
+        public void Handle(CloseWorldBuilderOptionsRequest request)
         {
             _worldBuilderOptionsView.Hide();
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(NextWorldBuilderStepRequest request, CancellationToken cancellationToken)
+        public void Handle(NextWorldBuilderStepRequest request)
         {
             _viewModel.NextStep();
-            return Unit.Task;
         }
 
-        public Task<Unit> Handle(PreviousWorldBuilderStepRequest request, CancellationToken cancellationToken)
+        public void Handle(PreviousWorldBuilderStepRequest request)
         {
             _viewModel.PreviousStep();
-            return Unit.Task;
         }
     }
 }

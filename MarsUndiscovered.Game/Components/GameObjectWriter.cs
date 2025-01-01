@@ -1,16 +1,13 @@
 ﻿using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text;
-
 using GoRogue.FOV;
 using GoRogue.Pathing;
 using Microsoft.Xna.Framework.Graphics;
-using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using Serilog;
 using Serilog.Events;
-
 using Color = Microsoft.Xna.Framework.Color;
+using Path = System.IO.Path;
 
 namespace MarsUndiscovered.Game.Components
 {
@@ -64,11 +61,11 @@ namespace MarsUndiscovered.Game.Components
 
         public static void WriteToTempFile(string filename, StringBuilder stringBuilder)
         {
-            var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), filename);
+            var path = Path.Combine(Path.GetTempPath(), filename);
 
             Directory.CreateDirectory(path);
             
-            var fileName = System.IO.Path.Combine(path,
+            var fileName = Path.Combine(path,
                 $"{DateTime.Now.ToString("yyyy-MM-dd-hhmmss-FFFFFF")}-{filename}.txt");
 
             File.WriteAllText(fileName, stringBuilder.ToString());

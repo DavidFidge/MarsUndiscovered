@@ -52,12 +52,12 @@ public class PrefabMapGeneratorTests : BaseGameWorldIntegrationTests
         // #####
         // #.#.#
         // #####
-        var intSeries = new int[] { 0, 0, 0, 0, 0, 2, 0 };
+        var intSeries = new[] { 0, 0, 0, 0, 0, 2, 0 };
         var rngIntSeries = new int[1000];
         intSeries.CopyTo(rngIntSeries, 0);
         
         var knownSeriesRandom = new KnownSeriesRandom(rngIntSeries,
-            boolSeries: new bool[] { false },
+            boolSeries: new[] { false },
             ulongSeries: new ulong[] { 0 });
         
         GlobalRandom.DefaultRNG = knownSeriesRandom;

@@ -1,12 +1,8 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
-using MarsUndiscovered.UserInterface.Data;
-
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 using FrigidRogue.MonoGame.Core.UserInterface;
-
-using MediatR;
+using MarsUndiscovered.UserInterface.Data;
 
 namespace MarsUndiscovered.UserInterface.ViewModels
 {
@@ -24,13 +20,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             Data = _gameOptionsStore.GetFromStore<GameOptionsData>()?.State ?? new GameOptionsData();
         }
 
-        public override Task<Unit> Handle(InterfaceRequest<GameOptionsData> request, CancellationToken cancellationToken)
+        public override void Handle(InterfaceRequest<GameOptionsData> request)
         {
-            base.Handle(request, cancellationToken);
+            base.Handle(request);
 
             _gameOptionsStore.SaveToStore(new Memento<GameOptionsData>(Data));
-
-            return Unit.Task;
         }
     }
 }

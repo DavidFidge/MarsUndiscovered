@@ -1,7 +1,4 @@
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Services;
-
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 
@@ -28,7 +25,7 @@ namespace MarsUndiscovered.Game.Commands
             _data.IsNotEquipped = !GameWorld.Inventory.IsEquipped(Item);
             
             if (_data.IsNotEquipped)
-                return Result(CommandResult.NoMove(this, $"Item is already unequipped"));
+                return Result(CommandResult.NoMove(this, "Item is already unequipped"));
 
             GameWorld.Inventory.Unequip(Item);
 

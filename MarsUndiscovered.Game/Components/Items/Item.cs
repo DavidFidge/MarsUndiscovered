@@ -1,6 +1,5 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;
 
@@ -53,7 +52,7 @@ namespace MarsUndiscovered.Game.Components
         {
             var memento = new Memento<ItemSaveData>(new ItemSaveData());
 
-            base.PopulateSaveState(memento.State);
+            PopulateSaveState(memento.State);
 
             memento.State.ItemTypeName = ItemType.Name;
             memento.State.EnchantmentLevel = EnchantmentLevel;
@@ -86,7 +85,7 @@ namespace MarsUndiscovered.Game.Components
 
         public void SetLoadState(IMemento<ItemSaveData> memento)
         {
-            base.PopulateLoadState(memento.State);
+            PopulateLoadState(memento.State);
 
             ItemType = ItemType.ItemTypes[memento.State.ItemTypeName];
             EnchantmentLevel = memento.State.EnchantmentLevel;
@@ -195,13 +194,13 @@ namespace MarsUndiscovered.Game.Components
         public void Enchant()
         {
             EnchantmentLevel++;
-            this.ItemType.RecalculateProperties(this);
+            ItemType.RecalculateProperties(this);
         }
         
         public void Enchant(int enchantmentLevel)
         {
             EnchantmentLevel = enchantmentLevel;
-            this.ItemType.RecalculateProperties(this);
+            ItemType.RecalculateProperties(this);
         }
     }
 }

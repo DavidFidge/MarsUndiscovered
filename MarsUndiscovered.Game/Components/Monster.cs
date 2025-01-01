@@ -1,28 +1,23 @@
-﻿using System.Text;
-
+﻿using System.Diagnostics;
+using System.Text;
 using BehaviourTree;
 using BehaviourTree.FluentBuilder;
-
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
 using GoRogue.FOV;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
-
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
-
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components
@@ -41,7 +36,7 @@ namespace MarsUndiscovered.Game.Components
         public int DetectionRange => Breed.DetectionRange;
 
         public bool FriendlyFireAllies => Breed.FriendlyFireAllies;
-        public bool UseGoalMapWander { get; set; } = false;
+        public bool UseGoalMapWander { get; set; }
 
         public bool CanBeConcussed => Breed.WeaknessToConcuss;
         
@@ -196,7 +191,7 @@ namespace MarsUndiscovered.Game.Components
         {
             var memento = new Memento<MonsterSaveData>(new MonsterSaveData());
 
-            base.PopulateSaveState(memento.State);
+            PopulateSaveState(memento.State);
 
             memento.State.BreedName = Breed.NameWithoutSpaces;
             memento.State.WanderPath = _wanderPath?.Steps.ToList();
@@ -821,7 +816,7 @@ namespace MarsUndiscovered.Game.Components
                 }
             }
             
-            System.Diagnostics.Debug.Assert(currentPathLocation != Point.None);
+            Debug.Assert(currentPathLocation != Point.None);
 
             var nextPointInPath = _wanderPath.GetStepAfterPointWithStart(currentPathLocation);
 
@@ -835,7 +830,7 @@ namespace MarsUndiscovered.Game.Components
 
             if (nextPointInPath == Point.None)
             {
-                System.Diagnostics.Debug.Fail("Could not find a next point in path and path lookup logic did not return Direction.None. This should never happen.");
+                Debug.Fail("Could not find a next point in path and path lookup logic did not return Direction.None. This should never happen.");
                 return Direction.None;
             }
 

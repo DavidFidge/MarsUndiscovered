@@ -1,9 +1,6 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.Extensions;
-using MarsUndiscovered.Interfaces;
-using MarsUndiscovered.UserInterface.Data;
-
 using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
@@ -11,15 +8,13 @@ using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.Services;
 using FrigidRogue.MonoGame.Core.View.Interfaces;
-
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.Input;
-using MediatR;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
 using Serilog;
 
 namespace MarsUndiscovered
@@ -39,9 +34,9 @@ namespace MarsUndiscovered
         private readonly Options _options;
 
         private bool _isExiting;
-        private bool _startNewGameFromCommandLine = false;
-        private bool _startWorldBuilderFromCommandLine = false;
-        private bool _showFps = false;
+        private bool _startNewGameFromCommandLine;
+        private bool _startWorldBuilderFromCommandLine;
+        private bool _showFps;
 
         public CustomGraphicsDeviceManager CustomGraphicsDeviceManager { get; }
         public EffectCollection EffectCollection
@@ -302,22 +297,19 @@ namespace MarsUndiscovered
             }
         }
 
-        public Task<Unit> Handle(QuitToDesktopRequest request, CancellationToken cancellationToken)
+        public void Handle(QuitToDesktopRequest request)
         {
             _isExiting = true;
-            return Unit.Task;
         }
         
-        public Task<Unit> Handle(ToggleFullScreenRequest request, CancellationToken cancellationToken)
+        public void Handle(ToggleFullScreenRequest request)
         {
             CustomGraphicsDeviceManager.ToggleFullScreen();
-            return Unit.Task;
         }
         
-        public Task<Unit> Handle(ToggleFpsRequest request, CancellationToken cancellationToken)
+        public void Handle(ToggleFpsRequest request)
         {
             _showFps = !_showFps;
-            return Unit.Task;
         }
     }
 }

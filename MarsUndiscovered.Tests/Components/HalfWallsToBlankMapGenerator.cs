@@ -1,7 +1,6 @@
 ﻿using GoRogue.GameFramework;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
-using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Interfaces;
 using SadRogue.Primitives.GridViews;
 
@@ -65,7 +64,7 @@ namespace MarsUndiscovered.Tests.Components
 
                 var wallsFloors = arrayView.ToArray();
 
-                Map = MapGenerator.CreateMap(gameWorld, width, height)
+                Map = CreateMap(gameWorld, width, height)
                     .WithTerrain(wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
 
                 Steps = 1;
@@ -85,7 +84,7 @@ namespace MarsUndiscovered.Tests.Components
 
                 var wallsFloors = arrayView.ToArray();
 
-                Map = MapGenerator.CreateMap(gameWorld, width, height)
+                Map = CreateMap(gameWorld, width, height)
                     .WithTerrain(wallsFloors.OfType<Wall>().ToList(), wallsFloors.OfType<Floor>().ToList());
 
                 Steps = 2;

@@ -1,5 +1,5 @@
-﻿using MarsUndiscovered.Graphics;
-using MediatR;
+﻿using FrigidRogue.MonoGame.Core.Components.Mediator;
+using MarsUndiscovered.Graphics;
 
 namespace MarsUndiscovered.Messages
 {

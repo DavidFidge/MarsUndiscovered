@@ -1,16 +1,13 @@
 using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
-
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using Microsoft.Xna.Framework.Input;
-
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 

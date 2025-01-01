@@ -2,7 +2,6 @@
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Interfaces;
-
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 

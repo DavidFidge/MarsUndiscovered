@@ -34,7 +34,7 @@ namespace MarsUndiscovered.Game.Components
         
         public static SpawnItemParams WithRandomEnchantmentLevel(this SpawnItemParams spawnItemParams)
         {
-            var weights = new List<(int item, double weight)>()
+            var weights = new List<(int item, double weight)>
             {
                 (-4, 5),
                 (-3, 20),

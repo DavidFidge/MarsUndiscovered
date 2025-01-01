@@ -4,11 +4,9 @@ using FrigidRogue.MonoGame.Core.Graphics.Quads;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SadRogue.Primitives;
-
 using Point = SadRogue.Primitives.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 

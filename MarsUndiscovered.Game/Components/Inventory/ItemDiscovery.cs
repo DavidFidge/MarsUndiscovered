@@ -7,7 +7,7 @@ namespace MarsUndiscovered.Game.Components
 
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
 
         public static ItemDiscovery ItemDiscoveryDiscovered = new ItemDiscovery

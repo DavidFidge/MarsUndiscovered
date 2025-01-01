@@ -36,7 +36,7 @@ namespace MarsUndiscovered.Game.Components
             var stringBuilder = new StringBuilder();
             
             stringBuilder.AppendLine(
-                $"The contents of this flask must be poured onto an organic object. The nanobots inside will then slip inside under the skin of that organic and enter the blood stream. They will then repair any damaged tissue and break down any foreign object. They will also repair and improve broken DNA, making the organic even healthier than before.");
+                "The contents of this flask must be poured onto an organic object. The nanobots inside will then slip inside under the skin of that organic and enter the blood stream. They will then repair any damaged tissue and break down any foreign object. They will also repair and improve broken DNA, making the organic even healthier than before.");
             
             stringBuilder.AppendLine();
 

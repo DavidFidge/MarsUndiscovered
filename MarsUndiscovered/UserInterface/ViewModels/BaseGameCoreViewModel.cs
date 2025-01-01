@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
@@ -10,10 +11,7 @@ using MarsUndiscovered.Game.ViewMessages;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Animation;
-using MediatR;
-
 using SadRogue.Primitives;
-
 using Point = SadRogue.Primitives.Point;
 using Ray = Microsoft.Xna.Framework.Ray;
 
@@ -89,28 +87,22 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public bool IsAnimating => Animations.Any();
 
-        public Task Handle(EntityTransformChangedNotification notification, CancellationToken cancellationToken)
+        public void Handle(EntityTransformChangedNotification notification)
         {
             if (IsActive)
                 MapViewModel.HandleEntityTransformChanged(notification);
-                
-            return Unit.Task;
         }
 
-        public Task Handle(ToggleShowGoalMapNotification notification, CancellationToken cancellationToken)
+        public void Handle(ToggleShowGoalMapNotification notification)
         {
             if (IsActive)
                 MapViewModel.ToggleShowGoalMap();
-
-            return Unit.Task;
         }
 
-        public Task Handle(MapTileChangedNotification notification, CancellationToken cancellationToken)
+        public void Handle(MapTileChangedNotification notification)
         {
             if (IsActive)
                 MapViewModel.UpdateTile(notification.Point);
-
-            return Unit.Task;
         }
 
         protected abstract void RefreshView();
@@ -141,50 +133,40 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             return Direction.GetDirection(centrePoint, point.Value);
         }
 
-        public Task Handle(RefreshViewNotification notification, CancellationToken cancellationToken)
+        public void Handle(RefreshViewNotification notification)
         {
             if (IsActive)
             {
                 RefreshView();
                 Notify();
             }
-
-            return Unit.Task;
         }
 
-        public Task Handle(FieldOfViewChangedNotification notification, CancellationToken cancellationToken)
+        public void Handle(FieldOfViewChangedNotification notification)
         {
             if (IsActive)
                 MapViewModel.UpdateFieldOfView(notification.NewlyVisibleTiles, notification.NewlyHiddenTiles, notification.SeenTiles);
-
-            return Unit.Task;
         }
 
-        public Task Handle(MapChangedNotification notification, CancellationToken cancellationToken)
+        public void Handle(MapChangedNotification notification)
         {
             if (IsActive)
             {
                 MapViewModel.SetupNewMap(GameWorldEndpoint, GameOptionsStore);
                 Notify();
             }
-
-            return Unit.Task;
         }
 
-        public Task Handle(ToggleShowEntireMapNotification notification, CancellationToken cancellationToken)
+        public void Handle(ToggleShowEntireMapNotification notification)
         {
             if (IsActive)
                 MapViewModel.ToggleFieldOfView();
-
-            return Unit.Task;
         }
 
-        public Task Handle(ChangeTileGraphicsOptionsNotification notification, CancellationToken cancellationToken)
+        public void Handle(ChangeTileGraphicsOptionsNotification notification)
         {
             if (IsActive)
                 MapViewModel.SetTileGraphicsOptions(notification.TileGraphicOptions);
-
-            return Unit.Task;
         }
     }
 }

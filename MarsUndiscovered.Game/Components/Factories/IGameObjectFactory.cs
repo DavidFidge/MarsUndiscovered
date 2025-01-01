@@ -1,5 +1,4 @@
 using GoRogue.GameFramework;
-
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Components.Factories

@@ -1,12 +1,8 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
-
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.View;
-
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Views;
-
-using MediatR;
 
 namespace MarsUndiscovered.UserInterface.Screens
 {
@@ -17,11 +13,9 @@ namespace MarsUndiscovered.UserInterface.Screens
         {
         }
 
-        public Task<Unit> Handle(QuitToTitleRequest request, CancellationToken cancellationToken)
+        public void Handle(QuitToTitleRequest request)
         {
             UserInterface.ShowScreen(this);
-
-            return Unit.Task;
         }
     }
 }

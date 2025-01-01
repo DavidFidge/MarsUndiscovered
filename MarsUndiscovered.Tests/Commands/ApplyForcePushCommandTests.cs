@@ -4,8 +4,6 @@ using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Tests.Components;
-using Microsoft.Xna.Framework;
-using SadRogue.Primitives;
 using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.Tests.Commands

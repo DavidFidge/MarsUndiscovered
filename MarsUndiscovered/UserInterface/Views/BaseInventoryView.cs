@@ -1,15 +1,12 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.View.Extensions;
-
-using MarsUndiscovered.UserInterface.Data;
-using MarsUndiscovered.UserInterface.ViewModels;
-
 using GeonBit.UI.Entities;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Messages;
-using MediatR;
+using MarsUndiscovered.UserInterface.Data;
+using MarsUndiscovered.UserInterface.ViewModels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -99,7 +96,7 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
 
         for (var i = 0; i < inventoryItems.Count; i++)
         {
-            InventoryItems[i].SetInventoryItem(inventoryItems[i], this.InventoryMode);
+            InventoryItems[i].SetInventoryItem(inventoryItems[i], InventoryMode);
         }
     }
     
@@ -173,10 +170,10 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
     {
     }
 
-    public Task<Unit> Handle(CloseGameInventoryContextRequest request, CancellationToken cancellationToken)
+    public void Handle(CloseGameInventoryContextRequest request)
     {
         if (!IsVisible)
-            return Unit.Task;
+            return;
         
         var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
 
@@ -189,8 +186,6 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
             ClosingInventoryNoAction();
             Mediator.Send(new CloseGameInventoryRequest());
         }
-
-        return Unit.Task;
     }
 
     protected virtual void ClosingInventoryNoAction()
@@ -205,10 +200,10 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
         }
     }
 
-    public Task<Unit> Handle(InventoryItemSelectionCycleRequest request, CancellationToken cancellationToken)
+    public void Handle(InventoryItemSelectionCycleRequest request)
     {
         if (!InventoryItems.Any())
-            return Unit.Task;
+            return;
         
         var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
         var newFocusItem = focusItem;
@@ -293,7 +288,5 @@ public abstract class BaseInventoryView<TViewModel, TData> : BaseMarsUndiscovere
  
         if (focusItem != null)
             focusItem.OnInventoryPanelEnter();
-        
-        return Unit.Task;
     }
 }

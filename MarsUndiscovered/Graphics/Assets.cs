@@ -1,20 +1,18 @@
 ﻿using System.Text.RegularExpressions;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
-
-using MarsUndiscovered.Interfaces;
-
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
+using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Content;
 using MonoGame.Extended.Serialization;
 using MonoGame.Extended.Sprites;
-using MonoGame.Extended.Content;
 
 namespace MarsUndiscovered.Graphics;
 

@@ -1,12 +1,9 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
-
 using MarsUndiscovered.Interfaces;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
 using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.UserInterface.ViewModels

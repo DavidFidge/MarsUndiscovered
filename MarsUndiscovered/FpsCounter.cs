@@ -5,11 +5,11 @@ namespace MarsUndiscovered
 {
     public class FpsCounter
     {
-        private double _frames = 0;
-        private double _updates = 0;
-        private double _elapsed = 0;
-        private double _last = 0;
-        private double _now = 0;
+        private double _frames;
+        private double _updates;
+        private double _elapsed;
+        private double _last;
+        private double _now;
         private string _msg = "";
 
         private readonly double _msgFrequency = 1.0f;
@@ -17,7 +17,7 @@ namespace MarsUndiscovered
         public void Update(GameTime gameTime)
         {
             _now = gameTime.TotalGameTime.TotalSeconds;
-            _elapsed = (double)(_now - _last);
+            _elapsed = _now - _last;
             if (_elapsed > _msgFrequency)
             {
                 _msg =

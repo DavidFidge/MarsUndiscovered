@@ -38,7 +38,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
 
             yield return null;
             
-            var prefabContext = generationContext.GetFirstOrNew<ItemList<PrefabInstance>>(
+            var prefabContext = generationContext.GetFirstOrNew(
                 () => new ItemList<PrefabInstance>(),
                 MapGenerator.PrefabTag
             );

@@ -91,7 +91,7 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
     {
         if (!gameWorld.Player.IsGameEndState)
         {
-            Logger.Warning($"Cannot snapshot morgue data - player is not dead and victory has not been achieved.");
+            Logger.Warning("Cannot snapshot morgue data - player is not dead and victory has not been achieved.");
             return;
         }
 
@@ -174,7 +174,7 @@ public class Morgue : BaseComponent, IMorgue, ISaveable
     {
         var morgueText = new StringBuilder();
 
-        morgueText.AppendLine($"Mars Undiscovered");
+        morgueText.AppendLine("Mars Undiscovered");
         morgueText.AppendLine($"Game ID: {morgueExportData.Id}");
         morgueText.AppendLine($"Game Version: {morgueExportData.GameVersion}");
         morgueText.AppendLine($"Seed: {morgueExportData.Seed}");

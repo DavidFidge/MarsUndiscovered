@@ -1,13 +1,9 @@
-using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
-
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
-
 using InputHandlers.Keyboard;
-
 using MarsUndiscovered.Messages;
-
+using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
 using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Input

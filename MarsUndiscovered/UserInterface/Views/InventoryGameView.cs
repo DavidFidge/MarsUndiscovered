@@ -1,14 +1,12 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.Interfaces.UserInterface;
-using GeonBit.UI.Entities;
 using FrigidRogue.MonoGame.Core.View.Extensions;
+using GeonBit.UI.Entities;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Messages;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
-
-using MediatR;
 using Microsoft.Xna.Framework.Input;
 
 namespace MarsUndiscovered.UserInterface.Views
@@ -180,81 +178,79 @@ namespace MarsUndiscovered.UserInterface.Views
 
             switch (inventoryMode)
             {
-                case Views.InventoryMode.ReadOnly:
-                case Views.InventoryMode.View:
+                case InventoryMode.ReadOnly:
+                case InventoryMode.View:
                     InventoryLabel.Text = "Your Inventory:";
                     break;
-                case Views.InventoryMode.Equip:
+                case InventoryMode.Equip:
                     InventoryLabel.Text = "Equip what?";
                     break;
-                case Views.InventoryMode.Unequip:
+                case InventoryMode.Unequip:
                     InventoryLabel.Text = "Remove (unequip) what?";
                     break;
-                case Views.InventoryMode.Drop:
+                case InventoryMode.Drop:
                     InventoryLabel.Text = "Drop what?";
                     break;
-                case Views.InventoryMode.Apply:
+                case InventoryMode.Apply:
                     InventoryLabel.Text = "Apply (use) what?";
                     break;
-                case Views.InventoryMode.Enchant:
+                case InventoryMode.Enchant:
                     InventoryLabel.Text = "Enhance what?";
                     break;
-                case Views.InventoryMode.Identify:
+                case InventoryMode.Identify:
                     InventoryLabel.Text = "Identify what?";
                     break;   
             }
         }
 
-        public Task<Unit> Handle(InventoryItemSelectionRequest request, CancellationToken cancellationToken)
+        public void Handle(InventoryItemSelectionRequest request)
         {
             if (!IsVisible)
-                return Unit.Task;
+                return;
 
             var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
 
             if (focusItem != null &&
-                InventoryMode != Views.InventoryMode.View &&
-                InventoryMode != Views.InventoryMode.ReadOnly)
+                InventoryMode != InventoryMode.View &&
+                InventoryMode != InventoryMode.ReadOnly)
             {
                 if (request.Key == Keys.Enter)
                    PerformInventoryModeAction(focusItem.InventoryItem);
                 else
                     PerformFocusKeyActionSilentlyFail(focusItem.InventoryItem, request.Key);
                 
-                return Unit.Task;
+                return;
             }
             
             switch (InventoryMode)
             {
-                case Views.InventoryMode.View:
-                    base.PerformKeyAction(request.Key);
+                case InventoryMode.View:
+                    PerformKeyAction(request.Key);
                     break;
-                case Views.InventoryMode.Equip:
+                case InventoryMode.Equip:
                     _viewModel.EquipRequest(request.Key);
                     break;
-                case Views.InventoryMode.Unequip:
+                case InventoryMode.Unequip:
                     _viewModel.UnequipRequest(request.Key);
                     break;
-                case Views.InventoryMode.Drop:
+                case InventoryMode.Drop:
                     _viewModel.DropRequest(request.Key);
                     break;
-                case Views.InventoryMode.Apply:
+                case InventoryMode.Apply:
                     _viewModel.ApplyRequest(request.Key);
                     break;
-                case Views.InventoryMode.Enchant:
+                case InventoryMode.Enchant:
                     _viewModel.EnchantItemRequest(request.Key);
                     break;
-                case Views.InventoryMode.Identify:
+                case InventoryMode.Identify:
                     _viewModel.IdentifyItemRequest(request.Key);
                     break;
-                case Views.InventoryMode.ReadOnly:
-                    base.PerformKeyAction(request.Key);
+                case InventoryMode.ReadOnly:
+                    PerformKeyAction(request.Key);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            return Unit.Task;
         }
 
         protected void PerformFocusKeyActionSilentlyFail(InventoryItem focusItem, Keys requestKey)
@@ -288,22 +284,22 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             switch (InventoryMode)
             {
-                case Views.InventoryMode.Equip:
+                case InventoryMode.Equip:
                     _viewModel.EquipRequest(focusItem.Key);
                     break;
-                case Views.InventoryMode.Unequip:
+                case InventoryMode.Unequip:
                     _viewModel.UnequipRequest(focusItem.Key);
                     break;
-                case Views.InventoryMode.Drop:
+                case InventoryMode.Drop:
                     _viewModel.DropRequest(focusItem.Key);
                     break;
-                case Views.InventoryMode.Apply:
+                case InventoryMode.Apply:
                     _viewModel.ApplyRequest(focusItem.Key);
                     break;
-                case Views.InventoryMode.Enchant:
+                case InventoryMode.Enchant:
                     _viewModel.EnchantItemRequest(focusItem.Key);
                     break;
-                case Views.InventoryMode.Identify:
+                case InventoryMode.Identify:
                     _viewModel.EnchantItemRequest(focusItem.Key);
                     break;
             }
@@ -315,11 +311,9 @@ namespace MarsUndiscovered.UserInterface.Views
             base.Hide();
         }
 
-        public Task<Unit> Handle(LeftClickInventoryGameViewRequest request, CancellationToken cancellationToken)
+        public void Handle(LeftClickInventoryGameViewRequest request)
         {
             HideIfMouseOver();
-
-            return Unit.Task;
         }
 
         protected override void ClosingInventoryNoAction()
@@ -327,7 +321,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _viewModel.ClosingInventoryNoAction(InventoryMode);
         }
 
-        public Task<Unit> Handle(AssignHotBarItemRequest request, CancellationToken cancellationToken)
+        public void Handle(AssignHotBarItemRequest request)
         {
             var focusItem = InventoryItems.FirstOrDefault(i => i.HasFocus);
 
@@ -336,8 +330,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 _viewModel.AssignHotBarItem(focusItem.InventoryItem.Key, request.Key);
                 Mediator.Send(new RefreshHotBarRequest(focusItem.InventoryItem.ItemId));
             }
-
-            return Unit.Task;
         }
     }
 }

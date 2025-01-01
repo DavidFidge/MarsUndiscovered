@@ -1,6 +1,5 @@
 ﻿using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Services;
-
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;
 
@@ -12,7 +11,7 @@ namespace MarsUndiscovered.Game.Components
         
         public override char AsciiCharacter => FeatureType.AsciiCharacter;
         
-        public Feature(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.FeatureLayer, true, true, idGenerator: () => id)
+        public Feature(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.FeatureLayer, idGenerator: () => id)
         {
         }
         
@@ -20,7 +19,7 @@ namespace MarsUndiscovered.Game.Components
         {
             var memento = new Memento<FeatureSaveData>(new FeatureSaveData());
 
-            base.PopulateSaveState(memento.State);
+            PopulateSaveState(memento.State);
             memento.State.FeatureTypeName = FeatureType.Name;
 
             return memento;
@@ -28,13 +27,13 @@ namespace MarsUndiscovered.Game.Components
 
         public void SetLoadState(IMemento<FeatureSaveData> memento)
         {
-            base.PopulateLoadState(memento.State);
+            PopulateLoadState(memento.State);
             FeatureType = FeatureType.FeatureTypes[memento.State.FeatureTypeName];
         }
 
         public Feature WithFeatureType(FeatureType featureType)
         {
-            this.FeatureType = featureType;
+            FeatureType = featureType;
 
             return this;
         }

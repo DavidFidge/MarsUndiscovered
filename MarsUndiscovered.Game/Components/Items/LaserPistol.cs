@@ -1,5 +1,4 @@
 using System.Text;
-using MonoGame.Extended;
 
 namespace MarsUndiscovered.Game.Components
 {
