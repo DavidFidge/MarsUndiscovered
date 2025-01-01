@@ -91,42 +91,42 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public void Handle(CustomGameSeedRequest request)
         {
-            return ShowChildView(_customGameSeedView, _titleMenuPanel);
+            ShowChildView(_customGameSeedView, _titleMenuPanel);
         }
 
         public void Handle(CancelCustomGameSeedRequest request)
         {
-            return HideChildView(_customGameSeedView, _titleMenuPanel);
+            HideChildView(_customGameSeedView, _titleMenuPanel);
         }
 
         public void Handle(OptionsButtonClickedRequest request)
         {
-            return ShowChildView(_optionsView, _titleMenuPanel);
+            ShowChildView(_optionsView, _titleMenuPanel);
         }
 
         public void Handle(CloseOptionsViewRequest request)
         {
-            return HideChildView(_optionsView, _titleMenuPanel);
+            HideChildView(_optionsView, _titleMenuPanel);
         }
 
         public void Handle(DeveloperToolsButtonClickedRequest request)
         {
-            return ShowChildView(_developerToolsView, _titleMenuPanel);
+            ShowChildView(_developerToolsView, _titleMenuPanel);
         }
 
         public void Handle(CloseDeveloperToolsViewRequest request)
         {
-            return HideChildView(_developerToolsView, _titleMenuPanel);
+            HideChildView(_developerToolsView, _titleMenuPanel);
         }
 
         public void Handle(OpenLoadGameViewRequest request)
         {
-            return ShowChildView(_loadGameView, _titleMenuPanel);
+            ShowChildView(_loadGameView, _titleMenuPanel);
         }
 
         public void Handle(CloseLoadGameViewRequest request)
         {
-            return HideChildView(_loadGameView, _titleMenuPanel);
+            HideChildView(_loadGameView, _titleMenuPanel);
         }
 
         public override void Draw()

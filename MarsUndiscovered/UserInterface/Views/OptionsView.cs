@@ -50,22 +50,22 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public void Handle(OpenVideoOptionsRequest request)
         {
-            return ShowChildViewWithRootSwap(_videoOptionsView, _optionsMenuPanel);
+            ShowChildViewWithRootSwap(_videoOptionsView, _optionsMenuPanel);
         }
 
         public void Handle(CloseVideoOptionsRequest request)
         {
-            return HideChildView(_videoOptionsView, _optionsMenuPanel);
+            HideChildView(_videoOptionsView, _optionsMenuPanel);
         }
         
         public void Handle(OpenGameOptionsRequest request)
         {
-            return ShowChildViewWithRootSwap(_gameOptionsView, _optionsMenuPanel);
+            ShowChildViewWithRootSwap(_gameOptionsView, _optionsMenuPanel);
         }
 
         public void Handle(CloseGameOptionsRequest request)
         {
-            return HideChildView(_gameOptionsView, _optionsMenuPanel);
+            HideChildView(_gameOptionsView, _optionsMenuPanel);
         }
     }
 }

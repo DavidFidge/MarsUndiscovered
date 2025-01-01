@@ -57,10 +57,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 Data.SelectedRenderResolution = RenderResolution.Default;
         }
 
-        public void Handle(
-            SetDisplayModeRequest request,
-            CancellationToken cancellationToken
-        )
+        public void Handle(SetDisplayModeRequest request)
         {
             // Geonbit UI doesn't appear to detect changes in resolution at full screen properly which makes the text all fuzzy.
             // Get around this by changing to windowed mode, setting the resolution,

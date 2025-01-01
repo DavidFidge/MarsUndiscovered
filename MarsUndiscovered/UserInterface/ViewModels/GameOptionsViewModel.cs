@@ -22,7 +22,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public override void Handle(InterfaceRequest<GameOptionsData> request)
         {
-            base.Handle(request, cancellationToken);
+            base.Handle(request);
 
             _gameOptionsStore.SaveToStore(new Memento<GameOptionsData>(Data));
         }

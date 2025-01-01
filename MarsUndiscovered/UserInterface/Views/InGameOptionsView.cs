@@ -59,32 +59,32 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public void Handle(OpenSaveGameViewRequest request)
         {
-            return ShowChildView(_saveGameView, _inGameOptionsMenuPanel);
+            ShowChildView(_saveGameView, _inGameOptionsMenuPanel);
         }
 
         public void Handle(CloseSaveGameViewRequest request)
         {
-            return HideChildView(_saveGameView, _inGameOptionsMenuPanel);
+            HideChildView(_saveGameView, _inGameOptionsMenuPanel);
         }
 
         public void Handle(OpenInGameVideoOptionsRequest request)
         {
-            return ShowChildViewWithRootSwap(_videoOptionsView, _inGameOptionsMenuPanel);
+            ShowChildViewWithRootSwap(_videoOptionsView, _inGameOptionsMenuPanel);
         }
 
         public void Handle(CloseInGameVideoOptionsRequest request)
         {
-            return HideChildView(_videoOptionsView, _inGameOptionsMenuPanel);
+            HideChildView(_videoOptionsView, _inGameOptionsMenuPanel);
         }
 
         public void Handle(OpenInGameGameOptionsRequest request)
         {
-            return ShowChildViewWithRootSwap(_gameOptionsView, _inGameOptionsMenuPanel);
+            ShowChildViewWithRootSwap(_gameOptionsView, _inGameOptionsMenuPanel);
         }
 
         public void Handle(CloseInGameGameOptionsRequest request)
         {
-            return HideChildView(_gameOptionsView, _inGameOptionsMenuPanel);
+            HideChildView(_gameOptionsView, _inGameOptionsMenuPanel);
         }
     }
 }

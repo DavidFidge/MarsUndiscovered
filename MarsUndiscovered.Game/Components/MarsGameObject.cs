@@ -1,3 +1,4 @@
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using GoRogue.Components;
 using GoRogue.GameFramework;
 using MarsUndiscovered.Game.Components.SaveData;

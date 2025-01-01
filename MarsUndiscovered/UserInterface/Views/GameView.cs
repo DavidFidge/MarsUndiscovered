@@ -650,7 +650,7 @@ namespace MarsUndiscovered.UserInterface.Views
             }
         }
 
-        public Task Handle(MouseHoverViewNotification notification)
+        public void Handle(MouseHoverViewNotification notification)
         {
             if (!IsVisible)
                 return;
@@ -849,10 +849,10 @@ namespace MarsUndiscovered.UserInterface.Views
             var ray = _gameCamera.GetPointerRay(request.X, request.Y);
             var point = _viewModel.MapViewModel.MousePointerRayToMapPosition(ray);
 
-            DoRangedAttack(cancellationToken, point);
+            DoRangedAttack(point);
         }
 
-        private void DoRangedAttack(CancellationToken cancellationToken, Point? point)
+        private void DoRangedAttack(Point? point)
         {
             if (point != null)
             {
@@ -860,7 +860,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
                 _viewModel.MapViewModel.ClearHover();
 
-                Mediator.Send(new CloseSquareChoiceRequest(), cancellationToken);
+                Mediator.Send(new CloseSquareChoiceRequest());
             }
         }
 
@@ -949,19 +949,19 @@ namespace MarsUndiscovered.UserInterface.Views
         public void Handle(SquareChoiceSelectSquareRequest request)
         {
             var point = _viewModel.MapViewModel.MouseHoverPath?.End;
-            DoRangedAttack(cancellationToken, point);
+            DoRangedAttack(point);
             _viewModel.RetainedSquareChoiceMonsterId = _viewModel.CurrentSquareChoiceMonsterId;
             _viewModel.CurrentSquareChoiceMonsterId = null;
         }
 
         public void Handle(SquareChoiceNextTargetRequest request)
         {
-            return GetNextSquareChoice(false);
+            GetNextSquareChoice(false);
         }
         
         public void Handle(SquareChoicePreviousTargetRequest request)
         {
-            return GetNextSquareChoice(true);
+            GetNextSquareChoice(true);
         }
 
         private void GetNextSquareChoice(bool reverse)

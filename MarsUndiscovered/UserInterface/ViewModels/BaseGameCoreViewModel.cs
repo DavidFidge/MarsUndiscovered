@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Components.Mediator;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
 using FrigidRogue.MonoGame.Core.UserInterface;
@@ -86,19 +87,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public bool IsAnimating => Animations.Any();
 
-        public Task Handle(EntityTransformChangedNotification notification)
+        public void Handle(EntityTransformChangedNotification notification)
         {
             if (IsActive)
                 MapViewModel.HandleEntityTransformChanged(notification);
         }
 
-        public Task Handle(ToggleShowGoalMapNotification notification)
+        public void Handle(ToggleShowGoalMapNotification notification)
         {
             if (IsActive)
                 MapViewModel.ToggleShowGoalMap();
         }
 
-        public Task Handle(MapTileChangedNotification notification)
+        public void Handle(MapTileChangedNotification notification)
         {
             if (IsActive)
                 MapViewModel.UpdateTile(notification.Point);
@@ -132,7 +133,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             return Direction.GetDirection(centrePoint, point.Value);
         }
 
-        public Task Handle(RefreshViewNotification notification)
+        public void Handle(RefreshViewNotification notification)
         {
             if (IsActive)
             {
@@ -141,13 +142,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             }
         }
 
-        public Task Handle(FieldOfViewChangedNotification notification)
+        public void Handle(FieldOfViewChangedNotification notification)
         {
             if (IsActive)
                 MapViewModel.UpdateFieldOfView(notification.NewlyVisibleTiles, notification.NewlyHiddenTiles, notification.SeenTiles);
         }
 
-        public Task Handle(MapChangedNotification notification)
+        public void Handle(MapChangedNotification notification)
         {
             if (IsActive)
             {
@@ -156,13 +157,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             }
         }
 
-        public Task Handle(ToggleShowEntireMapNotification notification)
+        public void Handle(ToggleShowEntireMapNotification notification)
         {
             if (IsActive)
                 MapViewModel.ToggleFieldOfView();
         }
 
-        public Task Handle(ChangeTileGraphicsOptionsNotification notification)
+        public void Handle(ChangeTileGraphicsOptionsNotification notification)
         {
             if (IsActive)
                 MapViewModel.SetTileGraphicsOptions(notification.TileGraphicOptions);
