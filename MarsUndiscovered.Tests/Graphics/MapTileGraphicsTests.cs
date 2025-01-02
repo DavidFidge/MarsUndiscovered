@@ -34,13 +34,13 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.IsTrue(mapTileTextureResult1 is SpriteSheetMapTileTexture);
         
         var spriteSheetMapTileTextureResult1 = (SpriteSheetMapTileTexture)mapTileTextureResult1;
-        Assert.AreEqual(1, spriteSheetMapTileTextureResult1.SpriteSheetAnimation.KeyFrames.Length);
+        Assert.AreEqual(1, spriteSheetMapTileTextureResult1.AnimatedSprite.Controller.FrameCount);
 
         var textureColours = new Color[UiConstants.TileWidth * UiConstants.TileHeight];
 
-        spriteSheetMapTileTextureResult1.SpriteSheetAnimation.CurrentFrame.Texture.GetData(
+        spriteSheetMapTileTextureResult1.AnimatedSprite.TextureRegion.Texture.GetData(
             0,
-            spriteSheetMapTileTextureResult1.SpriteSheetAnimation.CurrentFrame.Bounds,
+            spriteSheetMapTileTextureResult1.AnimatedSprite.TextureRegion.Bounds,
             textureColours,
             0,
             UiConstants.TileWidth * UiConstants.TileHeight
@@ -53,11 +53,11 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.IsTrue(mapTileTextureResult2 is SpriteSheetMapTileTexture);
 
         var spriteSheetMapTileTextureResult2 = (SpriteSheetMapTileTexture)mapTileTextureResult2;
-        Assert.AreEqual(1, spriteSheetMapTileTextureResult2.SpriteSheetAnimation.KeyFrames.Length);
+        Assert.AreEqual(1, spriteSheetMapTileTextureResult2.AnimatedSprite.Controller.FrameCount);
 
-        spriteSheetMapTileTextureResult2.SpriteSheetAnimation.CurrentFrame.Texture.GetData(
+        spriteSheetMapTileTextureResult2.AnimatedSprite.TextureRegion.Texture.GetData(
             0,
-            spriteSheetMapTileTextureResult2.SpriteSheetAnimation.CurrentFrame.Bounds,
+            spriteSheetMapTileTextureResult2.AnimatedSprite.TextureRegion.Bounds,
             textureColours,
             0,
             UiConstants.TileWidth * UiConstants.TileHeight
@@ -70,11 +70,11 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.IsTrue(mapTileTextureResult3 is SpriteSheetMapTileTexture);
 
         var spriteSheetMapTileTextureResult3 = (SpriteSheetMapTileTexture)mapTileTextureResult3;
-        Assert.AreEqual(1, spriteSheetMapTileTextureResult3.SpriteSheetAnimation.KeyFrames.Length);
+        Assert.AreEqual(1, spriteSheetMapTileTextureResult3.AnimatedSprite.Controller.FrameCount);
 
-        spriteSheetMapTileTextureResult3.SpriteSheetAnimation.CurrentFrame.Texture.GetData(
+        spriteSheetMapTileTextureResult3.AnimatedSprite.TextureRegion.Texture.GetData(
             0,
-            spriteSheetMapTileTextureResult3.SpriteSheetAnimation.CurrentFrame.Bounds,
+            spriteSheetMapTileTextureResult3.AnimatedSprite.TextureRegion.Bounds,
             textureColours,
             0,
             UiConstants.TileWidth * UiConstants.TileHeight
@@ -111,13 +111,13 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.IsTrue(mapTileTextureResult1 is SpriteSheetMapTileTexture);
         
         var spriteSheetMapTileTextureResult1 = (SpriteSheetMapTileTexture)mapTileTextureResult1;
-        Assert.AreEqual(1, spriteSheetMapTileTextureResult1.SpriteSheetAnimation.KeyFrames.Length);
+        Assert.AreEqual(1, spriteSheetMapTileTextureResult1.AnimatedSprite.Controller.FrameCount);
 
         var textureColours = new Color[UiConstants.TileWidth * UiConstants.TileHeight];
 
-        spriteSheetMapTileTextureResult1.SpriteSheetAnimation.CurrentFrame.Texture.GetData(
+        spriteSheetMapTileTextureResult1.AnimatedSprite.TextureRegion.Texture.GetData(
             0,
-            spriteSheetMapTileTextureResult1.SpriteSheetAnimation.CurrentFrame.Bounds,
+            spriteSheetMapTileTextureResult1.AnimatedSprite.TextureRegion.Bounds,
             textureColours,
             0,
             UiConstants.TileWidth * UiConstants.TileHeight
@@ -130,12 +130,12 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.IsTrue(mapTileTextureResult2 is SpriteSheetMapTileTexture);
 
         var spriteSheetMapTileTextureResult2 = (SpriteSheetMapTileTexture)mapTileTextureResult2;
-        Assert.AreEqual(2, spriteSheetMapTileTextureResult2.SpriteSheetAnimation.KeyFrames.Length);
+        Assert.AreEqual(2, spriteSheetMapTileTextureResult2.AnimatedSprite.Controller.FrameCount);
 
-        // Current frame (same as frame 1)
-        spriteSheetMapTileTextureResult2.SpriteSheetAnimation.CurrentFrame.Texture.GetData(
+        // Current frame
+        spriteSheetMapTileTextureResult2.AnimatedSprite.TextureRegion.Texture.GetData(
             0,
-            spriteSheetMapTileTextureResult2.SpriteSheetAnimation.CurrentFrame.Bounds,
+            spriteSheetMapTileTextureResult2.AnimatedSprite.TextureRegion.Bounds,
             textureColours,
             0,
             UiConstants.TileWidth * UiConstants.TileHeight
@@ -143,21 +143,12 @@ public class MapTileGraphicsTests : BaseGraphicsTest
 
         Assert.AreEqual(textureColours[0], Color.Blue);
 
-        // Frame 1
-        spriteSheetMapTileTextureResult2.SpriteSheetAnimation.CurrentFrame.Texture.GetData(
+        // Advance to Frame 2
+        spriteSheetMapTileTextureResult2.Update(new GameTime(TimeSpan.FromSeconds(0.75f), TimeSpan.FromSeconds(0.75f)));
+        
+        spriteSheetMapTileTextureResult2.AnimatedSprite.TextureRegion.Texture.GetData(
             0,
-            spriteSheetMapTileTextureResult2.SpriteSheetAnimation.KeyFrames[0].Bounds,
-            textureColours,
-            0,
-            UiConstants.TileWidth * UiConstants.TileHeight
-        );
-
-        Assert.AreEqual(textureColours[0], Color.Blue);
-
-        // Frame 2
-        spriteSheetMapTileTextureResult2.SpriteSheetAnimation.CurrentFrame.Texture.GetData(
-            0,
-            spriteSheetMapTileTextureResult2.SpriteSheetAnimation.KeyFrames[1].Bounds,
+            spriteSheetMapTileTextureResult2.AnimatedSprite.TextureRegion.Bounds,
             textureColours,
             0,
             UiConstants.TileWidth * UiConstants.TileHeight
@@ -170,11 +161,11 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         Assert.IsTrue(mapTileTextureResult3 is SpriteSheetMapTileTexture);
 
         var spriteSheetMapTileTextureResult3 = (SpriteSheetMapTileTexture)mapTileTextureResult3;
-        Assert.AreEqual(1, spriteSheetMapTileTextureResult3.SpriteSheetAnimation.KeyFrames.Length);
+        Assert.AreEqual(1, spriteSheetMapTileTextureResult3.AnimatedSprite.Controller.FrameCount);
 
-        spriteSheetMapTileTextureResult3.SpriteSheetAnimation.CurrentFrame.Texture.GetData(
+        spriteSheetMapTileTextureResult3.AnimatedSprite.TextureRegion.Texture.GetData(
             0,
-            spriteSheetMapTileTextureResult3.SpriteSheetAnimation.CurrentFrame.Bounds,
+            spriteSheetMapTileTextureResult3.AnimatedSprite.TextureRegion.Bounds,
             textureColours,
             0,
             UiConstants.TileWidth * UiConstants.TileHeight
@@ -198,7 +189,7 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         var mapTileTextureResult = mapTileGraphics.GetMapTileTexture(TileGraphicType.Player.ToString());
         var spriteSheetMapTileTextureResult = (SpriteSheetMapTileTexture)mapTileTextureResult;
 
-        FakeStopwatchProvider.Elapsed = TimeSpan.FromSeconds(UiConstants.MapTileAnimationTime);
+        FakeStopwatchProvider.Elapsed = TimeSpan.FromSeconds(UiConstants.MapTileAnimationSeconds);
         FakeGameTimeService.Update(new GameTime());
 
         // Act
@@ -207,9 +198,9 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         // Assert
         var textureColours = new Color[UiConstants.TileWidth * UiConstants.TileHeight];
 
-        spriteSheetMapTileTextureResult.SpriteSheetAnimation.CurrentFrame.Texture.GetData(
+        spriteSheetMapTileTextureResult.AnimatedSprite.TextureRegion.Texture.GetData(
             0,
-            spriteSheetMapTileTextureResult.SpriteSheetAnimation.CurrentFrame.Bounds,
+            spriteSheetMapTileTextureResult.AnimatedSprite.TextureRegion.Bounds,
             textureColours,
             0,
             UiConstants.TileWidth * UiConstants.TileHeight
@@ -233,12 +224,12 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         var mapTileTextureResult = mapTileGraphics.GetMapTileTexture(TileGraphicType.Player.ToString());
         var spriteSheetMapTileTextureResult = (SpriteSheetMapTileTexture)mapTileTextureResult;
 
-        FakeStopwatchProvider.Elapsed = TimeSpan.FromSeconds(UiConstants.MapTileAnimationTime);
+        FakeStopwatchProvider.Elapsed = TimeSpan.FromSeconds(UiConstants.MapTileAnimationSeconds);
         FakeGameTimeService.Update(new GameTime());
 
         spriteSheetMapTileTextureResult.Update(FakeGameTimeService.GameTime);
 
-        FakeStopwatchProvider.Elapsed = TimeSpan.FromSeconds(UiConstants.MapTileAnimationTime * 2);
+        FakeStopwatchProvider.Elapsed = TimeSpan.FromSeconds(UiConstants.MapTileAnimationSeconds * 2);
         FakeGameTimeService.Update(new GameTime());
 
         // Act
@@ -247,9 +238,9 @@ public class MapTileGraphicsTests : BaseGraphicsTest
         // Assert
         var textureColours = new Color[UiConstants.TileWidth * UiConstants.TileHeight];
 
-        spriteSheetMapTileTextureResult.SpriteSheetAnimation.CurrentFrame.Texture.GetData(
+        spriteSheetMapTileTextureResult.AnimatedSprite.TextureRegion.Texture.GetData(
             0,
-            spriteSheetMapTileTextureResult.SpriteSheetAnimation.CurrentFrame.Bounds,
+            spriteSheetMapTileTextureResult.AnimatedSprite.TextureRegion.Bounds,
             textureColours,
             0,
             UiConstants.TileWidth * UiConstants.TileHeight

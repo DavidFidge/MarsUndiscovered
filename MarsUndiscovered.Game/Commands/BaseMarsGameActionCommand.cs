@@ -17,7 +17,7 @@ namespace MarsUndiscovered.Game.Commands
         {
             return (T)_data.Clone(); 
         }
-        
+
         [JsonIgnore]
         public IGameWorld GameWorld { get; private set; }
         

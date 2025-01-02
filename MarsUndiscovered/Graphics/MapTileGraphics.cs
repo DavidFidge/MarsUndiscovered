@@ -2,8 +2,7 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Sprites;
-using MonoGame.Extended.TextureAtlases;
+using MonoGame.Extended.Graphics;
 
 namespace MarsUndiscovered.Graphics;
 
@@ -38,33 +37,28 @@ public class MapTileGraphics
     {
         var atlas = CreateAtlas(graphicsDevice);
 
-        SpriteSheet = new SpriteSheet
-        {
-            TextureAtlas = atlas
-        };
+        SpriteSheet = new SpriteSheet("main", atlas);
 
         var atlasIndex = 0;
 
         foreach (var key in _rawMapTileTextures.Keys)
         {
-            var spriteSheetAnimationCycle = new SpriteSheetAnimationCycle();
-            spriteSheetAnimationCycle.IsLooping = true;
-            spriteSheetAnimationCycle.FrameDuration = UiConstants.MapTileAnimationTime;
-
-            for (var frameAtlasIndex = atlasIndex; frameAtlasIndex < atlasIndex + _rawMapTileTextures[key].Count; frameAtlasIndex++)
+            SpriteSheet.DefineAnimation(key, builder =>
             {
-                var spriteSheetAnimationFrame = new SpriteSheetAnimationFrame(frameAtlasIndex, UiConstants.MapTileAnimationTime);
-                spriteSheetAnimationCycle.Frames.Add(spriteSheetAnimationFrame);
-            }
+                builder.IsLooping(true);
+
+                for (var frameAtlasIndex = atlasIndex;
+                     frameAtlasIndex < atlasIndex + _rawMapTileTextures[key].Count;
+                     frameAtlasIndex++)
+                {
+                    builder.AddFrame(frameAtlasIndex, TimeSpan.FromSeconds(UiConstants.MapTileAnimationSeconds));
+                }
+            });
 
             atlasIndex += _rawMapTileTextures[key].Count;
 
-            SpriteSheet.Cycles.Add(key, spriteSheetAnimationCycle);
-
-            var spriteSheetAnimation = SpriteSheet.CreateAnimation(key);
-
             var spriteSheetMapTileTexture =
-                new SpriteSheetMapTileTexture(spriteSheetAnimation, _rawMapTileTextures[key].First().Opacity);
+                new SpriteSheetMapTileTexture(new AnimatedSprite(SpriteSheet, key), _rawMapTileTextures[key].First().Opacity);
 
             _spriteSheetMapTileTextures.Add(spriteSheetMapTileTexture);
             _mapTileTextures.Add(key, spriteSheetMapTileTexture);
@@ -92,7 +86,7 @@ public class MapTileGraphics
 
         _accumulatedUpdateTime += gameTimeService.GameTime.ElapsedGameTime.TotalSeconds;
 
-        if (_accumulatedUpdateTime > UiConstants.MapTileAnimationTime)
+        if (_accumulatedUpdateTime > UiConstants.MapTileAnimationSeconds)
         {
             foreach (var animation in _spriteSheetMapTileTextures)
             {
@@ -130,7 +124,7 @@ public class MapTileGraphics
             : _fallbackTiles.GetStaticTexture(tileKey);
     }
 
-    private TextureAtlas CreateAtlas(GraphicsDevice graphicsDevice)
+    private Texture2DAtlas CreateAtlas(GraphicsDevice graphicsDevice)
     {
         var allTiles = _rawMapTileTextures.SelectMany(m => m.Value).ToList();
 
@@ -170,7 +164,7 @@ public class MapTileGraphics
                 break;
         }
 
-        var atlas = TextureAtlas.Create("Tiles", texture, UiConstants.TileWidth, UiConstants.TileHeight);
+        var atlas = Texture2DAtlas.Create("Tiles", texture, UiConstants.TileWidth, UiConstants.TileHeight);
 
         return atlas;
     }
