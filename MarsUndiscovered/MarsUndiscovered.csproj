@@ -69,6 +69,11 @@
     </Content>
   </ItemGroup>
 
+  <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
+    <Message Text="Restoring dotnet tools" Importance="High" />
+    <Exec Command="dotnet tool restore" />
+  </Target>
+
   <Target Name="Delete Content" BeforeTargets="BeforeBuild">
     <ItemGroup>
       <ContentToDelete Include="Content\bin\Windows\Content\Content.xnb" />
