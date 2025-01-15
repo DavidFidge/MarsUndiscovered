@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
     <MonoGamePlatform>Windows</MonoGamePlatform>
@@ -13,9 +13,6 @@
   <ItemGroup>
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
-    <None Update="Content\Animations\ShipAiRadioComms.sf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Remove="Content\GeonBit.UI\themes\mars\textures\panel_golden_md.xml" />
     <None Remove="Content\GeonBit.UI\themes\mars\textures\slider_fancy_md.xml" />
     <None Remove="Content\GeonBit.UI\themes\mars\textures\button_fancy_md.xml" />
@@ -34,15 +31,15 @@
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.2.1105" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.2.1105" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FrigidRogue\FrigidRogue.Monogame.Core.View\FrigidRogue.Monogame.Core.View.csproj" />
     <ProjectReference Include="..\..\FrigidRogue\FrigidRogue.MonoGame.Core\FrigidRogue.MonoGame.Core.csproj" />
     <ProjectReference Include="..\..\GeonBit.UI\GeonBit.UI\GeonBit.UI.csproj" />
+    <ProjectReference Include="..\..\MonoGame.Extended\source\MonoGame.Extended\MonoGame.Extended.csproj" />
     <ProjectReference Include="..\MarsUndiscovered.Game\MarsUndiscovered.Game.csproj" />
-    <ProjectReference Include="..\..\MonoGame.Extended\src\cs\MonoGame.Extended.Tweening\MonoGame.Extended.Tweening.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Spreadsheets\Breeds.csv" />
@@ -71,6 +68,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
+    <Message Text="Restoring dotnet tools" Importance="High" />
+    <Exec Command="dotnet tool restore" />
+  </Target>
 
   <Target Name="Delete Content" BeforeTargets="BeforeBuild">
     <ItemGroup>

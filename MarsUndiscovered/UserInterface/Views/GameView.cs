@@ -14,7 +14,7 @@ using MarsUndiscovered.UserInterface.Input;
 using MarsUndiscovered.UserInterface.ViewModels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.Sprites;
+using MonoGame.Extended.Graphics;
 using SadRogue.Primitives;
 using Button = GeonBit.UI.Entities.Button;
 using Color = Microsoft.Xna.Framework.Color;
@@ -636,7 +636,9 @@ namespace MarsUndiscovered.UserInterface.Views
                 var radioCommsSpriteSheet = Assets.GetRadioCommsSpriteSheet(nextRadioComms.RadioCommsType);
 
                 RadioCommsAnimatedSprite = new AnimatedSprite(radioCommsSpriteSheet);
-                RadioCommsAnimatedSprite.Play("talk");
+                RadioCommsAnimatedSprite.SetAnimation("talk");
+                RadioCommsAnimatedSprite.Controller.Play();
+
                 RadioCommsImage.Texture = RadioCommsAnimatedSprite.TextureRegion.Texture;
                 RadioCommsImage.SourceRectangle = RadioCommsAnimatedSprite.TextureRegion.Bounds;
                 RadioCommsPanel.Visible();

@@ -31,7 +31,7 @@
         public const float TileQuadHeight = 1f;
         public const float TileQuadWidth = 1f;
 
-        public const float MapTileAnimationTime = 0.5f;
+        public const float MapTileAnimationSeconds = 0.5f;
         
         // Action names
         public const string InventoryItemSelectionCycleRequestNext = "Next Inventory Selection";

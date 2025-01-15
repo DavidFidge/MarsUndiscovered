@@ -1,18 +1,20 @@
 ﻿using System.Text.RegularExpressions;
 using FrigidRogue.MonoGame.Core.Graphics.Quads;
+
+using MarsUndiscovered.Interfaces;
+
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.View.Extensions;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
-using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Content;
-using MonoGame.Extended.Serialization;
-using MonoGame.Extended.Sprites;
+using MonoGame.Extended.Graphics;
+using MonoGame.Extended.Serialization.Json;
 
 namespace MarsUndiscovered.Graphics;
 
@@ -62,8 +64,18 @@ public class Assets : IAssets
         UiRegularFont = _gameProvider.Game.Content.Load<SpriteFont>("GeonBit.UI/themes/mars/fonts/Regular");
         MapBitmapFont = _gameProvider.Game.Content.Load<Texture2D>("fonts/BitmapFont");
         GoalMapFont = _gameProvider.Game.Content.Load<SpriteFont>("fonts/GoalMapFont");
-        ShipAiRadioComms =
-            _gameProvider.Game.Content.Load<SpriteSheet>("animations/ShipAiRadioComms.sf", new JsonContentLoader());
+
+        var shipAiRadioCommsTexture = _gameProvider.Game.Content.Load<Texture2D>("animations/ShipAiRadioComms");
+        var shipAiRadioCommsTextureAtlas = Texture2DAtlas.Create("ShipAiRadioComms", shipAiRadioCommsTexture, 32, 32);
+        ShipAiRadioComms = new SpriteSheet("ShipAiRadioComms", shipAiRadioCommsTextureAtlas);
+        
+        ShipAiRadioComms.DefineAnimation("talk", b =>
+        {
+            b.IsLooping(true);
+            b.AddFrame(0, TimeSpan.FromSeconds(1));
+            b.AddFrame(1, TimeSpan.FromSeconds(1));
+        });
+        
         var assetsList = _gameProvider.Game.Content.Load<string[]>("Content");
 
         foreach (var wallType in WallType.WallTypes)

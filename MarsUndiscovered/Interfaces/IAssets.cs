@@ -2,7 +2,7 @@ using FrigidRogue.MonoGame.Core.Graphics.Quads;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Graphics;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Sprites;
+using MonoGame.Extended.Graphics;
 
 namespace MarsUndiscovered.Interfaces
 {

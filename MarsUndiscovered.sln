@@ -25,15 +25,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoRogue", "..\GoRogue\GoRog
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BehaviourTree", "..\BehaviourTree\src\BehaviourTree\BehaviourTree.csproj", "{E6523E89-2187-4B59-96FE-7CAD01B9240A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Extended", "..\MonoGame.Extended\src\cs\MonoGame.Extended\MonoGame.Extended.csproj", "{821A2379-78B4-4447-A3CB-6DCF04EB03A8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Extended.Tweening", "..\MonoGame.Extended\src\cs\MonoGame.Extended.Tweening\MonoGame.Extended.Tweening.csproj", "{A3770718-3723-4BAE-BECF-6145B42A6689}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarsUndiscovered.Game", "MarsUndiscovered.Game\MarsUndiscovered.Game.csproj", "{066DA915-0B39-488E-B14E-19DB034D970C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrigidRogue.WaveFunctionCollapse", "..\WaveFunctionCollapse\FrigidRogue.WaveFunctionCollapse\FrigidRogue.WaveFunctionCollapse.csproj", "{7DEF305C-4EBD-4923-B5D3-1823E80010E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrigidRogue.WaveFunctionCollapse.Tests", "..\WaveFunctionCollapse\FrigidRogue.WaveFunctionCollapse.Tests\FrigidRogue.WaveFunctionCollapse.Tests.csproj", "{29D3219A-DC49-4B10-9CAF-2EB499E7CEB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Extended", "..\MonoGame.Extended\source\MonoGame.Extended\MonoGame.Extended.csproj", "{3501C0A0-957F-4B3D-B631-D08B100B0C2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,14 +83,6 @@ Global
 		{E6523E89-2187-4B59-96FE-7CAD01B9240A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6523E89-2187-4B59-96FE-7CAD01B9240A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6523E89-2187-4B59-96FE-7CAD01B9240A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{821A2379-78B4-4447-A3CB-6DCF04EB03A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{821A2379-78B4-4447-A3CB-6DCF04EB03A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{821A2379-78B4-4447-A3CB-6DCF04EB03A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{821A2379-78B4-4447-A3CB-6DCF04EB03A8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A3770718-3723-4BAE-BECF-6145B42A6689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A3770718-3723-4BAE-BECF-6145B42A6689}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A3770718-3723-4BAE-BECF-6145B42A6689}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A3770718-3723-4BAE-BECF-6145B42A6689}.Release|Any CPU.Build.0 = Release|Any CPU
 		{066DA915-0B39-488E-B14E-19DB034D970C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{066DA915-0B39-488E-B14E-19DB034D970C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{066DA915-0B39-488E-B14E-19DB034D970C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -105,6 +95,10 @@ Global
 		{29D3219A-DC49-4B10-9CAF-2EB499E7CEB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29D3219A-DC49-4B10-9CAF-2EB499E7CEB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29D3219A-DC49-4B10-9CAF-2EB499E7CEB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3501C0A0-957F-4B3D-B631-D08B100B0C2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3501C0A0-957F-4B3D-B631-D08B100B0C2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3501C0A0-957F-4B3D-B631-D08B100B0C2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3501C0A0-957F-4B3D-B631-D08B100B0C2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
