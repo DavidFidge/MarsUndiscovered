@@ -148,26 +148,6 @@ public class Assets : IAssets
 
             _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.Ship}{ch}", shipPart);
         }
-
-        var miningFacilitySectionChars = MiningFacilityGenerator.MiningFacilityPrefab.PrefabText
-            .SelectMany(s => s)
-            .Distinct()
-            .ToArray();
-
-        foreach (char ch in miningFacilitySectionChars)
-        {
-            var miningFacilitySection = new MapTileTexture(
-                _gameProvider.Game.GraphicsDevice,
-                UiConstants.TileWidth,
-                UiConstants.TileHeight,
-                MapBitmapFont,
-                ch,
-                Color.MediumPurple,
-                Color.Black
-            );
-
-            _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.MiningFacility}{ch}", miningFacilitySection);
-        }
         
         var player = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,

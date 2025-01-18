@@ -15,7 +15,6 @@ namespace MarsUndiscovered.Tests.Components
         public IMonsterGenerator MonsterGenerator { get; set; }
         public IItemGenerator ItemGenerator { get; set; }
         public IShipGenerator ShipGenerator { get; set; }
-        public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
         public IMapExitGenerator MapExitGenerator { get; set; }
         public IMachineGenerator MachineGenerator { get; set; }
    
@@ -44,7 +43,6 @@ namespace MarsUndiscovered.Tests.Components
             MachineGenerator = _originalLevelGenerator.MachineGenerator;
             
             // Currently not used
-            MiningFacilityGenerator = _originalLevelGenerator.MiningFacilityGenerator;
             ShipGenerator = _originalLevelGenerator.ShipGenerator;
         }
 

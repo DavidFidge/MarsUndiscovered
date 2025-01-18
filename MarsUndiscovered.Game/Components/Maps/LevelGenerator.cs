@@ -27,7 +27,6 @@ public class LevelGenerator : ILevelGenerator
     public IMonsterGenerator MonsterGenerator { get; set; }
     public IItemGenerator ItemGenerator { get; set; }
     public IShipGenerator ShipGenerator { get; set; }
-    public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
     public IMapExitGenerator MapExitGenerator { get; set; }
     public IMachineGenerator MachineGenerator { get; set; }
     public IFeatureGenerator FeatureGenerator { get; set; }
@@ -133,8 +132,6 @@ public class LevelGenerator : ILevelGenerator
         var map = MapGenerator.Map;
 
         ShipGenerator.CreateShip(_gameWorld.GameObjectFactory, map, _gameWorld.Ships);
-        MiningFacilityGenerator.CreateMiningFacility(_gameWorld.GameObjectFactory, map, _gameWorld.MiningFacilities);
-
 
         for (var i = 0; i < 100; i++)
         {
@@ -145,19 +142,11 @@ public class LevelGenerator : ILevelGenerator
             SpawnFeature(rubbleParams);
         }
         
-        var pointsNextToBottomOfMiningFacility = _gameWorld.MiningFacilities.Values
-            .Where(m => ((MarsMap)m.CurrentMap).Id == map.Id)
-            .Select(m => m.Position)
-            .GroupBy(m => m.Y)
-            .MaxBy(m => m.Key)
-            .Select(m => new Point(m.X, m.Y + 1))
-            .ToList();
-
+        // Todo - change this to map edge transition
         var spawnMapExitParams = new SpawnMapExitParams()
             .OnMap(map.Id)
             .WithDirection(MapExitDirection.Down);
         
-        spawnMapExitParams.MapPointChoiceRules.Add(new RestrictedSetRule(pointsNextToBottomOfMiningFacility));
         SpawnMapExitWithoutDefaultRules(spawnMapExitParams);
 
         _gameWorld.Player = _gameWorld.GameObjectFactory

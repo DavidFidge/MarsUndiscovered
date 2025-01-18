@@ -69,12 +69,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             MapTileTexture = Assets.GetMapTileTexture($"{TileGraphicType.Ship}{shipPart}");
             IsVisible = true;
         }
-        
-        public void SetMiningFacility(char miningFacilityPart)
-        {
-            MapTileTexture = Assets.GetMapTileTexture($"{TileGraphicType.MiningFacility}{miningFacilityPart}");
-            IsVisible = true;
-        }
 
         public void SetItem(ItemType itemType)
         {

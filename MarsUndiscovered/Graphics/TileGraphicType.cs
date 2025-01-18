@@ -23,6 +23,5 @@ public enum TileGraphicType
     FieldOfViewUnrevealedTexture,
     FieldOfViewHasBeenSeenTexture,
     Monster,
-    Ship,
-    MiningFacility
+    Ship
 }
