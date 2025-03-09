@@ -730,7 +730,7 @@ namespace MarsUndiscovered.Game.Components
 
             if (gameObjects.FirstOrDefault(g => g is Machine) is MapExit mapExit)
             {
-                text.AppendLine($"I see an exit going {mapExit.Direction}");
+                text.AppendLine($"I see an exit going {mapExit.MapExitType.DirectionText.ToLower()}");
 
                 return text.ToString();
             }

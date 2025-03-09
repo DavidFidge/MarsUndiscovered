@@ -2,6 +2,7 @@ using FrigidRogue.MonoGame.Core.Components.MapPointChoiceRules;
 using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.GameFramework;
 using MarsUndiscovered.Game.Components.Factories;
+using MarsUndiscovered.Game.Components.Maps.MapPointChoiceRules;
 using MarsUndiscovered.Game.Extensions;
 using MarsUndiscovered.Game.ViewMessages;
 using SadRogue.Primitives;
@@ -13,11 +14,13 @@ namespace MarsUndiscovered.Game.Components.Maps
     {
         public void SpawnMapExit(
             SpawnMapExitParams spawnMapExitParams,
-            IGameObjectFactory gameObjectFactory,
-            MapCollection maps,
-            MapExitCollection mapExitCollection
+            GameWorld gameWorld
         )
         {
+            var maps = gameWorld.Maps;
+            var mapExitCollection = gameWorld.MapExits;
+            var gameObjectFactory = gameWorld.GameObjectFactory;
+            
             spawnMapExitParams.Result = null;
             var map = maps.Single(m => m.Id == spawnMapExitParams.MapId);
             spawnMapExitParams.AssignMap(map);
@@ -63,7 +66,7 @@ namespace MarsUndiscovered.Game.Components.Maps
                 .PositionedAt(position)
                 .WithDestination(destinationMapExit)
                 .WithLandingPosition(landingPosition)
-                .WithDirection(spawnMapExitParams.Direction)
+                .WithType(spawnMapExitParams.MapExitType)
                 .AddToMap(map);
 
             mapExitCollection.Add(mapExit.ID, mapExit);
@@ -95,6 +98,138 @@ namespace MarsUndiscovered.Game.Components.Maps
             }
 
             return new RestrictedSetRule(candidatePoints);
+        }
+        
+        private void SpawnMapExitWithoutDefaultRules(
+            SpawnMapExitParams spawnMapExitParams,
+            GameWorld gameWorld
+            )
+        {
+            spawnMapExitParams.MapPointChoiceRules.Add(new EmptyFloorRule());
+            SpawnMapExit(spawnMapExitParams, gameWorld);
+        }
+        
+        public void CreateMapEdgeExits(GameWorld gameWorld,
+            MapExitType mapExitType,
+            MarsMap map,
+            MarsMap linkMap = null)
+        {
+            var mapExits = new List<MapExit>();
+
+            if (mapExitType == MapExitType.MapExitNorth)
+            {
+                for (var x = 0; x < map.Width; x++)
+                {
+                    var spawnMapExitParams = new SpawnMapExitParams()
+                        .OnMap(map.Id)
+                        .AtPosition(new Point(x, 0))
+                        .WithMapExitType(MapExitType.MapExitNorth);
+
+                    spawnMapExitParams.MapPointChoiceRules.Add(new WallAdjacentToFloorRule());
+                    SpawnMapExitWithoutDefaultRules(spawnMapExitParams, gameWorld);
+                    mapExits.Add(spawnMapExitParams.Result);
+                }
+            }
+            else if (mapExitType == MapExitType.MapExitSouth)
+            {
+                for (var x = 0; x < map.Width; x++)
+                {
+                    var spawnMapExitParams = new SpawnMapExitParams()
+                        .OnMap(map.Id)
+                        .AtPosition(new Point(x, map.Height - 1))
+                        .WithMapExitType(MapExitType.MapExitSouth);
+
+                    spawnMapExitParams.MapPointChoiceRules.Add(new WallAdjacentToFloorRule());
+                    SpawnMapExitWithoutDefaultRules(spawnMapExitParams, gameWorld);
+                    mapExits.Add(spawnMapExitParams.Result);
+                }
+            }
+            else if (mapExitType == MapExitType.MapExitEast)
+            {
+                for (var y = 0; y < map.Height; y++)
+                {
+                    var spawnMapExitParams = new SpawnMapExitParams()
+                        .OnMap(map.Id)
+                        .AtPosition(new Point(map.Width - 1, y))
+                        .WithMapExitType(MapExitType.MapExitEast);
+
+                    spawnMapExitParams.MapPointChoiceRules.Add(new WallAdjacentToFloorRule());
+                    SpawnMapExitWithoutDefaultRules(spawnMapExitParams, gameWorld);
+                    mapExits.Add(spawnMapExitParams.Result);
+                }
+            }
+            else if (mapExitType == MapExitType.MapExitWest)
+            {
+                for (var y = 0; y < map.Height; y++)
+                {
+                    var spawnMapExitParams = new SpawnMapExitParams()
+                        .OnMap(map.Id)
+                        .AtPosition(new Point(0, y))
+                        .WithMapExitType(MapExitType.MapExitWest);
+
+                    spawnMapExitParams.MapPointChoiceRules.Add(new WallAdjacentToFloorRule());
+                    SpawnMapExitWithoutDefaultRules(spawnMapExitParams, gameWorld);
+                    mapExits.Add(spawnMapExitParams.Result);
+                }
+            }
+
+            if (linkMap != null)
+            {
+                MapExitType mapExitTypeLink = null;
+
+                if (mapExitType == MapExitType.MapExitNorth)
+                {
+                    mapExitTypeLink = MapExitType.MapExitSouth;
+                }
+                else if (mapExitType == MapExitType.MapExitSouth)
+                {
+                    mapExitTypeLink = MapExitType.MapExitNorth;
+                }
+                else if (mapExitType == MapExitType.MapExitEast)
+                {
+                    mapExitTypeLink = MapExitType.MapExitWest;
+                }
+                else if (mapExitType == MapExitType.MapExitWest)
+                {
+                    mapExitTypeLink = MapExitType.MapExitEast;
+                }
+
+                var previousMapExits = gameWorld.MapExits.Values.Where(me =>
+                    Equals(me.CurrentMap, linkMap) && me.MapExitType == mapExitTypeLink);
+
+                for (var i = 0; i < mapExits.Count; i++)
+                {
+                    MapExit currentMapExit = mapExits.ElementAt(i);
+                    MapExit previousMapExit = null;
+
+                    if (mapExitType == MapExitType.MapExitNorth)
+                    {
+                        previousMapExit =
+                            previousMapExits.FirstOrDefault(m => m.Position == new Point(i, m.CurrentMap.Height - 1));
+                    }
+                    else if (mapExitType == MapExitType.MapExitSouth)
+                    {
+                        previousMapExit =
+                            previousMapExits.FirstOrDefault(m => m.Position == new Point(i, 0));
+                    }
+                    else if (mapExitType == MapExitType.MapExitEast)
+                    {
+                        previousMapExit =
+                            previousMapExits.FirstOrDefault(m => m.Position == new Point(0, i));
+                    }
+                    else if (mapExitType == MapExitType.MapExitWest)
+                    {
+                        previousMapExit =
+                            previousMapExits.FirstOrDefault(m => m.Position == new Point(m.CurrentMap.Width - 1, i));
+                    }
+
+                    if (previousMapExit == null)
+                        throw new Exception("Could not find link map");
+                    
+                    previousMapExit.Destination = currentMapExit;
+                    currentMapExit.Destination = previousMapExit;
+                }
+            }
         }
     }
 }

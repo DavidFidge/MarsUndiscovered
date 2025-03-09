@@ -63,7 +63,16 @@ namespace MarsUndiscovered.Tests.Components
             gameWorld.ProgressiveWorldGeneration(null, 1, new WorldGenerationTypeParams(MapType.Outdoor));
         }
         
-        protected void NewGameWithTestLevelGenerator(GameWorld gameWorld, IMapGenerator mapGenerator = null, int itemCount = 0, int monsterCount = 0, int machineCount = 0, bool addExits = false, int mapWidth = 60, int mapHeight = 60, Point? playerPosition = null)
+        protected void NewGameWithTestLevelGenerator(
+            GameWorld gameWorld,
+            IMapGenerator mapGenerator = null,
+            int itemCount = 0,
+            int monsterCount = 0,
+            int machineCount = 0,
+            bool addExits = false,
+            int mapWidth = 60,
+            int mapHeight = 60,
+            Point? playerPosition = null)
         {
             SetupGameWorldWithTestLevelGenerator(gameWorld, mapGenerator, itemCount, monsterCount, machineCount, addExits, mapWidth, mapHeight, playerPosition);
 

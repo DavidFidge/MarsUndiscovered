@@ -58,9 +58,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
         }
 
-        public void SetMapExit(char mapExit)
+        public void SetMapExit(MapExitType mapExitType)
         {
-            MapTileTexture = Assets.GetMapTileTexture($"{TileGraphicType.MapExit}{mapExit}");
+            MapTileTexture = Assets.GetMapTileTexture(mapExitType.Name);
             IsVisible = true;
         }
 

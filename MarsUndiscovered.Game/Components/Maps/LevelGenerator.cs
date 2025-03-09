@@ -58,29 +58,23 @@ public class LevelGenerator : ILevelGenerator
         spawnMapExitParams.MapPointChoiceRules.Add(new WallAdjacentToFloorRule());
         spawnMapExitParams.WithSeparationBetweenMapExitPoints();
         
-        MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
+        MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld);
     }
     
-    private void SpawnMapExitWithoutDefaultRules(SpawnMapExitParams spawnMapExitParams)
-    {
-        spawnMapExitParams.MapPointChoiceRules.Add(new EmptyFloorRule());
-        MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
-    }
-
-    private void CreateMapExitToNextMap(MarsMap map)
+    private void CreateMapExitDownToNextMap(MarsMap map)
     {
         SpawnMapExit(
             new SpawnMapExitParams()
                 .OnMap(map.Id)
-                .WithDirection(MapExitDirection.Down)
+                .WithMapExitType(MapExitType.MapExitDown)
         );
     }
 
-    private void CreateMapExitToPreviousMap(MarsMap currentMap, MarsMap previousMap)
+    private void CreateMapExitUpToPreviousMap(MarsMap currentMap, MarsMap previousMap)
     {
         var spawnMapExitParams = new SpawnMapExitParams()
             .OnMap(currentMap.Id)
-            .WithDirection(MapExitDirection.Up);
+            .WithMapExitType(MapExitType.MapExitUp);
         
         SpawnMapExit(spawnMapExitParams);
 
@@ -89,7 +83,7 @@ public class LevelGenerator : ILevelGenerator
 
     private void LinkMapExit(MarsMap previousMap, MapExit mapExit)
     {
-        var previousMapExit = _gameWorld.MapExits.Values.First(me => Equals(me.CurrentMap, previousMap) && me.Direction == MapExitDirection.Down);
+        var previousMapExit = _gameWorld.MapExits.Values.First(me => Equals(me.CurrentMap, previousMap) && me.MapExitType == MapExitType.MapExitDown);
         mapExit.Destination = previousMapExit;
         previousMapExit.Destination = mapExit;
     }
@@ -141,13 +135,9 @@ public class LevelGenerator : ILevelGenerator
             
             SpawnFeature(rubbleParams);
         }
-        
-        // Todo - change this to map edge transition
-        var spawnMapExitParams = new SpawnMapExitParams()
-            .OnMap(map.Id)
-            .WithDirection(MapExitDirection.Down);
-        
-        SpawnMapExitWithoutDefaultRules(spawnMapExitParams);
+
+        // link map doesn't exist yet, pass in null
+        MapExitGenerator.CreateMapEdgeExits(_gameWorld, MapExitType.MapExitNorth, map);
 
         _gameWorld.Player = _gameWorld.GameObjectFactory
             .CreateGameObject<Player>()
@@ -180,16 +170,16 @@ public class LevelGenerator : ILevelGenerator
         
         return map;
     }
-    
+
     private MarsMap CreateLevel2(MarsMap previousMap)
     {
-        MapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60);
+        MapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, 70, 70);
         _gameWorld.AddMapToGame(MapGenerator.Map);
         var map = MapGenerator.Map;
         map.Level = 2;
-
-        CreateMapExitToPreviousMap(map, previousMap);
-        CreateMapExitToNextMap(map);
+        
+        MapExitGenerator.CreateMapEdgeExits(_gameWorld, MapExitType.MapExitSouth, map, previousMap);
+        CreateMapExitDownToNextMap(map);
 
         var probabilityTable = new ProbabilityTable<MonsterSpawner>(
             new List<(MonsterSpawner monsterSpawner, double weight)>
@@ -223,8 +213,8 @@ public class LevelGenerator : ILevelGenerator
         var map = MapGenerator.Map;
         map.Level = 3;
         
-        CreateMapExitToPreviousMap(map, previousMap);
-        CreateMapExitToNextMap(map);
+        CreateMapExitUpToPreviousMap(map, previousMap);
+        CreateMapExitDownToNextMap(map);
         
         var probabilityTable = new ProbabilityTable<MonsterSpawner>(
             new List<(MonsterSpawner monsterSpawner, double weight)>
@@ -261,7 +251,7 @@ public class LevelGenerator : ILevelGenerator
         SpawnItem(new SpawnItemParams().OnMap(map.Id).WithItemType(ItemType.ShipRepairParts));
         SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Yendorian Master")).OnMap(map.Id));
         
-        CreateMapExitToPreviousMap(map, previousMap);
+        CreateMapExitUpToPreviousMap(map, previousMap);
         
         var itemsToPlace = RNG.NextInt(5, 10);
         SpawnItems(itemsToPlace, map);
@@ -282,6 +272,15 @@ public class LevelGenerator : ILevelGenerator
         var level3Map = CreateLevel3(level2Map);
         
         CreateLevel4(level3Map);
+
+        foreach (var mapExit in _gameWorld.MapExits.Values)
+        {
+            if (mapExit.Destination == null)
+                throw new Exception(
+                    $"Map exit Destination is null: map level {mapExit.CurrentMap.MarsMap().Level}, point {mapExit.Position}." +
+                    $" If this map has north south east or west exits, make sure the width/length of the common edge of each map is long enough" +
+                    $" for the map exits to be able to look up their destinations.");
+        }
     }
 
     private void SetupItemWeightTable()
