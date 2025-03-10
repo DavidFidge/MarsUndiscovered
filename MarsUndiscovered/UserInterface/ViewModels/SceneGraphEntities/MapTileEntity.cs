@@ -58,21 +58,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
         }
 
-        public void SetMapExit(char mapExit)
+        public void SetMapExit(MapExitType mapExitType)
         {
-            MapTileTexture = Assets.GetMapTileTexture($"{TileGraphicType.MapExit}{mapExit}");
+            MapTileTexture = Assets.GetMapTileTexture(mapExitType.Name);
             IsVisible = true;
         }
 
         public void SetShip(char shipPart)
         {
             MapTileTexture = Assets.GetMapTileTexture($"{TileGraphicType.Ship}{shipPart}");
-            IsVisible = true;
-        }
-        
-        public void SetMiningFacility(char miningFacilityPart)
-        {
-            MapTileTexture = Assets.GetMapTileTexture($"{TileGraphicType.MiningFacility}{miningFacilityPart}");
             IsVisible = true;
         }
 

@@ -45,7 +45,6 @@ namespace MarsUndiscovered.Game.Components
         public MachineCollection Machines { get; private set; }
         public MapExitCollection MapExits { get; private set; }
         public ShipCollection Ships { get; private set; }
-        public MiningFacilityCollection MiningFacilities { get; private set; }
 
         public IDictionary<uint, IGameObject> GameObjects => GameObjectFactory.GameObjects;
 
@@ -189,7 +188,6 @@ namespace MarsUndiscovered.Game.Components
             Machines = new MachineCollection(GameObjectFactory);
             MapExits = new MapExitCollection(GameObjectFactory);
             Ships = new ShipCollection(GameObjectFactory);
-            MiningFacilities = new MiningFacilityCollection(GameObjectFactory);
             Maps = new MapCollection();
             _autoExploreGoalMap = new AutoExploreGoalMap();
 
@@ -597,7 +595,6 @@ namespace MarsUndiscovered.Game.Components
             Machines.LoadState(saveGameService, gameWorld);
             MapExits.LoadState(saveGameService, gameWorld);
             Ships.LoadState(saveGameService, gameWorld);
-            MiningFacilities.LoadState(saveGameService, gameWorld);
 
             var playerSaveData = saveGameService.GetFromStore<PlayerSaveData>();
 
@@ -634,7 +631,6 @@ namespace MarsUndiscovered.Game.Components
             Machines.SaveState(saveGameService, gameWorld);
             MapExits.SaveState(saveGameService, gameWorld);
             Ships.SaveState(saveGameService, gameWorld);
-            MiningFacilities.SaveState(saveGameService, gameWorld);
             MessageLog.SaveState(saveGameService, gameWorld);
             _radioComms.SaveState(saveGameService, gameWorld);
             Player.SaveState(saveGameService, gameWorld);
@@ -734,7 +730,7 @@ namespace MarsUndiscovered.Game.Components
 
             if (gameObjects.FirstOrDefault(g => g is Machine) is MapExit mapExit)
             {
-                text.AppendLine($"I see an exit going {mapExit.Direction}");
+                text.AppendLine($"I see an exit going {mapExit.MapExitType.DirectionText.ToLower()}");
 
                 return text.ToString();
             }

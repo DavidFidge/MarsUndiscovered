@@ -10,7 +10,6 @@ public interface ILevelGenerator
     IMonsterGenerator MonsterGenerator { get; set; }
     IItemGenerator ItemGenerator { get; set; }
     IShipGenerator ShipGenerator { get; set; }
-    IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
     IMapExitGenerator MapExitGenerator { get; set; }
     IMachineGenerator MachineGenerator { get; set; }
 }

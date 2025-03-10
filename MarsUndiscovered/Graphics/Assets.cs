@@ -111,24 +111,12 @@ public class Assets : IAssets
         {
             CreateGameObjectTypeGraphics(itemType, assetsList, itemType.GetAbstractTypeName());
         }
-
-        foreach (var mapExitDirection in Enum.GetValues<MapExitDirection>())
+        
+        foreach (var mapExitType in MapExitType.MapExitTypes)
         {
-            var mapExitChar = MapExit.GetAsciiCharacter(mapExitDirection);
-
-            var mapExit = new MapTileTexture(
-                _gameProvider.Game.GraphicsDevice,
-                UiConstants.TileWidth,
-                UiConstants.TileHeight,
-                MapBitmapFont,
-                mapExitChar,
-                Color.Yellow,
-                Color.SaddleBrown
-            );
-
-            _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.MapExit}{mapExitChar}", mapExit);
+            CreateGameObjectTypeGraphics(mapExitType.Value, assetsList, mapExitType.Key);
         }
-
+        
         var shipPartChars = ShipGenerator.ShipPrefab.PrefabText
             .SelectMany(s => s)
             .Distinct()
@@ -147,26 +135,6 @@ public class Assets : IAssets
             );
 
             _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.Ship}{ch}", shipPart);
-        }
-
-        var miningFacilitySectionChars = MiningFacilityGenerator.MiningFacilityPrefab.PrefabText
-            .SelectMany(s => s)
-            .Distinct()
-            .ToArray();
-
-        foreach (char ch in miningFacilitySectionChars)
-        {
-            var miningFacilitySection = new MapTileTexture(
-                _gameProvider.Game.GraphicsDevice,
-                UiConstants.TileWidth,
-                UiConstants.TileHeight,
-                MapBitmapFont,
-                ch,
-                Color.MediumPurple,
-                Color.Black
-            );
-
-            _asciiMapTileGraphics.AddMapTileTextures($"{TileGraphicType.MiningFacility}{ch}", miningFacilitySection);
         }
         
         var player = new MapTileTexture(

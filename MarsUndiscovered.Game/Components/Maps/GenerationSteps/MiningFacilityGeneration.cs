@@ -1,4 +1,5 @@
-﻿using FrigidRogue.WaveFunctionCollapse;
+﻿using FrigidRogue.MonoGame.Core.Extensions;
+using FrigidRogue.WaveFunctionCollapse;
 using FrigidRogue.WaveFunctionCollapse.ContentLoaders;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
 using GoRogue.MapGeneration;
@@ -38,25 +39,16 @@ public class MiningFacilityGeneration : GenerationStep
     {
         _waveFunctionCollapseGeneratorPasses.LoadContent(_contentLoader, "Maps/MiningFacility");
 
-        if (generationContext.Width % _waveFunctionCollapseGeneratorPasses.TileWidth != 0)
-        {
-            throw new ArgumentException(
-                "Map width must be a multiple of the tile width of the passes - each pixel in the tile width represents one map unit so map width passed in gets divided by the texture tile size to make this happen..",
-                nameof(generationContext.Width));
-        }
+        var mapSize = new Point(generationContext.Width, generationContext.Height);
+        
+        // WaveFunctionCollapse being used here are images with 3x3 pixels representing a square on the map.
+        // So the wave function collapse can only generate a texture divisible by 3
+        var textureSize = new Point(
+            generationContext.Width / _waveFunctionCollapseGeneratorPasses.TileWidth,
+            generationContext.Height / _waveFunctionCollapseGeneratorPasses.TileHeight);
 
-        if (generationContext.Height % _waveFunctionCollapseGeneratorPasses.TileHeight != 0)
-        {
-            throw new ArgumentException(
-                "Map height must be a multiple of the tile height of the passes - each pixel in the tile height represents one map unit so map height passed in gets divided by the texture tile size to make this happen.",
-                nameof(generationContext.Height));
-        }
-
-        var mapWidth = generationContext.Width / _waveFunctionCollapseGeneratorPasses.TileWidth;
-        var mapHeight = generationContext.Height / _waveFunctionCollapseGeneratorPasses.TileHeight;
-
-        _waveFunctionCollapseGeneratorPasses.MapOptions.MapWidth = mapWidth;
-        _waveFunctionCollapseGeneratorPasses.MapOptions.MapHeight = mapHeight;
+        _waveFunctionCollapseGeneratorPasses.MapOptions.MapWidth = textureSize.X;
+        _waveFunctionCollapseGeneratorPasses.MapOptions.MapHeight = textureSize.Y;
         _waveFunctionCollapseGeneratorPasses.CreatePasses();
 
         var isRejected = true;
@@ -71,9 +63,16 @@ public class MiningFacilityGeneration : GenerationStep
             var texture2D = _waveFunctionCollapseGeneratorPasses.RenderToTexture2D(_renderer);
 
             var data = new Color[texture2D.Width * texture2D.Height];
-
             texture2D.GetData(data);
 
+            if (mapSize != textureSize)
+            {
+                var dataMapSize = new Color[mapSize.X * mapSize.Y];
+                Array.Fill(dataMapSize, Color.White);
+                data.CopyInto(dataMapSize, texture2D.Width, mapSize.X);
+                data = dataMapSize;
+            }
+            
             arrayView = new ArrayView<GameObjectType>(generationContext.Width, generationContext.Height);
 
             var miningFacilityFloorCount = 0;

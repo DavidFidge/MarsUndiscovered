@@ -15,8 +15,7 @@ namespace MarsUndiscovered.Game.Components
             foreach (var item in saveData)
             {
                 var mapExit = this[item.State.Id];
-                var mapExitDestination = this[item.State.DestinationId];
-                mapExit.Destination = mapExitDestination;
+                mapExit.Destination = this[item.State.DestinationId];
             }
         }
 

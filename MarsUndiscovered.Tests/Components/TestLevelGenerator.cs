@@ -15,7 +15,6 @@ namespace MarsUndiscovered.Tests.Components
         public IMonsterGenerator MonsterGenerator { get; set; }
         public IItemGenerator ItemGenerator { get; set; }
         public IShipGenerator ShipGenerator { get; set; }
-        public IMiningFacilityGenerator MiningFacilityGenerator { get; set; }
         public IMapExitGenerator MapExitGenerator { get; set; }
         public IMachineGenerator MachineGenerator { get; set; }
    
@@ -44,7 +43,6 @@ namespace MarsUndiscovered.Tests.Components
             MachineGenerator = _originalLevelGenerator.MachineGenerator;
             
             // Currently not used
-            MiningFacilityGenerator = _originalLevelGenerator.MiningFacilityGenerator;
             ShipGenerator = _originalLevelGenerator.ShipGenerator;
         }
 
@@ -122,7 +120,7 @@ namespace MarsUndiscovered.Tests.Components
             spawnMapExitParams.MapPointChoiceRules.Add(new WallAdjacentToFloorRule());
             spawnMapExitParams.WithSeparationBetweenMapExitPoints();
 
-            MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
+            MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld);
             return spawnMapExitParams.Result;
         }
 
@@ -134,7 +132,7 @@ namespace MarsUndiscovered.Tests.Components
             SpawnMapExit(
                 new SpawnMapExitParams()
                     .OnMap(map.Id)
-                    .WithDirection(MapExitDirection.Down)
+                    .WithMapExitType(MapExitType.MapExitDown)
             );
         }
 
@@ -145,7 +143,7 @@ namespace MarsUndiscovered.Tests.Components
             
             var mapExit = SpawnMapExit(new SpawnMapExitParams()
                 .OnMap(currentMap.Id)
-                .WithDirection(MapExitDirection.Up));
+                .WithMapExitType(MapExitType.MapExitUp));
 
             if (mapExit != null)
                 LinkMapExit(previousMap, mapExit);
@@ -153,7 +151,7 @@ namespace MarsUndiscovered.Tests.Components
 
         private void LinkMapExit(MarsMap previousMap, MapExit mapExit)
         {
-            var previousMapExit = _gameWorld.MapExits.Values.First(me => Equals(me.CurrentMap, previousMap) && me.Direction == MapExitDirection.Down);
+            var previousMapExit = _gameWorld.MapExits.Values.First(me => Equals(me.CurrentMap, previousMap) && me.MapExitType == MapExitType.MapExitDown);
             mapExit.Destination = previousMapExit;
             previousMapExit.Destination = mapExit;
         }

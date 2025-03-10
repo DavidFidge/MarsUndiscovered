@@ -112,7 +112,7 @@ namespace MarsUndiscovered.Game.Components
                 {
                     var mapExitDown = gameWorld.MapExits.Values
                         .Where(m => m.CurrentMap.Equals(map))
-                        .Where(m => m.Direction == MapExitDirection.Down)
+                        .Where(m => m.MapExitType == MapExitType.MapExitDown)
                         .ToList();
 
                     if (mapExitDown.Any())

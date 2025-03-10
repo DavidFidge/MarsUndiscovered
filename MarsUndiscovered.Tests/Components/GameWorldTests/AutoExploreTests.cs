@@ -106,7 +106,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var mapExitPosition = new Point(0, 5);
 
-            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(MapExitDirection.Down));
+            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithMapExitType(MapExitType.MapExitDown));
             _gameWorld.TestResetFieldOfView();
 
             // Act
@@ -143,7 +143,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var mapExitPosition = new Point(0, 5);
 
-            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(MapExitDirection.Down));
+            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithMapExitType(MapExitType.MapExitDown));
             _gameWorld.TestResetFieldOfView();
 
             // Act
@@ -313,7 +313,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var mapExitPosition = new Point(5, 5);
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition));
-            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(MapExitDirection.Down));
+            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithMapExitType(MapExitType.MapExitDown));
             _gameWorld.TestResetFieldOfView();
 
             // Act
@@ -339,7 +339,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var mapExitPosition = new Point(5, 10);
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(monsterPosition));
-            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(MapExitDirection.Down));
+            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithMapExitType(MapExitType.MapExitDown));
             _gameWorld.TestResetFieldOfView();
 
             // Act
@@ -362,7 +362,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var mapExitPosition = new Point(5, 10);
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(monsterPosition));
-            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(MapExitDirection.Down));
+            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithMapExitType(MapExitType.MapExitDown));
             _gameWorld.TestResetFieldOfView();
 
             // Act
@@ -386,7 +386,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var mapExitPosition = new Point(5, 10);
 
             _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(monsterPosition));
-            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithDirection(MapExitDirection.Down));
+            _gameWorld.SpawnMapExit(new SpawnMapExitParams().AtPosition(mapExitPosition).WithMapExitType(MapExitType.MapExitDown));
             _gameWorld.TestResetFieldOfView();
 
             // Act

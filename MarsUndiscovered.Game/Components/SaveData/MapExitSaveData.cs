@@ -6,6 +6,6 @@ namespace MarsUndiscovered.Game.Components.SaveData
     {
         public uint DestinationId { get; set; }
         public Point LandingPosition { get; set; }
-        public MapExitDirection Direction { get; set; }
+        public string MapExitTypeName { get; set; }
     }
 }

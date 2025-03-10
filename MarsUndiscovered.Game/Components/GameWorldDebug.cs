@@ -33,7 +33,7 @@ namespace MarsUndiscovered.Game.Components
 
         public void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
         {
-            MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.MapExits);
+            MapExitGenerator.SpawnMapExit(spawnMapExitParams, _gameWorld);
         }
 
         public void SpawnMachine(SpawnMachineParams spawnMachineParams)
