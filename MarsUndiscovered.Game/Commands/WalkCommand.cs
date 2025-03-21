@@ -127,10 +127,5 @@ namespace MarsUndiscovered.Game.Commands
 
             return Result(CommandResult.Exception(this, $"Cannot move {Direction}"));
         }
-
-        protected override void UndoInternal()
-        {
-            Player.IsVictorious = false;
-        }
     }
 }

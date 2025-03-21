@@ -246,5 +246,10 @@ namespace MarsUndiscovered.Game.Components
         {
             GameWorld.SpawnMachine(spawnMachineParams);
         }
+        
+        public void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams)
+        {
+            GameWorld.SpawnEnvironmentalEffect(spawnEnvironmentalEffectParams);
+        }
     }
 }

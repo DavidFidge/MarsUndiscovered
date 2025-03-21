@@ -863,8 +863,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var attackCommand = result[0] as LineAttackCommand;
             Assert.IsNotNull(attackCommand);
             var saveState = attackCommand.GetSaveState();
-            Assert.AreEqual(monster1.ID, saveState.State.LineAttackCommandRestore[0].Id);
-            Assert.AreEqual(_gameWorld.Player.ID, saveState.State.LineAttackCommandRestore[1].Id);
+            Assert.AreEqual(monster1.ID, saveState.State.LineAttackData[0].Id);
+            Assert.AreEqual(_gameWorld.Player.ID, saveState.State.LineAttackData[1].Id);
             Assert.AreSame(monster2, attackCommand.Source);
             Assert.IsTrue(monster1.IsDead);
         }

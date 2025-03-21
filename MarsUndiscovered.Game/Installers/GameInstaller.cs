@@ -52,6 +52,10 @@ namespace MarsUndiscovered.Game.Installers
                     .ImplementedBy<FeatureGenerator>()
                     .LifestyleTransient(),
                 
+                Component.For<IEnvironmentalEffectGenerator>()
+                    .ImplementedBy<EnvironmentalEffectGenerator>()
+                    .LifestyleTransient(),
+
                 Component.For<IMachineGenerator>()
                     .ImplementedBy<MachineGenerator>()
                     .LifestyleTransient(),
@@ -189,6 +193,9 @@ namespace MarsUndiscovered.Game.Installers
                     .AsFactory(),
                 
                 Component.For<ICommandFactory<PlayerRangeAttackCommand>>()
+                    .AsFactory(),
+            
+                Component.For<ICommandFactory<ExplodeTileCommand>>()
                     .AsFactory()
             );
         }

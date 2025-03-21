@@ -29,7 +29,7 @@ namespace MarsUndiscovered.Game.Commands
             
             foreach (var target in targets)
             {
-                var lineAttackCommandRestore = new AttackRestoreData
+                var lineAttackCommandRestore = new AttackData
                 {
                     Id = target.ID,
                     Damage = damage,
@@ -37,7 +37,7 @@ namespace MarsUndiscovered.Game.Commands
                     Shield = target.Shield
                 };
                 
-                _data.LightningAttackCommandRestore.Add(lineAttackCommandRestore);
+                _data.LightningAttackData.Add(lineAttackCommandRestore);
                 
                 target.ApplyDamage(damage);
 
@@ -55,15 +55,6 @@ namespace MarsUndiscovered.Game.Commands
             }
 
             return Result(commandResult);
-        }
-
-        protected override void UndoInternal()
-        {
-            foreach (var restore in _data.LightningAttackCommandRestore)
-            {
-                ((Actor)GameWorld.GameObjects[restore.Id]).Health = restore.Health;
-                ((Actor)GameWorld.GameObjects[restore.Id]).Shield = restore.Shield;
-            }
         }
 
         public void Initialise(Actor source, Point targetPoint)

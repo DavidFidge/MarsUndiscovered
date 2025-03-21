@@ -43,6 +43,7 @@ namespace MarsUndiscovered.Game.Components
         public MonsterCollection Monsters { get; private set; }
         public ItemCollection Items { get; private set; }
         public MachineCollection Machines { get; private set; }
+        public EnvironmentalEffectCollection EnvironmentalEffects { get; private set; }
         public MapExitCollection MapExits { get; private set; }
         public ShipCollection Ships { get; private set; }
 
@@ -186,6 +187,7 @@ namespace MarsUndiscovered.Game.Components
             Monsters = new MonsterCollection(GameObjectFactory);
             Items = new ItemCollection(GameObjectFactory);
             Machines = new MachineCollection(GameObjectFactory);
+            EnvironmentalEffects = new EnvironmentalEffectCollection(GameObjectFactory);
             MapExits = new MapExitCollection(GameObjectFactory);
             Ships = new ShipCollection(GameObjectFactory);
             Maps = new MapCollection();
@@ -593,6 +595,7 @@ namespace MarsUndiscovered.Game.Components
             Monsters.LoadState(saveGameService, gameWorld);
             Items.LoadState(saveGameService, gameWorld);
             Machines.LoadState(saveGameService, gameWorld);
+            EnvironmentalEffects.LoadState(saveGameService, gameWorld);
             MapExits.LoadState(saveGameService, gameWorld);
             Ships.LoadState(saveGameService, gameWorld);
 
@@ -629,6 +632,7 @@ namespace MarsUndiscovered.Game.Components
             Monsters.SaveState(saveGameService, gameWorld);
             Items.SaveState(saveGameService, gameWorld);
             Machines.SaveState(saveGameService, gameWorld);
+            EnvironmentalEffects.SaveState(saveGameService, gameWorld);
             MapExits.SaveState(saveGameService, gameWorld);
             Ships.SaveState(saveGameService, gameWorld);
             MessageLog.SaveState(saveGameService, gameWorld);
@@ -858,7 +862,13 @@ namespace MarsUndiscovered.Game.Components
             spawnMachineParams.MapId = CurrentMap.Id;
             GameWorldDebug.SpawnMachine(spawnMachineParams);
         }
-
+        
+        public void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams)
+        {
+            spawnEnvironmentalEffectParams.MapId = CurrentMap.Id;
+            GameWorldDebug.SpawnEnvironmentalEffect(spawnEnvironmentalEffectParams);
+        }
+        
         public IList<CommandResult> IdentifyItemRequest(Keys requestKey)
         {
             if (!Inventory.ItemKeyAssignments.TryGetValue(requestKey, out var item))

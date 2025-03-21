@@ -41,7 +41,7 @@ namespace MarsUndiscovered.Game.Commands
             
             foreach (var target in targets)
             {
-                var lineAttackCommandRestore = new AttackRestoreData
+                var laserAttack = new AttackData
                 {
                     Id = target.ID,
                     Damage = damage,
@@ -49,7 +49,7 @@ namespace MarsUndiscovered.Game.Commands
                     Shield = target.Shield
                 };
                 
-                _data.LaserAttackCommandRestore.Add(lineAttackCommandRestore);
+                _data.LaserAttackData.Add(laserAttack);
                 
                 target.ApplyDamage(damage);
 
@@ -67,15 +67,6 @@ namespace MarsUndiscovered.Game.Commands
             }
 
             return Result(commandResult);
-        }
-
-        protected override void UndoInternal()
-        {
-            foreach (var restore in _data.LaserAttackCommandRestore)
-            {
-                ((Actor)GameWorld.GameObjects[restore.Id]).Health = restore.Health;
-                ((Actor)GameWorld.GameObjects[restore.Id]).Shield = restore.Shield;
-            }
         }
 
         public IList<Actor> GetTargets()

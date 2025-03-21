@@ -28,7 +28,7 @@ namespace MarsUndiscovered.Game.Commands
 
             var damage = Source.MeleeAttack.Roll();
 
-            _data.AttackRestoreData = new AttackRestoreData
+            _data.AttackData = new AttackData
             {
                 Damage = damage,
                 Health = Target.Health,
@@ -53,12 +53,6 @@ namespace MarsUndiscovered.Game.Commands
             }
 
             return Result(commandResult);
-        }
-
-        protected override void UndoInternal()
-        {
-            Target.Health = _data.AttackRestoreData.Health;
-            Target.Shield = _data.AttackRestoreData.Shield;
         }
     }
 }

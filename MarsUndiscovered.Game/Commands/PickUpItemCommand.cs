@@ -46,12 +46,5 @@ namespace MarsUndiscovered.Game.Commands
 
             return Result(CommandResult.Success(this, $"I pick up {itemDescription}"));
         }
-
-        protected override void UndoInternal()
-        {
-            GameWorld.Inventory.Remove(Item);
-            Item.Position = GameObject.Position;
-            GameObject.CurrentMap.AddEntity(Item);
-        }
     }
 }

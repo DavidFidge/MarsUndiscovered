@@ -62,7 +62,11 @@ namespace MarsUndiscovered.Game.Components.Maps
                 GlobalRandom.DefaultRNG.NextInt(width, height)
                 );
 
-            var generationSteps = new GenerationStep[] { new MineWorkerGeneration(), new WallFloorTypeConverterGenerator() };
+            var generationSteps = new GenerationStep[]
+            {
+                new MineWorkerGeneration(),
+                new WallFloorTypeConverterGenerator()
+            };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }

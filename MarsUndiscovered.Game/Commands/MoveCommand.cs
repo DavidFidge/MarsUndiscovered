@@ -45,10 +45,5 @@ namespace MarsUndiscovered.Game.Commands
 
             return Result(CommandResult.Success(this, subsequentCommands));
         }
-
-        protected override void UndoInternal()
-        {
-            GameObject.Position = FromTo.Item1;
-        }
     }
 }

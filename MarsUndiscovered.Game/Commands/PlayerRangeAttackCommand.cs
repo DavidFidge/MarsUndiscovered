@@ -39,10 +39,5 @@ namespace MarsUndiscovered.Game.Commands
             
             return Result(CommandResult.Exception(this, "Ranged weapon not equipped"));
         }
-
-        protected override void UndoInternal()
-        {
-            Player.IsVictorious = false;
-        }
     }
 }

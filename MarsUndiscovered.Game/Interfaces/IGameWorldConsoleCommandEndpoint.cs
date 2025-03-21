@@ -8,5 +8,6 @@ namespace MarsUndiscovered.Interfaces
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
         void SpawnMapExit(SpawnMapExitParams spawnMapExitParams);
         void SpawnMachine(SpawnMachineParams spawnMachineParams);
+        void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams);
     }
 }

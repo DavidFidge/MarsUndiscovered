@@ -31,9 +31,11 @@ namespace MarsUndiscovered.Interfaces
         MonsterCollection Monsters { get; }
         ItemCollection Items { get; }
         MachineCollection Machines { get; }
+        EnvironmentalEffectCollection EnvironmentalEffects { get; }
         Inventory Inventory { get; }
         MapExitCollection MapExits { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
+        IGameObjectFactory GameObjectFactory { get; set; }
         MapCollection Maps { get; }
         ILevelGenerator LevelGenerator { get; set; }
         Guid GameId { get; }
@@ -76,5 +78,6 @@ namespace MarsUndiscovered.Interfaces
         Path GetPathForRangedAttack(Point mapPosition);
         InventoryItem GetEquippedItem();
         MessageLog MessageLog { get; }
+        void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams);
     }
 }

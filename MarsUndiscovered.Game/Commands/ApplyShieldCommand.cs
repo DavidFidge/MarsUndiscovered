@@ -31,10 +31,5 @@ namespace MarsUndiscovered.Game.Commands
 
             return Result(commandResult);
         }
-
-        protected override void UndoInternal()
-        {
-            Target.Shield = _data.OldShieldAmount;
-        }
     }
 }

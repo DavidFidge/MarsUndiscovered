@@ -79,6 +79,9 @@ namespace MarsUndiscovered.Game.Components
         
         public List<PlayerRangeAttackCommand> PlayerRangeAttackCommand { get; private set; } = new();
         public ICommandFactory<PlayerRangeAttackCommand> PlayerRangeAttackCommandFactory { get; set; }
+
+        public List<ExplodeTileCommand> ExplodeTileCommands { get; private set; } = new();
+        public ICommandFactory<ExplodeTileCommand> ExplodeTileCommandFactory { get; set; }
         
         private Dictionary<uint, BaseGameActionCommand> _commandsById = new();
         private Dictionary<Type, PropertyInfo> _commandListProperties;

@@ -52,22 +52,5 @@ namespace MarsUndiscovered.Game.Commands
             Mediator.Publish(new MapTileChangedNotification(GameObject.Position));
             return Result(CommandResult.Success(this));
         }
-
-        protected override void UndoInternal()
-        {
-            GameObject.CurrentMap.RemoveEntity(GameObject);
-            GameObject.Position = _data.OldPosition;
-            
-            _oldMap.AddEntity(GameObject);
-
-            if (GameObject is Player)
-            {
-                GameWorld.ChangeMap(_oldMap);
-            }
-            else
-            {
-                Mediator.Publish(new MapTileChangedNotification(_data.OldPosition));
-            }
-        }
     }
 }

@@ -6,6 +6,6 @@ namespace MarsUndiscovered.Game.Commands
     {
         public uint SourceId { get; set; }
         public List<Point> Path { get; set; }
-        public List<AttackRestoreData> LightningAttackCommandRestore { get; set; } = new List<AttackRestoreData>();
+        public List<AttackData> LightningAttackData { get; set; } = new List<AttackData>();
     }
 }
