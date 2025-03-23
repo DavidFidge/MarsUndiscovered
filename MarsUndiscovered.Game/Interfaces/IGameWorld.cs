@@ -79,5 +79,6 @@ namespace MarsUndiscovered.Interfaces
         InventoryItem GetEquippedItem();
         MessageLog MessageLog { get; }
         void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams);
+        Rectangle GetCurrentMapDimensions();
     }
 }

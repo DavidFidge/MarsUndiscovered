@@ -13,7 +13,7 @@ namespace MarsUndiscovered.UserInterface.Views
     public class SaveGameView : BaseMarsUndiscoveredView<SaveGameViewModel, SaveGameData>,
         IRequestHandler<SaveGameRequest>
     {
-        private readonly IGameWorldEndpoint _gameWorldEndpoint;
+        private readonly IGameWorldProvider _gameWorldProvider;
         private Panel _saveGamePanel;
         private TextInput _saveGameName;
         private Button _overwriteButton;
@@ -22,10 +22,10 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public SaveGameView(
             SaveGameViewModel saveGameViewModel,
-            IGameWorldEndpoint gameWorldEndpoint)
+            IGameWorldProvider gameWorldProvider)
             : base(saveGameViewModel)
         {
-            _gameWorldEndpoint = gameWorldEndpoint;
+            _gameWorldProvider = gameWorldProvider;
         }
 
         protected override void InitializeInternal()
@@ -81,7 +81,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             base.Show();
 
-            _saveGameName.Value = _gameWorldEndpoint.GetSeed();
+            _saveGameName.Value = _gameWorldProvider.GameWorld.Seed.ToString();
         }
 
         public void Handle(SaveGameRequest request)
@@ -92,7 +92,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             if (_saveGameName.Value != null)
             {
-                var result = _gameWorldEndpoint.SaveGame(_saveGameName.Value, request.Overwrite);
+                var result = _gameWorldProvider.GameWorld.SaveGame(_saveGameName.Value, request.Overwrite);
 
                 Reset();
 

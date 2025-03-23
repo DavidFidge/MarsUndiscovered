@@ -33,7 +33,7 @@ namespace MarsUndiscovered.Game.Components
         public IGameTimeService GameTimeService { get; set; }
         public IGameTurnService GameTurnService { get; set; }
         public ISaveGameService SaveGameService { get; set; }
-        public IGameWorldDebug GameWorldDebug { get; set; }
+        public ISpawner Spawner { get; set; }
         public ICommandCollection CommandCollection { get; set; }
 
         public WallCollection Walls { get; private set; }
@@ -194,7 +194,7 @@ namespace MarsUndiscovered.Game.Components
             _autoExploreGoalMap = new AutoExploreGoalMap();
 
             GameObjectFactory.Initialise(this);
-            GameWorldDebug.Initialise(this);
+            Spawner.Initialise(this);
             CommandCollection.Initialise();
         }
 
@@ -847,26 +847,34 @@ namespace MarsUndiscovered.Game.Components
 
         public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
         {
-            spawnMonsterParams.MapId = CurrentMap.Id;
-            GameWorldDebug.SpawnMonster(spawnMonsterParams);
+            if (spawnMonsterParams.MapId == Guid.Empty)
+                spawnMonsterParams.MapId = CurrentMap.Id;
+            
+            Spawner.SpawnMonster(spawnMonsterParams);
         }
 
         public void SpawnItem(SpawnItemParams spawnItemParams)
         {
-            spawnItemParams.MapId = CurrentMap.Id;
-            GameWorldDebug.SpawnItem(spawnItemParams);
+            if (spawnItemParams.MapId == Guid.Empty)
+                spawnItemParams.MapId = CurrentMap.Id;
+            
+            Spawner.SpawnItem(spawnItemParams);
         }
 
         public void SpawnMachine(SpawnMachineParams spawnMachineParams)
         {
-            spawnMachineParams.MapId = CurrentMap.Id;
-            GameWorldDebug.SpawnMachine(spawnMachineParams);
+            if (spawnMachineParams.MapId == Guid.Empty)
+                spawnMachineParams.MapId = CurrentMap.Id;
+            
+            Spawner.SpawnMachine(spawnMachineParams);
         }
         
         public void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams)
         {
-            spawnEnvironmentalEffectParams.MapId = CurrentMap.Id;
-            GameWorldDebug.SpawnEnvironmentalEffect(spawnEnvironmentalEffectParams);
+            if (spawnEnvironmentalEffectParams.MapId == Guid.Empty)
+                spawnEnvironmentalEffectParams.MapId = CurrentMap.Id;
+            
+            Spawner.SpawnEnvironmentalEffect(spawnEnvironmentalEffectParams);
         }
         
         public IList<CommandResult> IdentifyItemRequest(Keys requestKey)
@@ -883,8 +891,10 @@ namespace MarsUndiscovered.Game.Components
 
         public void SpawnMapExit(SpawnMapExitParams spawnMapExitParams)
         {
-            spawnMapExitParams.MapId = CurrentMap.Id;
-            GameWorldDebug.SpawnMapExit(spawnMapExitParams);
+            if (spawnMapExitParams.MapId == Guid.Empty)
+                spawnMapExitParams.MapId = CurrentMap.Id;
+            
+            Spawner.SpawnMapExit(spawnMapExitParams);
         }
 
         public void CancelIdentify()
@@ -895,6 +905,11 @@ namespace MarsUndiscovered.Game.Components
             var undoCommand = CommandCollection.CreateCommand<UndoCommand>(this);
             undoCommand.Initialise(lastCommand.Id);
             ExecuteCommand(undoCommand).ToList();
+        }
+
+        public Rectangle GetCurrentMapDimensions()
+        {
+            return Rectangle.WithPositionAndSize(new Point(0, 0), CurrentMap.Width, CurrentMap.Height);
         }
     }
 }

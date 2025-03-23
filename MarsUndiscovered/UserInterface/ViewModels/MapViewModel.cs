@@ -55,7 +55,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private ArrayView<GoalMapEntity> _goalMapTiles;
         private ArrayView<MapTileEntity> _mouseHoverTiles;
         private Path _mouseHoverPath;
-        private IGameWorldEndpoint _gameWorldEndpoint;
+        private IGameWorldProvider _gameWorldProvider;
+        private IGameWorld GameWorld => _gameWorldProvider.GameWorld;
         private IList<ISpriteBatchDrawable> _allTiles;
 
         private int _width;
@@ -99,16 +100,16 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         }
 
         public void SetupNewMap(
-            IGameWorldEndpoint gameWorldEndpoint,
+            IGameWorldProvider gameWorldProvider,
             IGameOptionsStore gameOptionsStore
             )
         {
             _assets.SetTileGraphicOptions(new TileGraphicOptions(gameOptionsStore.GetFromStore<GameOptionsData>().State));
 
             _mouseHoverPath = null;
-            _gameWorldEndpoint = gameWorldEndpoint;
+            _gameWorldProvider = gameWorldProvider;
 
-            var currentMapDimensions = _gameWorldEndpoint.GetCurrentMapDimensions();
+            var currentMapDimensions = GameWorld.GetCurrentMapDimensions();
             _width = currentMapDimensions.Width;
             _height = currentMapDimensions.Height;
 
@@ -155,11 +156,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
             if (_fieldOfViewTiles[point].IsVisible && _fieldOfViewTiles[point].HasBeenSeen)
             {
-                gameObjects = _gameWorldEndpoint.GetLastSeenGameObjectsAtPosition(point);
+                gameObjects = GameWorld.GetLastSeenGameObjectsAtPosition(point);
             }
             else
             {
-                gameObjects = _gameWorldEndpoint.GetObjectsAt(point);
+                gameObjects = GameWorld.GetObjectsAt(point);
             }
 
             UpdateTileGameObjects(point, gameObjects);
@@ -179,7 +180,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             }
             else
             {
-                _gameWorldEndpoint.UpdateFieldOfView(false);
+                GameWorld.UpdateFieldOfView(false);
             }
 
             UpdateAllTiles();
@@ -376,7 +377,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (!_showGoalMap)
                 return;
 
-            var goalMap = _gameWorldEndpoint.GetGoalMap();
+            var goalMap = GameWorld.GetGoalMap();
 
             if (goalMap == null)
                 return;
@@ -452,7 +453,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 return;
             }
 
-            _mouseHoverPath = _gameWorldEndpoint.GetPathToPlayer(mapPosition.Value);
+            _mouseHoverPath = GameWorld.GetPathToPlayer(mapPosition.Value);
 
             UpdateMouseHoverPathTileVisibility(true);
         }
@@ -514,7 +515,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void RecentreMap()
         {
-            _mapEntity.SetCentreTranslation(_gameWorldEndpoint.GetPlayerPosition());
+            _mapEntity.SetCentreTranslation(GameWorld.GetPlayerPosition());
         }
 
         public void UpdateDebugTiles()
@@ -541,7 +542,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 return;
             }
 
-            _mouseHoverPath = _gameWorldEndpoint.GetPathForRangedAttack(mapPosition.Value);
+            _mouseHoverPath = GameWorld.GetPathForRangedAttack(mapPosition.Value);
 
             UpdateMouseHoverPathTileVisibility(true); 
         }
@@ -550,7 +551,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             UpdateMouseHoverPathTileVisibility(false);
 
-            _mouseHoverPath = _gameWorldEndpoint.GetPathForRangedAttack(point);
+            _mouseHoverPath = GameWorld.GetPathForRangedAttack(point);
 
             UpdateMouseHoverPathTileVisibility(true);
         }
@@ -558,7 +559,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void MoveHover(Direction requestDirection)
         {
             UpdateMouseHoverPathTileVisibility(false);
-            var playerPosition = _gameWorldEndpoint.GetPlayerPosition();
+            var playerPosition = GameWorld.GetPlayerPosition();
             var currentSelection = Point.None;
 
             if (_mouseHoverPath != null)
@@ -572,7 +573,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             // If player tries to move outside map the current selection will remain
             // unless the point is on the player themselves
             if (Bounds.Contains(currentSelection))
-                _mouseHoverPath = _gameWorldEndpoint.GetPathForRangedAttack(currentSelection);
+                _mouseHoverPath = GameWorld.GetPathForRangedAttack(currentSelection);
             
             if (playerPosition == currentSelection)
                 _mouseHoverPath = null;

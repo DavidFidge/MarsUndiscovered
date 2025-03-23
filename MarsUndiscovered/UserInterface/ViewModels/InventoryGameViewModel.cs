@@ -12,22 +12,22 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     {
         public void EquipRequest(Keys requestKey)
         {
-            DoRequest(requestKey, requestKey1 => GameWorldEndpoint.EquipItemRequest(requestKey1));
+            DoRequest(requestKey, requestKey1 => GameWorld.EquipItemRequest(requestKey1));
         }
 
         public void UnequipRequest(Keys requestKey)
         {
-            DoRequest(requestKey, requestKey1 => GameWorldEndpoint.UnequipItemRequest(requestKey1));
+            DoRequest(requestKey, requestKey1 => GameWorld.UnequipItemRequest(requestKey1));
         }
 
         public void DropRequest(Keys requestKey)
         {
-            DoRequest(requestKey, requestKey1 => GameWorldEndpoint.DropItemRequest(requestKey1));
+            DoRequest(requestKey, requestKey1 => GameWorld.DropItemRequest(requestKey1));
         }
 
         public void ApplyRequest(Keys requestKey)
         {
-            var commandResults = DoRequest(requestKey, requestKey1 => GameWorldEndpoint.ApplyItemRequest(requestKey1));
+            var commandResults = DoRequest(requestKey, requestKey1 => GameWorld.ApplyItemRequest(requestKey1));
             
             foreach (var commandResult in commandResults)
             {
@@ -64,28 +64,28 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void EnchantItemRequest(Keys requestKey)
         {
-            DoRequest(requestKey, requestKey => GameWorldEndpoint.EnchantItemRequest(requestKey));
+            DoRequest(requestKey, requestKey => GameWorld.EnchantItemRequest(requestKey));
         }
         
         public void IdentifyItemRequest(Keys requestKey)
         {
-            DoRequest(requestKey, requestKey => GameWorldEndpoint.IdentifyItemRequest(requestKey));
+            DoRequest(requestKey, requestKey => GameWorld.IdentifyItemRequest(requestKey));
         }
 
         public void ClosingInventoryNoAction(InventoryMode inventoryMode)
         {
             if (inventoryMode == InventoryMode.Identify)
-                GameWorldEndpoint.CancelIdentify();
+                GameWorld.CancelIdentify();
         }
 
         public void AssignHotBarItem(Keys inventoryItemKey, Keys requestKey)
         {
-            GameWorldEndpoint.AssignHotBarItem(inventoryItemKey, requestKey);
+            GameWorld.AssignHotBarItem(inventoryItemKey, requestKey);
         }
 
         public void RemoveHotBarItem(Keys requestKey)
         {
-            GameWorldEndpoint.RemoveHotBarItem(requestKey);
+            GameWorld.RemoveHotBarItem(requestKey);
         }
     }
 }

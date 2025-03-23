@@ -4,7 +4,7 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Components
 {
-    public class GameWorldDebug : BaseComponent, IGameWorldDebug
+    public class Spawner : BaseComponent, ISpawner
     {
         public IMonsterGenerator MonsterGenerator { get; set; }
         public IItemGenerator ItemGenerator { get; set; }

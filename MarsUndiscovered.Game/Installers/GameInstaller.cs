@@ -72,13 +72,14 @@ namespace MarsUndiscovered.Game.Installers
                     .BasedOn<IGameCamera>()
                     .WithServiceDefaultInterfaces(),
 
-                Component.For<IGameWorldEndpoint, IGameWorldConsoleCommandEndpoint>()
-                    .ImplementedBy<GameWorldEndpoint>(),
-
-                Component.For<IGameWorldDebug>()
-                    .ImplementedBy<GameWorldDebug>()
+                Component.For<ISpawner>()
+                    .ImplementedBy<Spawner>()
                     .LifestyleTransient(),
-
+                
+                Component.For<IGameWorldProvider>()
+                    .ImplementedBy<GameWorldProvider>()
+                    .LifestyleSingleton(),
+                
                 Component.For<IGameWorld>()
                     .ImplementedBy<GameWorld>()
                     .LifestyleTransient(),

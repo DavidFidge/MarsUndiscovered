@@ -67,7 +67,7 @@ namespace MarsUndiscovered.Tests.Commands
                 for (var x = 0; x < 3; x++)
                 {
                     if (!(x == 0 && y == 0))
-                        _gameWorld.GameWorldDebug.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(x, y)).OnMap(destinationMap.Id));
+                        _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(x, y)).OnMap(destinationMap.Id));
                 }
             }
 
