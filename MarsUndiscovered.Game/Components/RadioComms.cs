@@ -12,7 +12,8 @@ public enum RadioCommsTypes
 {
     StartGame1,
     StartGame2,
-    PickupShipParts
+    PickupShipParts,
+    Level2StoryStart,
 }
 
 public class RadioComms : List<RadioCommsEntry>, ISaveable
@@ -20,9 +21,11 @@ public class RadioComms : List<RadioCommsEntry>, ISaveable
     public static string ShipAiSource = "INCOMING MESSAGE FROM MY SHIP AI";
     private int _seenCount;
     private Dictionary<RadioCommsTypes, RadioCommsPrefab> _radioCommsPrefabs = new();
-
-    public RadioComms()
+    private IGameWorld _gameWorld;
+    
+    public RadioComms(IGameWorld gameWorld)
     {
+        _gameWorld = gameWorld;
         CreatePrefabs();
     }
 
@@ -53,19 +56,21 @@ public class RadioComms : List<RadioCommsEntry>, ISaveable
                 "Allow me a minute to scan these parts you've found.........yes, they are adequate for the repairs to the broken fuel injection system. I've identified the hardware and can confirm I am able to interface with these parts. Please bring them back immediately - my repair bots will have the ship prepared for their installation and we will be able to depart within minutes of your arrival."
             )
         );
+        
+        _radioCommsPrefabs.Add(
+            RadioCommsTypes.Level2StoryStart,
+            new RadioCommsPrefab(RadioCommsTypes.Level2StoryStart,
+                ShipAiSource,
+                "Captain, I'm detecting signatures in the sky indicating an incoming missile bombardment! Keep moving - I'm able to track them and will give you a signal on the places they will hit."
+            )
+        );
     }
 
-    private void AddRadioCommsEntry(RadioCommsTypes radioCommsType, IGameObject gameObject)
+    public void AddRadioCommsEntry(RadioCommsTypes radioCommsType, IGameObject gameObject)
     {
         var radioCommsPrefab = _radioCommsPrefabs[radioCommsType];
         AddRadioCommsEntry(radioCommsPrefab.RadioCommsType, gameObject, radioCommsPrefab.Message, radioCommsPrefab.Source);
-    }
-
-    private void AddRadioCommsEntry(RadioCommsTypes radioCommsType, IGameObject gameObject, MessageLog messageLog)
-    {
-        var radioCommsPrefab = _radioCommsPrefabs[radioCommsType];
-        AddRadioCommsEntry(radioCommsPrefab.RadioCommsType, gameObject, radioCommsPrefab.Message, radioCommsPrefab.Source);
-        messageLog.AddMessage($"{radioCommsPrefab.Source}: {radioCommsPrefab.Message}");
+        _gameWorld.MessageLog.AddMessage($"{radioCommsPrefab.Source}: {radioCommsPrefab.Message}");
     }
 
     private void AddRadioCommsEntry(RadioCommsTypes radioCommsType, IGameObject gameObject, string message, string source)
@@ -81,12 +86,12 @@ public class RadioComms : List<RadioCommsEntry>, ISaveable
         return radioCommsEntries;
     }
 
-    public void CreateGameStartMessages(MessageLog messageLog, Player player)
+    public void CreateGameStartMessages()
     {
-        AddRadioCommsEntry(RadioCommsTypes.StartGame1, player, messageLog);
-        AddRadioCommsEntry(RadioCommsTypes.StartGame2, player, messageLog);
+        AddRadioCommsEntry(RadioCommsTypes.StartGame1, _gameWorld.Player);
+        AddRadioCommsEntry(RadioCommsTypes.StartGame2,  _gameWorld.Player);
     }
-
+    
     public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
     {
         var radioCommsItemSaveData = this
@@ -115,9 +120,10 @@ public class RadioComms : List<RadioCommsEntry>, ISaveable
             AddRadioCommsEntry(radioCommsItem.RadioCommsType, gameWorld.GameObjects[radioCommsItem.GameObjectId]);
 
         _seenCount = state.SeenCount;
+        _gameWorld = gameWorld;
     }
 
-    public void ProcessCommand(BaseGameActionCommand command, MessageLog messageLog)
+    public void ProcessCommand(BaseGameActionCommand command)
     {
         if (command is PickUpItemCommand pickUpItemCommand)
         {
@@ -129,8 +135,7 @@ public class RadioComms : List<RadioCommsEntry>, ISaveable
                     {
                         AddRadioCommsEntry(
                             RadioCommsTypes.PickupShipParts,
-                            pickUpItemCommand.Item,
-                            messageLog
+                            pickUpItemCommand.Item
                         );
                     }
                 }

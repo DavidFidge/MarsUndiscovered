@@ -29,6 +29,7 @@ namespace MarsUndiscovered.Game.Components
         public Guid GameId { get; private set; }
         public Player Player { get; set; }
         public IMorgue Morgue { get; set; }
+        public IStory Story { get; set; }
         public IGameObjectFactory GameObjectFactory { get; set; }
         public IGameTimeService GameTimeService { get; set; }
         public IGameTurnService GameTurnService { get; set; }
@@ -55,7 +56,7 @@ namespace MarsUndiscovered.Game.Components
 
         public MessageLog MessageLog { get; } = new();
 
-        private readonly RadioComms _radioComms = new();
+        public RadioComms RadioComms { get; set; }
 
         public ulong Seed { get; set; }
 
@@ -98,7 +99,7 @@ namespace MarsUndiscovered.Game.Components
 
             Inventory = new Inventory(this);
 
-            _radioComms.CreateGameStartMessages(MessageLog, Player);
+            RadioComms.CreateGameStartMessages();
 
             ResetFieldOfView();
         }
@@ -115,7 +116,8 @@ namespace MarsUndiscovered.Game.Components
             GlobalRandom.DefaultRNG = new MizuchiRandom(seed.Value);
 
             Inventory = new Inventory(this);
-
+            RadioComms = new RadioComms(this);
+            
             GameTimeService.Reset();
             GameTimeService.Start();
         }
@@ -196,6 +198,7 @@ namespace MarsUndiscovered.Game.Components
             GameObjectFactory.Initialise(this);
             Spawner.Initialise(this);
             CommandCollection.Initialise();
+            Story.Initialize(this);
         }
 
         public void UpdateFieldOfView(bool partialUpdate = true)
@@ -422,6 +425,18 @@ namespace MarsUndiscovered.Game.Components
                 }
             }
 
+            foreach (var environmentalEffect in EnvironmentalEffects.Values.Where(m => m.CurrentMap.Equals(CurrentMap)).ToList())
+            {
+                foreach (var command in environmentalEffect.NextTurn(CommandCollection))
+                {
+                    foreach (var result in ExecuteCommand(command))
+                        yield return result;
+                }
+                
+                if (environmentalEffect.IsRemoved)
+                    EnvironmentalEffects.Remove(environmentalEffect.ID);
+            }
+            
             Regenerate();
             RechargeItems();
             UpdateMonstersInView();
@@ -450,7 +465,7 @@ namespace MarsUndiscovered.Game.Components
         {
             var result = command.Execute();
             MessageLog.AddMessages(result.Messages);
-            _radioComms.ProcessCommand(command, MessageLog);
+            RadioComms.ProcessCommand(command);
 
             yield return result;
 
@@ -484,7 +499,7 @@ namespace MarsUndiscovered.Game.Components
 
         public IList<RadioCommsItem> GetNewRadioCommsItems()
         {
-            return _radioComms
+            return RadioComms
                 .GetNewRadioComms()
                 .Select(s => new RadioCommsItem(s))
                 .ToList();;
@@ -609,12 +624,13 @@ namespace MarsUndiscovered.Game.Components
             Player.LoadState(saveGameService, gameWorld);
 
             MessageLog.LoadState(saveGameService, gameWorld);
-            _radioComms.LoadState(saveGameService, gameWorld);
+            RadioComms.LoadState(saveGameService, gameWorld);
 
             Maps.LoadState(saveGameService, gameWorld);
             GameTimeService.LoadState(saveGameService);
             CommandCollection.LoadState(saveGameService, gameWorld);
 
+            Story.LoadState(saveGameService, gameWorld);
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
             SetLoadState(gameWorldSaveData);
             
@@ -636,13 +652,14 @@ namespace MarsUndiscovered.Game.Components
             MapExits.SaveState(saveGameService, gameWorld);
             Ships.SaveState(saveGameService, gameWorld);
             MessageLog.SaveState(saveGameService, gameWorld);
-            _radioComms.SaveState(saveGameService, gameWorld);
+            RadioComms.SaveState(saveGameService, gameWorld);
             Player.SaveState(saveGameService, gameWorld);
             CommandCollection.SaveState(saveGameService, gameWorld);
             Inventory.SaveState(saveGameService, gameWorld);
             Maps.SaveState(saveGameService, gameWorld);
             GameTimeService.SaveState(saveGameService);
-
+            Story.SaveState(saveGameService, gameWorld);
+            
             var gameWorldSaveData = GetSaveState();
             saveGameService.SaveToStore(gameWorldSaveData);
 

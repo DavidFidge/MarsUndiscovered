@@ -29,6 +29,8 @@ namespace MarsUndiscovered.Game.Components
         public int Damage { get; set; }
         public int Duration { get; set; }
         
+        public bool IsRemoved { get; set; }
+        
         private IList<BaseGameActionCommand> _nextCommands;
         
         public EnvironmentalEffect(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.EnvironmentalEffectLayer, idGenerator: () => id)
@@ -79,6 +81,8 @@ namespace MarsUndiscovered.Game.Components
                 explodeTileCommand.Initialise(this.Position, this.Damage, this);
 
                 _nextCommands.Add(explodeTileCommand);
+
+                IsRemoved = true;
             }
             
             return _nextCommands;

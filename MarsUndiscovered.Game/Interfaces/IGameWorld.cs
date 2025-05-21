@@ -78,6 +78,7 @@ namespace MarsUndiscovered.Interfaces
         Path GetPathForRangedAttack(Point mapPosition);
         InventoryItem GetEquippedItem();
         MessageLog MessageLog { get; }
+        RadioComms RadioComms { get; set; }
         void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams);
         Rectangle GetCurrentMapDimensions();
     }

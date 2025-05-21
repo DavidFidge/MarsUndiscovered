@@ -96,6 +96,10 @@ namespace MarsUndiscovered.Game.Installers
                     .ImplementedBy<Morgue>()
                     .LifestyleTransient(),
                 
+                Component.For<IStory>()
+                    .ImplementedBy<Story>()
+                    .LifestyleTransient(),
+                
                 Component.For<IMorgueWebService>()
                     .ImplementedBy<MorgueWebService>(),
                 
