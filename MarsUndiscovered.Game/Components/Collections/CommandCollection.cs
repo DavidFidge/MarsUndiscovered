@@ -224,16 +224,19 @@ namespace MarsUndiscovered.Game.Components
             return command;
         }
 
-        public T GetLastCommand<T>()
+        public T GetLastCommand<T>() where T : BaseGameActionCommand
         {
             var commandListProperty = _commandListProperties[typeof(T)];
             
             var commandList = (IList)commandListProperty.GetValue(this);
             
+            if (commandList.Count == 0)
+                return null;
+
             return (T)commandList[^1];
         }
 
-        public List<T> GetCommands<T>()
+        public List<T> GetCommands<T>() where T : BaseGameActionCommand
         {
             var commandListProperty = _commandListProperties[typeof(T)];
             

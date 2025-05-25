@@ -411,20 +411,6 @@ namespace MarsUndiscovered.Game.Components
 
         protected IEnumerable<CommandResult> NextTurn()
         {
-            LastMonstersInView = MonstersInView;
-
-            foreach (var monster in Monsters.LiveMonsters.Where(m => m.CurrentMap.Equals(CurrentMap)))
-            {
-                if (Player.IsDead)
-                    yield break;
-
-                foreach (var command in monster.NextTurn(CommandCollection))
-                {
-                    foreach (var result in ExecuteCommand(command))
-                        yield return result;
-                }
-            }
-
             foreach (var environmentalEffect in EnvironmentalEffects.Values.Where(m => m.CurrentMap.Equals(CurrentMap)).ToList())
             {
                 foreach (var command in environmentalEffect.NextTurn(CommandCollection))
@@ -432,14 +418,29 @@ namespace MarsUndiscovered.Game.Components
                     foreach (var result in ExecuteCommand(command))
                         yield return result;
                 }
-                
+
                 if (environmentalEffect.IsRemoved)
                     EnvironmentalEffects.Remove(environmentalEffect.ID);
             }
-            
+
+            LastMonstersInView = MonstersInView;
+
+            foreach (var monster in Monsters.LiveMonsters.Where(m => m.CurrentMap.Equals(CurrentMap)))
+            {
+                if (Player.IsDead)
+                    yield break;
+
+                foreach (var command in monster.NextTurn())
+                {
+                    foreach (var result in ExecuteCommand(command))
+                        yield return result;
+                }
+            }
+
             Regenerate();
             RechargeItems();
             UpdateMonstersInView();
+            Story.NextTurn();
         }
 
         private void RechargeItems()

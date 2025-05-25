@@ -138,6 +138,69 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
-        } 
+        }
+
+        [TestMethod]
+        public void Missile_Environmental_Effect_Should_Explode_Tile_After_Duration()
+        {
+            // Arrange
+            var lines = new[]
+            {
+                "...",
+                "...",
+                "..."
+            };
+
+            var mapTemplate = new MapTemplate(lines);
+
+            var mapGenerator = new SpecificMapGenerator(
+                _gameWorld.GameObjectFactory,
+                mapTemplate
+                    .Where(m => m.Char == '#')
+                    .Select(m => m.Point).ToList());
+
+            NewGameWithTestLevelGenerator(
+                _gameWorld,
+                mapGenerator,
+                playerPosition: new Point(0, 0),
+                mapWidth: mapTemplate.Bounds.Width,
+                mapHeight: mapTemplate.Bounds.Height);
+
+            var spawnEnvironmentalEffectParams = new SpawnEnvironmentalEffectParams()
+                .WithEnvironmentalEffectType(EnvironmentalEffectType.MissileTargetType)
+                .AtPosition(new Point(1, 1))
+                .OnMap(_gameWorld.CurrentMap.Id);
+
+            _gameWorld.SpawnEnvironmentalEffect(spawnEnvironmentalEffectParams);
+
+            var environmentalEffect = spawnEnvironmentalEffectParams.Result;
+
+            environmentalEffect.Duration = 2;
+
+            // Act
+            _gameWorld.TestNextTurn().ToList();
+
+            Assert.AreEqual(1, environmentalEffect.Duration);
+
+            var noResult = _gameWorld.CommandCollection.GetLastCommand<ExplodeTileCommand>();
+            Assert.IsNull(noResult);
+
+            _gameWorld.TestNextTurn().ToList();
+
+            Assert.AreEqual(0, environmentalEffect.Duration);
+
+            var result = _gameWorld.CommandCollection.GetLastCommand<ExplodeTileCommand>().CommandResult;
+
+            // Assert
+            Assert.AreEqual(CommandResultEnum.Success, result.Result);
+
+            Assert.AreEqual(
+                $"There was an explosion nearby",
+                result.Messages[0]);
+
+            Assert.IsFalse(result.Command.EndsPlayerTurn);
+            Assert.IsFalse(result.Command.RequiresPlayerInput);
+            Assert.IsFalse(result.Command.InterruptsMovement);
+        }
     }
 }

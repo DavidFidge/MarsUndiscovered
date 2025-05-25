@@ -28,13 +28,13 @@ namespace MarsUndiscovered.Game.Components
         
         public int Damage { get; set; }
         public int Duration { get; set; }
-        
         public bool IsRemoved { get; set; }
         
         private IList<BaseGameActionCommand> _nextCommands;
         
         public EnvironmentalEffect(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.EnvironmentalEffectLayer, idGenerator: () => id)
         {
+            _nextCommands = new List<BaseGameActionCommand>();
         }
         
         public IMemento<EnvironmentalEffectSaveData> GetSaveState()

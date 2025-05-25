@@ -60,7 +60,7 @@ namespace MarsUndiscovered.Game.Commands
                         
                         deathCommand.Initialise(actor, sourceSentence);
                         commandResult.SubsequentCommands.Add(deathCommand);
-                    }                    
+                    }
                 }
 
                 if (gameObject is Feature feature)
@@ -68,7 +68,12 @@ namespace MarsUndiscovered.Game.Commands
                     GameWorld.CurrentMap.RemoveEntity(feature);
                 }
             }
-            
+
+            if (!commandResult.Messages.Any())
+            {
+                commandResult.Messages.Add("There was an explosion nearby");
+            }
+
             Mediator.Publish(new MapTileChangedNotification(_data.Point));
 
             return Result(commandResult);

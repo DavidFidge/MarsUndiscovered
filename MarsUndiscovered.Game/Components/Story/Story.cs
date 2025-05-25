@@ -22,16 +22,14 @@ public class Story : BaseComponent, IStory, ISaveable
     {
         _data = new StorySaveData();
         _gameWorld = gameWorld;
+        CreateBehaviourTree();
     }
 
     public void NextTurn()
     {
-        if (_gameWorld.CurrentMap.Level == 2 && !_data.HasVisitedMiningFacilityOutside)
-        {
-            
-        }
+        _behaviourTree.Tick(this);
     }
-    
+
     private void CreateBehaviourTree()
     {
         var fluentBuilder = FluentBuilder.Create<Story>();
@@ -41,11 +39,7 @@ public class Story : BaseComponent, IStory, ISaveable
             .Condition("is active", s => s._data.IsLevel2StoryActive)
             .Condition("on level 2", s => s._gameWorld.Player.CurrentMap.MarsMap().Level == 2)
             .Selector("action selector")
-                .Subtree(ConcussBehaviour())
-                .Subtree(MeleeAttackBehaviour())
-                .Subtree(LineAttackBehaviour())
-                .Subtree(LightningAttackBehaviour())
-                .Subtree(MoveBehavior())
+                .Subtree(Level2Behaviour())
                 .End()
             .End()
             .Build();
@@ -60,7 +54,7 @@ public class Story : BaseComponent, IStory, ISaveable
                 .Sequence("start level 2")
                     .Condition("has visited mining facility", s => !s._data.HasVisitedMiningFacilityOutside)
                     .Do(
-                        "setup missiles",
+                        "comms message and flag",
                         s =>
                         {
                             s._data.HasVisitedMiningFacilityOutside = true;
@@ -73,14 +67,12 @@ public class Story : BaseComponent, IStory, ISaveable
                         {
                             var environmentalEffectParams = new SpawnEnvironmentalEffectParams()
                                 .WithEnvironmentalEffectType(EnvironmentalEffectType.MissileTargetType)
-                                .OnMap()
-                            var environmentalEffect = _gameWorld.SpawnEnvironmentalEffect()
-                                
-                                
-                                .GameObjectFactory.CreateGameObject<EnvironmentalEffect>();
-                            environmentalEffect.EnvironmentalEffectType = EnvironmentalEffectType.MissileTargetType;
-                            environmentalEffect.
-                            
+                                .OnMap(_gameWorld.CurrentMap.Id);
+
+                            _gameWorld.SpawnEnvironmentalEffect(environmentalEffectParams);
+
+                            environmentalEffectParams.Result.Duration = 2;
+
                             return BehaviourStatus.Succeeded;
                         }
                     )
