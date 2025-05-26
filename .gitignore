@@ -62,3 +62,4 @@ artifacts/
 *.scc
 *.DotSettings.user
 *.nupkg
+*.csproj.user
