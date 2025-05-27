@@ -420,7 +420,10 @@ namespace MarsUndiscovered.Game.Components
                 }
 
                 if (environmentalEffect.IsRemoved)
+                {
                     EnvironmentalEffects.Remove(environmentalEffect.ID);
+                    CurrentMap.RemoveEntity(environmentalEffect);
+                }
             }
 
             LastMonstersInView = MonstersInView;

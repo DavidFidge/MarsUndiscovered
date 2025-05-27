@@ -36,23 +36,39 @@ public class Story : BaseComponent, IStory, ISaveable
 
         _behaviourTree = fluentBuilder
             .Sequence("root")
-            .Condition("is active", s => s._data.IsLevel2StoryActive)
-            .Condition("on level 2", s => s._gameWorld.Player.CurrentMap.MarsMap().Level == 2)
             .Selector("action selector")
                 .Subtree(Level2Behaviour())
                 .End()
             .End()
             .Build();
     }
-    
+ 
     private IBehaviour<Story> Level2Behaviour()
     {
         var behaviour = FluentBuilder.Create<Story>()
             .Sequence("level 2")
                 .Condition("is active", s => s._data.IsLevel2StoryActive)
-                .Condition("on level 2", s => s._gameWorld.Player.CurrentMap.MarsMap().Level == 2)
+                .Condition("on level 2", s =>
+                {
+                    return s._gameWorld.Player.CurrentMap.MarsMap().Level == 2; 
+                })
+                // If not a Do() then further leaves need to be put into a subtree
+                .Subtree(Level2StorySelector())
+            .End()
+            .Build();
+
+        return behaviour;
+    }
+
+    private IBehaviour<Story> Level2StorySelector()
+    {
+        var behaviour = FluentBuilder.Create<Story>()
+            .Selector("level 2 story selector")
                 .Sequence("start level 2")
-                    .Condition("has visited mining facility", s => !s._data.HasVisitedMiningFacilityOutside)
+                    .Condition("has visited mining facility", s =>
+                    {
+                        return !s._data.HasVisitedMiningFacilityOutside;
+                    })
                     .Do(
                         "comms message and flag",
                         s =>
@@ -62,6 +78,8 @@ public class Story : BaseComponent, IStory, ISaveable
                             return BehaviourStatus.Succeeded;
                         }
                     )
+                .End()
+                .Sequence("Spawn Missiles")
                     .Do("Add missiles",
                         s =>
                         {
@@ -76,13 +94,13 @@ public class Story : BaseComponent, IStory, ISaveable
                             return BehaviourStatus.Succeeded;
                         }
                     )
-                
+                .End()
             .End()
             .Build();
 
         return behaviour;
     }
-    
+
     public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
     {
         var storySaveData = new Memento<StorySaveData>(_data);

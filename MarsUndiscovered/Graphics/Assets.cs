@@ -385,6 +385,7 @@ public class Assets : IAssets
             RadioCommsTypes.StartGame1 => ShipAiRadioComms,
             RadioCommsTypes.StartGame2 => ShipAiRadioComms,
             RadioCommsTypes.PickupShipParts => ShipAiRadioComms,
+            RadioCommsTypes.Level2StoryStart => ShipAiRadioComms,
             _ => null
         };
     }

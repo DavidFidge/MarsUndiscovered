@@ -11,7 +11,7 @@ namespace MarsUndiscovered.Game.Components
     {
         public override char AsciiCharacter => '@';
 
-        public const int BaseHealth = 100;
+        public const int BaseHealth = 1000;
         public override string Name => "I";
         public override string ObjectiveName => "Me";
         public override string PossessiveName => "My";
@@ -26,7 +26,7 @@ namespace MarsUndiscovered.Game.Components
         public Player(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
             NameIsProperNoun = true;
-            MaxHealth = 100;
+            MaxHealth = BaseHealth;
             Health = MaxHealth;
             RegenRate = 0.005m;
             InitialiseAttacks();
