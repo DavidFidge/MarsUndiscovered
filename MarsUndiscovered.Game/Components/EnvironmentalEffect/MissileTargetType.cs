@@ -8,7 +8,7 @@ public class MissileTargetType : EnvironmentalEffectType
     public MissileTargetType()
     {
         ForegroundColour = Color.Red;
-        BackgroundColour = Color.Black;
+        BackgroundColour = Color.Transparent;
         
         AsciiCharacter = '0';
 

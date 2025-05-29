@@ -296,6 +296,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private void UpdateTileGameObjects(Point point, IList<IGameObject> gameObjects)
         {
+            var environmentalEffect = gameObjects.FirstOrDefault(go => go is EnvironmentalEffect) as EnvironmentalEffect;
+
+            if (environmentalEffect != null)
+                _actorTiles[point].SetEnvironmentalEffect(environmentalEffect.EnvironmentalEffectType);
+
             var actor = gameObjects.FirstOrDefault(go => go is Actor);
 
             if (actor != null)

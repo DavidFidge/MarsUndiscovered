@@ -102,7 +102,12 @@ public class Assets : IAssets
         {
             CreateGameObjectTypeGraphics(machineType.Value, assetsList, machineType.Key);
         }
-        
+
+        foreach (var environmentalEffectTypes in EnvironmentalEffectType.EnvironmentalEffectTypes)
+        {
+            CreateGameObjectTypeGraphics(environmentalEffectTypes.Value, assetsList, environmentalEffectTypes.Key);
+        }
+
         var itemTypes = ItemType.ItemTypes.Values
             .GroupBy(i => i.AsciiCharacter)
             .Select(g => g.First()).ToList();

@@ -1,9 +1,13 @@
 using BehaviourTree;
 using BehaviourTree.FluentBuilder;
 using FrigidRogue.MonoGame.Core.Components;
+using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
+
+using GoRogue.Random;
+
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Components;
@@ -80,16 +84,14 @@ public class Story : BaseComponent, IStory, ISaveable
                     )
                 .End()
                 .Sequence("Spawn Missiles")
+                    .Condition("Randomise spawn", s =>
+                    {
+                        return GlobalRandom.DefaultRNG.NextInt(2) == 0;
+                    })
                     .Do("Add missiles",
                         s =>
                         {
-                            var environmentalEffectParams = new SpawnEnvironmentalEffectParams()
-                                .WithEnvironmentalEffectType(EnvironmentalEffectType.MissileTargetType)
-                                .OnMap(_gameWorld.CurrentMap.Id);
-
-                            _gameWorld.SpawnEnvironmentalEffect(environmentalEffectParams);
-
-                            environmentalEffectParams.Result.Duration = 2;
+                            SpawnMissiles();
 
                             return BehaviourStatus.Succeeded;
                         }
@@ -99,6 +101,30 @@ public class Story : BaseComponent, IStory, ISaveable
             .Build();
 
         return behaviour;
+    }
+
+    private void SpawnMissiles()
+    {
+        var randomMapPosition = _gameWorld.CurrentMap.RandomPosition();
+
+        var points = _gameWorld.CurrentMap.CircleCoveringPoints(randomMapPosition, 5);
+
+        foreach (var point in points)
+        {
+            if (_gameWorld.CurrentMap.GetObjectAt<EnvironmentalEffect>(point) != null)
+            {
+                continue; // Skip if there's already an environmental effect here
+            }
+
+            var environmentalEffectParams = new SpawnEnvironmentalEffectParams()
+                .WithEnvironmentalEffectType(EnvironmentalEffectType.MissileTargetType)
+                .AtPosition(point)
+                .OnMap(_gameWorld.CurrentMap.Id);
+
+            _gameWorld.SpawnEnvironmentalEffect(environmentalEffectParams);
+
+            environmentalEffectParams.Result.Duration = 3;
+        }
     }
 
     public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
