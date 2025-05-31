@@ -10,7 +10,7 @@ public class MissileTargetType : EnvironmentalEffectType
         ForegroundColour = Color.Red;
         BackgroundColour = Color.Transparent;
         
-        AsciiCharacter = '0';
+        AsciiCharacter = (char)0xe9;
 
         Damage = 50;
         Duration = 2;
