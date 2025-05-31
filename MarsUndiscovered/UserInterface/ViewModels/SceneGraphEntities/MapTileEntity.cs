@@ -17,9 +17,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public IAssets Assets { get; set; }
         public Point Position { get; set; }
         public IMapTileTexture MapTileTexture { get; set; }
-        public IMapTileTexture OverlayTileTexture { get; set; }
         public bool IsVisible { get; set; }
-        public bool OverlayIsVisible { get; set; }
         public float? Opacity { get; set; }
 
         public MapTileEntity(Point position)
@@ -54,11 +52,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
         }
 
-
         public void SetEnvironmentalEffect(EnvironmentalEffectType environmentalEffectType)
         {
-            OverlayTileTexture = Assets.GetMapTileTexture(environmentalEffectType.Name);
-            OverlayIsVisible = true;
+            MapTileTexture = Assets.GetMapTileTexture(environmentalEffectType.Name);
+            IsVisible = true;
         }
 
         public void SetPlayer(Player player)

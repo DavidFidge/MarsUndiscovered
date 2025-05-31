@@ -30,14 +30,14 @@ namespace MarsUndiscovered.UserInterface.Animation
 
             foreach (var point in _path.Steps)
             {
-                mapViewModel.AnimateTile(point, mapTileEntity => mapTileEntity.SetLaser(_floatTween.Value));
+                mapViewModel.AnimateAttackTile(point, mapTileEntity => mapTileEntity.SetLaser(_floatTween.Value));
                 index++;
             }
         }
 
         private void ClearAnimationTiles(IMapViewModel mapViewModel)
         {
-            mapViewModel.ClearAnimationTiles(_path.Steps);
+            mapViewModel.ClearAnimationAttackTiles(_path.Steps);
         }
 
         public override void Finish(IMapViewModel mapViewModel)

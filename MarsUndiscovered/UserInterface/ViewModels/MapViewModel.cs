@@ -29,9 +29,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         int Height { get; }
         void UpdateTile(Point point);
         void UpdateAllTiles();
-        void ClearAnimationTile(Point point);
-        void ClearAnimationTiles(IEnumerable<Point> points);
-        void AnimateTile(Point point, Action<MapTileEntity> action);
+        void ClearAnimationAttackTile(Point point);
+        void ClearAnimationAttackTiles(IEnumerable<Point> points);
+        void AnimateAttackTile(Point point, Action<MapTileEntity> action);
     }
 
     public class MapViewModel : IMapViewModel
@@ -45,12 +45,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private MapEntity _mapEntity;
         private bool _showGoalMap;
         private bool _showEntireMap;
-        private ArrayView<MapTileEntity> _animationTiles;
+        private ArrayView<MapTileEntity> _animationAttackTiles;
         private ArrayView<MapTileEntity> _terrainTiles;
         private ArrayView<MapTileEntity> _actorTiles;
         private ArrayView<MapTileEntity> _itemTiles;
         private ArrayView<MapTileEntity> _machineTiles;
         private ArrayView<MapTileEntity> _indestructibleTiles;
+        private ArrayView<MapTileEntity> _environmentalEffectTiles;
         private ArrayView<FieldOfViewTileEntity> _fieldOfViewTiles;
         private ArrayView<GoalMapEntity> _goalMapTiles;
         private ArrayView<MapTileEntity> _mouseHoverTiles;
@@ -113,17 +114,18 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _width = currentMapDimensions.Width;
             _height = currentMapDimensions.Height;
 
-            _animationTiles = new ArrayView<MapTileEntity>(_width, _height);
+            _animationAttackTiles = new ArrayView<MapTileEntity>(_width, _height);
             _terrainTiles = new ArrayView<MapTileEntity>(_width, _height);
             _actorTiles = new ArrayView<MapTileEntity>(_width, _height);
             _itemTiles = new ArrayView<MapTileEntity>(_width, _height);
             _machineTiles = new ArrayView<MapTileEntity>(_width, _height);
+            _environmentalEffectTiles = new ArrayView<MapTileEntity>(_width, _height);
             _indestructibleTiles = new ArrayView<MapTileEntity>(_width, _height);
             _fieldOfViewTiles = new ArrayView<FieldOfViewTileEntity>(_width, _height);
             _mouseHoverTiles = new ArrayView<MapTileEntity>(_width, _height);
             _goalMapTiles = new ArrayView<GoalMapEntity>(_width, _height);
             
-            _allTiles = new List<ISpriteBatchDrawable>(_width * _height * 8);
+            _allTiles = new List<ISpriteBatchDrawable>(_width * _height * 10);
 
             _mapEntity.LoadContent(_width, _height);
 
@@ -144,13 +146,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (_mapEntity == null)
                 return;
 
-            _animationTiles[point].IsVisible = false;
+            _animationAttackTiles[point].IsVisible = false;
             _terrainTiles[point].IsVisible = false;
             _actorTiles[point].IsVisible = false;
             _itemTiles[point].IsVisible = false;
             _machineTiles[point].IsVisible = false;
             _goalMapTiles[point].IsVisible = false;
             _indestructibleTiles[point].IsVisible = false;
+            _environmentalEffectTiles[point].IsVisible = false;
 
             IList<IGameObject> gameObjects;
 
@@ -212,8 +215,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private void CreateTiles(Point position)
         {
-            var animationTileEntity = _mapTileEntityFactory.Create(position);
-            _animationTiles[position] = animationTileEntity;
+            var animationAttackTileEntity = _mapTileEntityFactory.Create(position);
+            _animationAttackTiles[position] = animationAttackTileEntity;
 
             var terrainTileEntity = _mapTileEntityFactory.Create(position);
             _terrainTiles[position] = terrainTileEntity;
@@ -226,7 +229,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             
             var machineTileEntity = _mapTileEntityFactory.Create(position);
             _machineTiles[position] = machineTileEntity;
-            
+
+            var environmentalEffectTileEntity = _mapTileEntityFactory.Create(position);
+            _environmentalEffectTiles[position] = environmentalEffectTileEntity;
+
             var indestructibleTile = _mapTileEntityFactory.Create(position);
             _indestructibleTiles[position] = indestructibleTile;
 
@@ -246,13 +252,15 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             goalMapTileEntity.Initialize(position);
             _goalMapTiles[position] = goalMapTileEntity;
 
+            // The order of this list is important, it determines the draw order
             _allTiles.Add(terrainTileEntity);
             _allTiles.Add(itemTileEntity);
             _allTiles.Add(actorTileEntity);
             _allTiles.Add(indestructibleTile);
             _allTiles.Add(machineTileEntity);
+            _allTiles.Add(environmentalEffectTileEntity);
             _allTiles.Add(mouseHoverEntity);
-            _allTiles.Add(animationTileEntity);
+            _allTiles.Add(animationAttackTileEntity);
             _allTiles.Add(fieldOfViewTileEntity);
             
             // Debug tiles
@@ -272,26 +280,26 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             }
         }
 
-        public void ClearAnimationTile(Point point)
+        public void ClearAnimationAttackTile(Point point)
         {
-            ClearAnimationTiles(new[] { point });
+            ClearAnimationAttackTiles(new[] { point });
         }
 
-        public void ClearAnimationTiles(IEnumerable<Point> points)
+        public void ClearAnimationAttackTiles(IEnumerable<Point> points)
         {
             foreach (var point in points)
             {
-                _animationTiles[point].IsVisible = false;
+                _animationAttackTiles[point].IsVisible = false;
             }
         }
 
-        public void AnimateTile(Point point, Action<MapTileEntity> action)
+        public void AnimateAttackTile(Point point, Action<MapTileEntity> action)
         {
-            var animationTile = _animationTiles[point];
+            var animationAttackTile = _animationAttackTiles[point];
 
-            animationTile.IsVisible = true;
+            animationAttackTile.IsVisible = true;
 
-            action(animationTile);
+            action(animationAttackTile);
         }
 
         private void UpdateTileGameObjects(Point point, IList<IGameObject> gameObjects)
@@ -299,7 +307,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             var environmentalEffect = gameObjects.FirstOrDefault(go => go is EnvironmentalEffect) as EnvironmentalEffect;
 
             if (environmentalEffect != null)
-                _actorTiles[point].SetEnvironmentalEffect(environmentalEffect.EnvironmentalEffectType);
+                _environmentalEffectTiles[point].SetEnvironmentalEffect(environmentalEffect.EnvironmentalEffectType);
 
             var actor = gameObjects.FirstOrDefault(go => go is Actor);
 
