@@ -423,6 +423,7 @@ namespace MarsUndiscovered.Game.Components
                 {
                     EnvironmentalEffects.Remove(environmentalEffect.ID);
                     CurrentMap.RemoveEntity(environmentalEffect);
+                    Mediator.Publish(new MapTileChangedNotification(environmentalEffect.Position));
                 }
             }
 

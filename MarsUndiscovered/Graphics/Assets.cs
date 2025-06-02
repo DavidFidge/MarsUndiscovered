@@ -332,7 +332,25 @@ public class Assets : IAssets
             gameObjectType.BackgroundColour
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(assetKey, mapTileTexture);
+        MapTileTexture mapTileTexture2 = null;
+
+        if (gameObjectType.AsciiCharacter2 != default)
+        {
+            mapTileTexture2 = new MapTileTexture(
+                _gameProvider.Game.GraphicsDevice,
+                UiConstants.TileWidth,
+                UiConstants.TileHeight,
+                MapBitmapFont,
+                gameObjectType.AsciiCharacter2,
+                gameObjectType.ForegroundColour2,
+                gameObjectType.BackgroundColour2);
+        }
+
+        if (mapTileTexture2 != null)
+            _asciiMapTileGraphics.AddMapTileTextures(assetKey, mapTileTexture, mapTileTexture2);
+        else
+            _asciiMapTileGraphics.AddMapTileTextures(assetKey, mapTileTexture);
+
         _graphicalMapTileGraphics.AddMapTileTextures(
             assetKey,
             GetTileAssets(assetsList, $"{_tilesPrefix}/{assetKey}")

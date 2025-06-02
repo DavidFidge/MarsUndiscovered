@@ -8,7 +8,7 @@ namespace MarsUndiscovered.Graphics;
 
 public class MapTileGraphics
 {
-    private readonly MapTileGraphics _fallbackTiles;
+    private readonly MapTileGraphics _asciiTiles;
     public SpriteSheet SpriteSheet { get; private set; }
 
     private Dictionary<string, List<MapTileTexture>> _rawMapTileTextures = new();
@@ -22,9 +22,9 @@ public class MapTileGraphics
     {
     }
 
-    public MapTileGraphics(MapTileGraphics fallbackTiles)
+    public MapTileGraphics(MapTileGraphics asciiTiles)
     {
-        _fallbackTiles = fallbackTiles;
+        _asciiTiles = asciiTiles;
     }
 
     public void AddMapTileTextures(string key, params MapTileTexture[] mapTileTextureFrames)
@@ -77,6 +77,9 @@ public class MapTileGraphics
             else
                 animation.Play();
         }
+
+        if (_asciiTiles != null)
+            _asciiTiles.UseAnimations(useAnimations);
     }
 
     public void Update(IGameTimeService gameTimeService)
@@ -95,13 +98,16 @@ public class MapTileGraphics
 
             _accumulatedUpdateTime = 0;
         }
+
+        if (_asciiTiles != null)
+            _asciiTiles.Update(gameTimeService);
     }
 
     public IMapTileTexture GetMapTileTexture(string tileKey)
     {
         return _mapTileTextures.ContainsKey(tileKey)
             ? _mapTileTextures[tileKey]
-            : _fallbackTiles.GetMapTileTexture(tileKey);
+            : _asciiTiles.GetMapTileTexture(tileKey);
     }
 
     // For use with ad-hoc requests to get an individual tile texture.
@@ -121,7 +127,7 @@ public class MapTileGraphics
     {
         return _staticMapTileTextures.ContainsKey(tileKey)
             ? _staticMapTileTextures[tileKey].Texture2D
-            : _fallbackTiles.GetStaticTexture(tileKey);
+            : _asciiTiles.GetStaticTexture(tileKey);
     }
 
     private Texture2DAtlas CreateAtlas(GraphicsDevice graphicsDevice)
