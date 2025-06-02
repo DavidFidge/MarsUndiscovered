@@ -153,5 +153,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             MapTileTexture = Assets.GetMapTileTexture(featureType.Name);
             IsVisible = true;
         }
+
+        public void SetExplosion()
+        {
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Explosion.ToString());
+            IsVisible = true;
+        }
     }
 }

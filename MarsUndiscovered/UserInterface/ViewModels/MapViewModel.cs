@@ -30,6 +30,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         void UpdateTile(Point point);
         void UpdateAllTiles();
         void ClearAnimationAttackTiles(IEnumerable<Point> points);
+        void ClearAnimationAttackTile(Point point);
         void AnimateAttackTile(Point point, Action<MapTileEntity> action);
     }
 
@@ -283,8 +284,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             foreach (var point in points)
             {
-                _animationAttackTiles[point].IsVisible = false;
+                ClearAnimationAttackTile(point);
             }
+        }
+
+        public void ClearAnimationAttackTile(Point point)
+        {
+            _animationAttackTiles[point].IsVisible = false;
         }
 
         public void AnimateAttackTile(Point point, Action<MapTileEntity> action)

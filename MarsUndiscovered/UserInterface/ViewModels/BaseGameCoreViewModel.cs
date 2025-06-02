@@ -67,6 +67,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     var lineAttackAnimation = new LineAttackAnimation(lineAttackCommand.Path);
                     Animations.Enqueue(lineAttackAnimation);
                 }
+                else if (commandResult.Command is ExplodeTileCommand)
+                {
+                    var explodeTileCommand = commandResult.Command as ExplodeTileCommand;
+
+                    var explosionAnimation = new ExplosionAnimation(explodeTileCommand.Point);
+
+                    Animations.Enqueue(explosionAnimation);
+                }
             }
         }
 

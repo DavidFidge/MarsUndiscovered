@@ -239,7 +239,16 @@ public class Assets : IAssets
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Laser.ToString(), laser);
-        
+
+        var explosion = new MapTileTexture(
+            _gameProvider.Game.GraphicsDevice,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
+            new Color(Color.OrangeRed, 1f)
+        );
+
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Explosion.ToString(), explosion);
+
         var lineAttackNorthSouth = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             UiConstants.TileWidth,
