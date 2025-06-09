@@ -30,6 +30,7 @@ namespace MarsUndiscovered.Game.Commands
 
             var gameObjects = GameWorld.CurrentMap.GetObjectsAt(_data.Point);
             var commandResult = CommandResult.Success(this, new List<string>());
+            var hasRubble = false;
 
             foreach (var gameObject in gameObjects)
             {
@@ -40,7 +41,7 @@ namespace MarsUndiscovered.Game.Commands
                         _data.Point,
                         GameWorld.GameObjectFactory);
                 }
-                if (gameObject is Actor actor)
+                else if (gameObject is Actor actor)
                 {
                     actor.ApplyDamage(_data.Damage);
                     
@@ -62,11 +63,30 @@ namespace MarsUndiscovered.Game.Commands
                         commandResult.SubsequentCommands.Add(deathCommand);
                     }
                 }
-
-                if (gameObject is Feature feature)
+                else if (gameObject is Door door)
                 {
-                    GameWorld.CurrentMap.RemoveEntity(feature);
+                    GameWorld.CurrentMap.RemoveEntity(door);
                 }
+                else if (gameObject is Feature feature)
+                {
+                    if (feature.FeatureType == FeatureType.RubbleType)
+                    {
+                        // If the feature is rubble, we don't want to remove it
+                        hasRubble = true;
+                    }
+                    else
+                    {
+                        GameWorld.CurrentMap.RemoveEntity(feature);
+                    }
+                }
+            }
+
+            if (!hasRubble)
+            {
+                GameWorld.SpawnFeature(new SpawnFeatureParams()
+                    .WithFeatureType(FeatureType.RubbleType)
+                    .OnMap(GameWorld.CurrentMap.Id)
+                    .AtPosition(_data.Point));
             }
 
             if (!commandResult.Messages.Any())

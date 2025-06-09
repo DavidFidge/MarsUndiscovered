@@ -81,5 +81,6 @@ namespace MarsUndiscovered.Interfaces
         RadioComms RadioComms { get; set; }
         void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams);
         Rectangle GetCurrentMapDimensions();
+        void SpawnFeature(SpawnFeatureParams spawnFeatureParams);
     }
 }

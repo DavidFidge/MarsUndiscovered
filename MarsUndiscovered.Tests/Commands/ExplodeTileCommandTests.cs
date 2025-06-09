@@ -59,14 +59,14 @@ namespace MarsUndiscovered.Tests.Commands
 
             var gameObjects = _gameWorld.CurrentMap.GetObjectsAt(new Point(1, 1)).ToList();
 
-            Assert.AreEqual(2, gameObjects.Count);
+            Assert.AreEqual(3, gameObjects.Count);
             
             Assert.IsNotNull(gameObjects.FirstOrDefault(f => f is EnvironmentalEffect));
             var floor = (Floor)gameObjects.First(f => f is Floor);
-            
             Assert.IsNotNull(floor);
             Assert.AreEqual(FloorType.RockFloor, floor.FloorType);
-            
+            Assert.IsNotNull(gameObjects.FirstOrDefault(f => f is Feature feature && feature.FeatureType == FeatureType.RubbleType));
+
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);
             Assert.IsFalse(result.Command.InterruptsMovement);
@@ -197,6 +197,11 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.AreEqual(
                 $"There was an explosion nearby",
                 result.Messages[0]);
+
+            var features = _gameWorld.CurrentMap.GetObjectsAt<Feature>(new Point(1, 1)).ToList();
+            Assert.AreEqual(1, features.Count);
+
+            Assert.AreEqual(FeatureType.RubbleType, features.First().FeatureType);
 
             Assert.IsFalse(result.Command.EndsPlayerTurn);
             Assert.IsFalse(result.Command.RequiresPlayerInput);

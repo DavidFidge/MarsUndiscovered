@@ -11,6 +11,7 @@ namespace MarsUndiscovered.Game.Components
         public IMapExitGenerator MapExitGenerator { get; set; }
         public IMachineGenerator MachineGenerator { get; set; }
         public IEnvironmentalEffectGenerator EnvironmentalEffectGenerator { get; set; }
+        public IFeatureGenerator FeatureGenerator { get; set; }
         private GameWorld _gameWorld { get; set; }
 
 
@@ -45,6 +46,11 @@ namespace MarsUndiscovered.Game.Components
         public void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams)
         {
             EnvironmentalEffectGenerator.SpawnEnvironmentalEffect(spawnEnvironmentalEffectParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.EnvironmentalEffects);
+        }
+
+        public void SpawnFeature(SpawnFeatureParams spawnFeatureParams)
+        {
+            FeatureGenerator.SpawnFeature(spawnFeatureParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Features);
         }
     }
 }

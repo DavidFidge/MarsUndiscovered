@@ -933,5 +933,10 @@ namespace MarsUndiscovered.Game.Components
         {
             return Rectangle.WithPositionAndSize(new Point(0, 0), CurrentMap.Width, CurrentMap.Height);
         }
+
+        public void SpawnFeature(SpawnFeatureParams spawnFeatureParams)
+        {
+            Spawner.SpawnFeature(spawnFeatureParams);
+        }
     }
 }
