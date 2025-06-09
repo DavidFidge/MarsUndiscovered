@@ -44,6 +44,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void QueueAnimations(IList<CommandResult> commandResults)
         {
+            HashSet<Point> explodeTileCommandPoints = null;
+
             foreach (var commandResult in commandResults)
             {
                 if (commandResult.Command is LightningAttackCommand)
@@ -71,10 +73,18 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 {
                     var explodeTileCommand = commandResult.Command as ExplodeTileCommand;
 
-                    var explosionAnimation = new ExplosionAnimation(explodeTileCommand.Point);
+                    if (explodeTileCommandPoints == null)
+                        explodeTileCommandPoints = new HashSet<Point>();
 
-                    Animations.Enqueue(explosionAnimation);
+                    explodeTileCommandPoints.Add(explodeTileCommand.Point);
                 }
+            }
+
+            if (explodeTileCommandPoints != null)
+            {
+                var explosionGroupAnimation = new ExplosionGroupAnimation(explodeTileCommandPoints);
+
+                Animations.Enqueue(explosionGroupAnimation);
             }
         }
 

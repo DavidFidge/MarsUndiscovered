@@ -7,9 +7,9 @@ namespace MarsUndiscovered.UserInterface.Animation
     public class ExplosionGroupAnimation : TileAnimation
     {
         private readonly HashSet<Point> _positions;
-        private const double ExplosionAnimationSeconds = 0.1d;
+        private const double ExplosionAnimationSeconds = 0.5d;
         private double _elapsedRealTime;
-        
+
         public ExplosionGroupAnimation(HashSet<Point> positions)
         {
             _positions = positions;
@@ -24,13 +24,19 @@ namespace MarsUndiscovered.UserInterface.Animation
                 ClearAnimationTiles(mapViewModel);
                 IsComplete = true;
             }
-       
-            mapViewModel.AnimateAttackTile(_position, mapTileEntity => mapTileEntity.SetExplosion());
+
+            foreach (var position in _positions)
+            {
+                mapViewModel.AnimateAttackTile(position, mapTileEntity => mapTileEntity.SetExplosion((float)(1f - (_elapsedRealTime / ExplosionAnimationSeconds))));
+            }
         }
 
         private void ClearAnimationTiles(IMapViewModel mapViewModel)
         {
-            mapViewModel.ClearAnimationAttackTile(_position);
+            foreach (var position in _positions)
+            {
+                mapViewModel.ClearAnimationAttackTile(position);
+            }
         }
 
         public override void Finish(IMapViewModel mapViewModel)

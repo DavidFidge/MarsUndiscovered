@@ -25,7 +25,7 @@ namespace MarsUndiscovered.UserInterface.Animation
                 IsComplete = true;
             }
        
-            mapViewModel.AnimateAttackTile(_position, mapTileEntity => mapTileEntity.SetExplosion());
+            mapViewModel.AnimateAttackTile(_position, mapTileEntity => mapTileEntity.SetExplosion(1f));
         }
 
         private void ClearAnimationTiles(IMapViewModel mapViewModel)
