@@ -11,6 +11,7 @@
         public const int ActorLayer = 3;
         public const int ItemLayer = 4;
         public const int IndestructiblesLayer = 5;
+        public const int EnvironmentalEffectLayer = 6;
         
         public const int OutdoorAreaBorder = 3;
         public const int ShipOffset = 3;

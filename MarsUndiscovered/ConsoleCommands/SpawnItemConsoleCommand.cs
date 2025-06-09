@@ -9,7 +9,7 @@ namespace MarsUndiscovered.ConsoleCommands
     [ConsoleCommand(Name = "SpawnItem", Parameter1 = "ItemType", Parameter2 = "[IntoPlayerInventory(true|false)]")]
     public class SpawnItemConsoleCommand : BaseConsoleCommand
     {
-        public IGameWorldConsoleCommandEndpoint GameWorldConsoleCommandEndpoint { get; set; }
+        public IGameWorld GameWorld { get; set; }
 
         public override void Execute(ConsoleCommand consoleCommand)
         {
@@ -39,7 +39,7 @@ namespace MarsUndiscovered.ConsoleCommands
                     }
                 }
 
-                GameWorldConsoleCommandEndpoint.SpawnItem(spawnItemParams);
+                GameWorld.SpawnItem(spawnItemParams);
 
                 consoleCommand.Result = $"Spawned item {itemType}";
 

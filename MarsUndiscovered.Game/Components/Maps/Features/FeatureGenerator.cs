@@ -18,9 +18,10 @@ namespace MarsUndiscovered.Game.Components.Maps
             spawnFeatureParams.Result = null;
             var map = maps.Single(m => m.Id == spawnFeatureParams.MapId);
             
-            spawnFeatureParams.MapPointChoiceRules.Add(new EmptyFloorRule());
+            spawnFeatureParams.MapPointChoiceRules.Add(new NoGameObjectTypeRule<Feature>());
+
             spawnFeatureParams.AssignMap(map);
-            
+
             var feature = gameObjectFactory
                 .CreateGameObject<Feature>()
                 .WithFeatureType(spawnFeatureParams.FeatureType);

@@ -85,14 +85,14 @@ namespace MarsUndiscovered.UserInterface.Animation
 
             foreach (var point in _lightningStreak.Reverse())
             {
-                mapViewModel.AnimateTile(point, mapTileEntity => mapTileEntity.SetLightning(_lightningOpacity[index]));
+                mapViewModel.AnimateAttackTile(point, mapTileEntity => mapTileEntity.SetLightning(_lightningOpacity[index]));
                 index++;
             }
         }
 
         private void ClearAnimationTiles(IMapViewModel mapViewModel)
         {
-            mapViewModel.ClearAnimationTiles(_lightningStreak);
+            mapViewModel.ClearAnimationAttackTiles(_lightningStreak);
         }
 
         public override void Finish(IMapViewModel mapViewModel)

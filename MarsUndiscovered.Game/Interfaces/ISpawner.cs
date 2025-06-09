@@ -2,11 +2,14 @@
 
 namespace MarsUndiscovered.Interfaces
 {
-    public interface IGameWorldConsoleCommandEndpoint
+    public interface ISpawner
     {
+        void Initialise(GameWorld gameWorld);
         void SpawnItem(SpawnItemParams spawnItemParams);
         void SpawnMonster(SpawnMonsterParams spawnMonsterParams);
         void SpawnMapExit(SpawnMapExitParams spawnMapExitParams);
         void SpawnMachine(SpawnMachineParams spawnMachineParams);
+        void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams);
+        void SpawnFeature(SpawnFeatureParams spawnFeatureParams);
     }
 }

@@ -56,7 +56,7 @@ namespace MarsUndiscovered.Game.Components
         private WeightedGoalMap _goalMap;
         private IBehaviour<Monster> _behaviourTree;
         private IList<BaseGameActionCommand> _nextCommands;
-        private ICommandCollection _commandFactory;
+        private ICommandCollection _commandFactory => GameWorld.CommandCollection;
         private SeenTile[] _seenTilesAfterLoad;
         private Path _wanderPath;
         private Monster _leader;
@@ -219,9 +219,8 @@ namespace MarsUndiscovered.Game.Components
             _fieldOfView = new RecursiveShadowcastingFOV(CurrentMap.TransparencyView);
         }
 
-        public IEnumerable<BaseGameActionCommand> NextTurn(ICommandCollection commandFactory)
+        public IEnumerable<BaseGameActionCommand> NextTurn()
         {
-            _commandFactory = commandFactory;
             _fieldOfView.Calculate(Position, VisualRange);
             UpdateSeenTiles(_fieldOfView.NewlySeen);
             _nextCommands.Clear();
@@ -230,9 +229,9 @@ namespace MarsUndiscovered.Game.Components
             return _nextCommands;
         }
 
-        private MoveCommand CreateMoveCommand(ICommandCollection commandFactory, Direction direction)
+        private MoveCommand CreateMoveCommand(Direction direction)
         {
-            var moveCommand = commandFactory.CreateCommand<MoveCommand>(GameWorld);
+            var moveCommand = _commandFactory.CreateCommand<MoveCommand>(GameWorld);
             moveCommand.Initialise(this, new Tuple<Point, Point>(Position, Position + direction));
             return moveCommand;
         }
@@ -346,7 +345,7 @@ namespace MarsUndiscovered.Game.Components
                         
                         if (nextDirection != Direction.None)
                         {
-                            var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
+                            var moveCommand = CreateMoveCommand(nextDirection);
                             _nextCommands.Add(moveCommand);
                         }
                         
@@ -536,7 +535,7 @@ namespace MarsUndiscovered.Game.Components
                             }
                             else
                             {
-                                var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
+                                var moveCommand = CreateMoveCommand(nextDirection);
                                 _nextCommands.Add(moveCommand);
                             }
 
@@ -592,7 +591,7 @@ namespace MarsUndiscovered.Game.Components
                                 return BehaviourStatus.Succeeded;
                             }
 
-                            var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
+                            var moveCommand = CreateMoveCommand(nextDirection);
                             _nextCommands.Add(moveCommand);
 
                             MonsterState = MonsterState.Wandering;
@@ -654,7 +653,7 @@ namespace MarsUndiscovered.Game.Components
                             return BehaviourStatus.Succeeded;
                         }
 
-                        var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
+                        var moveCommand = CreateMoveCommand(nextDirection);
                         _nextCommands.Add(moveCommand);
                      
                         return BehaviourStatus.Succeeded;
@@ -702,7 +701,7 @@ namespace MarsUndiscovered.Game.Components
                             return BehaviourStatus.Succeeded;
                         }
 
-                        var moveCommand = CreateMoveCommand(_commandFactory, nextDirection);
+                        var moveCommand = CreateMoveCommand(nextDirection);
                         _nextCommands.Add(moveCommand);
 
                         return BehaviourStatus.Succeeded;

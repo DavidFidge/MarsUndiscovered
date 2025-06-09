@@ -211,8 +211,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var monsterPosition2 = GlobalRandom.DefaultRNG.RandomPosition(maps[1], MapHelpers.EmptyPointOnFloor);
 
             _gameWorld.Player.Position = playerPosition;
-            _gameWorld.GameWorldDebug.SpawnMonster(new SpawnMonsterParams().OnMap(maps[0].Id).WithBreed("Roach").AtPosition(monsterPosition1));
-            _gameWorld.GameWorldDebug.SpawnMonster(new SpawnMonsterParams().OnMap(maps[1].Id).WithBreed("Roach").AtPosition(monsterPosition2));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[0].Id).WithBreed("Roach").AtPosition(monsterPosition1));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().OnMap(maps[1].Id).WithBreed("Roach").AtPosition(monsterPosition2));
 
             _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
 

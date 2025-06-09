@@ -1,6 +1,6 @@
 ﻿namespace MarsUndiscovered.Game.Commands;
 
-public class AttackRestoreData
+public class AttackData
 {
     public int Damage { get; set; }
     public int Shield { get; set; }

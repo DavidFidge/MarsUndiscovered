@@ -35,7 +35,7 @@ namespace MarsUndiscovered.Game.Components
             : base(
                 mapWidth,
                 mapHeight,
-                6,
+                7,
                 Distance.Chebyshev,
                 null,
                 UInt32.MaxValue,

@@ -52,6 +52,10 @@ namespace MarsUndiscovered.Game.Installers
                     .ImplementedBy<FeatureGenerator>()
                     .LifestyleTransient(),
                 
+                Component.For<IEnvironmentalEffectGenerator>()
+                    .ImplementedBy<EnvironmentalEffectGenerator>()
+                    .LifestyleTransient(),
+
                 Component.For<IMachineGenerator>()
                     .ImplementedBy<MachineGenerator>()
                     .LifestyleTransient(),
@@ -68,13 +72,14 @@ namespace MarsUndiscovered.Game.Installers
                     .BasedOn<IGameCamera>()
                     .WithServiceDefaultInterfaces(),
 
-                Component.For<IGameWorldEndpoint, IGameWorldConsoleCommandEndpoint>()
-                    .ImplementedBy<GameWorldEndpoint>(),
-
-                Component.For<IGameWorldDebug>()
-                    .ImplementedBy<GameWorldDebug>()
+                Component.For<ISpawner>()
+                    .ImplementedBy<Spawner>()
                     .LifestyleTransient(),
-
+                
+                Component.For<IGameWorldProvider>()
+                    .ImplementedBy<GameWorldProvider>()
+                    .LifestyleSingleton(),
+                
                 Component.For<IGameWorld>()
                     .ImplementedBy<GameWorld>()
                     .LifestyleTransient(),
@@ -89,6 +94,10 @@ namespace MarsUndiscovered.Game.Installers
                 
                 Component.For<IMorgue>()
                     .ImplementedBy<Morgue>()
+                    .LifestyleTransient(),
+                
+                Component.For<IStory>()
+                    .ImplementedBy<Story>()
                     .LifestyleTransient(),
                 
                 Component.For<IMorgueWebService>()
@@ -189,6 +198,9 @@ namespace MarsUndiscovered.Game.Installers
                     .AsFactory(),
                 
                 Component.For<ICommandFactory<PlayerRangeAttackCommand>>()
+                    .AsFactory(),
+            
+                Component.For<ICommandFactory<ExplodeTileCommand>>()
                     .AsFactory()
             );
         }

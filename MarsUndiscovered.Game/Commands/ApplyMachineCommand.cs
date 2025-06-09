@@ -49,6 +49,7 @@ namespace MarsUndiscovered.Game.Commands
             return Result(CommandResult.Success(this, message, subsequentCommand));
         }
 
+        // Used when cancelling out of item choice
         protected override void UndoInternal()
         {
             Machine.IsUsed = _data.OldIsUsed;

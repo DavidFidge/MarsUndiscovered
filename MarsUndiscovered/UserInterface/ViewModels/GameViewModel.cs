@@ -34,10 +34,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         protected override void RefreshView()
         {
-            MonsterStatusInView = GameWorldEndpoint.GetStatusOfMonstersInView();
-            PlayerStatus = GameWorldEndpoint.GetPlayerStatus();
-            _radioCommsItems.AddRange(GameWorldEndpoint.GetNewRadioCommsItems());
-            MessageStatus.AddMessages(GameWorldEndpoint.GetMessagesSince(MessageStatus.SeenMessageCount));
+            MonsterStatusInView = GameWorldProvider.GameWorld.GetStatusOfMonstersInView();
+            PlayerStatus = GameWorldProvider.GameWorld.GetPlayerStatus();
+            _radioCommsItems.AddRange(GameWorldProvider.GameWorld.GetNewRadioCommsItems());
+            MessageStatus.AddMessages(GameWorldProvider.GameWorld.GetMessagesSince(MessageStatus.SeenMessageCount));
             MapViewModel.UpdateDebugTiles();
         }
 
@@ -60,10 +60,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void NewGame(ulong? seed = null)
         {
             IsActive = false;
-            GameWorldEndpoint.NewGame(seed);
+            GameWorldProvider.NewGame(seed);
             IsActive = true;
             SetUpViewModels();
-            GameWorldEndpoint.AfterCreateGame();
+            GameWorldProvider.GameWorld.AfterCreateGame();
             MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
         }
@@ -71,10 +71,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void LoadGame(string filename)
         {
             IsActive = false;
-            GameWorldEndpoint.LoadGame(filename);
+            GameWorldProvider.LoadGame(filename);
             IsActive = true;
             SetUpViewModels();
-            GameWorldEndpoint.AfterCreateGame();
+            GameWorldProvider.GameWorld.AfterCreateGame();
             MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
         }
@@ -82,13 +82,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void Move(Direction direction)
         {
             FinishAnimations();
-            var commandResult = GameWorldEndpoint.MoveRequest(direction);
+            var commandResult = GameWorldProvider.GameWorld.MoveRequest(direction);
             AfterTurnExecuted(commandResult);
         }
 
         public AutoExploreResult AutoExplore()
         {
-            var result = GameWorldEndpoint.AutoExploreRequest();
+            var result = GameWorldProvider.GameWorld.AutoExploreRequest();
             AfterTurnExecuted(result.CommandResults);
             return result;
         }
@@ -121,17 +121,17 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (point == null)
                 return null;
 
-            return GameWorldEndpoint.GetPathToPlayer(point.Value);
+            return GameWorldProvider.GameWorld.GetPathToPlayer(point.Value);
         }
 
         public bool Move(Path path)
         {
-            var currentPlayerPosition = GameWorldEndpoint.GetPlayerPosition();
+            var currentPlayerPosition = GameWorldProvider.GameWorld.GetPlayerPosition();
             
             if (currentPlayerPosition.Equals(path.End))
                 return true;
 
-            var result = GameWorldEndpoint.MoveRequest(path);
+            var result = GameWorldProvider.GameWorld.MoveRequest(path);
 
             AfterTurnExecuted(result);
 
@@ -141,7 +141,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (path.Length == 1)
                 return true;
 
-            var newPlayerPosition = GameWorldEndpoint.GetPlayerPosition();
+            var newPlayerPosition = GameWorldProvider.GameWorld.GetPlayerPosition();
 
             if (currentPlayerPosition.Equals(newPlayerPosition))
                 return true;
@@ -153,44 +153,44 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             var gameOptionsStore = GameOptionsStore.GetFromStore<GameOptionsData>();
 
-            GameWorldEndpoint.SnapshotMorgue(gameOptionsStore.State.MorgueUsername ?? String.Empty, gameOptionsStore.State.UploadMorgueFiles);
+            GameWorldProvider.GameWorld.SnapshotMorgue(gameOptionsStore.State.MorgueUsername ?? String.Empty, gameOptionsStore.State.UploadMorgueFiles);
 
             if (gameOptionsStore.State.UploadMorgueFiles)
-                Task.Run(() => GameWorldEndpoint.SendPendingMorgues());
+                Task.Run(() => GameWorldProvider.GameWorld.SendPendingMorgues());
         }
 
         public void ForceNextLevel()
         {
-            var result = GameWorldEndpoint.ForceLevelChange(ForceLevelChange.NextLevel);
+            var result = GameWorldProvider.GameWorld.ForceLevelChange(ForceLevelChange.NextLevel);
             AfterTurnExecuted(result);
         }
 
         public void ForcePreviousLevel()
         {
-            var result = GameWorldEndpoint.ForceLevelChange(ForceLevelChange.PreviousLevel);
+            var result = GameWorldProvider.GameWorld.ForceLevelChange(ForceLevelChange.PreviousLevel);
             AfterTurnExecuted(result);
         }
 
         public void ApplyRequest(Keys requestKey)
         {
-            var applyItemResults = GameWorldEndpoint.ApplyItemRequest(requestKey);
+            var applyItemResults = GameWorldProvider.GameWorld.ApplyItemRequest(requestKey);
             AfterTurnExecuted(applyItemResults);
         }
 
         public List<InventoryItem> GetHotBarItems()
         {
-            return GameWorldEndpoint.GetHotBarItems();
+            return GameWorldProvider.GameWorld.GetHotBarItems();
         }
 
         public void DoRangedAttack(InventoryItem selectedItem, Point target)
         {
-            var result = GameWorldEndpoint.DoRangedAttack(selectedItem.Key, target);
+            var result = GameWorldProvider.GameWorld.DoRangedAttack(selectedItem.Key, target);
             AfterTurnExecuted(result);
         }
 
         public InventoryItem GetEquippedWeapon()
         {
-            return GameWorldEndpoint.GetEquippedItem();
+            return GameWorldProvider.GameWorld.GetEquippedItem();
         }
 
         public void MoveSquareChoice(Direction requestDirection)

@@ -48,13 +48,5 @@ namespace MarsUndiscovered.Game.Commands
 
             return Result(CommandResult.Success(this, message));
         }
-
-        protected override void UndoInternal()
-        {
-            Source.IsDead = false;
-            Source.IsDeadMessage = null;
-            Source.Position = _oldPosition;
-            _sourceMap.AddEntity(Source);
-        }
     }
 }

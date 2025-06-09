@@ -37,15 +37,15 @@ public class LaserAnimationsTests : BaseIntegrationTest
         {
         }
 
-        public void ClearAnimationTile(Point point)
+        public void ClearAnimationAttackTile(Point point)
         {
         }
 
-        public void ClearAnimationTiles(IEnumerable<Point> points)
+        public void ClearAnimationAttackTiles(IEnumerable<Point> points)
         {
         }
 
-        public void AnimateTile(Point point, Action<MapTileEntity> action)
+        public void AnimateAttackTile(Point point, Action<MapTileEntity> action)
         {
             action.Invoke(MapTileEntity);
         }

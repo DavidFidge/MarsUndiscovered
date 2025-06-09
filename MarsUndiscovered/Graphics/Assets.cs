@@ -102,7 +102,12 @@ public class Assets : IAssets
         {
             CreateGameObjectTypeGraphics(machineType.Value, assetsList, machineType.Key);
         }
-        
+
+        foreach (var environmentalEffectTypes in EnvironmentalEffectType.EnvironmentalEffectTypes)
+        {
+            CreateGameObjectTypeGraphics(environmentalEffectTypes.Value, assetsList, environmentalEffectTypes.Key);
+        }
+
         var itemTypes = ItemType.ItemTypes.Values
             .GroupBy(i => i.AsciiCharacter)
             .Select(g => g.First()).ToList();
@@ -234,7 +239,16 @@ public class Assets : IAssets
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Laser.ToString(), laser);
-        
+
+        var explosion = new MapTileTexture(
+            _gameProvider.Game.GraphicsDevice,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
+            new Color(Color.OrangeRed, 1f)
+        );
+
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.Explosion.ToString(), explosion);
+
         var lineAttackNorthSouth = new MapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             UiConstants.TileWidth,
@@ -327,7 +341,25 @@ public class Assets : IAssets
             gameObjectType.BackgroundColour
         );
 
-        _asciiMapTileGraphics.AddMapTileTextures(assetKey, mapTileTexture);
+        MapTileTexture mapTileTexture2 = null;
+
+        if (gameObjectType.AsciiCharacter2 != default)
+        {
+            mapTileTexture2 = new MapTileTexture(
+                _gameProvider.Game.GraphicsDevice,
+                UiConstants.TileWidth,
+                UiConstants.TileHeight,
+                MapBitmapFont,
+                gameObjectType.AsciiCharacter2,
+                gameObjectType.ForegroundColour2,
+                gameObjectType.BackgroundColour2);
+        }
+
+        if (mapTileTexture2 != null)
+            _asciiMapTileGraphics.AddMapTileTextures(assetKey, mapTileTexture, mapTileTexture2);
+        else
+            _asciiMapTileGraphics.AddMapTileTextures(assetKey, mapTileTexture);
+
         _graphicalMapTileGraphics.AddMapTileTextures(
             assetKey,
             GetTileAssets(assetsList, $"{_tilesPrefix}/{assetKey}")
@@ -385,6 +417,7 @@ public class Assets : IAssets
             RadioCommsTypes.StartGame1 => ShipAiRadioComms,
             RadioCommsTypes.StartGame2 => ShipAiRadioComms,
             RadioCommsTypes.PickupShipParts => ShipAiRadioComms,
+            RadioCommsTypes.Level2StoryStart => ShipAiRadioComms,
             _ => null
         };
     }

@@ -8,7 +8,6 @@ namespace MarsUndiscovered.Game.Commands
     public class ApplyItemCommand : BaseMarsGameActionCommand<ApplyItemCommandSaveData>
     {
         public Item Item => GameWorld.Items[_data.ItemId];
-        public IGameObject GameObject => GameWorld.GameObjects[_data.GameObjectId];
 
         public ApplyItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -107,18 +106,6 @@ namespace MarsUndiscovered.Game.Commands
             
             
             return Result(CommandResult.Success(this, message, subsequentCommand));
-        }
-
-        protected override void UndoInternal()
-        {
-            if (!_data.CanApply || !_data.IsCharged)
-                return;
-            
-            if (!_data.IsItemTypeDiscovered)
-                GameWorld.Inventory.ItemTypeDiscoveries.SetItemTypeUndiscovered(Item);
-            
-            GameWorld.Inventory.Add(Item, _data.ItemKey);
-            Item.CurrentRechargeDelay = 0;
         }
     }
 }

@@ -32,7 +32,7 @@ namespace MarsUndiscovered.UserInterface.Animation
                 
                 foreach (var point in _path.Skip(1))
                 {
-                    mapViewModel.AnimateTile(point, mapTileEntity => mapTileEntity.SetLineAttack(direction));
+                    mapViewModel.AnimateAttackTile(point, mapTileEntity => mapTileEntity.SetLineAttack(direction));
                 }
             }
             else
@@ -49,7 +49,7 @@ namespace MarsUndiscovered.UserInterface.Animation
 
         private void ClearAnimationTiles(IMapViewModel mapViewModel)
         {
-            mapViewModel.ClearAnimationTiles(_path.Skip(1));
+            mapViewModel.ClearAnimationAttackTiles(_path.Skip(1));
         }
 
         public override void Finish(IMapViewModel mapViewModel)

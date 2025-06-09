@@ -29,7 +29,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         where T : new()
     {
         public Queue<TileAnimation> Animations { get; set; } = new Queue<TileAnimation>();
-        public IGameWorldEndpoint GameWorldEndpoint { get; set; }
+        public IGameWorldProvider GameWorldProvider { get; set; }
+        public IGameWorld GameWorld => GameWorldProvider.GameWorld;
         public IGameTimeService GameTimeService { get; set; }
         public MapViewModel MapViewModel { get; set; }
         public bool IsActive { get; set; }
@@ -38,11 +39,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         protected void SetUpGameCoreViewModels()
         {
-            MapViewModel.SetupNewMap(GameWorldEndpoint, GameOptionsStore);
+            MapViewModel.SetupNewMap(GameWorldProvider, GameOptionsStore);
         }
 
         public void QueueAnimations(IList<CommandResult> commandResults)
         {
+            HashSet<Point> explodeTileCommandPoints = null;
+
             foreach (var commandResult in commandResults)
             {
                 if (commandResult.Command is LightningAttackCommand)
@@ -66,6 +69,22 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     var lineAttackAnimation = new LineAttackAnimation(lineAttackCommand.Path);
                     Animations.Enqueue(lineAttackAnimation);
                 }
+                else if (commandResult.Command is ExplodeTileCommand)
+                {
+                    var explodeTileCommand = commandResult.Command as ExplodeTileCommand;
+
+                    if (explodeTileCommandPoints == null)
+                        explodeTileCommandPoints = new HashSet<Point>();
+
+                    explodeTileCommandPoints.Add(explodeTileCommand.Point);
+                }
+            }
+
+            if (explodeTileCommandPoints != null)
+            {
+                var explosionGroupAnimation = new ExplosionGroupAnimation(explodeTileCommandPoints);
+
+                Animations.Enqueue(explosionGroupAnimation);
             }
         }
 
@@ -114,7 +133,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (point == null)
                 return null;
 
-            var tooltip = GameWorldEndpoint.GetGameObjectTooltipAt(point.Value);
+            var tooltip = GameWorldProvider.GameWorld.GetGameObjectTooltipAt(point.Value);
 
             return tooltip;
         }
@@ -126,7 +145,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (point == null)
                 return Direction.None;
 
-            var mapDimensions = GameWorldEndpoint.GetCurrentMapDimensions();
+            var mapDimensions = GameWorldProvider.GameWorld.GetCurrentMapDimensions();
 
             var centrePoint = new Point(mapDimensions.Width / 2, mapDimensions.Height / 2);
 
@@ -152,7 +171,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             if (IsActive)
             {
-                MapViewModel.SetupNewMap(GameWorldEndpoint, GameOptionsStore);
+                MapViewModel.SetupNewMap(GameWorldProvider, GameOptionsStore);
                 Notify();
             }
         }

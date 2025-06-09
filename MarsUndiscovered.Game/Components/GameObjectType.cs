@@ -10,6 +10,11 @@ public abstract class GameObjectType
     public Color? BackgroundColour { get; set; }
     public string Name { get; set; }
 
+    // Second frame for animations with ascii
+    public char AsciiCharacter2 { get; set; }
+    public Color ForegroundColour2 { get; set; }
+    public Color? BackgroundColour2 { get; set; }
+
     public GameObjectType()
     {
         Name = GetType().Name;

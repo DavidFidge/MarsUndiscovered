@@ -19,6 +19,7 @@ public enum TileGraphicType
     MouseHover,
     Lightning,
     Laser,
+    Explosion,
     ShipRepairParts,
     FieldOfViewUnrevealedTexture,
     FieldOfViewHasBeenSeenTexture,

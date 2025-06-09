@@ -32,7 +32,7 @@ namespace MarsUndiscovered.Game.Commands
             {
                 var damage = Source.LineAttack.Roll();
 
-                var lineAttackCommandRestore = new AttackRestoreData
+                var attackData = new AttackData
                 {
                     Id = target.ID,
                     Damage = damage,
@@ -40,7 +40,7 @@ namespace MarsUndiscovered.Game.Commands
                     Shield = target.Shield
                 };
                 
-                _data.LineAttackCommandRestore.Add(lineAttackCommandRestore);
+                _data.LineAttackData.Add(attackData);
 
                 target.ApplyDamage(damage);
 
@@ -58,15 +58,6 @@ namespace MarsUndiscovered.Game.Commands
             }
 
             return Result(commandResult);
-        }
-
-        protected override void UndoInternal()
-        {
-            foreach (var restore in _data.LineAttackCommandRestore)
-            {
-                ((Actor)GameWorld.GameObjects[restore.Id]).Health = restore.Health;
-                ((Actor)GameWorld.GameObjects[restore.Id]).Shield = restore.Shield;
-            }
         }
 
         public void Initialise(Actor source, List<Point> path)

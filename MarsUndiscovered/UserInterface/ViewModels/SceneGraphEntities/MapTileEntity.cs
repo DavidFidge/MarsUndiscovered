@@ -52,6 +52,12 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
         }
 
+        public void SetEnvironmentalEffect(EnvironmentalEffectType environmentalEffectType)
+        {
+            MapTileTexture = Assets.GetMapTileTexture(environmentalEffectType.Name);
+            IsVisible = true;
+        }
+
         public void SetPlayer(Player player)
         {
             MapTileTexture = Assets.GetMapTileTexture(!player.IsDead ? TileGraphicType.Player.ToString() : TileGraphicType.PlayerDead.ToString());
@@ -145,6 +151,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public void SetFeature(FeatureType featureType)
         {
             MapTileTexture = Assets.GetMapTileTexture(featureType.Name);
+            IsVisible = true;
+        }
+
+        public void SetExplosion(float opacity)
+        {
+            MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.Explosion.ToString());
+            Opacity = opacity;
             IsVisible = true;
         }
     }

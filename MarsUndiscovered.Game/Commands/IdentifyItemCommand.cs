@@ -46,9 +46,5 @@ namespace MarsUndiscovered.Game.Commands
 
             return Result(commandResult);
         }
-
-        protected override void UndoInternal()
-        {
-        }
     }
 }

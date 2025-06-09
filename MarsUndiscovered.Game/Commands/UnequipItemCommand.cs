@@ -36,11 +36,5 @@ namespace MarsUndiscovered.Game.Commands
 
             return Result(CommandResult.Success(this, $"I unequip {itemDescription}"));
         }
-
-        protected override void UndoInternal()
-        {
-            if (!_data.IsNotEquipped)
-                GameWorld.Inventory.Equip(Item);
-        }
     }
 }

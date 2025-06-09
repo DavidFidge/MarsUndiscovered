@@ -53,24 +53,5 @@ namespace MarsUndiscovered.Game.Commands
 
             return Result(CommandResult.Success(this, $"I drop {itemDescription}"));
         }
-
-        protected override void UndoInternal()
-        {
-            if (_wasInInventory)
-            {
-                GameWorld.Inventory.Add(Item, _itemKey);
-            }
-
-            if (_wasEquipped)
-            {
-                GameWorld.Inventory.Equip(Item);
-            }
-
-            Item.HasBeenDropped = _oldHasBeenDropped;
-
-            Item.Position = Point.None;
-
-            GameObject.CurrentMap.RemoveEntity(Item);
-        }
     }
 }
