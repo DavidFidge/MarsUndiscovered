@@ -30,7 +30,6 @@ namespace MarsUndiscovered.Game.Commands
 
             var gameObjects = GameWorld.CurrentMap.GetObjectsAt(_data.Point);
             var commandResult = CommandResult.Success(this, new List<string>());
-            var hasRubble = false;
 
             foreach (var gameObject in gameObjects)
             {
@@ -69,19 +68,11 @@ namespace MarsUndiscovered.Game.Commands
                 }
                 else if (gameObject is Feature feature)
                 {
-                    if (feature.FeatureType == FeatureType.RubbleType)
-                    {
-                        // If the feature is rubble, we don't want to remove it
-                        hasRubble = true;
-                    }
-                    else
-                    {
-                        GameWorld.CurrentMap.RemoveEntity(feature);
-                    }
+                    GameWorld.CurrentMap.RemoveEntity(feature);
                 }
             }
 
-            if (!hasRubble)
+            if (ContextualEnhancedRandom.FromGlobalRandom.NextBool(nameof(ExplodeTileCommand)))
             {
                 GameWorld.SpawnFeature(new SpawnFeatureParams()
                     .WithFeatureType(FeatureType.RubbleType)

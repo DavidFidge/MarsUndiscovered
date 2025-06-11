@@ -73,10 +73,13 @@ namespace MarsUndiscovered.Game.Components
         public Inventory Inventory { get; private set; }
         
         private AutoExploreGoalMap _autoExploreGoalMap;
+
+        protected IContextualEnhancedRandom _contextualEnhancedRandom;
         
         public GameWorld()
         {
-            GlobalRandom.DefaultRNG = new MizuchiRandom();
+            _contextualEnhancedRandom = new ContextualEnhancedRandom(new MizuchiRandom());
+            GlobalRandom.DefaultRNG = _contextualEnhancedRandom;
         }
 
         private ulong MakeSeed()
@@ -113,7 +116,7 @@ namespace MarsUndiscovered.Game.Components
 
             Seed = seed.Value;
 
-            GlobalRandom.DefaultRNG = new MizuchiRandom(seed.Value);
+            _contextualEnhancedRandom.EnhancedRandom = new MizuchiRandom(seed.Value);
 
             Inventory = new Inventory(this);
             RadioComms = new RadioComms(this);
@@ -678,7 +681,17 @@ namespace MarsUndiscovered.Game.Components
             var memento = new Memento<GameWorldSaveData>(new GameWorldSaveData());
             memento.State.GameId = GameId;
             memento.State.Seed = Seed;
-            memento.State.RandomNumberGenerator = new MizuchiRandom(((MizuchiRandom)GlobalRandom.DefaultRNG).StateA, ((MizuchiRandom)GlobalRandom.DefaultRNG).StateB); ;
+
+            if (_contextualEnhancedRandom.EnhancedRandom is MizuchiRandom mizuchiRandom)
+            {
+                memento.State.RandomNumberGenerator = new MizuchiRandom(mizuchiRandom.StateA, mizuchiRandom.StateB);
+            }
+            else
+            {
+                // For unit tests in case it is using the test contextual random
+                memento.State.RandomNumberGenerator = new MizuchiRandom();
+            }
+
             memento.State.MonstersInView = MonstersInView.Select(m => m.ID).ToList();
             memento.State.LastMonstersInView = LastMonstersInView.Select(m => m.ID).ToList();
             return memento;
@@ -690,7 +703,7 @@ namespace MarsUndiscovered.Game.Components
             Seed = memento.State.Seed;
             LastMonstersInView = memento.State.LastMonstersInView.Select(m => Monsters[m]).ToList();
             MonstersInView = memento.State.MonstersInView.Select(m => Monsters[m]).ToList();
-            GlobalRandom.DefaultRNG = new MizuchiRandom(memento.State.RandomNumberGenerator.StateA, memento.State.RandomNumberGenerator.StateB);
+            _contextualEnhancedRandom.EnhancedRandom = new MizuchiRandom(memento.State.RandomNumberGenerator.StateA, memento.State.RandomNumberGenerator.StateB);
         }
 
         public PlayerStatus GetPlayerStatus()
