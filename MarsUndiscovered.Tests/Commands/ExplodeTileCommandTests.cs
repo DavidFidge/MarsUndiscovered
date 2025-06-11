@@ -1,4 +1,7 @@
 using FrigidRogue.MonoGame.Core.Components;
+
+using GoRogue.Random;
+
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
@@ -15,6 +18,9 @@ namespace MarsUndiscovered.Tests.Commands
         public void ApplyExplodeTileCommand_Should_Destroy_Wall()
         {
             // Arrange
+            // Ensure a rubble is always created
+            _gameWorld.TestContextualEnhancedRandom.KnownSeries.Add(nameof(ExplodeTileCommand), new ShaiRandom.Generators.KnownSeriesRandom(boolSeries: [true]));
+
             var lines = new[]
             {
                 "...",
@@ -144,6 +150,9 @@ namespace MarsUndiscovered.Tests.Commands
         public void Missile_Environmental_Effect_Should_Explode_Tile_After_Duration()
         {
             // Arrange
+            // Ensure a rubble is always created
+            _gameWorld.TestContextualEnhancedRandom.KnownSeries.Add(nameof(ExplodeTileCommand), new ShaiRandom.Generators.KnownSeriesRandom(boolSeries: [true]));
+
             var lines = new[]
             {
                 "...",
