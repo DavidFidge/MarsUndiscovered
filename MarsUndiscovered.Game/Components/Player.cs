@@ -25,6 +25,7 @@ namespace MarsUndiscovered.Game.Components
 
         public Player(IGameWorld gameWorld, uint id) : base(gameWorld, id)
         {
+            AllegianceCategory = AllegianceCategory.Player;
             NameIsProperNoun = true;
             MaxHealth = BaseHealth;
             Health = MaxHealth;

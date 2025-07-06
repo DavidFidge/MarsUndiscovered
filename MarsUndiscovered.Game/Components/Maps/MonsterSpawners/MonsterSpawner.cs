@@ -13,7 +13,7 @@ public abstract class MonsterSpawner
 
     protected Monster SpawnMonster(SpawnMonsterParams spawnMonsterParams)
     {
-        _monsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Monsters);
+        _monsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld);
         return spawnMonsterParams.Result;
     }
         

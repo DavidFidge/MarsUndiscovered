@@ -46,7 +46,7 @@ namespace MarsUndiscovered.Game.Components
 
         public MonsterState MonsterState { get; set; }
 
-        public Monster Leader => _leader;
+        public Actor Leader => _leader;
         
         private IFOV _fieldOfView;
         private ArrayView<SeenTile> _seenTiles;
@@ -59,7 +59,7 @@ namespace MarsUndiscovered.Game.Components
         private ICommandCollection _commandFactory => GameWorld.CommandCollection;
         private SeenTile[] _seenTilesAfterLoad;
         private Path _wanderPath;
-        private Monster _leader;
+        private Actor _leader;
         private Path _toLeaderPath;
 
         public string GetInformation(Player player)
@@ -608,6 +608,7 @@ namespace MarsUndiscovered.Game.Components
         {
             var behaviour = FluentBuilder.Create<Monster>()
                 .Sequence("hunt")
+                    .Condition("enemy of player", monster => GameWorld.ActorAllegiances.Get(monster.AllegianceCategory, AllegianceCategory.Player) == ActorAllegianceState.Enemy)
                     .Condition("player in field of view", monster => _fieldOfView.CurrentFOV.Contains(GameWorld.Player.Position))
                     .Condition("player has been detected", monster =>
                 {

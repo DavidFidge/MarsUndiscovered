@@ -4,6 +4,6 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public interface IMonsterGenerator
     {
-        void SpawnMonster(SpawnMonsterParams spawnMonsterParams, IGameObjectFactory gameObjectFactory, MapCollection maps, MonsterCollection monsterCollection);
+        void SpawnMonster(SpawnMonsterParams spawnMonsterParams, GameWorld gameWorld);
     }
 }

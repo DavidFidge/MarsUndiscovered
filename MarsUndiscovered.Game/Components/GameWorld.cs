@@ -75,7 +75,9 @@ namespace MarsUndiscovered.Game.Components
         private AutoExploreGoalMap _autoExploreGoalMap;
 
         protected IContextualEnhancedRandom _contextualEnhancedRandom;
-        
+
+        public ActorAllegianceCollection ActorAllegiances { get; set; }
+
         public GameWorld()
         {
             _contextualEnhancedRandom = new ContextualEnhancedRandom(new MizuchiRandom());
@@ -198,6 +200,7 @@ namespace MarsUndiscovered.Game.Components
             Maps = new MapCollection();
             _autoExploreGoalMap = new AutoExploreGoalMap();
 
+            ActorAllegiances.Initialise();
             GameObjectFactory.Initialise(this);
             Spawner.Initialise(this);
             CommandCollection.Initialise();
@@ -637,6 +640,7 @@ namespace MarsUndiscovered.Game.Components
             Maps.LoadState(saveGameService, gameWorld);
             GameTimeService.LoadState(saveGameService);
             CommandCollection.LoadState(saveGameService, gameWorld);
+            ActorAllegiances.LoadState(saveGameService, gameWorld);
 
             Story.LoadState(saveGameService, gameWorld);
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
@@ -667,6 +671,7 @@ namespace MarsUndiscovered.Game.Components
             Maps.SaveState(saveGameService, gameWorld);
             GameTimeService.SaveState(saveGameService);
             Story.SaveState(saveGameService, gameWorld);
+            ActorAllegiances.SaveState(saveGameService, gameWorld);
             
             var gameWorldSaveData = GetSaveState();
             saveGameService.SaveToStore(gameWorldSaveData);
