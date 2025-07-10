@@ -315,10 +315,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3 });
 
-            var levelGenerator = new TestLevelGenerator(_gameWorld, mapGenerator, 4, 5);
-
             NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, mapWidth: 4, mapHeight: 5, playerPosition: new Point(3, 0));
-            
+
             // .PE@
             // P###
             // .P..
@@ -944,6 +942,9 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
             var playerHealth = _gameWorld.Player.Health;
+
+            // Don't regenerate so that health is still deducted at end of turn
+            _gameWorld.Player.RegenRate = 0;
 
             // Act
             var result = _gameWorld.TestNextTurn().ToList();

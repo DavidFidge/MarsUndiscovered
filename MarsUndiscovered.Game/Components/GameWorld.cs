@@ -80,7 +80,7 @@ namespace MarsUndiscovered.Game.Components
 
         public GameWorld()
         {
-            _contextualEnhancedRandom = new ContextualEnhancedRandom(new MizuchiRandom());
+            _contextualEnhancedRandom = new ContextualEnhancedRandom();
             GlobalRandom.DefaultRNG = _contextualEnhancedRandom;
         }
 
@@ -103,6 +103,7 @@ namespace MarsUndiscovered.Game.Components
             LevelGenerator.CreateLevels();
 
             Inventory = new Inventory(this);
+            RadioComms = new RadioComms(this);
 
             RadioComms.CreateGameStartMessages();
 
@@ -118,7 +119,7 @@ namespace MarsUndiscovered.Game.Components
 
             Seed = seed.Value;
 
-            _contextualEnhancedRandom.EnhancedRandom = new MizuchiRandom(seed.Value);
+            _contextualEnhancedRandom.Reset(seed.Value);
 
             Inventory = new Inventory(this);
             RadioComms = new RadioComms(this);
@@ -200,6 +201,7 @@ namespace MarsUndiscovered.Game.Components
             Maps = new MapCollection();
             _autoExploreGoalMap = new AutoExploreGoalMap();
 
+            ActorAllegiances = new ActorAllegianceCollection();
             ActorAllegiances.Initialise();
             GameObjectFactory.Initialise(this);
             Spawner.Initialise(this);
@@ -635,6 +637,8 @@ namespace MarsUndiscovered.Game.Components
             Player.LoadState(saveGameService, gameWorld);
 
             MessageLog.LoadState(saveGameService, gameWorld);
+
+            RadioComms = new RadioComms(this);
             RadioComms.LoadState(saveGameService, gameWorld);
 
             Maps.LoadState(saveGameService, gameWorld);
@@ -687,15 +691,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.GameId = GameId;
             memento.State.Seed = Seed;
 
-            if (_contextualEnhancedRandom.EnhancedRandom is MizuchiRandom mizuchiRandom)
-            {
-                memento.State.RandomNumberGenerator = new MizuchiRandom(mizuchiRandom.StateA, mizuchiRandom.StateB);
-            }
-            else
-            {
-                // For unit tests in case it is using the test contextual random
-                memento.State.RandomNumberGenerator = new MizuchiRandom();
-            }
+            memento.State.RandomNumberGenerator = _contextualEnhancedRandom.GetSaveState();
 
             memento.State.MonstersInView = MonstersInView.Select(m => m.ID).ToList();
             memento.State.LastMonstersInView = LastMonstersInView.Select(m => m.ID).ToList();
@@ -708,7 +704,7 @@ namespace MarsUndiscovered.Game.Components
             Seed = memento.State.Seed;
             LastMonstersInView = memento.State.LastMonstersInView.Select(m => Monsters[m]).ToList();
             MonstersInView = memento.State.MonstersInView.Select(m => Monsters[m]).ToList();
-            _contextualEnhancedRandom.EnhancedRandom = new MizuchiRandom(memento.State.RandomNumberGenerator.StateA, memento.State.RandomNumberGenerator.StateB);
+            _contextualEnhancedRandom.SetLoadState(memento.State.RandomNumberGenerator);
         }
 
         public PlayerStatus GetPlayerStatus()

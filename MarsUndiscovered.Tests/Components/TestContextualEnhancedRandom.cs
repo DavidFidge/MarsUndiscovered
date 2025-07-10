@@ -13,10 +13,6 @@ namespace MarsUndiscovered.Tests.Components
     {
         public Dictionary<string, KnownSeriesRandom> KnownSeries { get; } = new Dictionary<string, KnownSeriesRandom>();
 
-        public TestContextualEnhancedRandom(IEnhancedRandom enhancedRandom) : base(enhancedRandom)
-        {
-        }
-
         public override bool NextBool(string context)
         {
             if (KnownSeries.TryGetValue(context, out var knownSeriesRandom))

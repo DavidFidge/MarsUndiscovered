@@ -26,6 +26,9 @@ namespace MarsUndiscovered.Tests.Commands
             var player = _gameWorld.Player;
             var healthBefore = player.Health;
 
+            // Don't regenerate so that health is still deducted at end of turn
+            player.RegenRate = 0;
+
             // Act
             var commandResults = _gameWorld.MoveRequest(Direction.None);
 
