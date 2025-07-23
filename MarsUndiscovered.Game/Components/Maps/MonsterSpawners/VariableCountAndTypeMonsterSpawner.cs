@@ -35,7 +35,7 @@ public class VariableCountAndTypeMonsterSpawner : MonsterSpawner
         {
             var breed = _probabilityTable.NextItem();
 
-            var spawnMonsterParams = new SpawnMonsterParams().AtPosition(point).WithBreed(breed).OnMap(map.Id);
+            var spawnMonsterParams = new SpawnMonsterParams().AtPosition(point).WithBreed(breed).WithState(MonsterState.Wandering).OnMap(map.Id);
 
             if (leader != null)
                 spawnMonsterParams.WithLeader(leader.ID);

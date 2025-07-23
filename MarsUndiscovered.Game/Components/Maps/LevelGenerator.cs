@@ -213,6 +213,7 @@ public class LevelGenerator : ILevelGenerator
         var foreman = new SpawnMonsterParams()
             .WithBreed(Breed.GetBreed("CrazedForeman"))
             .WithAllegianceCategory(AllegianceCategory.Miners)
+            .WithState(MonsterState.Idle)
             .OnMap(map.Id);
 
         MonsterGenerator.SpawnMonster(foreman, _gameWorld);
@@ -224,6 +225,7 @@ public class LevelGenerator : ILevelGenerator
                 .WithLeader(foreman.Result.ID)
                 .AtPosition(foreman.Result.Position)
                 .WithAllegianceCategory(AllegianceCategory.Miners)
+                .WithState(MonsterState.Idle)
                 .OnMap(map.Id);
 
             MonsterGenerator.SpawnMonster(miner, _gameWorld);

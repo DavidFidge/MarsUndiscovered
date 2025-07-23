@@ -19,7 +19,7 @@ public class ConstantGroupMonsterSpawner : MonsterSpawner
             
         foreach (var breed in _breeds)
         {
-            var spawnMonsterParams = new SpawnMonsterParams().AtPosition(point).WithBreed(breed).OnMap(map.Id);
+            var spawnMonsterParams = new SpawnMonsterParams().AtPosition(point).WithBreed(breed).WithState(MonsterState.Wandering).OnMap(map.Id);
             
             if (leader != null)
                 spawnMonsterParams.WithLeader(leader.ID);
