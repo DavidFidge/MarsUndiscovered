@@ -84,5 +84,7 @@ namespace MarsUndiscovered.Interfaces
         void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams);
         Rectangle GetCurrentMapDimensions();
         void SpawnFeature(SpawnFeatureParams spawnFeatureParams);
+        IEnumerable<Monster> GetCurrentMapMonsters();
+        IEnumerable<Actor> GetCurrentMapActors();
     }
 }

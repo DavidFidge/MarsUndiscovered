@@ -17,7 +17,5 @@ namespace MarsUndiscovered.Game.Components
                 this[monsterSaveData.State.Id].SetLeader(this[monsterSaveData.State.LeaderId.Value]);
             }
         }
-
-        public IEnumerable<Monster> LiveMonsters => Values.Where(m => !m.IsDead).AsEnumerable();
     }
 }

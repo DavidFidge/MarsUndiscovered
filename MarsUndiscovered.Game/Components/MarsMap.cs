@@ -26,7 +26,9 @@ namespace MarsUndiscovered.Game.Components
 
         public IList<Wall> Walls { get; private set; }
         public IList<Floor> Floors { get; private set; }
-        
+        public HashSet<Actor> LiveActors { get; private set; } = new HashSet<Actor>();
+        public HashSet<Monster> LiveMonsters { get; private set; } = new HashSet<Monster>();
+
         public int MapWidth => _mapWidth;
 
         public int MapHeight => _mapHeight;
@@ -49,8 +51,43 @@ namespace MarsUndiscovered.Game.Components
             _mapWidth = mapWidth;
             _mapHeight = mapHeight;
             SeenTiles = SeenTile.CreateArrayViewFromMap(this);
+
+            this.ObjectAdded += MarsMap_ObjectAdded;
+            this.ObjectRemoved += MarsMap_ObjectRemoved;
         }
-        
+
+        private void MarsMap_ObjectRemoved(object sender, SadRogue.Primitives.SpatialMaps.ItemEventArgs<IGameObject> e)
+        {
+            if (e.Item is Actor actor)
+            {
+                LiveActors.Remove(actor);
+            }
+            if (e.Item is Monster monster)
+            {
+                LiveActors.Remove(monster);
+            }
+        }
+
+        private void MarsMap_ObjectAdded(object sender, SadRogue.Primitives.SpatialMaps.ItemEventArgs<IGameObject> e)
+        {
+            if (e.Item is Actor actor)
+            {
+                LiveActors.Add(actor);
+            }
+            if (e.Item is Monster monster)
+            {
+                LiveMonsters.Add(monster);
+            }
+        }
+
+        public void ActorDied(Actor actor)
+        {
+            LiveActors.Remove(actor);
+
+            if (actor is Monster monster)
+                LiveMonsters.Remove(monster);
+        }
+
         public MarsMap WithTerrain(IEnumerable<Wall> walls, IEnumerable<Floor> floors)
         {
             Debug.Assert(floors != null && walls != null, "Walls and/or Floors must not be null");

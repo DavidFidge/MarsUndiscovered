@@ -17,22 +17,30 @@ public class ActorAllegianceCollection : Dictionary<AllegianceCategory, ActorAll
         var miners = new ActorAllegianceItem { AllegianceCategory = AllegianceCategory.Miners };
 
         player.Relationships.Add(monsters, ActorAllegianceState.Enemy);
-        monsters.Relationships.Add(player, ActorAllegianceState.Enemy);
-
         player.Relationships.Add(miners, ActorAllegianceState.Neutral);
-        miners.Relationships.Add(player, ActorAllegianceState.Neutral);
+        player.Relationships.Add(player, ActorAllegianceState.Ally);
 
-        miners.Relationships.Add(monsters, ActorAllegianceState.Enemy);
+        monsters.Relationships.Add(player, ActorAllegianceState.Enemy);
         monsters.Relationships.Add(miners, ActorAllegianceState.Enemy);
+        monsters.Relationships.Add(monsters, ActorAllegianceState.Friendly);
+
+        miners.Relationships.Add(player, ActorAllegianceState.Neutral);
+        miners.Relationships.Add(monsters, ActorAllegianceState.Enemy);
+        miners.Relationships.Add(miners, ActorAllegianceState.Ally);
 
         Add(player.AllegianceCategory, player);
         Add(monsters.AllegianceCategory, monsters);
         Add(miners.AllegianceCategory, miners);
     }
 
-    public ActorAllegianceState Get(AllegianceCategory source, AllegianceCategory target)
+    public ActorAllegianceState RelationshipTo(AllegianceCategory source, AllegianceCategory target)
     {
         return this[source].Relationships[this[target]];
+    }
+
+    public ActorAllegianceState RelationshipTo(Actor source, Actor target)
+    {
+        return this[source.AllegianceCategory].Relationships[this[target.AllegianceCategory]];
     }
 
     public void Change(AllegianceCategory source, AllegianceCategory target, ActorAllegianceState newState)

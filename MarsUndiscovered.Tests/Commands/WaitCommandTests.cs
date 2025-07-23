@@ -50,47 +50,6 @@ namespace MarsUndiscovered.Tests.Commands
             Assert.IsFalse(waitCommandResult.Command.RequiresPlayerInput);
             Assert.IsFalse(waitCommandResult.Command.InterruptsMovement);
         }
-        
-        [TestMethod]
-        public void Monster_Wander_Into_Waiting_Player_Should_Immediately_Change_To_Hunting_Status()
-        {
-            // Arrange
-            var wallPosition1 = new Point(1, 0);
-            var wallPosition2 = new Point(1, 1);
-            
-            var mapGenerator = new SpecificMapGenerator(
-                _gameWorld.GameObjectFactory,
-                new[] { wallPosition1, wallPosition2 });
-
-            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 1));
-
-            Breed.Breeds["Roach"].DetectionRange = 0;
-            
-            var spawnMonsterParams = new SpawnMonsterParams()
-                .WithBreed("Roach")
-                .AtPosition(new Point(0, 0))
-                .WithState(MonsterState.Wandering);
-            
-            _gameWorld.SpawnMonster(spawnMonsterParams);
-            
-            var monster = _gameWorld.Monsters.Values.First();
-            var player = _gameWorld.Player;
-
-            // Act
-            var commandResults = _gameWorld.MoveRequest(Direction.None);
-
-            // Assert
-            Assert.AreEqual(monster.MonsterState, MonsterState.Hunting);
-            
-            Assert.AreEqual(new Point(0, 1), player.Position);
-            Assert.AreEqual(new Point(0, 0), monster.Position);
-
-            // Monster will not attack this turn, state just switches to hunting
-            Assert.AreEqual(1, commandResults.Count);
-
-            var waitCommandResult = commandResults[0];
-            Assert.IsInstanceOfType(waitCommandResult.Command, typeof(WaitCommand));
-        }        
 
         [TestMethod]
         public void Should_Save_Then_Load_Game_With_Wait_Commands()

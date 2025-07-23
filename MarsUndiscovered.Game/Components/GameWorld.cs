@@ -246,7 +246,8 @@ namespace MarsUndiscovered.Game.Components
         public void AfterProgressiveWorldGeneration()
         {
             // Show all monsters and all of map
-            MonstersInView = Monsters.LiveMonsters.ToList();
+            MonstersInView = GetCurrentMapMonsters().ToList();
+
             Mediator.Publish(new MapChangedNotification());
 
             Mediator.Publish(
@@ -437,7 +438,7 @@ namespace MarsUndiscovered.Game.Components
 
             LastMonstersInView = MonstersInView;
 
-            foreach (var monster in Monsters.LiveMonsters.Where(m => m.CurrentMap.Equals(CurrentMap)))
+            foreach (var monster in CurrentMap.LiveMonsters)
             {
                 if (Player.IsDead)
                     yield break;
@@ -468,10 +469,19 @@ namespace MarsUndiscovered.Game.Components
 
         protected void UpdateMonstersInView()
         {
-            MonstersInView = Monsters.LiveMonsters
-                .Where(m => m.CurrentMap.Equals(CurrentMap))
+            MonstersInView = GetCurrentMapMonsters()
                 .Where(m => CurrentMap.PlayerFOV.BooleanResultView[m.Position])
                 .ToList();
+        }
+
+        public IEnumerable<Monster> GetCurrentMapMonsters()
+        {
+            return CurrentMap.LiveMonsters;
+        }
+
+        public IEnumerable<Actor> GetCurrentMapActors()
+        {
+            return CurrentMap.LiveActors;
         }
 
         private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command)

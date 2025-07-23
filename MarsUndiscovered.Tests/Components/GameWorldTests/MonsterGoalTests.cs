@@ -728,6 +728,37 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
 
         [TestMethod]
+        [DataRow(ActorAllegianceState.Ally)]
+        [DataRow(ActorAllegianceState.Friendly)]
+        [DataRow(ActorAllegianceState.Neutral)]
+        public void Should_Not_Attack_Player_When_Allegiance_Is_Not_Enemy(ActorAllegianceState actorAllegianceState)
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(1, 1));
+
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(1, 0))
+                .WithState(MonsterState.Wandering);
+            
+            _gameWorld.SpawnMonster(spawnMonsterParams);
+
+            var monster = _gameWorld.Monsters.Values.First();
+            var actorAllegiance = _gameWorld.ActorAllegiances[monster.AllegianceCategory];
+            actorAllegiance.Relationships[_gameWorld.ActorAllegiances[AllegianceCategory.Player]] = actorAllegianceState;
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+
+            // Act
+            var result = monster.NextTurn().ToList();
+
+            // Assert
+            Assert.AreEqual(result.Count, 1);
+            var walkCommand = result[0] as MoveCommand;
+        }
+
+        [TestMethod]
         public void Should_Attack_Player_When_Adjacent_To_Player()
         {
             // Arrange
@@ -737,7 +768,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 .WithBreed("Roach")
                 .AtPosition(new Point(1, 0))
                 .WithState(MonsterState.Hunting);
-            
+
             _gameWorld.SpawnMonster(spawnMonsterParams);
 
             var monster = _gameWorld.Monsters.Values.First();
@@ -754,7 +785,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreSame(_gameWorld.Player, attackCommand.Target);
             Assert.AreSame(monster, attackCommand.Source);
         }
-        
+
         [TestMethod]
         public void Should_Not_Attack_Player_When_Has_Line_Attack_And_Blocking_Object_Between()
         {
@@ -773,6 +804,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.SpawnMonster(spawnMonsterParams);
 
             var monster = _gameWorld.Monsters.Values.First();
+            monster.Target = _gameWorld.Player;
 
             _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
@@ -997,15 +1029,16 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
             monster.MonsterState = MonsterState.Hunting;
-            monster.SearchCooldown = 2;
-            
+            monster.Target = _gameWorld.Player;
+            monster.SearchCooldown = 0;
+
             // Act
             var result = _gameWorld.TestNextTurn().ToList();
 
             // Assert
             Assert.AreEqual(new Point(0, 2), monster.Position);
             Assert.AreEqual(MonsterState.Searching, monster.MonsterState);
-            Assert.AreEqual(1, monster.SearchCooldown);
+            Assert.AreEqual(monster.Breed.SearchCooldown - 1, monster.SearchCooldown);
         }
         
         [TestMethod]
@@ -1042,7 +1075,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             
             _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
-            monster.MonsterState = MonsterState.Hunting;
+            monster.MonsterState = MonsterState.Searching;
             monster.SearchCooldown = 1;
             
             // Act
@@ -1050,6 +1083,50 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.AreEqual(MonsterState.Wandering, monster.MonsterState);
+        }
+
+        [TestMethod]
+        public void Monster_Wander_Into_Waiting_Player_Should_Immediately_Change_To_Hunting_Status_And_Attack()
+        {
+            // Arrange
+            var wallPosition1 = new Point(1, 0);
+            var wallPosition2 = new Point(1, 1);
+
+            var mapGenerator = new SpecificMapGenerator(
+                _gameWorld.GameObjectFactory,
+                new[] { wallPosition1, wallPosition2 });
+
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 1));
+
+            Breed.Breeds["Roach"].DetectionRange = 0;
+
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(0, 0))
+                .WithState(MonsterState.Wandering);
+
+            _gameWorld.SpawnMonster(spawnMonsterParams);
+
+            var monster = _gameWorld.Monsters.Values.First();
+            var player = _gameWorld.Player;
+
+            // Act
+            var commandResults = _gameWorld.MoveRequest(Direction.None);
+
+            // Assert
+            Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
+
+            Assert.AreEqual(new Point(0, 1), player.Position);
+            Assert.AreEqual(new Point(0, 0), monster.Position);
+
+            // Monster will not attack this turn - adjacent enemies are always detected
+            Assert.AreEqual(2, commandResults.Count);
+
+            var waitCommandResult = commandResults[0];
+            Assert.IsInstanceOfType(waitCommandResult.Command, typeof(WaitCommand));
+
+            var attackCommand = commandResults[1];
+            Assert.IsInstanceOfType(attackCommand.Command, typeof(MeleeAttackCommand));
         }
     }
 }

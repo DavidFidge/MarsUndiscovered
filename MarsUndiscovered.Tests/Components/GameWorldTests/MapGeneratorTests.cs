@@ -2,11 +2,16 @@
 using FrigidRogue.WaveFunctionCollapse;
 using FrigidRogue.WaveFunctionCollapse.Options;
 using FrigidRogue.WaveFunctionCollapse.Renderers;
+
+using GoRogue.Random;
+
 using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Components.Maps;
 using Microsoft.Xna.Framework.Graphics;
 using NSubstitute;
 using SadRogue.Primitives;
+
+using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests;
 
@@ -20,6 +25,8 @@ public class MapGeneratorTests : BaseGameWorldIntegrationTests
     public override void Setup()
     {
         base.Setup();
+
+        GlobalRandom.DefaultRNG = new MizuchiRandom();
 
         _waveFunctionCollapseGeneratorPasses = Substitute.For<IWaveFunctionCollapseGeneratorPasses>();
         _mapGenerator = new MapGenerator(_waveFunctionCollapseGeneratorPasses, null, null,
