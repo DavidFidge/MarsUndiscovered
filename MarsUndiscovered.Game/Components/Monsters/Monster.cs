@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using BehaviourTree;
 using BehaviourTree.FluentBuilder;
@@ -51,6 +52,8 @@ namespace MarsUndiscovered.Game.Components
         public Actor Leader { get; set; }
         public Actor Target { get; set; }
 
+        // TODO include in save game
+        public Actor TargetOutOfFov { get; set; }
 
         private IFOV _fieldOfView;
         private ArrayView<SeenTile> _seenTiles;
@@ -264,18 +267,20 @@ namespace MarsUndiscovered.Game.Components
 
             _behaviourTree = fluentBuilder
                 .Sequence("root")
-                .Condition("map is not null", monster => CurrentMap != null)
-                .Condition("on same map as player", monster => CurrentMap.Equals(GameWorld.Player.CurrentMap))
-                .Selector("pick target")
-                    .Subtree(PickTargetBehavior())
-                    .End()
-                .Selector("action selector")
-                    .Subtree(ConcussBehaviour())
-                    .Subtree(MeleeAttackBehaviour())
-                    .Subtree(LineAttackBehaviour())
-                    .Subtree(LightningAttackBehaviour())
-                    .Subtree(MoveBehavior())
-                    .End()
+                    .Condition("map is not null", monster => CurrentMap != null)
+                    .Condition("on same map as player", monster => CurrentMap.Equals(GameWorld.Player.CurrentMap))
+                    .Selector("pick target")
+                        .AlwaysSucceed("pick target always succeed") // allows root sequence to continue
+                            .Subtree(PickTargetBehavior())
+                            .End()
+                        .End()
+                    .Selector("action selector")
+                        .Subtree(ConcussBehaviour())
+                        .Subtree(MeleeAttackBehaviour())
+                        .Subtree(LineAttackBehaviour())
+                        .Subtree(LightningAttackBehaviour())
+                        .Subtree(MoveBehavior())
+                        .End()
                 .End()
                 .Build();
         }
@@ -288,9 +293,10 @@ namespace MarsUndiscovered.Game.Components
                     .Selector("move selector")
                         .Subtree(SearchingBehavior())
                         .Subtree(HuntBehaviour())
+                        //// Try search again after hunt, hunt can transition to search if the target is not in FOV.
+                        .Subtree(SearchingBehavior())
                         .Subtree(FollowLeader())
-                        .Subtree(WanderUsingAStarBehavior())
-                        .Subtree(WanderUsingGoalMapBehavior())
+                        .Subtree(WanderBehavior())
                     .End()
                 .End()
                 .Build();
@@ -503,43 +509,33 @@ namespace MarsUndiscovered.Game.Components
             return BehaviourStatus.Succeeded;
         }
 
-        private IBehaviour<Monster> WanderUsingAStarBehavior()
+        private IBehaviour<Monster> WanderBehavior()
         {
             var behaviour = FluentBuilder.Create<Monster>()
-                .Sequence("wander using AStar sequence")
-                    .Condition("can wander using AStar", monster => !monster.UseGoalMapWander)
-                    .Condition(
-                        "is not blocked",
-                        monster =>
-                        {
-                            foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
-                            {
-                                if (CurrentMap.GameObjectCanMove(this, Position + direction))
-                                    return true;
-                            }
-
-                            // Blocked. If target is participating in blocking, ignore this rule,
-                            // it will be dealt with.
-                            if (Target != null && CurrentMap.DistanceMeasurement.Calculate(Position, Target.Position) <= 1)
-                                return true;
-                            
-                            return false;
-                        }
-                    )
+                .Sequence("wander")
+                    .Condition("is wandering", monster => monster.MonsterState == MonsterState.Wandering)
                     .Do(
                         "move to next unexplored square",
                         monster =>
                         {
-                            var nextDirection = WanderUsingAStar();
+                            if (Target != null)
+                            {
+                                var detected = TryDetectTarget();
+
+                                if (detected)
+                                    return BehaviourStatus.Failed;
+                            }
+
+                            // Blocked, can't do anything
+                            if (IsBlocked())
+                                return BehaviourStatus.Succeeded;
+
+                            var nextDirection = monster.UseGoalMapWander ? WanderUsingGoalMap() : WanderUsingAStar();
 
                             if (nextDirection == Direction.None)
                             {
-                                // move is blocked, if target is in a surrounding square, hunt immediately
-                                if (Target != null && CurrentMap.DistanceMeasurement.Calculate(Position, Target.Position) <= 1)
-                                {
-                                    MonsterState = MonsterState.Hunting;
-                                    return BehaviourStatus.Succeeded;
-                                }
+                                // move is still blocked for some reason, do nothing
+                                return BehaviourStatus.Succeeded;
                             }
                             else
                             {
@@ -547,7 +543,6 @@ namespace MarsUndiscovered.Game.Components
                                 _nextCommands.Add(moveCommand);
                             }
 
-                            MonsterState = MonsterState.Wandering;
                             return BehaviourStatus.Succeeded;
                         })
                 .End()
@@ -555,59 +550,42 @@ namespace MarsUndiscovered.Game.Components
 
             return behaviour;
         }
-        
-        private IBehaviour<Monster> WanderUsingGoalMapBehavior()
+
+        private bool TryDetectTarget()
         {
-            var behaviour = FluentBuilder.Create<Monster>()
-                .Sequence("wander using goal map sequence")
-                    .Condition("can wander using goal map", monster => monster.UseGoalMapWander)
-                    .Condition(
-                        "is not blocked",
-                        monster =>
-                        {
-                            foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
-                            {
-                                if (CurrentMap.GameObjectCanMove(this, Position + direction))
-                                    return true;
-                            }
-                            
-                            // Blocked. If target is participating in blocking, ignore this rule,
-                            // it will be dealt with.
-                            if (Target != null && CurrentMap.DistanceMeasurement.Calculate(Position, Target.Position) <= 1)
-                                return true;
+            if (Target.Position.IsNextTo(Position, AdjacencyRule.EightWay))
+            {
+                MonsterState = MonsterState.Hunting;
 
-                            return false;
-                        }
-                    )
-                    .Do(
-                        "move to next unexplored square",
-                        monster =>
-                        {
-                            var nextDirection = WanderUsingGoalMap();
+                return true;
+            }
 
-                            if (nextDirection == Direction.None)
-                                return BehaviourStatus.Failed;
+            // A Target is always in field of view. If not adjacent then the monster
+            // will do a detection check to determine if it transitions to hunting
+            // a short range check does not occur for wandering
+            var distance = CurrentMap.DistanceMeasurement.Calculate(Position, Target.Position);
 
-                            var gameObject = CurrentMap.GetObjectAt<Actor>(Position + nextDirection);
+            if (distance <= DetectionRange)
+            {
+                if (GameWorld.Random.NextInt(5, Constants.RngMonsterDetectLongRange) == 0)
+                {
+                    MonsterState = MonsterState.Hunting;
+                    return true;
+                }
+            }
 
-                            if (Target != null && gameObject == Target)
-                            {
-                                // Target is in the chosen square, switch to hunting but do not attack this turn
-                                MonsterState = MonsterState.Hunting;
-                                return BehaviourStatus.Succeeded;
-                            }
+            return false;
+        }
 
-                            var moveCommand = CreateMoveCommand(nextDirection);
-                            _nextCommands.Add(moveCommand);
+        private bool IsBlocked()
+        {
+            foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
+            {
+                if (CurrentMap.GameObjectCanMove(this, Position + direction))
+                    return true;
+            }
 
-                            MonsterState = MonsterState.Wandering;
-                            return BehaviourStatus.Succeeded;
-                        }
-                    )
-                .End()
-                .Build();
-
-            return behaviour;
+            return false;
         }
 
         private IBehaviour<Monster> HuntBehaviour()
@@ -619,19 +597,40 @@ namespace MarsUndiscovered.Game.Components
                     "move towards target",
                     monster =>
                     {
-                        var nextDirection = Hunt();
+                        if (Target == null)
+                        {
+                            if (TargetOutOfFov != null)
+                            {
+                                MonsterState = MonsterState.Searching;
+                                SearchCooldown = Breed.SearchCooldown;
+                            }
+                            else
+                            {
+                                MonsterState = MonsterState.Wandering;
+                            }
 
-                        if (nextDirection == Direction.None)
                             return BehaviourStatus.Failed;
+                        }
+
+                        // See if the target is adjacent. If so do nothing. This may happen when
+                        // a transition from searching to hunting has occurred.
+                        if (Position.Neighbours(CurrentMap, AdjacencyRule.EightWay).Any(p => p == Target.Position))
+                        {
+                            return BehaviourStatus.Succeeded;
+                        }
+
+                        // Target is always in fov. Hunt.
+                        var nextDirection = Hunt(Target);
+
+                        // can't move, might be blocked
+                        if (nextDirection == Direction.None)
+                            return BehaviourStatus.Succeeded;
 
                         var actorsAtPosition = CurrentMap.GetObjectsAt<Actor>(Position + nextDirection);
 
                         if (actorsAtPosition.Any())
                         {
-                            // If we entered here then the monster would have switched to hunting while
-                            // adjacent to the target.  Do not move anywhere - next turn the monster
-                            // should perform an attack.
-                            return BehaviourStatus.Succeeded;
+                            throw new Exception("Unexpected move - hunt should have blocked a move into any other target");
                         }
 
                         var moveCommand = CreateMoveCommand(nextDirection);
@@ -650,9 +649,22 @@ namespace MarsUndiscovered.Game.Components
         {
             var behaviour = FluentBuilder.Create<Monster>()
                 .Sequence("pick target")
-                    .Condition("no target or target not visible", monster => Target == null || !_fieldOfView.CurrentFOV.Contains(Target.Position))
                     .Do("pick target", monster =>
                     {
+                        // The Target picker will set Target if a target is adjacent or is in
+                        // field of view. If a Target was already set but the Target is no longer in field of view
+                        // then it will try to pick a new target.  If no other target found it will assign Target
+                        // to TargetOutOfFov and clear Target.
+                        if (Target != null && Target.IsDead)
+                            Target = null;
+
+                        if (TargetOutOfFov != null && TargetOutOfFov.IsDead)
+                            TargetOutOfFov = null;
+
+                        // Don't change target if target is already adjacent
+                        if (Target != null && Target.Position.IsNextTo(Position, AdjacencyRule.EightWay))
+                            return BehaviourStatus.Succeeded;
+
                         // Check immediate neighbours first
                         var adjacentEnemy = Position.Neighbours(CurrentMap)
                             .Select(p => CurrentMap.GetObjectAt<Actor>(p))
@@ -663,9 +675,18 @@ namespace MarsUndiscovered.Game.Components
                         if (adjacentEnemy != null)
                         {
                             Target = adjacentEnemy;
-                            MonsterState = MonsterState.Hunting;
+                            TargetOutOfFov = null;
+
                             return BehaviourStatus.Succeeded;
                         }
+
+                        if (Target != null && _fieldOfView.CurrentFOV.Contains(Target.Position))
+                        {
+                            return BehaviourStatus.Succeeded;
+                        }
+
+                        TargetOutOfFov = Target;
+                        Target = null;
 
                         // Check for any actors in field of view
                         var newPotentialTarget = GameWorld.GetCurrentMapActors()
@@ -674,48 +695,10 @@ namespace MarsUndiscovered.Game.Components
                             .OrderBy(m => Distance.Chebyshev.Calculate(m.Position, Position))
                             .FirstOrDefault();
 
-                        // Target is not in field of view and no new target
-                        if (Target != null && newPotentialTarget == null)
-                        {
-                            // keep current target and start searching
-                            MonsterState = MonsterState.Searching;
-                            SearchCooldown = Breed.SearchCooldown;
-
-                            return BehaviourStatus.Succeeded;
-                        }
-                        
                         if (newPotentialTarget != null)
                         {
                             Target = newPotentialTarget;
-
-                            if (MonsterState == MonsterState.Hunting)
-                            {
-                                // new target picked, was already hunting, stay in that state
-                                return BehaviourStatus.Succeeded;
-                            }
-
-                            // If monster was already searching and it found something then 
-                            // immediately hunt
-                            if (MonsterState == MonsterState.Searching)
-                            {
-                                MonsterState = MonsterState.Hunting;
-                                return BehaviourStatus.Succeeded;
-                            }
-
-                            // if not hunting or searching already then monster will do a detection check
-                            var distance = CurrentMap.DistanceMeasurement.Calculate(Position, Target.Position);
-
-                            if (distance <= DetectionRange)
-                            {
-                                if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
-                                    MonsterState = MonsterState.Hunting;
-                            }
-                            if (distance <= DetectionRange / 2)
-                            {
-                                // perform a second roll if within half of detection range
-                                if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
-                                    MonsterState = MonsterState.Hunting;
-                            }
+                            TargetOutOfFov = null;
                         }
 
                         return BehaviourStatus.Succeeded;
@@ -733,56 +716,97 @@ namespace MarsUndiscovered.Game.Components
             var behaviour = FluentBuilder.Create<Monster>()
                 .Sequence("search")
                     .Condition("is searching", monster => MonsterState == MonsterState.Searching)
-                    .Condition("cooldown not expired", monster =>
-                {
-                    if (monster.SearchCooldown <= 0)
-                        return false;
-                    
-                    return true;
-                })
                 .Do(
                     "move towards target",
                     monster =>
                     {
+                        // Searching needs to deal with a new Target in field of view
+                        // or previous target now out of fov (TargetOutOfFov)
+                        if (Target != null)
+                        {
+                            if (Target.Position.IsNextTo(Position, AdjacencyRule.EightWay))
+                            {
+                                MonsterState = MonsterState.Hunting;
+
+                                return BehaviourStatus.Failed;
+                            }
+
+                            // A Target is always in field of view. If not adjacent then the monster
+                            // will do a detection check to determine if it transitions to hunting
+                            var distance = CurrentMap.DistanceMeasurement.Calculate(Position, Target.Position);
+
+                            if (distance <= DetectionRange)
+                            {
+                                if (GameWorld.Random.NextInt(5, Constants.RngMonsterDetectLongRange) == 0)
+                                {
+                                    MonsterState = MonsterState.Hunting;
+                                    return BehaviourStatus.Failed;
+                                }
+                            }
+                            if (distance <= DetectionRange / 2)
+                            {
+                                // perform a second roll if within half of detection range
+                                if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
+                                {
+                                    MonsterState = MonsterState.Hunting;
+                                    return BehaviourStatus.Failed;
+                                }
+                            }
+
+                            return HuntAndMove(Target);
+                        }
+
+                        if (TargetOutOfFov == null)
+                        {
+                            MonsterState = MonsterState.Wandering;
+                            return BehaviourStatus.Failed;
+                        }
+
                         SearchCooldown--;
 
                         if (SearchCooldown <= 0)
                         {
                             MonsterState = MonsterState.Wandering;
-                            
+
                             // Return failed so that wandering state can run and monster can move
                             return BehaviourStatus.Failed;
                         }
 
-                        var nextDirection = Hunt();
-
-                        if (nextDirection == Direction.None)
-                            return BehaviourStatus.Failed;
-
-                        var actorsAtPosition = CurrentMap.GetObjectsAt<Actor>(Position + nextDirection);
-
-                        if (actorsAtPosition.Any())
-                        {
-                            // Blocked from moving by another actor, just stand still during this turn
-                            return BehaviourStatus.Succeeded;
-                        }
-
-                        var moveCommand = CreateMoveCommand(nextDirection);
-                        _nextCommands.Add(moveCommand);
-
-                        return BehaviourStatus.Succeeded;
+                        return HuntAndMove(TargetOutOfFov);
                     })
                 .End()
                 .Build();
 
             return behaviour;
         }
-        
-        public Direction Hunt()
+
+        private BehaviourStatus HuntAndMove(Actor target)
+        {
+            var nextDirection = Hunt(target);
+
+
+            if (nextDirection == Direction.None)
+                return BehaviourStatus.Failed;
+
+            var actorsAtPosition = CurrentMap.GetObjectsAt<Actor>(Position + nextDirection);
+
+            if (actorsAtPosition.Any())
+            {
+                // Blocked from moving by another actor, just stand still during this turn
+                return BehaviourStatus.Succeeded;
+            }
+
+            var moveCommand = CreateMoveCommand(nextDirection);
+            _nextCommands.Add(moveCommand);
+
+            return BehaviourStatus.Succeeded;
+        }
+
+        public Direction Hunt(Actor target)
         {
             _goalStates.Clear();
 
-            if (Target == null)
+            if (target == null)
                 throw new Exception("Should not be hunting with no target");
 
             // Hunt radius only requires the distance between target and monster, plus an extra 3
@@ -791,7 +815,7 @@ namespace MarsUndiscovered.Game.Components
             // the terrain is not included in this submap, but 99% of cases should be fine, and may
             // sometimes be beneficial as it means monsters can't be tricked into taking a longer
             // path to the player.
-            var range = Rectangle.GetIntersection(CurrentMap.RectangleCoveringPoints(Target.Position, Position).Expand(3, 3), CurrentMap.Bounds());
+            var range = Rectangle.GetIntersection(CurrentMap.RectangleCoveringPoints(target.Position, Position).Expand(3, 3), CurrentMap.Bounds());
             
             for (var x = range.MinExtentX; x <= range.MaxExtentX; x++)
             {
@@ -803,7 +827,7 @@ namespace MarsUndiscovered.Game.Components
 
                     foreach (var gameObject in gameObjects)
                     {
-                        if (gameObject == Target)
+                        if (gameObject == target)
                         {
                             _goalStates[x, y] = GoalState.Goal;
                             break;

@@ -76,6 +76,8 @@ namespace MarsUndiscovered.Game.Components
 
         protected IContextualEnhancedRandom _contextualEnhancedRandom;
 
+        public IContextualEnhancedRandom Random => _contextualEnhancedRandom;
+
         public ActorAllegianceCollection ActorAllegiances { get; set; }
 
         public GameWorld()

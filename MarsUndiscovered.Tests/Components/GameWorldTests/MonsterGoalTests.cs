@@ -1,4 +1,7 @@
 using System.Text;
+
+using Castle.Core.Internal;
+
 using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Commands;
@@ -7,6 +10,8 @@ using MarsUndiscovered.Game.Components.Maps;
 using NGenerics.Extensions;
 using SadRogue.Primitives;
 using ShaiRandom.Generators;
+
+using Constants = MarsUndiscovered.Game.Constants;
 
 namespace MarsUndiscovered.Tests.Components.GameWorldTests
 {
@@ -755,7 +760,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             // Assert
             Assert.AreEqual(result.Count, 1);
-            var walkCommand = result[0] as MoveCommand;
+            var moveCommand = result[0] as MoveCommand;
         }
 
         [TestMethod]
@@ -784,6 +789,122 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.IsNotNull(attackCommand);
             Assert.AreSame(_gameWorld.Player, attackCommand.Target);
             Assert.AreSame(monster, attackCommand.Source);
+        }
+
+        [TestMethod]
+        public void Should_Switch_From_Searching_To_Hunting_When_Adjacent()
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(1, 1));
+
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(1, 0))
+                .WithState(MonsterState.Searching);
+
+            _gameWorld.SpawnMonster(spawnMonsterParams);
+
+            var monster = _gameWorld.Monsters.Values.First();
+            monster.SearchCooldown = monster.Breed.SearchCooldown;
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+
+            // Act
+            var result = monster.NextTurn().ToList();
+
+            // Assert
+            Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
+
+            Assert.IsFalse(result.Any());
+        }
+
+        [TestMethod]
+        public void Should_Switch_From_Wandering_To_Hunting_And_Move_Towards_Player_When_Not_Adjacent_While_Still_Hunting()
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
+
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(3, 0))
+                .WithState(MonsterState.Wandering);
+
+            _gameWorld.SpawnMonster(spawnMonsterParams);
+
+            var monster = _gameWorld.Monsters.Values.First();
+            monster.SearchCooldown = monster.Breed.SearchCooldown;
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+
+            var knownSeriesRandom = new KnownSeriesRandom(intSeries: new[]
+            {
+                0 // Detected
+            });
+
+            _gameWorld.TestContextualEnhancedRandom.KnownSeries.Add(Constants.RngMonsterDetectLongRange, knownSeriesRandom);
+
+            // Act
+            var result = _gameWorld.TestNextTurn().ToList();
+
+            // Assert
+            Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
+
+            var moveCommand = result[0].Command as MoveCommand;
+
+            Assert.AreEqual(new Point(2, 0), monster.Position);
+
+            // Act 2
+            var result2 = _gameWorld.TestNextTurn().ToList();
+
+            // Assert 2
+            Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
+
+            var moveCommand2 = result2[0].Command as MoveCommand;
+
+            Assert.AreEqual(new Point(1, 0), monster.Position);
+        }
+
+        [TestMethod]
+        public void Should_Switch_From_Searching_To_Hunting_And_Move_Towards_Player_When_Not_Adjacent_While_Still_Hunting()
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
+
+            var spawnMonsterParams = new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(3, 0))
+                .WithState(MonsterState.Searching);
+
+            _gameWorld.SpawnMonster(spawnMonsterParams);
+
+            var monster = _gameWorld.Monsters.Values.First();
+            monster.SearchCooldown = monster.Breed.SearchCooldown;
+            monster.Target = _gameWorld.Player;
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+
+            // Act
+            var result = _gameWorld.TestNextTurn().ToList();
+
+            // Assert
+            Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
+
+            var moveCommand = result[0].Command as MoveCommand;
+
+            Assert.AreEqual(new Point(2, 0), monster.Position);
+
+            // Act 2
+            var result2 = _gameWorld.TestNextTurn().ToList();
+
+            // Assert 2
+            Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
+
+            var moveCommand2 = result2[0].Command as MoveCommand;
+
+            Assert.AreEqual(new Point(1, 0), monster.Position);
         }
 
         [TestMethod]
@@ -1086,47 +1207,47 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
 
         [TestMethod]
-        public void Monster_Wander_Into_Waiting_Player_Should_Immediately_Change_To_Hunting_Status_And_Attack()
+        public void Monster_Wanders_While_Has_No_Target()
         {
             // Arrange
-            var wallPosition1 = new Point(1, 0);
-            var wallPosition2 = new Point(1, 1);
+            var lines = new[]
+            {
+                "......",
+                ".#####",
+                "......"
+            };
 
+            var mapTemplate = new MapTemplate(lines, 0, 0);
             var mapGenerator = new SpecificMapGenerator(
                 _gameWorld.GameObjectFactory,
-                new[] { wallPosition1, wallPosition2 });
+                mapTemplate.Where(m => m.Char == '#').Select(m => m.Point).ToList());
 
-            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 1));
+            NewGameWithTestLevelGenerator(
+                _gameWorld,
+                mapGenerator,
+                mapWidth: mapTemplate.Bounds.Width,
+                mapHeight: mapTemplate.Bounds.Height,
+                playerPosition: new Point(5, 2));
 
-            Breed.Breeds["Roach"].DetectionRange = 0;
-
-            var spawnMonsterParams = new SpawnMonsterParams()
-                .WithBreed("Roach")
-                .AtPosition(new Point(0, 0))
-                .WithState(MonsterState.Wandering);
-
-            _gameWorld.SpawnMonster(spawnMonsterParams);
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(5, 0)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
-            var player = _gameWorld.Player;
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
 
             // Act
-            var commandResults = _gameWorld.MoveRequest(Direction.None);
+            var result1 = _gameWorld.TestNextTurn().ToList();
 
             // Assert
-            Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
+            Assert.AreEqual(MonsterState.Wandering, monster.MonsterState);
 
-            Assert.AreEqual(new Point(0, 1), player.Position);
-            Assert.AreEqual(new Point(0, 0), monster.Position);
+            var command1 = result1[0].Command as MoveCommand;
 
-            // Monster will not attack this turn - adjacent enemies are always detected
-            Assert.AreEqual(2, commandResults.Count);
+            var result2 = _gameWorld.TestNextTurn().ToList();
+            Assert.AreEqual(MonsterState.Wandering, monster.MonsterState);
 
-            var waitCommandResult = commandResults[0];
-            Assert.IsInstanceOfType(waitCommandResult.Command, typeof(WaitCommand));
-
-            var attackCommand = commandResults[1];
-            Assert.IsInstanceOfType(attackCommand.Command, typeof(MeleeAttackCommand));
+            var command2 = result2[0].Command as MoveCommand;
         }
     }
 }

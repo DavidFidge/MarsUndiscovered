@@ -80,6 +80,7 @@ namespace MarsUndiscovered.Interfaces
         MessageLog MessageLog { get; }
         RadioComms RadioComms { get; set; }
         ActorAllegianceCollection ActorAllegiances { get; set; }
+        IContextualEnhancedRandom Random { get; }
 
         void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams);
         Rectangle GetCurrentMapDimensions();

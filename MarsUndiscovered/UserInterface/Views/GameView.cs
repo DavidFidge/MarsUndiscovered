@@ -100,6 +100,12 @@ namespace MarsUndiscovered.UserInterface.Views
         protected RichParagraph StatusParagraph;
         protected RichParagraph HoverPanelLeftTooltip;
         protected RichParagraph HoverPanelRightTooltip;
+
+        // A container is needed for the monster panels, before we were adding the
+        // individual panels into the left panel after AmbientParagraph, but AmbientParagraph
+        // is a bottom left anchor, while monster panels are auto, and if auto gets added
+        // after bottom left it renders underneath, which is off the screen.
+        protected Panel MonsterPanelContainer { get; set; }
         protected RichParagraph AmbientParagraph;
         protected Panel GameViewPanel { get; set; }
         protected Panel HoverPanelLeft { get; set; }
@@ -307,7 +313,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 monsterJoin.MonsterPanel.Update(monsterJoin.MonsterStatus);
 
                 MonsterPanels.Add(monsterJoin.MonsterPanel);
-                monsterJoin.MonsterPanel.AddAsChildTo(LeftPanel);
+                monsterJoin.MonsterPanel.AddAsChildTo(MonsterPanelContainer);
             }
         }
 
@@ -325,6 +331,7 @@ namespace MarsUndiscovered.UserInterface.Views
             CreatePlayerPanel();
             CreateMessageLog();
             CreateStatusPanel();
+            CreateMonsterPanelContainer();
             CreateAmbientPanel();
             CreateRadioCommsPanel();
             CreateHotBarPanel();
@@ -333,6 +340,18 @@ namespace MarsUndiscovered.UserInterface.Views
             SetupChildPanel(_inGameOptionsView);
             
             _stopwatchProvider.Start();
+        }
+
+        private void CreateMonsterPanelContainer()
+        {
+            MonsterPanelContainer = new Panel()
+                .Anchor(Anchor.Auto)
+                .SkinNone()
+                .NoPadding()
+                .AutoHeight()
+                .WidthOfContainer();
+
+            LeftPanel.AddChild(MonsterPanelContainer);
         }
 
         protected void CreateHotBarPanel()
