@@ -523,7 +523,10 @@ namespace MarsUndiscovered.Game.Components
                                 var detected = TryDetectTarget();
 
                                 if (detected)
+                                {
+                                    MonsterState = MonsterState.Hunting;
                                     return BehaviourStatus.Failed;
+                                }
                             }
 
                             // Blocked, can't do anything
@@ -582,10 +585,10 @@ namespace MarsUndiscovered.Game.Components
             foreach (var direction in AdjacencyRule.EightWay.DirectionsOfNeighbors())
             {
                 if (CurrentMap.GameObjectCanMove(this, Position + direction))
-                    return true;
+                    return false;
             }
 
-            return false;
+            return true;
         }
 
         private IBehaviour<Monster> HuntBehaviour()

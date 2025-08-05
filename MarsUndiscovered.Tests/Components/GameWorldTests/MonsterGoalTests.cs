@@ -33,7 +33,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(2, 0));
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 4)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 4)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
             monster.UseGoalMapWander = true;
@@ -67,7 +67,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
             monster.UseGoalMapWander = true;
@@ -116,7 +116,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(4, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(4, 2)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
             monster.UseGoalMapWander = true;
@@ -182,7 +182,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2, wallPosition3, wallPosition4, wallPosition5, wallPosition6 });
             NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(10, 10));
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 0)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 0)).WithState(MonsterState.Wandering));
             
             var monster = _gameWorld.Monsters.Values.First();
             monster.UseGoalMapWander = true;
@@ -236,8 +236,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // ###.
             // ..M.
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(1, 4)));
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 6)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(1, 4)).WithState(MonsterState.Wandering));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 6)).WithState(MonsterState.Wandering));
 
             var monster1 = _gameWorld.Monsters.Values.First();
             var monster2 = _gameWorld.Monsters.Values.Last();
@@ -293,7 +293,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // ..M.
             // ....
             // ....
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 3)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 3)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
 
@@ -328,7 +328,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // ..P.
             // ..M.
             // ....
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 4)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 4)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
 
@@ -393,7 +393,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // .#### => ?####
             // .M...    .....
             // .....    .....
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(1, 3)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(1, 3)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
 
@@ -470,7 +470,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // ....
             // ..M.
             // ....
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 4)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 4)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
 
@@ -504,7 +504,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 3));
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 1)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 1)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
 
@@ -548,21 +548,24 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var monsterLeader = new SpawnMonsterParams()
                 .WithBreed("RepairDroid")
-                .AtPosition(new Point(4, 6));
+                .AtPosition(new Point(4, 6))
+                .WithState(MonsterState.Wandering);
             
             _gameWorld.SpawnMonster(monsterLeader);
             
             var monsterFollower1 = new SpawnMonsterParams()
                 .WithBreed("RepairDroid")
                 .WithLeader(monsterLeader.Result.ID)
-                .AtPosition(new Point(4, 0));
+                .AtPosition(new Point(4, 0))
+                .WithState(MonsterState.Wandering);
             
             _gameWorld.SpawnMonster(monsterFollower1);
             
             var monsterFollower2 = new SpawnMonsterParams()
                 .WithBreed("RepairDroid")
                 .WithLeader(monsterLeader.Result.ID)
-                .AtPosition(new Point(4, 12));
+                .AtPosition(new Point(4, 12))
+                .WithState(MonsterState.Wandering);
             
             _gameWorld.SpawnMonster(monsterFollower2);
 
@@ -600,7 +603,10 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(2, 2)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams()
+                .WithBreed("Roach")
+                .AtPosition(new Point(2, 2))
+                .WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
             monster.VisualRange = 2;
@@ -648,7 +654,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, mapWidth: 15, mapHeight: 5, playerPosition: new Point(0, 3));
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(4, 1)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(4, 1)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
             monster.VisualRange = 4;
@@ -851,9 +857,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             // Assert
             Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
 
-            var moveCommand = result[0].Command as MoveCommand;
-
-            Assert.AreEqual(new Point(2, 0), monster.Position);
+            // Movement will occur next turn
+            Assert.IsFalse(result.Any());
 
             // Act 2
             var result2 = _gameWorld.TestNextTurn().ToList();
@@ -862,6 +867,16 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
 
             var moveCommand2 = result2[0].Command as MoveCommand;
+
+            Assert.AreEqual(new Point(2, 0), monster.Position);
+
+            // Act 3
+            var result3 = _gameWorld.TestNextTurn().ToList();
+
+            // Assert 2
+            Assert.AreEqual(MonsterState.Hunting, monster.MonsterState);
+
+            var moveCommand3 = result3[0].Command as MoveCommand;
 
             Assert.AreEqual(new Point(1, 0), monster.Position);
         }
@@ -1065,7 +1080,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition1, wallPosition2 });
             NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(3, 3));
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition1));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition1).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
 
@@ -1088,7 +1103,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
             NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(3, 3));
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("TeslaTurret").AtPosition(wallPosition).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
 
@@ -1143,7 +1158,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 mapHeight: mapTemplate.Bounds.Height,
                 playerPosition: new Point(1, 1));
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(1, 3)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(1, 3)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
             
@@ -1190,7 +1205,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 mapHeight: mapTemplate.Bounds.Height,
                 playerPosition: new Point(3, 1));
 
-            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(3, 3)));
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(3, 3)).WithState(MonsterState.Wandering));
 
             var monster = _gameWorld.Monsters.Values.First();
             
