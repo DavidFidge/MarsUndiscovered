@@ -421,7 +421,6 @@ namespace MarsUndiscovered.Game.Components
                 .Sequence("line attack")
                 .Condition("has line attack", monster => LineAttack != null)
                 .Condition("has target", monster => Target != null)
-                .Condition("target is in field of view", monster => _fieldOfView.CurrentFOV.Contains(Target.Position))
                 .Condition("hunting", monster => MonsterState == MonsterState.Hunting)
                 .Condition("able to attack", monster =>
                 {
@@ -477,7 +476,6 @@ namespace MarsUndiscovered.Game.Components
                 .Sequence("lightning attack")
                 .Condition("has lightning attack", monster => LightningAttack != null)
                 .Condition("has target", monster => Target != null)
-                .Condition("target is in field of view", monster => _fieldOfView.CurrentFOV.Contains(Target.Position))
                 .Condition("turret or hunting", monster => IsWallTurret || MonsterState == MonsterState.Hunting)
                 .Do("lightning attack target", monster => ExecuteLightningAttack()
                 )
