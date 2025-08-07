@@ -309,37 +309,49 @@ namespace MarsUndiscovered.Game.Components
             var behaviour = FluentBuilder.Create<Monster>()
                 .Sequence("follow leader")
                 .Condition("has leader", monster => Leader != null)
-                .Condition("leader is not dead", monster => !Leader.IsDead)
-                .Condition("is on same map", monster => Leader.CurrentMap.Equals(CurrentMap))
-                .Condition(
-                    "is not within 3 squares of leader",
+                .Condition("is following leader", m => MonsterState == MonsterState.FollowingLeader)
+                .Do(
+                    "move towards leader",
                     monster =>
                     {
+                        if (Leader.IsDead)
+                        {
+                            Leader = null;
+                            MonsterState = MonsterState.Wandering;
+                            return BehaviourStatus.Failed;
+                        }
+
+                        if (Target != null)
+                        {
+                            // Wandering does the target detection
+                            MonsterState = MonsterState.Wandering;
+                            return BehaviourStatus.Failed;
+                        }
+
                         var distance = Distance.Chebyshev.Calculate(monster.Position, Leader.Position);
 
-                        return distance > 3;
-                    }
-                )
-                .Condition(
-                    "is not blocked",
-                    monster =>
-                    {
+                        if (distance <= 2)
+                        {
+                            // Let the monster 'flutter' away from the leader if too close
+                            MonsterState = MonsterState.Wandering;
+                            return BehaviourStatus.Failed;
+                        }
+
                         if (_toLeaderPath == null || Leader.Position != _toLeaderPath.End ||
                             !_toLeaderPath.IsPointOnPathAndNotAtEnd(Position))
                         {
                             _toLeaderPath = CurrentMap.AStar.ShortestPath(Position, Leader.Position);
                         }
 
-                        return _toLeaderPath != null && _toLeaderPath.Start != Point.None;
-                    }
-                )
-                .Do(
-                    "move towards leader",
-                    monster =>
-                    {
+                        if (_toLeaderPath == null)
+                        {
+                            // Can't path to leader, try wander instead
+                            MonsterState = MonsterState.Wandering;
+                            return BehaviourStatus.Failed;
+                        }
+
                         var nextPointInPath = _toLeaderPath.GetStepAfterPointWithStart(Position);
 
-                        MonsterState = MonsterState.FollowingLeader;
 
                         if (!CurrentMap.GameObjectCanMove(this, nextPointInPath))
                         {
@@ -542,6 +554,20 @@ namespace MarsUndiscovered.Game.Components
                             {
                                 var moveCommand = CreateMoveCommand(nextDirection);
                                 _nextCommands.Add(moveCommand);
+                            }
+
+                            // check if monster should switch back to follow leader. Don't fail the state since a move
+                            // did happen.
+                            if (Leader != null && !Leader.IsDead)
+                            {
+                                var distance = Distance.Chebyshev.Calculate(monster.Position, Leader.Position);
+
+                                if (distance >= 4)
+                                {
+                                    _toLeaderPath = null;
+
+                                    MonsterState = MonsterState.FollowingLeader;
+                                }
                             }
 
                             return BehaviourStatus.Succeeded;
