@@ -333,7 +333,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var wallPosition = new Point(0, 1);
             var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, new[] { wallPosition });
 
-            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 10));
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 2));
 
             var monsterPosition = new Point(0, 0);
             var mapExitPosition = new Point(5, 10);

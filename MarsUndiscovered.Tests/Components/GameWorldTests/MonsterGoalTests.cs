@@ -557,7 +557,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 .WithBreed("RepairDroid")
                 .WithLeader(monsterLeader.Result.ID)
                 .AtPosition(new Point(4, 0))
-                .WithState(MonsterState.Wandering);
+                .WithState(MonsterState.FollowingLeader);
             
             _gameWorld.SpawnMonster(monsterFollower1);
             
@@ -565,7 +565,7 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
                 .WithBreed("RepairDroid")
                 .WithLeader(monsterLeader.Result.ID)
                 .AtPosition(new Point(4, 12))
-                .WithState(MonsterState.Wandering);
+                .WithState(MonsterState.FollowingLeader);
             
             _gameWorld.SpawnMonster(monsterFollower2);
 
@@ -585,7 +585,75 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreEqual(new Point(4, 1), moveCommand1.FromTo.Item2);
             Assert.AreEqual(new Point(4, 11), moveCommand2.FromTo.Item2);
         }
-       
+
+        [TestMethod]
+        public void Should_Transition_To_Follow_Leader_When_Far_Away()
+        {
+            // Arrange
+            var lines = new[]
+            {
+                ".#.......",
+                "##.......",
+                ".........",
+                ".........",
+                "...#.#...",
+                "...#.#...",
+                "...#.#...",
+                "...#.#...",
+                "...#.#...",
+                ".........",
+                ".........",
+                ".........",
+                "........."
+            };
+
+            var mapTemplate = new MapTemplate(lines, 0, 0);
+            var mapGenerator = new SpecificMapGenerator(_gameWorld.GameObjectFactory, mapTemplate.Where(m => m.Char == '#').Select(m => m.Point).ToList());
+
+            NewGameWithTestLevelGenerator(_gameWorld, mapGenerator, playerPosition: new Point(0, 0));
+
+            var monsterLeader = new SpawnMonsterParams()
+                .WithBreed("RepairDroid")
+                .AtPosition(new Point(4, 6))
+                .WithState(MonsterState.Wandering);
+
+            _gameWorld.SpawnMonster(monsterLeader);
+
+            var monsterFollower1 = new SpawnMonsterParams()
+                .WithBreed("RepairDroid")
+                .WithLeader(monsterLeader.Result.ID)
+                .AtPosition(new Point(4, 0))
+                .WithState(MonsterState.Wandering);
+
+            _gameWorld.SpawnMonster(monsterFollower1);
+
+            var monsterFollower2 = new SpawnMonsterParams()
+                .WithBreed("RepairDroid")
+                .WithLeader(monsterLeader.Result.ID)
+                .AtPosition(new Point(4, 12))
+                .WithState(MonsterState.Wandering);
+
+            _gameWorld.SpawnMonster(monsterFollower2);
+
+            var monster = _gameWorld.Monsters.Values.First();
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+
+            // Act
+            var result1 = monsterFollower1.Result.NextTurn().ToList();
+            var result2 = monsterFollower2.Result.NextTurn().ToList();
+
+            // Assert
+            // Monsters can move anywhere during wander, however they should now have transitioned to
+            // following leader
+            var moveCommand1 = (MoveCommand)result1[0];
+            var moveCommand2 = (MoveCommand)result2[0];
+
+            monsterFollower1.MonsterState = MonsterState.FollowingLeader;
+            monsterFollower2.MonsterState = MonsterState.FollowingLeader;
+        }
+
         [TestMethod]
         public void Should_Move_Traverse_Out_Of_Caves()
         {
@@ -900,6 +968,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             _gameWorld.TestResetFieldOfView();
             monster.ResetFieldOfViewAndSeenTiles();
+
+            var knownSeriesRandom = new KnownSeriesRandom(intSeries: new[]
+            {
+                0 // Detected
+            });
+
+            _gameWorld.TestContextualEnhancedRandom.KnownSeries.Add(Constants.RngMonsterDetectLongRange, knownSeriesRandom);
 
             // Act
             var result = _gameWorld.TestNextTurn().ToList();
