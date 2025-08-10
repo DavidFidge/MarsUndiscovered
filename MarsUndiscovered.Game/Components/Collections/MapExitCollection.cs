@@ -1,6 +1,7 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Components
 {
@@ -10,7 +11,7 @@ namespace MarsUndiscovered.Game.Components
         {
         }
 
-        protected override void AfterCollectionLoaded(IList<IMemento<MapExitSaveData>> saveData)
+        protected override void AfterCollectionLoaded(IGameWorld gameWorld, IList<IMemento<MapExitSaveData>> saveData)
         {
             foreach (var item in saveData)
             {

@@ -11,28 +11,19 @@ namespace MarsUndiscovered.Game.Components
         {
         }
 
-        protected override void AfterCollectionLoaded(IList<IMemento<MonsterSaveData>> saveData, GameWorld gameWorld)
+        protected override void AfterCollectionLoaded(IGameWorld gameWorld, IList<IMemento<MonsterSaveData>> saveData)
         {
             foreach(var monsterSaveData in saveData)
             {
                 if (!monsterSaveData.State.IsDead)
                 {
-                    var monster = this[monsterSaveData.]
-                    Actor leader = GetActorFromId(monsterSaveData.State.LeaderId, gameWorld);
-                }
-            }
+                    var monster = this[monsterSaveData.State.Id];
 
-            foreach (var monsterSaveData in saveData.Where(s => s.State.LeaderId != null))
-            {
-                this[monsterSaveData.State.Id].SetLeader(this[monsterSaveData.State.LeaderId.Value]);
-            }
-            foreach (var monsterSaveData in saveData.Where(s => s.State.TargetId != null))
-            {
-                this[monsterSaveData.State.Id].SetLeader(this[monsterSaveData.State.LeaderId.Value]);
-            }
-            foreach (var monsterSaveData in saveData.Where(s => s.State.TargetOutOfFovId != null))
-            {
-                this[monsterSaveData.State.Id].SetLeader(this[monsterSaveData.State.LeaderId.Value]);
+                    monster.AfterLoad(
+                        GetActorFromId(monsterSaveData.State.LeaderId, gameWorld),
+                        GetActorFromId(monsterSaveData.State.TargetId, gameWorld),
+                        GetActorFromId(monsterSaveData.State.TargetOutOfFovId, gameWorld));
+                }
             }
         }
 

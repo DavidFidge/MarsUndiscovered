@@ -174,7 +174,7 @@ namespace MarsUndiscovered.Game.Components
             UseGoalMapWander = memento.State.UseGoalMapWander;
             _wanderPath = memento.State.WanderPath != null ? new Path(memento.State.WanderPath) : null;
             MonsterState = memento.State.MonsterState;
-            
+            SearchCooldown = memento.State.SearchCooldown;
 
             if (!IsDead)
             {
@@ -206,6 +206,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.TargetId = Target?.ID;
             memento.State.TargetOutOfFovId = TargetOutOfFov?.ID;
             memento.State.MonsterState = MonsterState;
+            memento.State.SearchCooldown = SearchCooldown;
 
             if (!IsDead)
             {
