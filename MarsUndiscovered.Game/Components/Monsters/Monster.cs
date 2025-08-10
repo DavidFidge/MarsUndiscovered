@@ -51,8 +51,6 @@ namespace MarsUndiscovered.Game.Components
 
         public Actor Leader { get; set; }
         public Actor Target { get; set; }
-
-        // TODO include in save game
         public Actor TargetOutOfFov { get; set; }
 
         private IFOV _fieldOfView;
@@ -177,6 +175,7 @@ namespace MarsUndiscovered.Game.Components
             _wanderPath = memento.State.WanderPath != null ? new Path(memento.State.WanderPath) : null;
             MonsterState = memento.State.MonsterState;
             
+
             if (!IsDead)
             {
                 _seenTilesAfterLoad = memento.State.SeenTiles
@@ -204,6 +203,8 @@ namespace MarsUndiscovered.Game.Components
             memento.State.WanderPath = _wanderPath?.Steps.ToList();
             memento.State.UseGoalMapWander = UseGoalMapWander;
             memento.State.LeaderId = Leader?.ID;
+            memento.State.TargetId = Target?.ID;
+            memento.State.TargetOutOfFovId = TargetOutOfFov?.ID;
             memento.State.MonsterState = MonsterState;
 
             if (!IsDead)
@@ -1037,9 +1038,16 @@ namespace MarsUndiscovered.Game.Components
             return _wanderPath;
         }
 
-        public void SetLeader(Monster monster)
+        public void SetLeader(Actor leader)
         {
-            Leader = monster;
+            Leader = leader;
+        }
+
+        public void AfterLoad(Actor leader, Actor target, Actor targetOutOfFov)
+        {
+            SetLeader(leader);
+            Target = target;
+            TargetOutOfFov = targetOutOfFov;
         }
 
         public override void ApplyConcussion()

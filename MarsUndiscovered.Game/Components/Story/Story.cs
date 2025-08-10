@@ -86,7 +86,7 @@ public class Story : BaseComponent, IStory, ISaveable
                 .Sequence("Spawn Missiles")
                     .Condition("Randomise spawn", s =>
                     {
-                        return GlobalRandom.DefaultRNG.NextInt(2) == 0;
+                        return GlobalRandom.DefaultRNG.NextInt(4) == 0;
                     })
                     .Do("Add missiles",
                         s =>
