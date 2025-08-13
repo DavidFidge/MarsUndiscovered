@@ -44,6 +44,9 @@ namespace MarsUndiscovered.Game.Components.Maps
             
             monster.MonsterState = spawnMonsterParams.MonsterState;
 
+            if (monster.MonsterState == MonsterState.Idle)
+                monster.ReturnToIdle = true;
+
             monster.AllegianceCategory = spawnMonsterParams.AllegianceCategory;
             
             Mediator.Publish(new MapTileChangedNotification(monster.Position));

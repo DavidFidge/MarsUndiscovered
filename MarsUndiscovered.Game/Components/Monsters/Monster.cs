@@ -52,6 +52,7 @@ namespace MarsUndiscovered.Game.Components
         public Actor Leader { get; set; }
         public Actor Target { get; set; }
         public Actor TargetOutOfFov { get; set; }
+        public bool ReturnToIdle { get; set; }
 
         private IFOV _fieldOfView;
         private ArrayView<SeenTile> _seenTiles;
@@ -175,6 +176,7 @@ namespace MarsUndiscovered.Game.Components
             _wanderPath = memento.State.WanderPath != null ? new Path(memento.State.WanderPath) : null;
             MonsterState = memento.State.MonsterState;
             SearchCooldown = memento.State.SearchCooldown;
+            ReturnToIdle = memento.State.ReturnToIdle;
 
             if (!IsDead)
             {
@@ -206,6 +208,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.TargetId = Target?.ID;
             memento.State.TargetOutOfFovId = TargetOutOfFov?.ID;
             memento.State.MonsterState = MonsterState;
+            memento.State.ReturnToIdle = ReturnToIdle;
             memento.State.SearchCooldown = SearchCooldown;
 
             if (!IsDead)
@@ -293,6 +296,7 @@ namespace MarsUndiscovered.Game.Components
                 .Sequence("move sequence")
                     .Condition("is not a turret", monster => !IsWallTurret)
                     .Selector("move selector")
+                        .Subtree(IdleBehavior())
                         .Subtree(SearchingBehavior())
                         .Subtree(HuntBehaviour())
                         //// Try search again after hunt, hunt can transition to search if the target is not in FOV.
@@ -560,15 +564,25 @@ namespace MarsUndiscovered.Game.Components
 
                             // check if monster should switch back to follow leader. Don't fail the state since a move
                             // did happen.
-                            if (Leader != null && !Leader.IsDead)
+                            if (Target == null)
                             {
-                                var distance = Distance.Chebyshev.Calculate(monster.Position, Leader.Position);
-
-                                if (distance >= 4)
+                                if (Leader != null && !Leader.IsDead)
                                 {
-                                    _toLeaderPath = null;
+                                    var distance = Distance.Chebyshev.Calculate(monster.Position, Leader.Position);
 
-                                    MonsterState = MonsterState.FollowingLeader;
+                                    if (distance >= 4)
+                                    {
+                                        _toLeaderPath = null;
+
+                                        MonsterState = MonsterState.FollowingLeader;
+                                        return BehaviourStatus.Succeeded;
+                                    }
+                                }
+
+                                if (ReturnToIdle)
+                                {
+                                    MonsterState = MonsterState.Idle;
+                                    return BehaviourStatus.Succeeded;
                                 }
                             }
 
@@ -659,6 +673,7 @@ namespace MarsUndiscovered.Game.Components
 
                         if (actorsAtPosition.Any())
                         {
+                            // TODO - there's a bug here
                             throw new Exception("Unexpected move - hunt should have blocked a move into any other target");
                         }
 
@@ -802,6 +817,29 @@ namespace MarsUndiscovered.Game.Components
                         }
 
                         return HuntAndMove(TargetOutOfFov);
+                    })
+                .End()
+                .Build();
+
+            return behaviour;
+        }
+
+        private IBehaviour<Monster> IdleBehavior()
+        {
+            var behaviour = FluentBuilder.Create<Monster>()
+                .Sequence("idle")
+                    .Condition("is idle", monster => MonsterState == MonsterState.Idle)
+                .Do(
+                    "move towards target",
+                    monster =>
+                    {
+                        if (Target != null)
+                        {
+                            MonsterState = MonsterState.Searching;
+                            return BehaviourStatus.Failed;
+                        }
+
+                        return BehaviourStatus.Succeeded;
                     })
                 .End()
                 .Build();

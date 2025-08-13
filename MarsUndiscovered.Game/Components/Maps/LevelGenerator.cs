@@ -218,7 +218,7 @@ public class LevelGenerator : ILevelGenerator
 
         MonsterGenerator.SpawnMonster(foreman, _gameWorld);
 
-        for (var i = 0; i < RNG.NextInt(4, 7); i++)
+        for (var i = 0; i < RNG.NextInt(7, 12); i++)
         {
             var miner = new SpawnMonsterParams()
                 .WithBreed(Breed.GetBreed("CrazedMiner"))

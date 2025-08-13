@@ -86,7 +86,7 @@ public class Story : BaseComponent, IStory, ISaveable
                 .Sequence("Spawn Missiles")
                     .Condition("Randomise spawn", s =>
                     {
-                        return GlobalRandom.DefaultRNG.NextInt(4) == 0;
+                        return GlobalRandom.DefaultRNG.NextInt(6) == 0;
                     })
                     .Do("Add missiles",
                         s =>
@@ -108,6 +108,21 @@ public class Story : BaseComponent, IStory, ISaveable
         var randomMapPosition = _gameWorld.CurrentMap.RandomPosition();
 
         var points = _gameWorld.CurrentMap.CircleCoveringPoints(randomMapPosition, 5);
+
+        foreach (var point in points)
+        {
+
+            var monster = _gameWorld.CurrentMap.GetObjectAt<Monster>(point);
+
+            if (monster != null)
+            {
+                if (_gameWorld.ActorAllegiances.RelationshipTo(AllegianceCategory.Player, monster.AllegianceCategory) != ActorAllegianceState.Enemy)
+                {
+                    // at this stage don't put a missile on top of player allies
+                    return;
+                }
+            }
+        }
 
         foreach (var point in points)
         {
