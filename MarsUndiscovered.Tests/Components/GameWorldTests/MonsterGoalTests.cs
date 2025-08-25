@@ -1339,5 +1339,46 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
 
             var command2 = result2[0].Command as MoveCommand;
         }
+
+        [TestMethod]
+        public void Blocked_Ally_Does_Not_Move()
+        {
+            // Arrange
+            var lines = new[]
+            {
+                "......",
+                ".#####",
+                "......"
+            };
+
+            var mapTemplate = new MapTemplate(lines, 0, 0);
+            var mapGenerator = new SpecificMapGenerator(
+                _gameWorld.GameObjectFactory,
+                mapTemplate.Where(m => m.Char == '#').Select(m => m.Point).ToList());
+
+            NewGameWithTestLevelGenerator(
+                _gameWorld,
+                mapGenerator,
+                mapWidth: mapTemplate.Bounds.Width,
+                mapHeight: mapTemplate.Bounds.Height,
+                playerPosition: new Point(4, 0));
+
+            _gameWorld.SpawnMonster(new SpawnMonsterParams().WithBreed("Roach").AtPosition(new Point(5, 0)).WithState(MonsterState.Wandering));
+
+            var monster = _gameWorld.Monsters.Values.First();
+
+            _gameWorld.TestResetFieldOfView();
+            monster.ResetFieldOfViewAndSeenTiles();
+
+            _gameWorld.ActorAllegiances.Change(monster.AllegianceCategory, _gameWorld.Player.AllegianceCategory, ActorAllegianceState.Ally, true);
+
+            // Act
+            var result = _gameWorld.TestNextTurn().ToList();
+
+            // Assert
+            Assert.AreEqual(MonsterState.Wandering, monster.MonsterState);
+
+            Assert.IsTrue(result.IsEmpty());
+        }
     }
 }

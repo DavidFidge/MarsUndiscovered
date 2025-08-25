@@ -14,11 +14,14 @@ public enum RadioCommsTypes
     StartGame2,
     PickupShipParts,
     Level2StoryStart,
+    MetMiners1,
+    MetMiners2
 }
 
 public class RadioComms : List<RadioCommsEntry>, ISaveable
 {
     public static string ShipAiSource = "INCOMING MESSAGE FROM MY SHIP AI";
+    public static string Miners = "MINERS";
     private int _seenCount;
     private Dictionary<RadioCommsTypes, RadioCommsPrefab> _radioCommsPrefabs = new();
     private IGameWorld _gameWorld;
@@ -62,6 +65,22 @@ public class RadioComms : List<RadioCommsEntry>, ISaveable
             new RadioCommsPrefab(RadioCommsTypes.Level2StoryStart,
                 ShipAiSource,
                 "Captain, I'm detecting signatures in the sky indicating an incoming missile bombardment! Keep moving - I'm able to track them and will give you a signal on the places they will hit."
+            )
+        );
+
+        _radioCommsPrefabs.Add(
+            RadioCommsTypes.MetMiners1,
+            new RadioCommsPrefab(RadioCommsTypes.MetMiners1,
+                Miners,
+                "Hells, where did you come from? I'm Ricky, the foreman of this crew. Or what once was a crew. One minute we're preparing to swap shifts, the next all hell brakes loose and we're scrambling for whatever cover we can find, not like that would make much difference if one tonnes of high explosives hit you where you're crouching."
+            )
+        );
+
+        _radioCommsPrefabs.Add(
+            RadioCommsTypes.MetMiners2,
+            new RadioCommsPrefab(RadioCommsTypes.MetMiners2,
+                Miners,
+                "Your AI can tell you where the next strike is occurring? That's some high tech gear! We'll follow you underground. There's nothing left out here, they've blown up all the jets and vehicles. We have months worth of supplies underground, and once the bombing stops we might be able to dig ourselves out again and rig up a vehicle to get out of here. Lead the way."
             )
         );
     }

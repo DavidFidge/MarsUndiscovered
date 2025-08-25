@@ -9,4 +9,5 @@ public interface IStory
     void NextTurn();
     void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld);
     void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld);
+    void NewGame(IGameWorld gameWorld);
 }

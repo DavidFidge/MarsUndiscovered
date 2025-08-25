@@ -839,6 +839,31 @@ namespace MarsUndiscovered.Game.Components
                             return BehaviourStatus.Failed;
                         }
 
+                        if (Leader != null && !Leader.IsDead)
+                        {
+                            var distance = Distance.Chebyshev.Calculate(monster.Position, Leader.Position);
+
+                            if (distance >= 4)
+                            {
+                                _toLeaderPath = null;
+
+                                MonsterState = MonsterState.FollowingLeader;
+                                return BehaviourStatus.Succeeded;
+                            }
+                        }
+
+                        // let an idle monster move every now and then so it appears less static
+                        if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
+                        {
+                            var randomPosition = GlobalRandom.DefaultRNG.RandomElement(Position.Neighbours());
+
+                            if (CurrentMap.GameObjectCanMove(this, randomPosition))
+                            {
+                                var moveCommand = CreateMoveCommand(Direction.GetDirection(Position, randomPosition));
+                                _nextCommands.Add(moveCommand);
+                            }
+                        }
+
                         return BehaviourStatus.Succeeded;
                     })
                 .End()

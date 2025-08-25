@@ -18,6 +18,8 @@ public class Story : BaseComponent, IStory, ISaveable
     private StorySaveData _data;
     private IBehaviour<Story> _behaviourTree;
 
+    private Monster _level2MinerLeader { get; set; }
+
     public Story()
     {
     }
@@ -27,6 +29,16 @@ public class Story : BaseComponent, IStory, ISaveable
         _data = new StorySaveData();
         _gameWorld = gameWorld;
         CreateBehaviourTree();
+    }
+
+    public void NewGame(IGameWorld gameWorld)
+    {
+        _level2MinerLeader = gameWorld.Monsters.Values
+            .Where(m => m.CurrentMap.MarsMap().Level == 2)
+            .Where(m => m.Breed == Breed.GetBreed("CrazedForeman"))
+            .First();
+
+        _data.Level2MinerLeaderId = _level2MinerLeader.ID;
     }
 
     public void NextTurn()
@@ -82,7 +94,7 @@ public class Story : BaseComponent, IStory, ISaveable
                             return BehaviourStatus.Succeeded;
                         }
                     )
-                .End()
+                    .End()
                 .Sequence("Spawn Missiles")
                     .Condition("Randomise spawn", s =>
                     {
@@ -96,7 +108,27 @@ public class Story : BaseComponent, IStory, ISaveable
                             return BehaviourStatus.Succeeded;
                         }
                     )
-                .End()
+                    .End()
+                .Sequence("Meet Miners")
+                    .Condition("has not met leader", s =>
+                    {
+                        return !_data.HasMetLeader;
+                    })
+                    .Do("try meet leader",
+                        s =>
+                        {
+                            if (_gameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(_level2MinerLeader.Position))
+                            {
+                                _data.HasMetLeader = true;
+
+                                _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.MetMiners1, _level2MinerLeader);
+                                _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.MetMiners2, _level2MinerLeader);
+                            }
+
+                            return BehaviourStatus.Succeeded;
+                        }
+                    )
+                    .End()
             .End()
             .Build();
 
@@ -153,5 +185,7 @@ public class Story : BaseComponent, IStory, ISaveable
     {
         _gameWorld = gameWorld;
         _data = saveGameService.GetFromStore<StorySaveData>().State;
+
+        _level2MinerLeader = _gameWorld.Monsters[_data.Level2MinerLeaderId];
     }
 }

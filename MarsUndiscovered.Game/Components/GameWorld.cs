@@ -106,7 +106,7 @@ namespace MarsUndiscovered.Game.Components
 
             Inventory = new Inventory(this);
             RadioComms = new RadioComms(this);
-
+            Story.NewGame(this);
             RadioComms.CreateGameStartMessages();
 
             ResetFieldOfView();

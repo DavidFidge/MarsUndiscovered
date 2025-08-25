@@ -43,9 +43,12 @@ public class ActorAllegianceCollection : Dictionary<AllegianceCategory, ActorAll
         return this[source.AllegianceCategory].Relationships[this[target.AllegianceCategory]];
     }
 
-    public void Change(AllegianceCategory source, AllegianceCategory target, ActorAllegianceState newState)
+    public void Change(AllegianceCategory source, AllegianceCategory target, ActorAllegianceState newState, bool twoWay = false)
     {
         this[source].Relationships[this[target]] = newState;
+        
+        if (twoWay)
+            this[target].Relationships[this[source]] = newState;
     }
 
     public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
