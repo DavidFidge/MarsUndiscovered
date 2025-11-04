@@ -26,6 +26,10 @@ namespace MarsUndiscovered.Tests.Components
                 Component.For<IGameWorld>()
                     .ImplementedBy<TestGameWorld>()
                     .LifestyleTransient()
+                    .IsDefault(),
+                Component.For<IStory>()
+                    .ImplementedBy<TestStory>()
+                    .LifestyleTransient()
                     .IsDefault()
                 );
 

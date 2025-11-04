@@ -161,8 +161,8 @@ namespace MarsUndiscovered.Game.Components
 
                 seenTile.HasBeenSeen = true;
                 seenTile.LastSeenGameObjects.Clear();
-                
-                foreach (var gameObject in GetObjectsAt(point))
+ 
+                foreach (var gameObject in GetObjectsAt(point).Where(o => !(o is EnvironmentalEffect)))
                     seenTile.LastSeenGameObjects.Add(gameObject);
             }
         }

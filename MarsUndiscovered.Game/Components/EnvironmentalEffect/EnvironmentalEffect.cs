@@ -43,6 +43,9 @@ namespace MarsUndiscovered.Game.Components
 
             PopulateSaveState(memento.State);
             memento.State.EnvironmentalEffectTypeName = EnvironmentalEffectType.Name;
+            memento.State.Damage = Damage;
+            memento.State.Duration = Duration;
+            memento.State.IsRemoved = IsRemoved;
 
             return memento;
         }
@@ -51,6 +54,9 @@ namespace MarsUndiscovered.Game.Components
         {
             PopulateLoadState(memento.State);
             EnvironmentalEffectType = EnvironmentalEffectType.EnvironmentalEffectTypes[memento.State.EnvironmentalEffectTypeName];
+            Damage = memento.State.Damage;
+            Duration = memento.State.Duration;
+            IsRemoved = memento.State.IsRemoved;
         }
 
         public EnvironmentalEffect WithEnvironmentalEffectType(EnvironmentalEffectType environmentalEffectType)
@@ -59,7 +65,7 @@ namespace MarsUndiscovered.Game.Components
 
             Damage = environmentalEffectType.Damage;
             Duration = environmentalEffectType.Duration;
-            
+        
             return this;
         }
 

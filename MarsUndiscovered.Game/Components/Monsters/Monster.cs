@@ -177,6 +177,7 @@ namespace MarsUndiscovered.Game.Components
             MonsterState = memento.State.MonsterState;
             SearchCooldown = memento.State.SearchCooldown;
             ReturnToIdle = memento.State.ReturnToIdle;
+            AllegianceCategory = memento.State.AllegianceCategory;
 
             if (!IsDead)
             {
@@ -210,6 +211,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.MonsterState = MonsterState;
             memento.State.ReturnToIdle = ReturnToIdle;
             memento.State.SearchCooldown = SearchCooldown;
+            memento.State.AllegianceCategory = AllegianceCategory;
 
             if (!IsDead)
             {

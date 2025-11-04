@@ -432,6 +432,7 @@ namespace MarsUndiscovered.Game.Components
 
                 if (environmentalEffect.IsRemoved)
                 {
+                    // TODO - LastSeenGameObject bug likely due to the entity being removed, here or a floor / wall.
                     EnvironmentalEffects.Remove(environmentalEffect.ID);
                     CurrentMap.RemoveEntity(environmentalEffect);
                     Mediator.Publish(new MapTileChangedNotification(environmentalEffect.Position));
@@ -632,7 +633,6 @@ namespace MarsUndiscovered.Game.Components
             Floors.LoadState(saveGameService, gameWorld);
             Doors.LoadState(saveGameService, gameWorld);
             Features.LoadState(saveGameService, gameWorld);
-            Monsters.LoadState(saveGameService, gameWorld);
             Items.LoadState(saveGameService, gameWorld);
             Machines.LoadState(saveGameService, gameWorld);
             EnvironmentalEffects.LoadState(saveGameService, gameWorld);
@@ -647,6 +647,9 @@ namespace MarsUndiscovered.Game.Components
 
             Player = GameObjectFactory.CreateGameObject<Player>(playerSaveData.State.Id);
             Player.LoadState(saveGameService, gameWorld);
+
+            // Monsters must be loaded after player as monsters may have player as their target
+            Monsters.LoadState(saveGameService, gameWorld);
 
             MessageLog.LoadState(saveGameService, gameWorld);
 
