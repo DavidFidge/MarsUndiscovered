@@ -79,8 +79,14 @@ namespace MarsUndiscovered.Interfaces
         InventoryItem GetEquippedItem();
         MessageLog MessageLog { get; }
         RadioComms RadioComms { get; set; }
+        ActorAllegianceCollection ActorAllegiances { get; set; }
+        IContextualEnhancedRandom Random { get; }
+        IStory Story { get; set; }
+
         void SpawnEnvironmentalEffect(SpawnEnvironmentalEffectParams spawnEnvironmentalEffectParams);
         Rectangle GetCurrentMapDimensions();
         void SpawnFeature(SpawnFeatureParams spawnFeatureParams);
+        IEnumerable<Monster> GetCurrentMapMonsters();
+        IEnumerable<Actor> GetCurrentMapActors();
     }
 }

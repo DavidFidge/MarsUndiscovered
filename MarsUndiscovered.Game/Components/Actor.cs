@@ -49,6 +49,8 @@ namespace MarsUndiscovered.Game.Components
 
         public uint VisualRange { get; set; } = 20;
 
+        public AllegianceCategory AllegianceCategory { get; set; }
+
         public Actor(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.ActorLayer, false, true, () => id)
         {
         }

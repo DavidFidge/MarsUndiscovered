@@ -6,6 +6,7 @@
         public Monster Result { get; set; }
         public uint? LeaderId { get; set; }
         public MonsterState MonsterState { get; set; }
+        public AllegianceCategory AllegianceCategory { get; set; } = AllegianceCategory.Monsters;
     }
 
     public static class SpawnMonsterParamsFluentExtensions
@@ -21,7 +22,7 @@
             spawnMonsterParams.Breed = Breed.GetBreed(breed);
             return spawnMonsterParams;
         }
-        
+
         public static SpawnMonsterParams WithLeader(this SpawnMonsterParams spawnMonsterParams, uint monsterLeaderId)
         {
             spawnMonsterParams.LeaderId = monsterLeaderId;
@@ -31,6 +32,12 @@
         public static SpawnMonsterParams WithState(this SpawnMonsterParams spawnMonsterParams, MonsterState monsterState)
         {
             spawnMonsterParams.MonsterState = monsterState;
+            return spawnMonsterParams;
+        }
+
+        public static SpawnMonsterParams WithAllegianceCategory(this SpawnMonsterParams spawnMonsterParams, AllegianceCategory allegianceCategory)
+        {
+            spawnMonsterParams.AllegianceCategory = allegianceCategory;
             return spawnMonsterParams;
         }
     }

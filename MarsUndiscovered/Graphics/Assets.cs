@@ -28,6 +28,7 @@ public class Assets : IAssets
 
     public SpriteFont UiRegularFont { get; set; }
     public SpriteSheet ShipAiRadioComms { get; set; }
+    public SpriteSheet MinersRadioComms { get; set; }
     public Texture2D TitleTexture { get; set; }
     public Texture2D TitleTextTexture { get; set; }
     public Texture2D MapBitmapFont { get; set; }
@@ -75,7 +76,18 @@ public class Assets : IAssets
             b.AddFrame(0, TimeSpan.FromSeconds(1));
             b.AddFrame(1, TimeSpan.FromSeconds(1));
         });
-        
+
+        var minersRadioCommsTexture = _gameProvider.Game.Content.Load<Texture2D>("animations/MinersRadioComms");
+        var minersRadioCommsTextureAtlas = Texture2DAtlas.Create("MinersRadioComms", minersRadioCommsTexture, 32, 32);
+        MinersRadioComms = new SpriteSheet("MinersRadioComms", minersRadioCommsTextureAtlas);
+
+        MinersRadioComms.DefineAnimation("talk", b =>
+        {
+            b.IsLooping(true);
+            b.AddFrame(0, TimeSpan.FromSeconds(1));
+            b.AddFrame(1, TimeSpan.FromSeconds(1));
+        });
+
         var assetsList = _gameProvider.Game.Content.Load<string[]>("Content");
 
         foreach (var wallType in WallType.WallTypes)
@@ -418,6 +430,8 @@ public class Assets : IAssets
             RadioCommsTypes.StartGame2 => ShipAiRadioComms,
             RadioCommsTypes.PickupShipParts => ShipAiRadioComms,
             RadioCommsTypes.Level2StoryStart => ShipAiRadioComms,
+            RadioCommsTypes.MetMiners1 => MinersRadioComms,
+            RadioCommsTypes.MetMiners2 => MinersRadioComms,
             _ => null
         };
     }

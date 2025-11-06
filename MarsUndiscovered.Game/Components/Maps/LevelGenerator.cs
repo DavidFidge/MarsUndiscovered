@@ -40,7 +40,7 @@ public class LevelGenerator : ILevelGenerator
     
     private void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
     {
-        MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Monsters);
+        MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld);
     }
 
     private void SpawnItem(SpawnItemParams spawnItemParams)
@@ -171,6 +171,17 @@ public class LevelGenerator : ILevelGenerator
         return map;
     }
 
+    /// <summary>
+    /// Level 2 is the mining facility building, which has the entrance to the
+    /// dungeon (mining facility). When the player enters, they find they are in
+    /// trouble because the government is bombing the facility.
+    /// 
+    /// The player will come across a group of innocent miners. The player can let
+    /// them know that they know where the missiles are going to land and so can
+    /// convince them to follow the player.
+    /// </summary>
+    /// <param name="previousMap"></param>
+    /// <returns></returns>
     private MarsMap CreateLevel2(MarsMap previousMap)
     {
         MapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, 70, 70);
@@ -191,11 +202,34 @@ public class LevelGenerator : ILevelGenerator
                 (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Cleaning Droid")), 1)
             }
         );
-            
+
         probabilityTable.Random = RNG;
 
         for (var i = 0; i < 10; i++)
             probabilityTable.NextItem().Spawn(map);
+
+        // Create the miners who are in trouble
+        // TODO - look at renaming the sprites
+        var foreman = new SpawnMonsterParams()
+            .WithBreed(Breed.GetBreed("CrazedForeman"))
+            .WithAllegianceCategory(AllegianceCategory.Miners)
+            .WithState(MonsterState.Idle)
+            .OnMap(map.Id);
+
+        MonsterGenerator.SpawnMonster(foreman, _gameWorld);
+
+        for (var i = 0; i < RNG.NextInt(7, 12); i++)
+        {
+            var miner = new SpawnMonsterParams()
+                .WithBreed(Breed.GetBreed("CrazedMiner"))
+                .WithLeader(foreman.Result.ID)
+                .AtPosition(foreman.Result.Position)
+                .WithAllegianceCategory(AllegianceCategory.Miners)
+                .WithState(MonsterState.Idle)
+                .OnMap(map.Id);
+
+            MonsterGenerator.SpawnMonster(miner, _gameWorld);
+        }
 
         var itemsToPlace = RNG.NextInt(5, 10);
         SpawnItems(itemsToPlace, map);

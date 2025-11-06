@@ -21,5 +21,8 @@
         public const char WallPrefab = '#';
         public const char FloorPrefab = '.';
         public const char DoorPrefab = 'D';
+
+        // Random lookup names
+        public const string RngMonsterDetectLongRange = "MonsterDetectLongRange";
     }
 }

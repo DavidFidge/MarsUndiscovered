@@ -39,10 +39,10 @@ namespace MarsUndiscovered.Game.Components
                 Add(gameObject.ID, gameObject);
             }
 
-            AfterCollectionLoaded(saveData);
+            AfterCollectionLoaded(gameWorld, saveData);
         }
 
-        protected virtual void AfterCollectionLoaded(IList<IMemento<TState>> saveData)
+        protected virtual void AfterCollectionLoaded(IGameWorld gameWorld, IList<IMemento<TState>> saveData)
         {
         }
 

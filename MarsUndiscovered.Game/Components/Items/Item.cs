@@ -99,6 +99,9 @@ namespace MarsUndiscovered.Game.Components
             if (memento.State.LineAttack != null)
                 LineAttack = (Attack)memento.State.LineAttack.Clone();
 
+            if (memento.State.LaserAttack != null)
+                LaserAttack = (LaserAttack)memento.State.LaserAttack.Clone();
+
             DamageShieldPercentage = memento.State.DamageShieldPercentage;
             TotalRechargeDelay = memento.State.TotalRechargeDelay;
             HealPercentOfMax = memento.State.HealPercentOfMax;

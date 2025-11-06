@@ -19,6 +19,7 @@ public class PrefabMapGeneratorTests : BaseGameWorldIntegrationTests
     {
         base.Setup();
 
+        GlobalRandom.DefaultRNG = new MizuchiRandom();
         _waveFunctionCollapseGeneratorPasses = Substitute.For<IWaveFunctionCollapseGeneratorPasses>();
     }
 

@@ -8,12 +8,12 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public class MonsterGenerator : BaseGameObjectGenerator, IMonsterGenerator
     {
-        public void SpawnMonster(SpawnMonsterParams spawnMonsterParams, IGameObjectFactory gameObjectFactory, MapCollection maps, MonsterCollection monsterCollection)
+        public void SpawnMonster(SpawnMonsterParams spawnMonsterParams, GameWorld gameWorld)
         {
             spawnMonsterParams.Result = null;
-            var map = maps.Single(m => m.Id == spawnMonsterParams.MapId);
+            var map = gameWorld.Maps.Single(m => m.Id == spawnMonsterParams.MapId);
 
-            var monster = gameObjectFactory
+            var monster = gameWorld.GameObjectFactory
                 .CreateGameObject<Monster>()
                 .WithBreed(spawnMonsterParams.Breed);
 
@@ -37,12 +37,17 @@ namespace MarsUndiscovered.Game.Components.Maps
 
             monster.AddToMap(map);
 
-            monsterCollection.Add(monster.ID, monster);
+            gameWorld.Monsters.Add(monster.ID, monster);
 
             if (spawnMonsterParams.LeaderId.HasValue)
-                monster.SetLeader(monsterCollection[spawnMonsterParams.LeaderId.Value]);
+                monster.SetLeader(gameWorld.Monsters[spawnMonsterParams.LeaderId.Value]);
             
             monster.MonsterState = spawnMonsterParams.MonsterState;
+
+            if (monster.MonsterState == MonsterState.Idle)
+                monster.ReturnToIdle = true;
+
+            monster.AllegianceCategory = spawnMonsterParams.AllegianceCategory;
             
             Mediator.Publish(new MapTileChangedNotification(monster.Position));
 

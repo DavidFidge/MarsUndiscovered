@@ -1,3 +1,5 @@
+using Castle.MicroKernel.Registration;
+
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
@@ -106,12 +108,16 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         public void Should_Retain_RandomNumber_Sequence()
         {
             // Arrange
-            _gameWorld.NewGame();
-            _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
+            Container.Register(Component.For<GameWorld>().Named("RealRandomNumberGameWorld"));
+
+            var gameWorld = Container.Resolve<GameWorld>("RealRandomNumberGameWorld");
+
+            gameWorld.NewGame();
+            gameWorld.SaveGame("TestShouldSaveThenLoad", true);
             var nextRandomNumber = GlobalRandom.DefaultRNG.NextUInt();
 
             // Act
-            var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
+            var newGameWorld = Container.Resolve<GameWorld>("RealRandomNumberGameWorld");
             newGameWorld.LoadGame("TestShouldSaveThenLoad");
 
             // Assert

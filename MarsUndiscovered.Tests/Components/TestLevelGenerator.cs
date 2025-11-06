@@ -100,7 +100,7 @@ namespace MarsUndiscovered.Tests.Components
     
         private void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
         {
-            MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Monsters);
+            MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld);
         }
 
         private void SpawnItem(SpawnItemParams spawnItemParams)

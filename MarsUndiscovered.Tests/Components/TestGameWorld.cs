@@ -1,5 +1,7 @@
 using FrigidRogue.MonoGame.Core.Components;
 
+using GoRogue.Random;
+
 using MarsUndiscovered.Game.Components;
 
 using ShaiRandom.Generators;
@@ -16,7 +18,9 @@ namespace MarsUndiscovered.Tests.Components
 
         public TestGameWorld() : base()
         {
-            _contextualEnhancedRandom = new TestContextualEnhancedRandom(new MizuchiRandom());
+            _contextualEnhancedRandom = new TestContextualEnhancedRandom();
+
+            GlobalRandom.DefaultRNG = _contextualEnhancedRandom;
         }
 
         public IEnumerable<CommandResult> TestNextTurn()

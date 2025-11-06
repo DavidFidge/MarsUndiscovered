@@ -11,6 +11,6 @@ public class SingleMonsterSpawner : MonsterSpawner
         
     public override void Spawn(MarsMap map)
     {
-        SpawnMonster(new SpawnMonsterParams().WithBreed(_breed).OnMap(map.Id));
+        SpawnMonster(new SpawnMonsterParams().WithBreed(_breed).WithState(MonsterState.Wandering).OnMap(map.Id));
     }
 }

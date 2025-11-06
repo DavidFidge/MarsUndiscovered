@@ -31,7 +31,7 @@ public class VariableCountMonsterSpawner : MonsterSpawner
         
         for (var i = 0; i < count; i++)
         {
-            var spawnMonsterParams = new SpawnMonsterParams().AtPosition(point).WithBreed(_breed).OnMap(map.Id);
+            var spawnMonsterParams = new SpawnMonsterParams().AtPosition(point).WithBreed(_breed).WithState(MonsterState.Wandering).OnMap(map.Id);
 
             if (leader != null)
                 spawnMonsterParams.WithLeader(leader.ID);

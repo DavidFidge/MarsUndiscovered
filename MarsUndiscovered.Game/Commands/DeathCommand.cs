@@ -12,7 +12,7 @@ namespace MarsUndiscovered.Game.Commands
         public string KilledByMessage => _data.KilledByMessage;
         public Actor Source => GameWorld.GameObjects[_data.SourceId] as Actor;
         private Point _oldPosition => _data.OldPosition;
-        private Map _sourceMap => GameWorld.Maps.Single(m => m.Id == _data.MapId);
+        private MarsMap _sourceMap => GameWorld.Maps.Single(m => m.Id == _data.MapId);
         
         public DeathCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -36,7 +36,9 @@ namespace MarsUndiscovered.Game.Commands
                 _sourceMap.RemoveEntity(Source);
                 _data.OldPosition = Source.Position;
                 Source.Position = Point.None;
-                
+
+                _sourceMap.ActorDied(Source);
+
                 Mediator.Publish(new MapTileChangedNotification(_oldPosition));
             }
             else

@@ -75,10 +75,14 @@ namespace MarsUndiscovered.Game.Components
         private AutoExploreGoalMap _autoExploreGoalMap;
 
         protected IContextualEnhancedRandom _contextualEnhancedRandom;
-        
+
+        public IContextualEnhancedRandom Random => _contextualEnhancedRandom;
+
+        public ActorAllegianceCollection ActorAllegiances { get; set; }
+
         public GameWorld()
         {
-            _contextualEnhancedRandom = new ContextualEnhancedRandom(new MizuchiRandom());
+            _contextualEnhancedRandom = new ContextualEnhancedRandom();
             GlobalRandom.DefaultRNG = _contextualEnhancedRandom;
         }
 
@@ -101,7 +105,8 @@ namespace MarsUndiscovered.Game.Components
             LevelGenerator.CreateLevels();
 
             Inventory = new Inventory(this);
-
+            RadioComms = new RadioComms(this);
+            Story.NewGame(this);
             RadioComms.CreateGameStartMessages();
 
             ResetFieldOfView();
@@ -116,7 +121,7 @@ namespace MarsUndiscovered.Game.Components
 
             Seed = seed.Value;
 
-            _contextualEnhancedRandom.EnhancedRandom = new MizuchiRandom(seed.Value);
+            _contextualEnhancedRandom.Reset(seed.Value);
 
             Inventory = new Inventory(this);
             RadioComms = new RadioComms(this);
@@ -198,6 +203,8 @@ namespace MarsUndiscovered.Game.Components
             Maps = new MapCollection();
             _autoExploreGoalMap = new AutoExploreGoalMap();
 
+            ActorAllegiances = new ActorAllegianceCollection();
+            ActorAllegiances.Initialise();
             GameObjectFactory.Initialise(this);
             Spawner.Initialise(this);
             CommandCollection.Initialise();
@@ -241,7 +248,8 @@ namespace MarsUndiscovered.Game.Components
         public void AfterProgressiveWorldGeneration()
         {
             // Show all monsters and all of map
-            MonstersInView = Monsters.LiveMonsters.ToList();
+            MonstersInView = GetCurrentMapMonsters().ToList();
+
             Mediator.Publish(new MapChangedNotification());
 
             Mediator.Publish(
@@ -424,6 +432,7 @@ namespace MarsUndiscovered.Game.Components
 
                 if (environmentalEffect.IsRemoved)
                 {
+                    // TODO - LastSeenGameObject bug likely due to the entity being removed, here or a floor / wall.
                     EnvironmentalEffects.Remove(environmentalEffect.ID);
                     CurrentMap.RemoveEntity(environmentalEffect);
                     Mediator.Publish(new MapTileChangedNotification(environmentalEffect.Position));
@@ -432,7 +441,7 @@ namespace MarsUndiscovered.Game.Components
 
             LastMonstersInView = MonstersInView;
 
-            foreach (var monster in Monsters.LiveMonsters.Where(m => m.CurrentMap.Equals(CurrentMap)))
+            foreach (var monster in CurrentMap.LiveMonsters)
             {
                 if (Player.IsDead)
                     yield break;
@@ -463,10 +472,19 @@ namespace MarsUndiscovered.Game.Components
 
         protected void UpdateMonstersInView()
         {
-            MonstersInView = Monsters.LiveMonsters
-                .Where(m => m.CurrentMap.Equals(CurrentMap))
+            MonstersInView = GetCurrentMapMonsters()
                 .Where(m => CurrentMap.PlayerFOV.BooleanResultView[m.Position])
                 .ToList();
+        }
+
+        public IEnumerable<Monster> GetCurrentMapMonsters()
+        {
+            return CurrentMap.LiveMonsters;
+        }
+
+        public IEnumerable<Actor> GetCurrentMapActors()
+        {
+            return CurrentMap.LiveActors;
         }
 
         private IEnumerable<CommandResult> ExecuteCommand(BaseGameActionCommand command)
@@ -615,7 +633,6 @@ namespace MarsUndiscovered.Game.Components
             Floors.LoadState(saveGameService, gameWorld);
             Doors.LoadState(saveGameService, gameWorld);
             Features.LoadState(saveGameService, gameWorld);
-            Monsters.LoadState(saveGameService, gameWorld);
             Items.LoadState(saveGameService, gameWorld);
             Machines.LoadState(saveGameService, gameWorld);
             EnvironmentalEffects.LoadState(saveGameService, gameWorld);
@@ -631,12 +648,18 @@ namespace MarsUndiscovered.Game.Components
             Player = GameObjectFactory.CreateGameObject<Player>(playerSaveData.State.Id);
             Player.LoadState(saveGameService, gameWorld);
 
+            // Monsters must be loaded after player as monsters may have player as their target
+            Monsters.LoadState(saveGameService, gameWorld);
+
             MessageLog.LoadState(saveGameService, gameWorld);
+
+            RadioComms = new RadioComms(this);
             RadioComms.LoadState(saveGameService, gameWorld);
 
             Maps.LoadState(saveGameService, gameWorld);
             GameTimeService.LoadState(saveGameService);
             CommandCollection.LoadState(saveGameService, gameWorld);
+            ActorAllegiances.LoadState(saveGameService, gameWorld);
 
             Story.LoadState(saveGameService, gameWorld);
             var gameWorldSaveData = saveGameService.GetFromStore<GameWorldSaveData>();
@@ -667,6 +690,7 @@ namespace MarsUndiscovered.Game.Components
             Maps.SaveState(saveGameService, gameWorld);
             GameTimeService.SaveState(saveGameService);
             Story.SaveState(saveGameService, gameWorld);
+            ActorAllegiances.SaveState(saveGameService, gameWorld);
             
             var gameWorldSaveData = GetSaveState();
             saveGameService.SaveToStore(gameWorldSaveData);
@@ -682,15 +706,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.GameId = GameId;
             memento.State.Seed = Seed;
 
-            if (_contextualEnhancedRandom.EnhancedRandom is MizuchiRandom mizuchiRandom)
-            {
-                memento.State.RandomNumberGenerator = new MizuchiRandom(mizuchiRandom.StateA, mizuchiRandom.StateB);
-            }
-            else
-            {
-                // For unit tests in case it is using the test contextual random
-                memento.State.RandomNumberGenerator = new MizuchiRandom();
-            }
+            memento.State.RandomNumberGenerator = _contextualEnhancedRandom.GetSaveState();
 
             memento.State.MonstersInView = MonstersInView.Select(m => m.ID).ToList();
             memento.State.LastMonstersInView = LastMonstersInView.Select(m => m.ID).ToList();
@@ -703,7 +719,7 @@ namespace MarsUndiscovered.Game.Components
             Seed = memento.State.Seed;
             LastMonstersInView = memento.State.LastMonstersInView.Select(m => Monsters[m]).ToList();
             MonstersInView = memento.State.MonstersInView.Select(m => Monsters[m]).ToList();
-            _contextualEnhancedRandom.EnhancedRandom = new MizuchiRandom(memento.State.RandomNumberGenerator.StateA, memento.State.RandomNumberGenerator.StateB);
+            _contextualEnhancedRandom.SetLoadState(memento.State.RandomNumberGenerator);
         }
 
         public PlayerStatus GetPlayerStatus()

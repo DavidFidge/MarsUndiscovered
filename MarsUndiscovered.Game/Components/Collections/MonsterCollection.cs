@@ -1,6 +1,7 @@
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
+using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Components
 {
@@ -10,14 +11,34 @@ namespace MarsUndiscovered.Game.Components
         {
         }
 
-        protected override void AfterCollectionLoaded(IList<IMemento<MonsterSaveData>> saveData)
+        protected override void AfterCollectionLoaded(IGameWorld gameWorld, IList<IMemento<MonsterSaveData>> saveData)
         {
-            foreach (var monsterSaveData in saveData.Where(s => s.State.LeaderId != null))
+            foreach(var monsterSaveData in saveData)
             {
-                this[monsterSaveData.State.Id].SetLeader(this[monsterSaveData.State.LeaderId.Value]);
+                if (!monsterSaveData.State.IsDead)
+                {
+                    var monster = this[monsterSaveData.State.Id];
+
+                    monster.AfterLoad(
+                        GetActorFromId(monsterSaveData.State.LeaderId, gameWorld),
+                        GetActorFromId(monsterSaveData.State.TargetId, gameWorld),
+                        GetActorFromId(monsterSaveData.State.TargetOutOfFovId, gameWorld));
+                }
             }
         }
 
-        public IEnumerable<Monster> LiveMonsters => Values.Where(m => !m.IsDead).AsEnumerable();
+        private Actor GetActorFromId(uint? id, IGameWorld gameWorld)
+        {
+            if (id == null)
+                return null;
+
+            if (this.TryGetValue(id.Value, out var monster))
+                return monster;
+
+            if (id == gameWorld.Player.ID)
+                return gameWorld.Player;
+
+            return null;
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace MarsUndiscovered.Game.Components
 
         public void SpawnMonster(SpawnMonsterParams spawnMonsterParams)
         {
-            MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld.GameObjectFactory, _gameWorld.Maps, _gameWorld.Monsters);
+            MonsterGenerator.SpawnMonster(spawnMonsterParams, _gameWorld);
         }
 
         public void SpawnItem(SpawnItemParams spawnItemParams)

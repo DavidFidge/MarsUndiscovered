@@ -10,6 +10,11 @@ namespace MarsUndiscovered.Game.Components.SaveData
         public List<Point> WanderPath { get; set; }
         public bool UseGoalMapWander { get; set; }
         public uint? LeaderId { get; set; }
+        public uint? TargetId { get; set; }
+        public uint? TargetOutOfFovId { get; set; }
         public MonsterState MonsterState { get; set; }
+        public int SearchCooldown { get; set; }
+        public bool ReturnToIdle { get; set; }
+        public AllegianceCategory AllegianceCategory { get; set; }
     }
 }

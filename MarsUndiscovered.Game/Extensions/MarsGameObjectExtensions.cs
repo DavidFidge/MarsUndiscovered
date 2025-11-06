@@ -9,6 +9,7 @@ namespace MarsUndiscovered.Game.Extensions
         {
             switch (gameObject)
             {
+                case Player _: //??????
                 case Monster _:
                 case Indestructible _:
                 case Wall _:

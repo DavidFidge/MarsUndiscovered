@@ -1,5 +1,7 @@
 ﻿using GoRogue.Random;
 
+using ShaiRandom.Generators;
+
 namespace MarsUndiscovered.Game.Components;
 
 public class ItemTypeDiscoveryCollection : Dictionary<ItemType, ItemTypeDiscovery>
@@ -97,8 +99,14 @@ public class ItemTypeDiscoveryCollection : Dictionary<ItemType, ItemTypeDiscover
                 names = unusedGadgetNames;
             else
                 continue;
-            
-            var index = GlobalRandom.DefaultRNG.NextInt(0, names.Count - 1);
+
+            // TODO - after a save load, this should restore from save game file, not regenerate.
+            // consider if we even need random names.
+            // This is temp code to get around the fact that the random number generator is the 
+            // last thing to be restored from file
+            var random = new MizuchiRandom();
+
+            var index = random.NextInt(0, names.Count - 1);
             Add(itemType.Value, new ItemTypeDiscovery(names[index]));
             names.Remove(names[index]);
         }
