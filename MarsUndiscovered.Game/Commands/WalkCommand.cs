@@ -71,6 +71,14 @@ namespace MarsUndiscovered.Game.Commands
                 var actorAt = map.GetObjectAt<Actor>(newPlayerPosition);
                 if (actorAt is Monster)
                 {
+                    if (GameWorld.ActorAllegiances.RelationshipTo(Player, actorAt) != ActorAllegianceState.Enemy)
+                    {
+                        var command = CommandCollection.CreateCommand<MeleeAttackCommand>(GameWorld);
+                        command.Initialise(Player, actorAt, GameWorld.Inventory.EquippedWeapon);
+
+                        return Result(CommandResult.Success(this, command));
+                    }
+
                     if (Player.MeleeAttack != null)
                     {
                         var command = CommandCollection.CreateCommand<MeleeAttackCommand>(GameWorld);
