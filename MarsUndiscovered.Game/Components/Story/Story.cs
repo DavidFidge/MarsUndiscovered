@@ -123,6 +123,8 @@ public class Story : BaseComponent, IStory, ISaveable
 
                                 _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.MetMiners1, _level2MinerLeader);
                                 _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.MetMiners2, _level2MinerLeader);
+
+                                _level2MinerLeader.SetLeader(_gameWorld.Player);
                             }
 
                             return BehaviourStatus.Succeeded;

@@ -3,11 +3,10 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class UndoCommand : BaseMarsGameActionCommand<UndoCommandSaveData>
+    public class UndoCommand : BaseMarsGameActionCommand
     {
-        public BaseGameActionCommand Command =>
-            GameWorld.CommandCollection.GetCommand(_data.CommandId);
-        
+        public BaseGameActionCommand Command { get; set; }
+
         public UndoCommand(IGameWorld gameWorld) : base(gameWorld)
         {
             EndsPlayerTurn = false;
@@ -15,7 +14,7 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(uint commandId)
         {
-            _data.CommandId = commandId;
+            Command = GameWorld.CommandCollection.GetCommand(commandId);
         }
 
         protected override CommandResult ExecuteInternal()

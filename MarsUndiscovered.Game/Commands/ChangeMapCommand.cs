@@ -7,11 +7,10 @@ using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class ChangeMapCommand : BaseMarsGameActionCommand<ChangeMapSaveData>
+    public class ChangeMapCommand : BaseMarsGameActionCommand
     {
-        private MarsMap _oldMap => GameWorld.Maps.Single(m => m.Id == _data.OldMapId);
-        public IGameObject GameObject => GameWorld.GameObjects[_data.GameObjectId];
-        public MapExit MapExit => GameWorld.GameObjects[_data.MapExitId] as MapExit;
+        public IGameObject GameObject { get; set; }
+        public MapExit MapExit { get; set; }
 
         public ChangeMapCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -19,16 +18,13 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(IGameObject gameObject, MapExit mapExit)
         {
-            _data.GameObjectId = gameObject.ID;
-            _data.MapExitId = mapExit.ID;
+            GameObject = gameObject;
+            MapExit = mapExit;
         }
         
         protected override CommandResult ExecuteInternal()
         {
-            _data.OldMapId = ((MarsMap)GameObject.CurrentMap).Id;
-            _data.OldPosition = GameObject.Position;
-
-            _oldMap.RemoveEntity(GameObject);
+            ((MarsMap)GameObject.CurrentMap).RemoveEntity(GameObject);
 
             var newMap = (MarsMap)MapExit.Destination.CurrentMap;
 

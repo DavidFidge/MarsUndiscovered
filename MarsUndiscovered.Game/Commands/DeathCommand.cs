@@ -7,12 +7,10 @@ using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class DeathCommand : BaseMarsGameActionCommand<DeathCommandSaveData>
+    public class DeathCommand : BaseMarsGameActionCommand
     {
-        public string KilledByMessage => _data.KilledByMessage;
-        public Actor Source => GameWorld.GameObjects[_data.SourceId] as Actor;
-        private Point _oldPosition => _data.OldPosition;
-        private MarsMap _sourceMap => GameWorld.Maps.Single(m => m.Id == _data.MapId);
+        public string KilledByMessage { get; set; }
+        public Actor Source { get; set; }
         
         public DeathCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -20,8 +18,8 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Actor source, string killedByMessage)
         {
-            _data.SourceId = source.ID;
-            _data.KilledByMessage = $"killed by {killedByMessage}";
+            Source = source;
+            KilledByMessage = $"killed by {killedByMessage}";
         }
 
         protected override CommandResult ExecuteInternal()
@@ -32,14 +30,17 @@ namespace MarsUndiscovered.Game.Commands
 
             if (!(Source is Player))
             {
-                _data.MapId = ((MarsMap)Source.CurrentMap).Id;
-                _sourceMap.RemoveEntity(Source);
-                _data.OldPosition = Source.Position;
+                var oldPosition = Source.Position;
+
+                var map = ((MarsMap)Source.CurrentMap);
+
+                map.RemoveEntity(Source);
+
                 Source.Position = Point.None;
 
-                _sourceMap.ActorDied(Source);
+                map.ActorDied(Source);
 
-                Mediator.Publish(new MapTileChangedNotification(_oldPosition));
+                Mediator.Publish(new MapTileChangedNotification(oldPosition));
             }
             else
             {

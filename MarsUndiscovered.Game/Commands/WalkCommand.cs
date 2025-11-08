@@ -7,9 +7,9 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class WalkCommand : BaseMarsGameActionCommand<WalkCommandSaveData>
+    public class WalkCommand : BaseMarsGameActionCommand
     {
-        public Direction Direction => _data.Direction;
+        public Direction Direction { get; set; }
         public Player Player => GameWorld.Player;
 
         public WalkCommand(IGameWorld gameWorld) : base(gameWorld)
@@ -20,7 +20,7 @@ namespace MarsUndiscovered.Game.Commands
         public void Initialise(Direction direction)
         {
             Debug.Assert(direction != Direction.None, "Use wait command if direction is none");
-            _data.Direction = direction;
+            Direction = direction;
         }
 
         protected override CommandResult ExecuteInternal()

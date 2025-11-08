@@ -5,9 +5,10 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class ApplyItemCommand : BaseMarsGameActionCommand<ApplyItemCommandSaveData>
+    public class ApplyItemCommand : BaseMarsGameActionCommand
     {
-        public Item Item => GameWorld.Items[_data.ItemId];
+        public Item Item { get; set; }
+        public IGameObject GameObject { get; set; }
 
         public ApplyItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -16,21 +17,18 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(IGameObject gameObject, Item item)
         {
-            _data.GameObjectId = gameObject.ID;
-            _data.ItemId = item.ID;
+            GameObject = gameObject;
+            Item = item;
         }
 
         protected override CommandResult ExecuteInternal()
         {
-            _data.CanApply = GameWorld.Inventory.CanTypeBeApplied(Item);
+            var canApply = GameWorld.Inventory.CanTypeBeApplied(Item);
 
-            if (!_data.CanApply)
+            if (!canApply)
                 return Result(CommandResult.NoMove(this, $"{GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItem(Item)} cannot be applied. Did you mean to equip it?"));
 
-            _data.IsCharged = Item.ItemType is NanoFlask || (Item.ItemType is Gadget && Item.CurrentRechargeDelay > 0);
-            
-            _data.ItemKey = GameWorld.Inventory.GetKeyForItem(Item);
-            _data.IsItemTypeDiscovered = GameWorld.Inventory.ItemTypeDiscoveries.IsItemTypeDiscovered(Item);
+            var isItemTypeDiscovered = GameWorld.Inventory.ItemTypeDiscoveries.IsItemTypeDiscovered(Item);
 
             if (Item.ItemType is Gadget && Item.CurrentRechargeDelay > 0)
             {
@@ -49,7 +47,7 @@ namespace MarsUndiscovered.Game.Commands
                 Item.ItemDiscovery.IsEnchantLevelDiscovered = true;
             }
             
-            if (!_data.IsItemTypeDiscovered)
+            if (!isItemTypeDiscovered)
             {
                 GameWorld.Inventory.ItemTypeDiscoveries.SetItemTypeDiscovered(Item);
                 

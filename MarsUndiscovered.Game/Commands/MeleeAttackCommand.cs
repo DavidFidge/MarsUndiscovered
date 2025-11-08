@@ -4,11 +4,11 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class MeleeAttackCommand : BaseAttackCommand<MeleeAttackCommandSaveData>
+    public class MeleeAttackCommand : BaseAttackCommand
     {
-        public Actor Source => GameWorld.GameObjects[_data.SourceId] as Actor;
-        public Actor Target => GameWorld.GameObjects[_data.TargetId] as Actor;
-        public Item Item => _data.ItemId == null ? null : GameWorld.GameObjects[_data.ItemId.Value] as Item;
+        public Actor Source { get; set; }
+        public Actor Target { get; set; }
+        public Item Item { get; set; }
 
         public MeleeAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -16,9 +16,9 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Actor source, Actor target, Item item)
         {
-            _data.SourceId = source.ID;
-            _data.TargetId = target.ID;
-            _data.ItemId = item?.ID;
+            Source = source;
+            Target = target;
+            Item = item;
         }
 
         protected override CommandResult ExecuteInternal()
@@ -28,13 +28,6 @@ namespace MarsUndiscovered.Game.Commands
 
             var damage = Source.MeleeAttack.Roll();
 
-            _data.AttackData = new AttackData
-            {
-                Damage = damage,
-                Health = Target.Health,
-                Shield = Target.Shield
-            };
-            
             ApplyWeaknesses(Source, Target);
 
             Target.ApplyDamage(damage);

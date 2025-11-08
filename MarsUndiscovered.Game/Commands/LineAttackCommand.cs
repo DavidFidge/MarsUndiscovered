@@ -7,10 +7,10 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class LineAttackCommand : BaseAttackCommand<LineAttackCommandSaveData>
+    public class LineAttackCommand : BaseAttackCommand
     {
-        public Actor Source => GameWorld.GameObjects[_data.SourceId] as Actor;
-        public List<Point> Path => _data.Path;
+        public Actor Source { get; set; }
+        public List<Point> Path { get; set; }
         
         public LineAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -40,7 +40,6 @@ namespace MarsUndiscovered.Game.Commands
                     Shield = target.Shield
                 };
                 
-                _data.LineAttackData.Add(attackData);
 
                 target.ApplyDamage(damage);
 
@@ -62,8 +61,8 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Actor source, List<Point> path)
         {
-            _data.SourceId = source.ID;
-            _data.Path = path;
+            Source = source;
+            Path = path;
         }
 
         public IList<Actor> GetTargets()

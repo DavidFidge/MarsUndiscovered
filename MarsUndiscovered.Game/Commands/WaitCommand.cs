@@ -4,9 +4,9 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class WaitCommand : BaseMarsGameActionCommand<WaitCommandSaveData>
+    public class WaitCommand : BaseMarsGameActionCommand
     {
-        public Actor Actor => GameWorld.GameObjects[_data.ActorId] as Actor;
+        public Actor Actor { get; set; }
 
         public WaitCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -15,7 +15,7 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Actor actor)
         {
-            _data.ActorId = actor.ID;
+            Actor = actor;
         }
 
         protected override CommandResult ExecuteInternal()

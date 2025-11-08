@@ -3,8 +3,7 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public abstract class BaseAttackCommand<T> : BaseMarsGameActionCommand<T>
-        where T : BaseCommandSaveData, new()
+    public abstract class BaseAttackCommand : BaseMarsGameActionCommand
     {
         protected BaseAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {

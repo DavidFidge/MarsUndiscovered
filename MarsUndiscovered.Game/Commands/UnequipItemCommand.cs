@@ -4,9 +4,9 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class UnequipItemCommand : BaseMarsGameActionCommand<UnequipItemSaveData>
+    public class UnequipItemCommand : BaseMarsGameActionCommand
     {
-        public Item Item => GameWorld.Items[_data.ItemId];
+        public Item Item { get; set; }
 
         public UnequipItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -15,16 +15,16 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Item item)
         {
-            _data.ItemId = item.ID;
+            Item = item;
         }
 
         protected override CommandResult ExecuteInternal()
         {
             var itemDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(Item);
             
-            _data.IsNotEquipped = !GameWorld.Inventory.IsEquipped(Item);
+            var isNotEquipped = !GameWorld.Inventory.IsEquipped(Item);
             
-            if (_data.IsNotEquipped)
+            if (isNotEquipped)
                 return Result(CommandResult.NoMove(this, "Item is already unequipped"));
 
             GameWorld.Inventory.Unequip(Item);

@@ -7,10 +7,10 @@ using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class PickUpItemCommand : BaseMarsGameActionCommand<PickUpItemSaveData>
+    public class PickUpItemCommand : BaseMarsGameActionCommand
     {
-        public Item Item => GameWorld.Items[_data.ItemId];
-        public IGameObject GameObject => GameWorld.GameObjects[_data.GameObjectId];
+        public Item Item { get; set; }
+        public IGameObject GameObject { get; set; }
 
         public PickUpItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -18,8 +18,8 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Item item, IGameObject gameObject)
         {
-            _data.GameObjectId = gameObject.ID;
-            _data.ItemId = item.ID;
+            Item = item;
+            GameObject = gameObject;
 
             Debug.Assert(Item.Position.Equals(GameObject.Position));
         }

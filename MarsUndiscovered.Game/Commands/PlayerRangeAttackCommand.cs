@@ -5,12 +5,12 @@ using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class PlayerRangeAttackCommand : BaseMarsGameActionCommand<PlayerRangeAttackCommandSaveData>
+    public class PlayerRangeAttackCommand : BaseMarsGameActionCommand
     {
-        public Point TargetPoint => _data.TargetPoint;
+        public Point TargetPoint { get; set; }
         public Player Player => GameWorld.Player;
-        public Item Item => GameWorld.Items[_data.ItemId];
-        
+        public Item Item { get; set; }
+
         public PlayerRangeAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
             EndsPlayerTurn = true;
@@ -18,8 +18,8 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Point targetPoint, Item item)
         {
-            _data.ItemId = item.ID;
-            _data.TargetPoint = targetPoint;
+            Item = item;
+            TargetPoint = targetPoint;
         }
 
         protected override CommandResult ExecuteInternal()
