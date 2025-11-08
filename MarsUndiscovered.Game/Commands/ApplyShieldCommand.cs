@@ -4,26 +4,25 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class ApplyShieldCommand : BaseMarsGameActionCommand<ApplyShieldCommandSaveData>
+    public class ApplyShieldCommand : BaseMarsGameActionCommand
     {
-        public Item Source => GameWorld.Items[_data.SourceId];
-        public Actor Target => GameWorld.GameObjects[_data.TargetId] as Actor;
-        
+        public Item Source { get; set; }
+        public Actor Target { get; set; }
+
         public ApplyShieldCommand(IGameWorld gameWorld) : base(gameWorld)
         {
         }
 
         public void Initialise(Item source, Actor target)
         {
-            _data.SourceId = source.ID;
-            _data.TargetId = target.ID;
+            Source = source;
+            Target = target;
         }
 
         protected override CommandResult ExecuteInternal()
         {
             var shieldAmount = (Source.DamageShieldPercentage * Target.MaxHealth) / 100;
 
-            _data.OldShieldAmount = Target.Shield;
             Target.Shield = shieldAmount;
 
             var message = $"A soft glow and rhythmic hum surrounds {Target.GetSentenceName(true, false)}";

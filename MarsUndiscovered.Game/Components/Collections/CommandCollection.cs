@@ -1,16 +1,13 @@
 ﻿using System.Collections;
 using System.Reflection;
 using FrigidRogue.MonoGame.Core.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Components;
-using FrigidRogue.MonoGame.Core.Interfaces.Services;
-using FrigidRogue.MonoGame.Core.Services;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Components
 {
-    public class CommandCollection : IMementoState<CommandCollectionSaveData>, ICommandCollection
+    public class CommandCollection : ICommandCollection
     {
         private uint _nextId = 1;
 
@@ -90,60 +87,6 @@ namespace MarsUndiscovered.Game.Components
         {
             _commandListProperties = GetCommandListProperties();
         }
-        
-        public IMemento<CommandCollectionSaveData> GetSaveState()
-        {
-            return new Memento<CommandCollectionSaveData>
-            {
-                State = new CommandCollectionSaveData
-                {
-                    NextId = _nextId
-                }
-            };
-        }
-
-        public void SetLoadState(IMemento<CommandCollectionSaveData> memento)
-        {
-            _nextId = memento.State.NextId;
-        }
-
-        public void SaveState(ISaveGameService saveGameService, IGameWorld gameWorld)
-        {
-            var saveState = GetSaveState();
-            saveGameService.SaveToStore(saveState);
-            
-            // call SaveCommandList for each of properties using reflection
-            foreach (var commandListProperty in _commandListProperties)
-            {
-                var method = GetType().GetMethod("SaveCommandList");
-
-                var commandTypeSaveData = commandListProperty.Key.BaseType.GetGenericArguments().First();
-                var commandList = commandListProperty.Value.GetValue(this);
-                
-                var genericMethod = method.MakeGenericMethod(commandListProperty.Key, commandTypeSaveData);
-                
-                genericMethod.Invoke(this, new[] { commandList, saveGameService });
-            }
-        }
-
-        public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
-        {
-            var memento = saveGameService.GetFromStore<CommandCollectionSaveData>();
-            
-            _nextId = memento.State.NextId;
-            
-            foreach (var commandListProperty in _commandListProperties)
-            {
-                // Call LoadCommandsList for each property using reflection
-                var method = GetType().GetMethod("LoadCommandList");
-
-                var commandTypeSaveData = commandListProperty.Key.BaseType.GetGenericArguments().First();
-
-                var genericMethod = method.MakeGenericMethod(commandListProperty.Key, commandTypeSaveData);
-                
-                genericMethod.Invoke(this, new object[] { saveGameService, gameWorld });
-            }
-        }
 
         private Dictionary<Type, PropertyInfo> GetCommandListProperties()
         {
@@ -155,38 +98,6 @@ namespace MarsUndiscovered.Game.Components
                 .ToDictionary(k => k.PropertyType.GetGenericArguments().First(), v => v);
             
             return commandListProperties;
-        }
-
-        // Called via reflection
-        public void SaveCommandList<T, TSaveData>(List<T> commands, ISaveGameService saveGameService)
-            where T : BaseMarsGameActionCommand<TSaveData>
-            where TSaveData : BaseCommandSaveData, new()
-        {
-            var mementos = new List<IMemento<TSaveData>>();
-            
-            foreach (var command in commands)
-            {
-                var saveState = command.GetSaveState();
-                
-                mementos.Add(saveState);
-            }
-
-            saveGameService.SaveListToStore(mementos);
-        }
-
-        // Called via reflection
-        public void LoadCommandList<T, TSaveData>(ISaveGameService saveGameService, IGameWorld gameWorld)
-            where T : BaseMarsGameActionCommand<TSaveData>
-            where TSaveData : BaseCommandSaveData, new()
-        {
-            var mementos = saveGameService.GetListFromStore<TSaveData>();
-            
-            foreach (var memento in mementos)
-            {
-                var command = CreateCommand<T>(gameWorld, memento.State.Id);
-                
-                command.SetLoadState(memento);
-            }
         }
         
         public T CreateCommand<T>(IGameWorld gameWorld) where T : BaseGameActionCommand
@@ -236,7 +147,10 @@ namespace MarsUndiscovered.Game.Components
             return (T)commandList[^1];
         }
 
-        public List<T> GetCommands<T>() where T : BaseGameActionCommand
+        // Only the commands from last turn are stored in memory. They are not saved,
+        // so no logic should be written against them where it is required from a save load.
+        // (currently cancelling an ID is using this)
+        public List<T> GetLastCommands<T>() where T : BaseGameActionCommand
         {
             var commandListProperty = _commandListProperties[typeof(T)];
             

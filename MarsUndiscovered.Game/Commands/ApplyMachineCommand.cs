@@ -4,10 +4,12 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class ApplyMachineCommand : BaseMarsGameActionCommand<ApplyMachineCommandSaveData>
+    public class ApplyMachineCommand : BaseMarsGameActionCommand
     {
-        public Machine Machine => GameWorld.Machines[_data.MachineId];
-        
+        public Machine Machine { get; set; }
+        public bool OldIsUsed { get; private set; }
+        public bool IsUsed { get; private set; }
+
         public ApplyMachineCommand(IGameWorld gameWorld) : base(gameWorld)
         {
             EndsPlayerTurn = false;
@@ -15,7 +17,7 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Machine machine)
         {
-            _data.MachineId = machine.ID;
+            Machine = machine;
         }
 
         protected override CommandResult ExecuteInternal()
@@ -25,9 +27,9 @@ namespace MarsUndiscovered.Game.Commands
                 return Result(CommandResult.NoMove(this, "The machine no longer has power and lies dormant."));
             }
 
-            _data.OldIsUsed = Machine.IsUsed;
+            OldIsUsed = Machine.IsUsed;
             Machine.IsUsed = true;
-            _data.IsUsed = true;
+            IsUsed = true;
 
             BaseGameActionCommand subsequentCommand = null;
             string message;
@@ -52,8 +54,8 @@ namespace MarsUndiscovered.Game.Commands
         // Used when cancelling out of item choice
         protected override void UndoInternal()
         {
-            Machine.IsUsed = _data.OldIsUsed;
-            _data.IsUsed = _data.OldIsUsed;
+            Machine.IsUsed = OldIsUsed;
+            IsUsed = OldIsUsed;
         }
     }
 }

@@ -4,11 +4,11 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class EquipItemCommand : BaseMarsGameActionCommand<EquipItemSaveData>
+    public class EquipItemCommand : BaseMarsGameActionCommand
     {
-        public Item Item => GameWorld.Items[_data.ItemId];
-        private Item _previousItem => _data.PreviousItemId == null ? null : GameWorld.Items[_data.PreviousItemId.Value];
-        private bool _isAlreadyEquipped => _data.IsAlreadyEquipped;
+        public Item Item { get; set; }
+        private Item _previousItem;
+        private bool _isAlreadyEquipped;
         private bool _canEquipType => GameWorld.Inventory.CanTypeBeEquipped(Item);
 
         public EquipItemCommand(IGameWorld gameWorld) : base(gameWorld)
@@ -18,7 +18,7 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Item item)
         {
-            _data.ItemId = item.ID;
+            Item = item;
         }
 
         protected override CommandResult ExecuteInternal()
@@ -26,15 +26,14 @@ namespace MarsUndiscovered.Game.Commands
             if (!_canEquipType)
                 return Result(CommandResult.NoMove(this, "Cannot equip this type of item"));
 
-            var previousItem = GameWorld.Inventory.GetEquippedItemOfType(Item.ItemType);
-            _data.PreviousItemId = previousItem?.ID;
+            _previousItem = GameWorld.Inventory.GetEquippedItemOfType(Item.ItemType);
 
             var currentItemDescription = String.Empty;
 
-            if (previousItem != null)
+            if (_previousItem != null)
                 currentItemDescription = GameWorld.Inventory.ItemTypeDiscoveries.GetInventoryDescriptionAsSingleItemLowerCase(_previousItem);
 
-            _data.IsAlreadyEquipped = GameWorld.Inventory.IsEquipped(Item);
+            _isAlreadyEquipped = GameWorld.Inventory.IsEquipped(Item);
 
             if (_isAlreadyEquipped)
                 return Result(CommandResult.NoMove(this, "Item is already equipped"));

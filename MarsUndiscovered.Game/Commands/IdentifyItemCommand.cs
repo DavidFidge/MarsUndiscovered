@@ -4,9 +4,9 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class IdentifyItemCommand : BaseMarsGameActionCommand<IdentifyItemCommandSaveData>
+    public class IdentifyItemCommand : BaseMarsGameActionCommand
     {
-        public Item Item => GameWorld.Items[_data.ItemId];
+        public Item Item { get; set; }
 
         public IdentifyItemCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -15,7 +15,7 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Item item)
         {
-            _data.ItemId = item.ID;
+            Item = item;
         }
 
         protected override CommandResult ExecuteInternal()

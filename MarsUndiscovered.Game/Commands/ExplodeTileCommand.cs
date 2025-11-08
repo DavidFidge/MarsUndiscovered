@@ -7,11 +7,12 @@ using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class ExplodeTileCommand : BaseMarsGameActionCommand<ExplodeTileCommandSaveData>
+    public class ExplodeTileCommand : BaseMarsGameActionCommand
     {
-        public Point Point => _data.Point;
-        public MarsGameObject Source => _data.SourceId == null ? null : GameWorld.GameObjects[_data.SourceId.Value] as MarsGameObject;
-        public Actor ActorSource => _data.SourceId == null ? null : GameWorld.GameObjects[_data.SourceId.Value] as Actor;
+        public Point Point { get; set; }
+        public MarsGameObject Source { get; set; }
+        public Actor ActorSource { get; set; }
+        public int Damage { get; set; }
 
         public ExplodeTileCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -19,16 +20,17 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(Point point, int damage, MarsGameObject source = null)
         {
-            _data.Damage = damage;
-            _data.Point = point;
-            _data.SourceId = source?.ID;
+            Damage = damage;
+            Point = point;
+            ActorSource = source as Actor;
+            Source = source;
         }
 
         protected override CommandResult ExecuteInternal()
         {
             var subsequentCommands = new List<BaseGameActionCommand>();
 
-            var gameObjects = GameWorld.CurrentMap.GetObjectsAt(_data.Point);
+            var gameObjects = GameWorld.CurrentMap.GetObjectsAt(Point);
             var commandResult = CommandResult.Success(this, new List<string>());
 
             foreach (var gameObject in gameObjects)
@@ -37,16 +39,16 @@ namespace MarsUndiscovered.Game.Commands
                 {
                     GameWorld.CurrentMap.MarsMap().CreateFloor(
                         FloorType.RockFloor,
-                        _data.Point,
+                        Point,
                         GameWorld.GameObjectFactory);
                 }
                 else if (gameObject is Actor actor)
                 {
-                    actor.ApplyDamage(_data.Damage);
+                    actor.ApplyDamage(Damage);
                     
                     var sourceSentence = ActorSource?.GetSentenceName(false, true) ?? "An explosion";
                     
-                    var message = $"{sourceSentence} blasts {actor.GetSentenceName(true, false)} for {_data.Damage} dammage";
+                    var message = $"{sourceSentence} blasts {actor.GetSentenceName(true, false)} for {Damage} dammage";
                     commandResult.Messages.Add(message);
                     
                     if (actor.Health <= 0)
@@ -77,7 +79,7 @@ namespace MarsUndiscovered.Game.Commands
                 GameWorld.SpawnFeature(new SpawnFeatureParams()
                     .WithFeatureType(FeatureType.RubbleType)
                     .OnMap(GameWorld.CurrentMap.Id)
-                    .AtPosition(_data.Point));
+                    .AtPosition(Point));
             }
 
             if (!commandResult.Messages.Any())
@@ -85,7 +87,7 @@ namespace MarsUndiscovered.Game.Commands
                 commandResult.Messages.Add("There was an explosion nearby");
             }
 
-            Mediator.Publish(new MapTileChangedNotification(_data.Point));
+            Mediator.Publish(new MapTileChangedNotification(Point));
 
             return Result(commandResult);
         }

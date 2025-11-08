@@ -68,7 +68,7 @@ namespace MarsUndiscovered.Tests.Commands
             // Assert
             Assert.AreNotSame(_gameWorld, newGameWorld);
 
-            var waitCommands = _gameWorld.CommandCollection.GetCommands<WaitCommand>();
+            var waitCommands = _gameWorld.CommandCollection.GetLastCommands<WaitCommand>();
 
             Assert.AreEqual(2, waitCommands.Count);
             Assert.AreEqual(_gameWorld.Player.Position, newGameWorld.Player.Position);

@@ -604,26 +604,6 @@ namespace MarsUndiscovered.Game.Components
             return loadGameResult;
         }
 
-        public LoadGameResult LoadReplay(string saveGameName)
-        {
-            var loadGameResult = SaveGameService.LoadStoreFromFile(saveGameName);
-
-            if (loadGameResult.Success)
-            {
-                var gameWorldSaveData = SaveGameService.GetFromStore<GameWorldSaveData>();
-
-                NewGame(gameWorldSaveData.State.Seed);
-
-                // Load the command collection, store the replay commands from it then
-                // re-initialise it to clear it out for the replay execution
-                CommandCollection.LoadState(SaveGameService, this);
-                
-                CommandCollection.Initialise();
-            }
-
-            return loadGameResult;
-        }
-
         public void LoadState(ISaveGameService saveGameService, IGameWorld gameWorld)
         {
             Reset();
@@ -658,7 +638,6 @@ namespace MarsUndiscovered.Game.Components
 
             Maps.LoadState(saveGameService, gameWorld);
             GameTimeService.LoadState(saveGameService);
-            CommandCollection.LoadState(saveGameService, gameWorld);
             ActorAllegiances.LoadState(saveGameService, gameWorld);
 
             Story.LoadState(saveGameService, gameWorld);
@@ -685,7 +664,6 @@ namespace MarsUndiscovered.Game.Components
             MessageLog.SaveState(saveGameService, gameWorld);
             RadioComms.SaveState(saveGameService, gameWorld);
             Player.SaveState(saveGameService, gameWorld);
-            CommandCollection.SaveState(saveGameService, gameWorld);
             Inventory.SaveState(saveGameService, gameWorld);
             Maps.SaveState(saveGameService, gameWorld);
             GameTimeService.SaveState(saveGameService);

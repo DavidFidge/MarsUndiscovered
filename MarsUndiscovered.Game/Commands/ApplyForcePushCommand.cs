@@ -9,24 +9,24 @@ using Point = SadRogue.Primitives.Point;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class ApplyForcePushCommand : BaseMarsGameActionCommand<ApplyForcePushCommandSaveData>
+    public class ApplyForcePushCommand : BaseMarsGameActionCommand
     {
-        public Item Source => GameWorld.Items[_data.SourceId];
-        public Point Point => _data.Point;
-        public int PushDistance => _data.PushDistance;
-        public int Radius => _data.Radius;
-        
+        public Item Source { get; set; }
+        public Point Point { get; set; }
+        public int PushDistance { get; set; }
+        public int Radius { get; set; }
+
         public ApplyForcePushCommand(IGameWorld gameWorld) : base(gameWorld)
         {
         }
 
         public void Initialise(Item source, Point point, int pushDistance, int radius)
         {
-           EndsPlayerTurn = false;
-            _data.SourceId = source.ID;
-            _data.Point = point;
-            _data.PushDistance = pushDistance;
-            _data.Radius = radius;
+            EndsPlayerTurn = false;
+            Source = source;
+            Point = point;
+            PushDistance = pushDistance;
+            Radius = radius;
         }
         
         protected override CommandResult ExecuteInternal()

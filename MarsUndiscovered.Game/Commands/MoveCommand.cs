@@ -7,10 +7,10 @@ using SadRogue.Primitives;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class MoveCommand : BaseMarsGameActionCommand<MoveCommandSaveData>
+    public class MoveCommand : BaseMarsGameActionCommand
     {
-        public IGameObject GameObject => GameWorld.GameObjects[_data.GameObjectId];
-        public Tuple<Point, Point> FromTo => _data.FromTo;
+        public IGameObject GameObject { get; set; }
+        public Tuple<Point, Point> FromTo { get; set; }
 
         public MoveCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -18,8 +18,8 @@ namespace MarsUndiscovered.Game.Commands
 
         public void Initialise(IGameObject gameObject, Tuple<Point, Point> fromTo)
         {
-            _data.GameObjectId = gameObject.ID;
-            _data.FromTo = fromTo;
+            GameObject = gameObject;
+            FromTo = fromTo;
         }
 
         protected override CommandResult ExecuteInternal()

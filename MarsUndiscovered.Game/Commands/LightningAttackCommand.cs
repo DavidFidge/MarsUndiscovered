@@ -7,10 +7,10 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class LightningAttackCommand : BaseAttackCommand<LightningAttackCommandSaveData>
+    public class LightningAttackCommand : BaseAttackCommand
     {
-        public Actor Source => GameWorld.GameObjects[_data.SourceId] as Actor; 
-        public List<Point> Path => _data.Path;
+        public Actor Source { get; set; }
+        public List<Point> Path { get; set; }
 
         public LightningAttackCommand(IGameWorld gameWorld) : base(gameWorld)
         {
@@ -36,8 +36,6 @@ namespace MarsUndiscovered.Game.Commands
                     Health = target.Health,
                     Shield = target.Shield
                 };
-                
-                _data.LightningAttackData.Add(lineAttackCommandRestore);
                 
                 target.ApplyDamage(damage);
 
@@ -65,8 +63,8 @@ namespace MarsUndiscovered.Game.Commands
                 .TakeWhile(p => p == source.Position || (source.CurrentMap.Contains(targetPoint) && source.CurrentMap.GetObjectsAt(p).All(o => o.IsGameObjectStrikeThrough())))
                 .ToList();
 
-            _data.SourceId = source.ID;
-            _data.Path = lightningAttackPath;
+            Source = source;
+            Path = lightningAttackPath;
         }
 
         public IList<Actor> GetTargets()

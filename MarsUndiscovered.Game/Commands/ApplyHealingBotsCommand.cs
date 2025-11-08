@@ -4,26 +4,23 @@ using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
 {
-    public class ApplyHealingBotsCommand : BaseMarsGameActionCommand<ApplyHealingBotsCommandSaveData>
+    public class ApplyHealingBotsCommand : BaseMarsGameActionCommand
     {
-        public Item Source => GameWorld.Items[_data.SourceId];
-        public Actor Target => GameWorld.GameObjects[_data.TargetId] as Actor;
-        
+        public Item Source { get; set; }
+        public Actor Target { get; set; }
+
         public ApplyHealingBotsCommand(IGameWorld gameWorld) : base(gameWorld)
         {
         }
 
         public void Initialise(Item source, Actor target)
         {
-            _data.SourceId = source.ID;
-            _data.TargetId = target.ID;
+            Source = source;
+            Target = target;
         }
 
         protected override CommandResult ExecuteInternal()
         {
-            _data.OldMaxHealth = Target.MaxHealth;
-            _data.OldHealth = Target.Health;
-            
             Target.MaxHealth += Source.MaxHealthIncrease;
             Target.Health = Target.MaxHealth;
 
