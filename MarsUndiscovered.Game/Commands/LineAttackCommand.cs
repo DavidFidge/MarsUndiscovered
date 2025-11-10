@@ -50,7 +50,7 @@ namespace MarsUndiscovered.Game.Commands
 
                 if (target.Health <= 0)
                 {
-                    var deathCommand = CommandCollection.CreateCommand<DeathCommand>(GameWorld);
+                    var deathCommand = GameWorld.CommandCollection.CreateCommand<DeathCommand>(GameWorld);
                     deathCommand.Initialise(target, Source.GetSentenceName(true, true));
                     commandResult.SubsequentCommands.Add(deathCommand);
                 }

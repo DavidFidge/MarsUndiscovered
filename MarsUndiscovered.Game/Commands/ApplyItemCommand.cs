@@ -72,21 +72,21 @@ namespace MarsUndiscovered.Game.Commands
             {
                 case ShieldGenerator:
                 {
-                    var command = CommandCollection.CreateCommand<ApplyShieldCommand>(GameWorld);
+                    var command = GameWorld.CommandCollection.CreateCommand<ApplyShieldCommand>(GameWorld);
                     command.Initialise(Item, GameWorld.Player);
                     subsequentCommand = command;
                     break;
                 }
                 case ForcePush:
                 {
-                    var command = CommandCollection.CreateCommand<ApplyForcePushCommand>(GameWorld);
+                    var command = GameWorld.CommandCollection.CreateCommand<ApplyForcePushCommand>(GameWorld);
                     command.Initialise(Item, GameWorld.GetPlayerPosition(), Item.PushPullDistance, Item.PushPullRadius);
                     subsequentCommand = command;
                     break;
                 }
                 case HealingBots:
                 {
-                    var command = CommandCollection.CreateCommand<ApplyHealingBotsCommand>(GameWorld);
+                    var command = GameWorld.CommandCollection.CreateCommand<ApplyHealingBotsCommand>(GameWorld);
                     command.Initialise(Item, GameWorld.Player);
                     subsequentCommand = command;
                     break;

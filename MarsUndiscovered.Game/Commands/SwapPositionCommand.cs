@@ -2,55 +2,40 @@ using FrigidRogue.MonoGame.Core.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Interfaces;
 
+using SadRogue.Primitives;
+
 namespace MarsUndiscovered.Game.Commands
 {
-    public class MeleeAttackCommand : BaseAttackCommand<MeleeAttackCommandSaveData>
+    public class SwapPositionCommand : BaseMarsGameActionCommand
     {
-        public Actor Source => GameWorld.GameObjects[_data.SourceId] as Actor;
-        public Actor Target => GameWorld.GameObjects[_data.TargetId] as Actor;
-        public Item Item => _data.ItemId == null ? null : GameWorld.GameObjects[_data.ItemId.Value] as Item;
+        public Actor Source { get; set; }
+        public Actor Target { get; set; }
 
-        public MeleeAttackCommand(IGameWorld gameWorld) : base(gameWorld)
+        public SwapPositionCommand(IGameWorld gameWorld) : base(gameWorld)
         {
         }
 
-        public void Initialise(Actor source, Actor target, Item item)
+        public void Initialise(Actor source, Actor target)
         {
-            _data.SourceId = source.ID;
-            _data.TargetId = target.ID;
-            _data.ItemId = item?.ID;
+            Source = source;
+            Target = target;
         }
 
         protected override CommandResult ExecuteInternal()
         {
-            if (Item != null && Source is Player player)
-                player.RecalculateAttacksForItem(Item);
+            this.GameWorld.CurrentMap.RemoveEntity(Source);
+            this.GameWorld.CurrentMap.RemoveEntity(Target);
+            var pointSource = Source.Position;
+            var pointTarget = Target.Position;
 
-            var damage = Source.MeleeAttack.Roll();
+            Source.Position = Point.None;
+            Target.Position = pointSource;
+            Source.Position = pointTarget;
 
-            _data.AttackData = new AttackData
-            {
-                Damage = damage,
-                Health = Target.Health,
-                Shield = Target.Shield
-            };
-            
-            ApplyWeaknesses(Source, Target);
+            this.GameWorld.CurrentMap.AddEntity(Source);
+            this.GameWorld.CurrentMap.AddEntity(Target);
 
-            Target.ApplyDamage(damage);
-
-            var message = $"{Source.GetSentenceName(false, false)} hit {Target.GetSentenceName(true, false)}";
-
-            var commandResult = CommandResult.Success(this, message);
-            
-            SetHuntingIfAttackedByPlayer(Source, Target);
-
-            if (Target.Health <= 0)
-            {
-                var deathCommand = CommandCollection.CreateCommand<DeathCommand>(GameWorld);
-                deathCommand.Initialise(Target, Source.GetSentenceName(true, true));
-                commandResult.SubsequentCommands.Add(deathCommand);
-            }
+            var commandResult = CommandResult.Success(this);
 
             return Result(commandResult);
         }

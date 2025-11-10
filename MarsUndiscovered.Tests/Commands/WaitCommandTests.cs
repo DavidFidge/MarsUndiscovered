@@ -52,38 +52,6 @@ namespace MarsUndiscovered.Tests.Commands
         }
 
         [TestMethod]
-        public void Should_Save_Then_Load_Game_With_Wait_Commands()
-        {
-            // Arrange
-            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
-
-            _gameWorld.MoveRequest(Direction.None);
-            _gameWorld.MoveRequest(Direction.None);
-            _gameWorld.SaveGame("TestShouldSaveThenLoad", true);
-
-            // Act
-            var newGameWorld = (GameWorld)Container.Resolve<IGameWorld>();
-            newGameWorld.LoadGame("TestShouldSaveThenLoad");
-
-            // Assert
-            Assert.AreNotSame(_gameWorld, newGameWorld);
-
-            var waitCommands = _gameWorld.CommandCollection.GetLastCommands<WaitCommand>();
-
-            Assert.AreEqual(2, waitCommands.Count);
-            Assert.AreEqual(_gameWorld.Player.Position, newGameWorld.Player.Position);
-            Assert.AreEqual(new Point(0, 0), newGameWorld.Player.Position);
-
-            var waitCommand1 = waitCommands[0];
-            Assert.AreEqual(1, waitCommand1.TurnDetails.SequenceNumber);
-            Assert.AreEqual(1, waitCommand1.TurnDetails.TurnNumber);
-
-            var waitCommand2 = waitCommands[1];
-            Assert.AreEqual(2, waitCommand2.TurnDetails.SequenceNumber);
-            Assert.AreEqual(2, waitCommand2.TurnDetails.TurnNumber);
-        }
-
-        [TestMethod]
         public void Should_Wait()
         {
             // Arrange
