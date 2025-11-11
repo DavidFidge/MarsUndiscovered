@@ -125,7 +125,6 @@ namespace MarsUndiscovered.Game.Components
 
             Inventory = new Inventory(this);
             RadioComms = new RadioComms(this);
-            
             GameTimeService.Reset();
             GameTimeService.Start();
         }
@@ -457,6 +456,7 @@ namespace MarsUndiscovered.Game.Components
             RechargeItems();
             UpdateMonstersInView();
             Story.NextTurn();
+            CommandCollection.ClearCommandsOnNextAdd();
         }
 
         private void RechargeItems()

@@ -6,6 +6,5 @@ namespace MarsUndiscovered.Game.Commands
     public interface IBaseMarsGameActionCommand
     {
         IGameWorld GameWorld { get; }
-        ICommandCollection CommandCollection { get; set; }
     }
 }

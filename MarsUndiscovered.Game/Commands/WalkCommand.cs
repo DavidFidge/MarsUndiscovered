@@ -36,6 +36,31 @@ namespace MarsUndiscovered.Game.Commands
 
             if (map.Bounds().Contains(newPlayerPosition))
             {
+                var actorAt = map.GetObjectAt<Actor>(newPlayerPosition);
+
+                if (actorAt != null && GameWorld.ActorAllegiances.RelationshipTo(Player, actorAt) != ActorAllegianceState.Enemy)
+                {
+                    // Temporarily remove entity so that we can test if player can move there. The
+                    // monster might be special like a wall turret which player can't move to.
+                    map.RemoveEntity(actorAt);
+
+                    var canSwap = map.GameObjectCanMove(Player, actorAt.Position);
+
+                    map.AddEntity(actorAt);
+
+                    if (canSwap)
+                    {
+                        var command = GameWorld.CommandCollection.CreateCommand<SwapPositionCommand>(GameWorld);
+
+                        command.Initialise(Player, actorAt);
+
+                        return Result(CommandResult.Success(this, $"I swap positions with a {actorAt.Name}", command));
+                    }
+                    else
+                    {
+                        return Result(CommandResult.Exception(this, $"I bump into a {actorAt.Name}"));
+                    }
+                }
                 if (Player.LineAttack != null)
                 {
                     var targetPoint = playerPosition + Direction + Direction;
@@ -50,30 +75,43 @@ namespace MarsUndiscovered.Game.Commands
                                                                   map.GetObjectAt<Indestructible>(p) == null))))
                         .ToList();
 
-                    if (lineAttackPath.Any(p => map.GetObjectAt<Monster>(p) != null))
+                    var hasEnemyOnLine = lineAttackPath.Any(p =>
                     {
-                        var command = CommandCollection.CreateCommand<LineAttackCommand>(GameWorld);
+                        var m = map.GetObjectAt<Monster>(p);
+                        return m != null && GameWorld.ActorAllegiances.RelationshipTo(m, Player) == ActorAllegianceState.Enemy;
+                    });
+
+                    if (hasEnemyOnLine)
+                    {
+                        var command = GameWorld.CommandCollection.CreateCommand<LineAttackCommand>(GameWorld);
                         command.Initialise(Player, lineAttackPath);
 
                         return Result(CommandResult.Success(this, command));
                     }
                 }
-                
+
                 if (map.GameObjectCanMove(Player, newPlayerPosition))
                 {
-                    var command = CommandCollection.CreateCommand<MoveCommand>(GameWorld);
+                    var command = GameWorld.CommandCollection.CreateCommand<MoveCommand>(GameWorld);
 
                     command.Initialise(Player, new Tuple<Point, Point>(playerPosition, newPlayerPosition));
 
                     return Result(CommandResult.Success(this, command));
                 }
 
-                var actorAt = map.GetObjectAt<Actor>(newPlayerPosition);
                 if (actorAt is Monster)
                 {
+                    if (GameWorld.ActorAllegiances.RelationshipTo(Player, actorAt) != ActorAllegianceState.Enemy)
+                    {
+                        var command = GameWorld.CommandCollection.CreateCommand<MeleeAttackCommand>(GameWorld);
+                        command.Initialise(Player, actorAt, GameWorld.Inventory.EquippedWeapon);
+
+                        return Result(CommandResult.Success(this, command));
+                    }
+
                     if (Player.MeleeAttack != null)
                     {
-                        var command = CommandCollection.CreateCommand<MeleeAttackCommand>(GameWorld);
+                        var command = GameWorld.CommandCollection.CreateCommand<MeleeAttackCommand>(GameWorld);
                         command.Initialise(Player, actorAt, GameWorld.Inventory.EquippedWeapon);
 
                         return Result(CommandResult.Success(this, command));
@@ -94,7 +132,7 @@ namespace MarsUndiscovered.Game.Commands
 
                 if (mapExitAt != null)
                 {
-                    var command = CommandCollection.CreateCommand<ChangeMapCommand>(GameWorld);
+                    var command = GameWorld.CommandCollection.CreateCommand<ChangeMapCommand>(GameWorld);
 
                     command.Initialise(Player, mapExitAt);
                     return Result(CommandResult.Success(this, command));
@@ -113,12 +151,12 @@ namespace MarsUndiscovered.Game.Commands
 
                     return Result(CommandResult.NoMove(this, "I don't have the parts I need to repair my ship!"));
                 }
-                
+
                 var machineAt = map.GetObjectAt<Machine>(newPlayerPosition);
 
                 if (machineAt != null)
                 {
-                    var command = CommandCollection.CreateCommand<ApplyMachineCommand>(GameWorld);
+                    var command = GameWorld.CommandCollection.CreateCommand<ApplyMachineCommand>(GameWorld);
                     command.Initialise(machineAt);
 
                     return Result(CommandResult.Success(this, command));

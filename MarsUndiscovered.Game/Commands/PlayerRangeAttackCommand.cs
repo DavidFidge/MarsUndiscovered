@@ -28,7 +28,7 @@ namespace MarsUndiscovered.Game.Commands
             
             if (Player.LaserAttack != null)
             {
-                var laserAttackCommand = CommandCollection.CreateCommand<LaserAttackCommand>(GameWorld);
+                var laserAttackCommand = GameWorld.CommandCollection.CreateCommand<LaserAttackCommand>(GameWorld);
                 laserAttackCommand.Initialise(Player, TargetPoint);
                 
                 

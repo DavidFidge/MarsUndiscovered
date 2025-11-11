@@ -34,7 +34,7 @@ namespace MarsUndiscovered.Game.Commands
 
                 if (item != null)
                 {
-                    var pickUpItemCommand = CommandCollection.CreateCommand<PickUpItemCommand>(GameWorld);
+                    var pickUpItemCommand = GameWorld.CommandCollection.CreateCommand<PickUpItemCommand>(GameWorld);
                     pickUpItemCommand.Initialise(item, GameObject);
                     subsequentCommands.Add(pickUpItemCommand);
                 }

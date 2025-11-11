@@ -53,7 +53,7 @@ namespace MarsUndiscovered.Game.Commands
                     
                     if (actor.Health <= 0)
                     {
-                        var deathCommand = CommandCollection.CreateCommand<DeathCommand>(GameWorld);
+                        var deathCommand = GameWorld.CommandCollection.CreateCommand<DeathCommand>(GameWorld);
 
                         sourceSentence = "an explosion";
 

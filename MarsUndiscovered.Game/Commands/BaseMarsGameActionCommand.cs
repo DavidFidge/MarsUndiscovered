@@ -8,11 +8,7 @@ namespace MarsUndiscovered.Game.Commands
 {
     public abstract class BaseMarsGameActionCommand : BaseGameActionCommand, IBaseMarsGameActionCommand
     {
-        [JsonIgnore]
         public IGameWorld GameWorld { get; private set; }
-        
-        [JsonIgnore]
-        public ICommandCollection CommandCollection { get; set; }
 
         public BaseMarsGameActionCommand(IGameWorld gameWorld)
         {

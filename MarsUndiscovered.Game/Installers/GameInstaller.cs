@@ -201,6 +201,9 @@ namespace MarsUndiscovered.Game.Installers
                     .AsFactory(),
             
                 Component.For<ICommandFactory<ExplodeTileCommand>>()
+                    .AsFactory(),
+
+                Component.For<ICommandFactory<SwapPositionCommand>>()
                     .AsFactory()
             );
         }
