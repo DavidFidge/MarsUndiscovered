@@ -1061,13 +1061,13 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
         }
         
         [TestMethod]
-        public void Can_Kill_Other_Monsters_With_LineAttack()
+        public void Can_Kill_Other_Entities_With_LineAttack()
         {
             // Arrange
             NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
 
             var spawnMonsterParams1 = new SpawnMonsterParams()
-                .WithBreed("CleaningDroid")
+                .WithBreed("Roach")
                 .AtPosition(new Point(0, 1))
                 .WithState(MonsterState.Hunting);
             
@@ -1083,6 +1083,8 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             var monster2 = spawnMonsterParams2.Result;
 
             monster1.Health = 1;
+            monster1.AllegianceCategory = AllegianceCategory.Miners;
+            _gameWorld.ActorAllegiances.Change(monster1.AllegianceCategory, monster2.AllegianceCategory, ActorAllegianceState.Enemy, true);
             
             _gameWorld.TestResetFieldOfView();
             monster1.ResetFieldOfViewAndSeenTiles();
@@ -1104,7 +1106,53 @@ namespace MarsUndiscovered.Tests.Components.GameWorldTests
             Assert.AreSame(monster2, attackCommand.Source);
             Assert.IsTrue(monster1.IsDead);
         }
-        
+
+        [TestMethod]
+        public void Do_Not_Hit_Allies_With_LineAttack()
+        {
+            // Arrange
+            NewGameWithTestLevelGenerator(_gameWorld, playerPosition: new Point(0, 0));
+
+            var spawnMonsterParams1 = new SpawnMonsterParams()
+                .WithBreed("CleaningDroid")
+                .AtPosition(new Point(0, 1))
+                .WithState(MonsterState.Hunting);
+
+            var spawnMonsterParams2 = new SpawnMonsterParams()
+                .WithBreed("CleaningDroid")
+                .AtPosition(new Point(0, 2))
+                .WithState(MonsterState.Hunting);
+
+            _gameWorld.SpawnMonster(spawnMonsterParams1);
+            _gameWorld.SpawnMonster(spawnMonsterParams2);
+
+            var monster1 = spawnMonsterParams1.Result;
+            var monster2 = spawnMonsterParams2.Result;
+
+            monster1.Health = 1;
+
+            _gameWorld.TestResetFieldOfView();
+            monster1.ResetFieldOfViewAndSeenTiles();
+            monster2.ResetFieldOfViewAndSeenTiles();
+            var result = monster2.NextTurn().ToList();
+
+            // Act
+            var lineAttackCommand = (LineAttackCommand)result[0];
+            lineAttackCommand.Execute();
+
+            foreach (var command in lineAttackCommand.CommandResult.SubsequentCommands)
+            {
+                command.Execute();
+            }
+
+            // Assert
+            var attackCommand = result[0] as LineAttackCommand;
+            Assert.IsNotNull(attackCommand);
+            Assert.AreSame(monster2, attackCommand.Source);
+            Assert.IsFalse(monster1.IsDead);
+        }
+
+
         [TestMethod]
         public void Monsters_Should_Stop_Acting_When_Player_Dies()
         {
