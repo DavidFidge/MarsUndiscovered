@@ -1,5 +1,6 @@
 using FrigidRogue.MonoGame.Core.Components;
 using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Game.ViewMessages;
 using MarsUndiscovered.Interfaces;
 
 using SadRogue.Primitives;
@@ -28,7 +29,6 @@ namespace MarsUndiscovered.Game.Commands
             var pointSource = Source.Position;
             var pointTarget = Target.Position;
 
-            Source.Position = Point.None;
             Target.Position = pointSource;
             Source.Position = pointTarget;
 
@@ -36,6 +36,9 @@ namespace MarsUndiscovered.Game.Commands
             this.GameWorld.CurrentMap.AddEntity(Target);
 
             var commandResult = CommandResult.Success(this);
+
+            Mediator.Publish(new MapTileChangedNotification(pointSource));
+            Mediator.Publish(new MapTileChangedNotification(pointTarget));
 
             return Result(commandResult);
         }

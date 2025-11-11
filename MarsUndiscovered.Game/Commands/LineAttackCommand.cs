@@ -71,7 +71,7 @@ namespace MarsUndiscovered.Game.Commands
                 .Skip(1)
                 .Where(p => Source.CurrentMap.Contains(p))
                 .Select(p => Source.CurrentMap.GetObjectAt<Actor>(p))
-                .Where(p => p != null)
+                .Where(p => p != null && GameWorld.ActorAllegiances.RelationshipTo(Source, p) == ActorAllegianceState.Enemy)
                 .ToList();
         }
     }
