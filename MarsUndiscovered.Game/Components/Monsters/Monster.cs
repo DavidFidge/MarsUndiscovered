@@ -51,6 +51,7 @@ namespace MarsUndiscovered.Game.Components
 
         public Actor Leader { get; set; }
         public Actor Target { get; set; }
+        public Point TravelTarget { get; set; }
         public Actor TargetOutOfFov { get; set; }
         public bool ReturnToIdle { get; set; }
 
@@ -65,7 +66,7 @@ namespace MarsUndiscovered.Game.Components
         private ICommandCollection _commandFactory => GameWorld.CommandCollection;
         private SeenTile[] _seenTilesAfterLoad;
         private Path _wanderPath;
-
+        private Path _travelPath;
         private Path _toLeaderPath;
 
         public string GetInformation(Player player)
@@ -305,6 +306,7 @@ namespace MarsUndiscovered.Game.Components
                         .Subtree(SearchingBehavior())
                         .Subtree(FollowLeader())
                         .Subtree(WanderBehavior())
+                        .Subtree(TravellingBehavior())
                     .End()
                 .End()
                 .Build();
@@ -527,6 +529,7 @@ namespace MarsUndiscovered.Game.Components
             return BehaviourStatus.Succeeded;
         }
 
+        // Wander behavior is a default behavior, and from here monsters can switch to almost any state.
         private IBehaviour<Monster> WanderBehavior()
         {
             var behaviour = FluentBuilder.Create<Monster>()
@@ -550,6 +553,12 @@ namespace MarsUndiscovered.Game.Components
                             // Blocked, can't do anything
                             if (IsBlocked())
                                 return BehaviourStatus.Succeeded;
+
+                            if (TravelTarget != Point.None)
+                            {
+                                MonsterState = MonsterState.Travelling;
+                                return BehaviourStatus.Failed;
+                            }
 
                             var nextDirection = monster.UseGoalMapWander ? WanderUsingGoalMap() : WanderUsingAStar();
 
@@ -586,6 +595,52 @@ namespace MarsUndiscovered.Game.Components
                                     MonsterState = MonsterState.Idle;
                                     return BehaviourStatus.Succeeded;
                                 }
+                            }
+
+                            return BehaviourStatus.Succeeded;
+                        })
+                .End()
+                .Build();
+
+            return behaviour;
+        }
+
+        private IBehaviour<Monster> TravellingBehavior()
+        {
+            var behaviour = FluentBuilder.Create<Monster>()
+                .Sequence("travel")
+                    .Condition("is travelling", monster => monster.MonsterState == MonsterState.Travelling)
+                    .Do(
+                        "move to next unexplored square",
+                        monster =>
+                        {
+                            if (TravelTarget == Point.None)
+                            {
+                                MonsterState = MonsterState.Wandering;
+                                return BehaviourStatus.Succeeded;
+                            }
+
+                            if (Target != null)
+                            {
+                                MonsterState = MonsterState.Searching;
+                                return BehaviourStatus.Failed;
+                            }
+
+                            // Blocked, can't do anything
+                            if (IsBlocked())
+                                return BehaviourStatus.Succeeded;
+
+                            var nextDirection = TravelUsingAStar();
+
+                            if (nextDirection == Direction.None)
+                            {
+                                // move is still blocked for some reason, do nothing
+                                return BehaviourStatus.Succeeded;
+                            }
+                            else
+                            {
+                                var moveCommand = CreateMoveCommand(nextDirection);
+                                _nextCommands.Add(moveCommand);
                             }
 
                             return BehaviourStatus.Succeeded;
@@ -854,6 +909,12 @@ namespace MarsUndiscovered.Game.Components
                             }
                         }
 
+                        if (TravelTarget != Point.None)
+                        {
+                            MonsterState = MonsterState.Travelling;
+                            return BehaviourStatus.Failed;
+                        }
+
                         // let an idle monster move every now and then so it appears less static
                         if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
                         {
@@ -1013,7 +1074,53 @@ namespace MarsUndiscovered.Game.Components
                 // Path is blocked. Stay stationary this turn and find a new path next turn.
                 _wanderPath = null;
                 ResetFieldOfViewAndSeenTiles();
-                return Direction.None;                
+                return Direction.None;
+            }
+
+            if (nextPointInPath == Point.None)
+            {
+                Debug.Fail("Could not find a next point in path and path lookup logic did not return Direction.None. This should never happen.");
+                return Direction.None;
+            }
+
+            return Direction.GetDirection(Position, nextPointInPath);
+        }
+
+        public Direction TravelUsingAStar()
+        {
+            var currentPathLocation = Point.None;
+
+            if (_travelPath.IsPointOnPathAndNotAtEnd(Position))
+                currentPathLocation = Position;
+
+            if (currentPathLocation == Point.None)
+            {
+                _travelPath = GetNewTravelPath();
+
+                if (_travelPath != null)
+                    currentPathLocation = _travelPath.Start;
+
+                if (currentPathLocation == Point.None)
+                {
+                    // No travel path found even when searching only with terrain. It means the target can never
+                    // be reached.
+                    // At the moment we are not dealing with it and so the actor will just stand still.
+                    _travelPath = null;
+                    return Direction.None;
+                }
+            }
+
+            Debug.Assert(currentPathLocation != Point.None);
+
+            var nextPointInPath = _travelPath.GetStepAfterPointWithStart(currentPathLocation);
+
+            if (!CurrentMap.GameObjectCanMove(this, nextPointInPath))
+            {
+                // Path is blocked. Stay stationary this turn and find a new path next turn.
+                // NOTE - there's a chance that a monster can become completely stuck
+                // if there are non-traversable objects that never move. Currently this is not being dealt with.
+                _travelPath = null;
+                return Direction.None;
             }
 
             if (nextPointInPath == Point.None)
@@ -1051,6 +1158,24 @@ namespace MarsUndiscovered.Game.Components
             }
 
             return wanderPath;
+        }
+
+        private Path GetNewTravelPath()
+        {
+            Path travelPath = null;
+
+            var targetPoint = CurrentMap.MarsMap().FindClosestFreeFloor(TravelTarget);
+            travelPath = CurrentMap.AStar.ShortestPath(Position, targetPoint);
+
+            if (travelPath == null)
+            {
+                var terrainOnlyWalkabilityView = new TerrainOnlyMapWalkabilityView(CurrentMap);
+                var fastAStar = new FastAStar(terrainOnlyWalkabilityView, Distance.Chebyshev);
+
+                travelPath = fastAStar.ShortestPath(Position, targetPoint);
+            }
+
+            return travelPath;
         }
 
         private int GetRandomUnseenFloorTileIndex(List<int> checkedIndexes)

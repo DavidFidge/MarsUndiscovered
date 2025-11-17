@@ -10,6 +10,7 @@ namespace MarsUndiscovered.Game.Components.Maps
     public abstract class BaseMapGenerator : BaseComponent, IMapGenerator
     {
         public static string WallFloorTag = "WallFloor"; // ArrayView of bool where true is floor and false is wall
+        public static string WallFloorInvertedTag = "WallFloorInverted"; // ArrayView of bool where true is wall and false is floor
         public static string TunnelsTag = "Tunnels";
         public static string WallFloorTypeTag = "WallFloorType"; // Similar to WallFloor but gives the actual type of wall or floor. It is an ArrayView of GameObjectType where the type is WallType or FloorType.
         public static string MiningFacilityAreaTag = "MiningFacilityArea";

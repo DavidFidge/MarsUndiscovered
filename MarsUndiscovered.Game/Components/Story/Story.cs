@@ -10,6 +10,10 @@ using GoRogue.Random;
 
 using MarsUndiscovered.Interfaces;
 
+using SadRogue.Primitives;
+
+using Serilog.Events;
+
 namespace MarsUndiscovered.Game.Components;
 
 public class Story : BaseComponent, IStory, ISaveable
@@ -43,6 +47,9 @@ public class Story : BaseComponent, IStory, ISaveable
 
     public void NextTurn()
     {
+        _data.LastLevel = _data.CurrentLevel;
+        _data.CurrentLevel = _gameWorld.CurrentMap.Level;
+
         _behaviourTree.Tick(this);
     }
 
@@ -54,6 +61,7 @@ public class Story : BaseComponent, IStory, ISaveable
             .Sequence("root")
             .Selector("action selector")
                 .Subtree(Level2Behaviour())
+                .Subtree(Level3Behaviour())
                 .End()
             .End()
             .Build();
@@ -66,7 +74,7 @@ public class Story : BaseComponent, IStory, ISaveable
                 .Condition("is active", s => s._data.IsLevel2StoryActive)
                 .Condition("on level 2", s =>
                 {
-                    return s._gameWorld.Player.CurrentMap.MarsMap().Level == 2; 
+                    return s._gameWorld.CurrentMap.Level == 2; 
                 })
                 // If not a Do() then further leaves need to be put into a subtree
                 .Subtree(Level2StorySelector())
@@ -112,14 +120,140 @@ public class Story : BaseComponent, IStory, ISaveable
                 .Sequence("Meet Miners")
                     .Condition("has not met leader", s =>
                     {
-                        return !_data.HasMetLeader;
+                        return !_data.HasMetMinerLeader;
                     })
                     .Do("try meet leader",
                         s =>
                         {
                             if (_gameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(_level2MinerLeader.Position))
                             {
-                                _data.HasMetLeader = true;
+                                _data.HasMetMinerLeader = true;
+
+                                _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.MetMiners1, _level2MinerLeader);
+                                _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.MetMiners2, _level2MinerLeader);
+
+                                _level2MinerLeader.SetLeader(_gameWorld.Player);
+                            }
+
+                            return BehaviourStatus.Succeeded;
+                        }
+                    )
+                    .End()
+            .End()
+            .Build();
+
+        return behaviour;
+    }
+
+    private IBehaviour<Story> Level3Behaviour()
+    {
+        var behaviour = FluentBuilder.Create<Story>()
+            .Sequence("level 3")
+                .Condition("is active", s => s._data.IsLevel3StoryActive)
+                .Condition("on level 3", s =>
+                {
+                    return s._gameWorld.Player.CurrentMap.MarsMap().Level == 3;
+                })
+                // If not a Do() then further leaves need to be put into a subtree
+                .Subtree(Level3StorySelector())
+            .End()
+            .Build();
+
+        return behaviour;
+    }
+
+    private IBehaviour<Story> Level3StorySelector()
+    {
+        var behaviour = FluentBuilder.Create<Story>()
+            .Selector("level 3 story selector")
+                .Sequence("start level 3")
+                    .Condition("has guided miner leader down", s =>
+                    {
+                        return !s._data.HasGuidedMinerLeaderDown;
+                    })
+                    .Condition("miner leader not dead", s =>
+                    {
+                        return !_level2MinerLeader.IsDead;
+                    })
+                    .Condition("has met miner leader", s =>
+                    {
+                        return _data.HasMetMinerLeader;
+                    })
+                    .Do(
+                        "comms message and flag",
+                        s =>
+                        {
+                            // See if the miner leader is within 5 squares of the level 2 exit and if so
+                            // switch him and any miners down to this level
+                            var level2Map = _gameWorld.Maps.First(m => m.Level == 2);
+                            var exit = _gameWorld.MapExits.ForMap(level2Map).First(m => m.Destination.CurrentMap == _gameWorld.CurrentMap);
+
+                            var leader = _level2MinerLeader;
+
+                            if (Distance.Manhattan.Calculate(leader.Position, exit.Position) <= 5)
+                            {
+                                leader.CurrentMap.RemoveEntity(leader);
+
+                                var freeFloor = _gameWorld.CurrentMap.FindClosestFreeFloor(_gameWorld.Player.Position);
+
+                                if (freeFloor != Point.None)
+                                {
+                                    _data.HasGuidedMinerLeaderDown = true;
+                                    _data.IsLevel2StoryActive = false;
+
+                                    leader.Position = freeFloor;
+
+                                    leader.AddToMap(_gameWorld.CurrentMap);
+
+                                    // Move miners following leader
+                                    var minerFollowers = _gameWorld.Monsters.Values.Where(m => m.Leader == leader).ToList();
+
+                                    foreach (var minerFollower in minerFollowers)
+                                    {
+                                        freeFloor = _gameWorld.CurrentMap.FindClosestFreeFloor(_gameWorld.Player.Position);
+
+                                        if (freeFloor != Point.None)
+                                        {
+                                            minerFollower.CurrentMap.RemoveEntity(minerFollower);
+                                            minerFollower.Position = freeFloor;
+                                            _gameWorld.CurrentMap.AddEntity(minerFollower);
+                                        }
+                                    }
+
+                                    leader.SetLeader(null);
+
+                                    _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.GuidedMinerLeaderDown, s._gameWorld.Player);
+                                }
+                            }
+                            return BehaviourStatus.Succeeded;
+                        }
+                    )
+                    .End()
+                .Sequence("Spawn Missiles")
+                    .Condition("Randomise spawn", s =>
+                    {
+                        return GlobalRandom.DefaultRNG.NextInt(6) == 0;
+                    })
+                    .Do("Add missiles",
+                        s =>
+                        {
+                            SpawnMissiles();
+
+                            return BehaviourStatus.Succeeded;
+                        }
+                    )
+                    .End()
+                .Sequence("Meet Miners")
+                    .Condition("has not met leader", s =>
+                    {
+                        return !_data.HasMetMinerLeader;
+                    })
+                    .Do("try meet leader",
+                        s =>
+                        {
+                            if (_gameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(_level2MinerLeader.Position))
+                            {
+                                _data.HasMetMinerLeader = true;
 
                                 _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.MetMiners1, _level2MinerLeader);
                                 _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.MetMiners2, _level2MinerLeader);

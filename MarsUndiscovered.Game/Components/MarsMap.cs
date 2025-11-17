@@ -52,6 +52,8 @@ namespace MarsUndiscovered.Game.Components
             _mapHeight = mapHeight;
             SeenTiles = SeenTile.CreateArrayViewFromMap(this);
 
+            AStar = new GoRogue.Pathing.FastAStar(WalkabilityView, Distance.Chebyshev);
+            
             this.ObjectAdded += MarsMap_ObjectAdded;
             this.ObjectRemoved += MarsMap_ObjectRemoved;
         }

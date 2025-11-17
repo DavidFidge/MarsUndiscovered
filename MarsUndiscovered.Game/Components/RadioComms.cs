@@ -15,7 +15,8 @@ public enum RadioCommsTypes
     PickupShipParts,
     Level2StoryStart,
     MetMiners1,
-    MetMiners2
+    MetMiners2,
+    GuidedMinerLeaderDown
 }
 
 public class RadioComms : List<RadioCommsEntry>, ISaveable
@@ -81,8 +82,15 @@ public class RadioComms : List<RadioCommsEntry>, ISaveable
             new RadioCommsPrefab(RadioCommsTypes.MetMiners2,
                 Miners,
                 "Your AI can tell you where the next strike is occurring? That's some high tech gear! We'll follow you underground. There's nothing left out here, they've blown up all the jets and vehicles. We have months worth of supplies underground, and once the bombing stops we might be able to dig ourselves out again and rig up a vehicle to get out of here. Lead the way."
-            )
-        );
+            ));
+
+
+        _radioCommsPrefabs.Add(
+            RadioCommsTypes.GuidedMinerLeaderDown,
+            new RadioCommsPrefab(RadioCommsTypes.GuidedMinerLeaderDown,
+                Miners,
+                "Wow, I can't believe we made it down here alive! Our canteen and rest area is on this level which contains enough supplies to last us a few months at least. I'll lead the way. I have a few supplies there which might help you get down to the lower levels."
+            ));
     }
 
     public void AddRadioCommsEntry(RadioCommsTypes radioCommsType, IGameObject gameObject)

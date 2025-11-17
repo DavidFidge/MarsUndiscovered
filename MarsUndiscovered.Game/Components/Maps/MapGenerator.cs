@@ -65,7 +65,9 @@ namespace MarsUndiscovered.Game.Components.Maps
             var generationSteps = new GenerationStep[]
             {
                 new MineWorkerGeneration(),
-                new WallFloorTypeConverterGenerator()
+                new WallFloorTypeConverterGenerator(),
+                new WallFloorInverterGenerator(),
+                new HoleInTheWallGenerator(),
             };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
