@@ -9,12 +9,13 @@ namespace MarsUndiscovered.Game.Components.Maps
 {
     public abstract class BaseMapGenerator : BaseComponent, IMapGenerator
     {
-        public static string WallFloorTag = "WallFloor"; // ArrayView of bool where true is floor and false is wall
-        public static string WallFloorInvertedTag = "WallFloorInverted"; // ArrayView of bool where true is wall and false is floor
+        public static string WallFloorTag = "WallFloor"; // ArrayView of bool where true is floor and false is wall. You should keep this one maintained if changing walls and floors.
+        public static string WallFloorInvertedTag = "WallFloorInverted"; // ArrayView of bool where true is wall and false is floor. You do not have to keep it maintained but if you want to use it you have to put in a WallFloorInverterGenerator call in before the generator that wants to use it.
         public static string TunnelsTag = "Tunnels";
         public static string WallFloorTypeTag = "WallFloorType"; // Similar to WallFloor but gives the actual type of wall or floor. It is an ArrayView of GameObjectType where the type is WallType or FloorType.
         public static string MiningFacilityAreaTag = "MiningFacilityArea";
         public static string MiningFacilityAreaWithPerimeterTag = "MiningFacilityAreaWithPerimeterTag";
+        public static string HoleInTheWallAreaTag = "HoleInTheWallRectangle";
         public static string DoorsTag = "Doors";
         public static string AreasTag = "Areas";
         public static string AreasWallsDoorsTag = "AreasWallsDoors";

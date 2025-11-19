@@ -1,8 +1,11 @@
 Name,Description,CodePage437Character,ForegroundColour,BackgroundColour,MaxHealth,BasicAttackMin,BasicAttackMax,LightningAttack,IsWallTurret,LineAttackMin,LineAttackMax,RegenRate,DetectionRange,SearchCooldown,CanConcuss,WeaknessToConcuss
 Black Ops Defender,Black ops defenders have gadgets of advanced technology which they use to block any ranged damage done to adjacent allies.,0062,#000099,,50,2,2,,FALSE,,,0.005,10,5,FALSE,TRUE
 Black Ops Sniper,"Black ops snipers are efficient ruthless killers, taking down foes from the shadows with impeccable precision.",0062,#7474E0,,50,2,2,,FALSE,,,0.005,10,5,FALSE,TRUE
-Crazed Foreman,"With all sanity lost from the madness that has overtaken the mine, this crazed foreman wanders the mines, looking for anything to kill.",006D,#D1FF00,,50,2,2,,FALSE,,,0.005,10,5,FALSE,TRUE
-Crazed Miner,"Terror, fright and a primal urge for survival is all that is left of this miner's sanity.",006D,#00D300,,50,2,2,,FALSE,,,0.005,10,5,FALSE,TRUE
+Ricky,"He is a massive imposing man, with a square flat face as big as a spade shovel. While he talks rough, you sense this man is not all brawn, far from it in fact.",0052,#FF00FF,,50,2,2,,FALSE,,,0.005,10,5,FALSE,TRUE
+Foreman,In past times this man lead a crew of miners in the day to day drudgery of the Martian mines. Now he fights for survival.,006D,#D1FF00,,50,2,2,,FALSE,,,0.005,10,5,FALSE,TRUE
+Miner,"Armed with whatever objects he could find in the mines, this man is fighting for his life.",006D,#00D300,,50,2,2,,FALSE,,,0.005,10,5,FALSE,TRUE
+Crazed Foreman,"With all sanity lost from the madness that has overtaken the mine, this crazed foreman wanders the mines, looking for anything to kill.",006D,#CF2C00,,50,2,2,,FALSE,,,0.005,10,5,FALSE,TRUE
+Crazed Miner,"Terror, fright and a primal urge for survival is all that is left of this miner's sanity.",006D,#D16600,,50,2,2,,FALSE,,,0.005,10,5,FALSE,TRUE
 Eldritch Worm,"Buried and hibernating for eons, this worm has awakened and now seeks sustenance.",0057,#FF00FF,,50,2,2,,FALSE,,,0.005,10,5,FALSE,TRUE
 Flame Turret,"Formerly part of the smelter, this flamer has been repurposed as a defensive installation by desperate miners.",00E8,#FF0000,#FFFFFF,50,,,6,TRUE,,,0,10,5,FALSE,TRUE
 Megalith Carrier,"A huge conglomerate of melted flesh and rock, this megalith carries rocks for use by megalith chuckers.",004D,#CC6600,,50,2,2,,FALSE,,,0.005,10,5,FALSE,TRUE

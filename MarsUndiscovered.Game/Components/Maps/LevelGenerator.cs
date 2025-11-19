@@ -209,21 +209,33 @@ public class LevelGenerator : ILevelGenerator
             probabilityTable.NextItem().Spawn(map);
 
         // Create the miners who are in trouble
-        // TODO - look at renaming the sprites
-        var foreman = new SpawnMonsterParams()
-            .WithBreed(Breed.GetBreed("CrazedForeman"))
+        var ricky = new SpawnMonsterParams()
+            .WithBreed(Breed.GetBreed("Ricky"))
             .WithAllegianceCategory(AllegianceCategory.Miners)
             .WithState(MonsterState.Idle)
             .OnMap(map.Id);
 
-        MonsterGenerator.SpawnMonster(foreman, _gameWorld);
+        MonsterGenerator.SpawnMonster(ricky, _gameWorld);
 
-        for (var i = 0; i < RNG.NextInt(7, 12); i++)
+        for (var i = 0; i < RNG.NextInt(6, 10); i++)
         {
             var miner = new SpawnMonsterParams()
-                .WithBreed(Breed.GetBreed("CrazedMiner"))
-                .WithLeader(foreman.Result.ID)
-                .AtPosition(foreman.Result.Position)
+                .WithBreed(Breed.GetBreed("Miner"))
+                .WithLeader(ricky.Result.ID)
+                .AtPosition(ricky.Result.Position)
+                .WithAllegianceCategory(AllegianceCategory.Miners)
+                .WithState(MonsterState.Idle)
+                .OnMap(map.Id);
+
+            MonsterGenerator.SpawnMonster(miner, _gameWorld);
+        }
+
+        for (var i = 0; i < RNG.NextInt(1, 3); i++)
+        {
+            var miner = new SpawnMonsterParams()
+                .WithBreed(Breed.GetBreed("Foreman"))
+                .WithLeader(ricky.Result.ID)
+                .AtPosition(ricky.Result.Position)
                 .WithAllegianceCategory(AllegianceCategory.Miners)
                 .WithState(MonsterState.Idle)
                 .OnMap(map.Id);

@@ -8,11 +8,14 @@ public class WallFloorInverterGenerator : GenerationStep
 {
     protected override IEnumerator<object> OnPerform(GenerationContext context)
     {
-        var wallsFloors = context
-            .GetFirst<ArrayView<bool>>(MapGenerator.WallFloorInvertedTag)
+        var wallsFloorsInvertedFunc = () => context
+            .GetFirst<ArrayView<bool>>(MapGenerator.WallFloorTag)
             .ToArrayView((s, index) => !s);
-        
-        context.Add(wallsFloors, MapGenerator.WallFloorTypeTag);
+
+        var existingWallsFloorsInverted = context
+            .GetFirstOrNew<ArrayView<bool>>(wallsFloorsInvertedFunc, MapGenerator.WallFloorInvertedTag);
+
+        existingWallsFloorsInverted.ApplyOverlay(wallsFloorsInvertedFunc());
 
         yield return null;
     }
