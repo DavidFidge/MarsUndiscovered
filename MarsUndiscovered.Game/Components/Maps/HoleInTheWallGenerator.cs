@@ -18,9 +18,26 @@ public class HoleInTheWallGenerator : GenerationStep
         var wallsFloors = context
             .GetFirst<ArrayView<bool>>(MapGenerator.WallFloorInvertedTag);
 
-        var areaFinder = new MapAreaFinder(wallsFloors, AdjacencyRule.EightWay);
+        // Scan rows and columns for longest contiguous wall
+        var z = new
+        {
+            xOn = 0,
+            xOff = 0,
+            yOn = 0,
+            yOff = 0,
+            lastX = wallsFloors[Point.Zero],
+            lastY = wallsFloors[Point.Zero]
+        }
 
-        var areas = areaFinder.MapAreas();
+        for (var x = 0; x < context.Width; x++)
+        {
+            for (var y = 0; y < context.Height; y++)
+            {
+                var nextPoint = new Point(x, y);
+
+                if (wallsFloors[nextPoint] == true)
+            }
+        }
 
         // Find the area with the largest perimeter (number of perimeter positions)
         var biggestArea = areas
@@ -28,15 +45,6 @@ public class HoleInTheWallGenerator : GenerationStep
             .FirstOrDefault();
 
         if (biggestArea is null)
-        {
-            yield return null;
-            yield break;
-        }
-
-        // Get the perimeter positions as a list
-        var perimeter = biggestArea.PerimeterPositions(AdjacencyRule.Cardinals).ToList();
-
-        if (perimeter.Count == 0)
         {
             yield return null;
             yield break;
