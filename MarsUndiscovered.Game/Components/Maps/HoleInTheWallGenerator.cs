@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 
+using Castle.Components.DictionaryAdapter.Xml;
+
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 
@@ -10,6 +12,7 @@ using SadRogue.Primitives.GridViews;
 
 namespace MarsUndiscovered.Game.Components.Maps;
 
+
 // This will not do the digging, it will identify an area.
 public class HoleInTheWallGenerator : GenerationStep
 {
@@ -19,42 +22,10 @@ public class HoleInTheWallGenerator : GenerationStep
             .GetFirst<ArrayView<bool>>(MapGenerator.WallFloorInvertedTag);
 
         // Scan rows and columns for longest contiguous wall
-        var z = new
-        {
-            xOn = 0,
-            xOff = 0,
-            yOn = 0,
-            yOff = 0,
-            lastX = wallsFloors[Point.Zero],
-            lastY = wallsFloors[Point.Zero]
-        }
+        var contiguous = new ContiguousWallFinder();
 
-        for (var x = 0; x < context.Width; x++)
-        {
-            for (var y = 0; y < context.Height; y++)
-            {
-                var nextPoint = new Point(x, y);
-
-                if (wallsFloors[nextPoint] == true)
-            }
-        }
-
-        // Find the area with the largest perimeter (number of perimeter positions)
-        var biggestArea = areas
-            .OrderByDescending(a => a.PerimeterPositions(AdjacencyRule.Cardinals).Count())
-            .FirstOrDefault();
-
-        if (biggestArea is null)
-        {
-            yield return null;
-            yield break;
-        }
-
-        // Compute the geometric centroid of the perimeter points (average X and Y)
-        var avgX = perimeter.Average(p => p.X);
-        var avgY = perimeter.Average(p => p.Y);
-
-        var point = new Point((int)avgX, (int)avgY);
+        contiguous.Execute(wallsFloors);
+        var point = contiguous.LongestXYIntersect();
 
         var lastRectangle = new Rectangle(point, 1, 1);
 
