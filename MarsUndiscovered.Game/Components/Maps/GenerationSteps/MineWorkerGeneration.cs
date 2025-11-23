@@ -26,20 +26,20 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
         }
 
         /// <inheritdoc/>
-        protected override IEnumerator<object> OnPerform(GenerationContext generationContext)
+        protected override IEnumerator<object> OnPerform(GenerationContext context)
         {
-            var wallFloorContext = generationContext.GetFirstOrNew<ISettableGridView<bool>>(
-                () => new ArrayView<bool>(generationContext.Width, generationContext.Height),
+            var wallFloorContext = context.GetFirstOrNew<ISettableGridView<bool>>(
+                () => new ArrayView<bool>(context.Width, context.Height),
                 MapGenerator.WallFloorTag
             );
             
             // Get or create/add a tunnel list context component
-            var tunnelList = generationContext.GetFirstOrNew(
+            var tunnelList = context.GetFirstOrNew(
                 () => new ItemList<Area>(),
                 MapGenerator.TunnelsTag
             );
 
-            var veinPoints = GetVeinPoints(generationContext);
+            var veinPoints = GetVeinPoints(context);
 
             foreach (var veinPoint in veinPoints)
             {
@@ -50,7 +50,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
 
             if (AllowMoreEndpointsToIncreaseMapCoverage)
             {
-                var additionalVeinPoints = GetAdditionalVeinPoints(veinPoints, generationContext);
+                var additionalVeinPoints = GetAdditionalVeinPoints(veinPoints, context);
 
                 foreach (var additionalVeinPoint in additionalVeinPoints)
                 {
@@ -63,7 +63,7 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
 
             var graph = GenerateGraph(veinPoints);
             
-            DigTunnel(graph, wallFloorContext, generationContext);
+            DigTunnel(graph, wallFloorContext, context);
 
             foreach (var edge in graph.Edges)
             {

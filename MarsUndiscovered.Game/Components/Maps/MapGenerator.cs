@@ -66,7 +66,6 @@ namespace MarsUndiscovered.Game.Components.Maps
             {
                 new MineWorkerGeneration(),
                 new WallFloorTypeConverterGenerator(),
-                new WallFloorInverterGenerator(),
                 new HoleInTheWallGenerator(),
                 new CanteenGenerator()
             };

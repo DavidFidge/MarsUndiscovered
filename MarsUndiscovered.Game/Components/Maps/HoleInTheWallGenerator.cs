@@ -19,12 +19,12 @@ public class HoleInTheWallGenerator : GenerationStep
     protected override IEnumerator<object> OnPerform(GenerationContext context)
     {
         var wallsFloors = context
-            .GetFirst<ArrayView<bool>>(MapGenerator.WallFloorInvertedTag);
+            .GetFirst<ArrayView<bool>>(MapGenerator.WallFloorTag);
 
         // Scan rows and columns for longest contiguous wall
         var contiguous = new ContiguousWallFinder();
-
         contiguous.Execute(wallsFloors);
+
         var point = contiguous.LongestXYIntersect();
 
         var lastRectangle = new Rectangle(point, 1, 1);
@@ -35,12 +35,16 @@ public class HoleInTheWallGenerator : GenerationStep
         {
             var newRectangle = lastRectangle.Expand(1, 1);
 
-            if (perimeter.Any(p => newRectangle.Contains(p)) 
-                || !bounds.Contains(newRectangle))
+            var perimeter = newRectangle.PerimeterPositions();
+
+            if (perimeter.Any(p => !bounds.Contains(newRectangle) || wallsFloors[p] == true))
                 break;
 
             lastRectangle = newRectangle;
         }
+
+        if (lastRectangle.Width < 6)
+            throw new RegenerateMapException();
 
         var itemListAreas = context.GetFirstOrNew(() => new ItemList<Area>(), MapGenerator.HoleInTheWallAreaTag);
 
