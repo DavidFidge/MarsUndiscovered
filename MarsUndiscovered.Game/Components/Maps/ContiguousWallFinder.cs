@@ -7,14 +7,19 @@ public class ContiguousWallFinder
 {
     public class Longest
     {
-        public int Start { get; set; }
-        public int End { get; set; }
-        public int Index { get; set; }
+        public int Start { get; set; } = -1;
+        public int End { get; set; } = -1;
+        public int Index { get; set; } = -1;
         public int Length => Start == -1 || End == -1 ? -1 : End - Start;
 
-        public OrthogonalEnumerator GetLine()
+        public OrthogonalEnumerator GetXLine()
         {
             return Lines.GetOrthogonalLine(new Point(Start, Index), new Point(End, Index));
+        }
+
+        public OrthogonalEnumerator GetYLine()
+        {
+            return Lines.GetOrthogonalLine(new Point(Index, Start), new Point(Index, End));
         }
     }
 
@@ -32,6 +37,9 @@ public class ContiguousWallFinder
     public int XOffLongest { get; set; } = -1;
     public int YOnLongest { get; set; } = -1;
     public int YOffLongest { get; set; } = -1;
+
+    public int Width { get; set; } = -1;
+    public int Height { get; set; } = -1;
 
     public void TryReplaceXLongest()
     {
@@ -85,13 +93,16 @@ public class ContiguousWallFinder
 
     public void ExecuteY(ArrayView<bool> wallsFloors)
     {
+        Width = wallsFloors.Width;
+        Height = wallsFloors.Height;
+
         AllYLongest = new List<Longest>(wallsFloors.Width);
 
         for (var x = 0; x < wallsFloors.Width; x++)
         {
             InitialiseY(wallsFloors[new Point(x, 0)]);
 
-            for (var y = 0; y < wallsFloors.Height; y++)
+            for (var y = 1; y < wallsFloors.Height; y++)
             {
                 var nextPoint = new Point(x, y);
 
@@ -99,7 +110,7 @@ public class ContiguousWallFinder
                 {
                     if (wallsFloors[nextPoint] == true)
                     {
-                        YOff = y;
+                        YOff = y - 1;
 
                         TryReplaceYLongest();
                     }
@@ -110,6 +121,12 @@ public class ContiguousWallFinder
 
                     LastY = !LastY;
                 }
+                if (y == wallsFloors.Height - 1 && LastY == false)
+                {
+                    YOff = y;
+
+                    TryReplaceYLongest();
+                }
             }
 
             AllYLongest.Add(new Longest { Start = YOnLongest, End = YOffLongest, Index = x });
@@ -118,13 +135,16 @@ public class ContiguousWallFinder
 
     public void ExecuteX(ArrayView<bool> wallsFloors)
     {
+        Width = wallsFloors.Width;
+        Height = wallsFloors.Height;
+
         AllXLongest = new List<Longest>(wallsFloors.Height);
 
         for (var y = 0; y < wallsFloors.Height; y++)
         {
             InitialiseX(wallsFloors[new Point(0, y)]);
 
-            for (var x = 0; x < wallsFloors.Height; x++)
+            for (var x = 1; x < wallsFloors.Width; x++)
             {
                 var nextPoint = new Point(x, y);
 
@@ -132,7 +152,7 @@ public class ContiguousWallFinder
                 {
                     if (wallsFloors[nextPoint] == true)
                     {
-                        XOff = x;
+                        XOff = x - 1;
 
                         TryReplaceXLongest();
                     }
@@ -143,6 +163,13 @@ public class ContiguousWallFinder
 
                     LastX = !LastX;
                 }
+
+                if (x == wallsFloors.Width - 1 && LastX == false)
+                {
+                    XOff = x;
+
+                    TryReplaceXLongest();
+                }
             }
 
             AllXLongest.Add(new Longest { Start = XOnLongest, End = XOffLongest, Index = y });
@@ -151,19 +178,25 @@ public class ContiguousWallFinder
 
     public Point LongestXYIntersect(int numberOfLinesToTest = 10)
     {
-        var sortedXLongest = AllXLongest.OrderByDescending(l => l.Length);
-        var sortedYLongest = AllYLongest.OrderByDescending(l => l.Length);
+        var sortedXLongest = AllXLongest
+            .OrderByDescending(l => l.Length)
+            // prefer lengths closer to the middle of the map
+            .ThenBy(l => l.Index == -1 ? 0 : Math.Abs((Height / 2) - l.Index));
+
+        var sortedYLongest = AllYLongest
+            .OrderByDescending(l => l.Length)
+            .ThenBy(l => l.Index == -1 ? 0 : Math.Abs((Width / 2) - l.Index));
 
         // Don't test too many
-        foreach(var xItem in sortedXLongest.Take(numberOfLinesToTest))
+        foreach (var xItem in sortedXLongest.Take(numberOfLinesToTest))
         {
             var yTest = sortedYLongest.Take(2);
 
-            var xLine = xItem.GetLine();
+            var xLine = xItem.GetXLine();
 
             foreach (var yItem in yTest)
             {
-                var yLine = yItem.GetLine();
+                var yLine = yItem.GetYLine();
 
                 var intersect = yLine.Intersect(xLine).DefaultIfEmpty(Point.None).FirstOrDefault();
 
