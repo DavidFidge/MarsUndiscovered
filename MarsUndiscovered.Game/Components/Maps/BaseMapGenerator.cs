@@ -46,7 +46,7 @@ namespace MarsUndiscovered.Game.Components.Maps
             }
             else
             {
-                var mapStepEnumerator = generator.ConfigAndGetStageEnumeratorSafe(g => g.AddSteps(generationSteps));
+                var mapStepEnumerator = generator.ConfigAndGetStageEnumeratorSafe(g => g.AddSteps(generationSteps), 1);
 
                 for (var i = 0; i < upToStep.Value; i++)
                 {

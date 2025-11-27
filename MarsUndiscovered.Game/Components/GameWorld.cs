@@ -5,6 +5,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.GameFramework;
+using GoRogue.MapGeneration;
 using GoRogue.Pathing;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Commands;
@@ -136,9 +137,22 @@ namespace MarsUndiscovered.Game.Components
             Logger.Debug("Generating world in world builder");
 
             LevelGenerator.Initialise(this);
-             var result = LevelGenerator.CreateProgressive(Seed, step, worldGenerationTypeParams);
 
-             return result;
+            try
+            {
+                var result = LevelGenerator.CreateProgressive(Seed, step, worldGenerationTypeParams);
+
+                return result;
+            }
+            catch (MapGenerationFailedException ex)
+            {
+                return new ProgressiveWorldGenerationResult
+                {
+                    Seed = seed.Value,
+                    Failed = true,
+                    IsFinalStep = true
+                };
+            }
         }
 
         protected void ResetFieldOfView()

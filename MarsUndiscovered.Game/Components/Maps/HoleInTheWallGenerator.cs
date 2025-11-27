@@ -23,7 +23,7 @@ public class HoleInTheWallGenerator : GenerationStep
 
         // Scan rows and columns for longest contiguous wall
         var contiguous = new ContiguousWallFinder();
-        contiguous.Execute(wallsFloors);
+        contiguous.Execute(wallsFloors, wallsFloors.Bounds().ChangeSize(new Point(-8, -8)).ChangePosition(new Point(4, 4)));
 
         var point = contiguous.LongestXYIntersect();
 

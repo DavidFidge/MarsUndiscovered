@@ -118,7 +118,7 @@ public class ContiguousWallFinderTests : BaseGameWorldIntegrationTests
         mapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 3, 5);
 
         // Act
-        contiguousWallFinder.Execute(mapGenerator.Map.WalkabilityView.ToArrayView(v => v));
+        contiguousWallFinder.Execute(mapGenerator.Map.WalkabilityView.ToArrayView(v => v), null);
 
         var intersect = contiguousWallFinder.LongestXYIntersect();
 
@@ -177,7 +177,7 @@ public class ContiguousWallFinderTests : BaseGameWorldIntegrationTests
         mapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 3, 5);
 
         // Act
-        contiguousWallFinder.Execute(mapGenerator.Map.WalkabilityView.ToArrayView(v => v));
+        contiguousWallFinder.Execute(mapGenerator.Map.WalkabilityView.ToArrayView(v => v), null);
 
         var intersect = contiguousWallFinder.LongestXYIntersect();
 
@@ -206,7 +206,7 @@ public class ContiguousWallFinderTests : BaseGameWorldIntegrationTests
         mapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 3, 5);
 
         // Act
-        contiguousWallFinder.Execute(mapGenerator.Map.WalkabilityView.ToArrayView(v => v));
+        contiguousWallFinder.Execute(mapGenerator.Map.WalkabilityView.ToArrayView(v => v), null);
 
         var intersect = contiguousWallFinder.LongestXYIntersect();
 

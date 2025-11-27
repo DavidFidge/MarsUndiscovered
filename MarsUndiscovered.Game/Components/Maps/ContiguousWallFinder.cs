@@ -41,6 +41,8 @@ public class ContiguousWallFinder
     public int Width { get; set; } = -1;
     public int Height { get; set; } = -1;
 
+    public Rectangle Region { get; set; }
+
     public void TryReplaceXLongest()
     {
         if (XOn == -1 || XOff == -1)
@@ -85,8 +87,13 @@ public class ContiguousWallFinder
         YOffLongest = -1;
     }
 
-    public void Execute(ArrayView<bool> wallsFloors)
+    public void Execute(ArrayView<bool> wallsFloors, Rectangle? region)
     {
+        if (region == null)
+            Region = wallsFloors.Bounds();
+        else
+            Region = region.Value;
+
         ExecuteX(wallsFloors);
         ExecuteY(wallsFloors);
     }
@@ -98,11 +105,11 @@ public class ContiguousWallFinder
 
         AllYLongest = new List<Longest>(wallsFloors.Width);
 
-        for (var x = 0; x < wallsFloors.Width; x++)
+        for (var x = Region.MinExtentX; x < Region.MaxExtentX; x++)
         {
-            InitialiseY(wallsFloors[new Point(x, 0)]);
+            InitialiseY(wallsFloors[new Point(x, Region.MinExtentY)]);
 
-            for (var y = 1; y < wallsFloors.Height; y++)
+            for (var y = Region.MinExtentY + 1; y < Region.MaxExtentY; y++)
             {
                 var nextPoint = new Point(x, y);
 
@@ -121,7 +128,7 @@ public class ContiguousWallFinder
 
                     LastY = !LastY;
                 }
-                if (y == wallsFloors.Height - 1 && LastY == false)
+                if (y == Region.MaxExtentY - 1 && LastY == false)
                 {
                     YOff = y;
 
@@ -140,11 +147,11 @@ public class ContiguousWallFinder
 
         AllXLongest = new List<Longest>(wallsFloors.Height);
 
-        for (var y = 0; y < wallsFloors.Height; y++)
+        for (var y = Region.MinExtentY; y < Region.MaxExtentY; y++)
         {
-            InitialiseX(wallsFloors[new Point(0, y)]);
+            InitialiseX(wallsFloors[new Point(Region.MinExtentX, y)]);
 
-            for (var x = 1; x < wallsFloors.Width; x++)
+            for (var x = Region.MinExtentX + 1; x < Region.MaxExtentX; x++)
             {
                 var nextPoint = new Point(x, y);
 
@@ -164,7 +171,7 @@ public class ContiguousWallFinder
                     LastX = !LastX;
                 }
 
-                if (x == wallsFloors.Width - 1 && LastX == false)
+                if (x == Region.MaxExtentX - 1 && LastX == false)
                 {
                     XOff = x;
 
@@ -180,12 +187,12 @@ public class ContiguousWallFinder
     {
         var sortedXLongest = AllXLongest
             .OrderByDescending(l => l.Length)
-            // prefer lengths closer to the middle of the map
-            .ThenBy(l => l.Index == -1 ? 0 : Math.Abs((Height / 2) - l.Index));
+            // prefer lengths closer to the middle of the region
+            .ThenBy(l => l.Index == -1 ? 0 : Math.Abs((Region.Height / 2) - l.Index));
 
         var sortedYLongest = AllYLongest
             .OrderByDescending(l => l.Length)
-            .ThenBy(l => l.Index == -1 ? 0 : Math.Abs((Width / 2) - l.Index));
+            .ThenBy(l => l.Index == -1 ? 0 : Math.Abs((Region.Width / 2) - l.Index));
 
         // Don't test too many
         foreach (var xItem in sortedXLongest.Take(numberOfLinesToTest))
