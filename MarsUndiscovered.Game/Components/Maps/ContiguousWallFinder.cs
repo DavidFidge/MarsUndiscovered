@@ -183,7 +183,7 @@ public class ContiguousWallFinder
         }
     }
 
-    public Point LongestXYIntersect(int numberOfLinesToTest = 10)
+    public Point LongestXYIntersect(int numberOfLinesToTest = 10, List<Point> pointsToSkip = null)
     {
         var sortedXLongest = AllXLongest
             .OrderByDescending(l => l.Length)
@@ -197,7 +197,7 @@ public class ContiguousWallFinder
         // Don't test too many
         foreach (var xItem in sortedXLongest.Take(numberOfLinesToTest))
         {
-            var yTest = sortedYLongest.Take(2);
+            var yTest = sortedYLongest.Take(numberOfLinesToTest);
 
             var xLine = xItem.GetXLine();
 
@@ -207,7 +207,7 @@ public class ContiguousWallFinder
 
                 var intersect = yLine.Intersect(xLine).DefaultIfEmpty(Point.None).FirstOrDefault();
 
-                if (intersect != Point.None)
+                if (intersect != Point.None && (pointsToSkip == null || !pointsToSkip.Contains(intersect)))
                     return intersect;
             }
         }

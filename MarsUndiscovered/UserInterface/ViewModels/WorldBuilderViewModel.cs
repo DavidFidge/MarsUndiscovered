@@ -8,11 +8,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
     {
         public int CurrentStep { get; private set; }
         public bool IsFinalStep { get; private set; }
+        public bool Failed { get; private set; }
         public ulong Seed { get; private set; }
         public WorldGenerationTypeParams WorldGenerationTypeParams { get; private set; }
         
         public void BuildWorld(WorldGenerationTypeParams worldGenerationTypeParams)
         {
+            Failed = false;
             IsActive = false;
             var result = GameWorldProvider.ProgressiveWorldGeneration(null, 1, worldGenerationTypeParams);
             IsActive = true;
@@ -32,12 +34,19 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void NextStep()
         {
-            if (IsFinalStep)
+            if (IsFinalStep || Failed)
                 return;
 
             CurrentStep++;
             
             var result = GameWorldProvider.GameWorld.ProgressiveWorldGeneration(Seed, CurrentStep, WorldGenerationTypeParams);
+
+            if (result.Failed)
+            {
+                Failed = true;
+                return;
+            }
+
             GameWorldProvider.GameWorld.AfterProgressiveWorldGeneration();
 
             IsFinalStep = result.IsFinalStep;
@@ -47,6 +56,8 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void PreviousStep()
         {
+            Failed = false;
+
             if (CurrentStep == 1)
                 return;
 
