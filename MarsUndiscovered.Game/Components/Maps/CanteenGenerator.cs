@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 
+using FrigidRogue.MonoGame.Core.Extensions;
+
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
@@ -19,7 +21,7 @@ public class CanteenGenerator : GenerationStep
 
     protected override IEnumerator<object> OnPerform(GenerationContext context)
     {
-        var itemListAreas = context.GetFirst<ItemList<Area>>(MapGenerator.HoleInTheWallAreaTag);
+        var itemListAreas = context.GetFirst<ItemList<Area>>(MapGenerator.HoleInTheWallRectangleTag);
 
         var wallsFloorTypes = context.GetFirst<ArrayView<GameObjectType>>(MapGenerator.WallFloorTypeTag);
 
@@ -117,6 +119,10 @@ public class CanteenGenerator : GenerationStep
             var doors = context.GetFirstOrNew(() => new ItemList<GameObjectTypePosition<DoorType>>(), MapGenerator.DoorsTag);
 
             doors.Add(new GameObjectTypePosition<DoorType>(DoorType.DefaultDoor, randomPerimeterPosition), Name);
+
+            var waypoints = context.GetFirstOrNew(() => new ItemList<NamePosition>(), MapGenerator.WaypointTag);
+
+            waypoints.Add(new NamePosition(Constants.WaypointCanteen, area.Item.GetMidpoint()), Name);
 
             yield return null;
         }

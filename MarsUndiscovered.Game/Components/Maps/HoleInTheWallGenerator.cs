@@ -117,11 +117,11 @@ public class HoleInTheWallGenerator : GenerationStep
                 continue;
             }
 
-            var itemListAreas = context.GetFirstOrNew(() => new ItemList<Area>(), MapGenerator.HoleInTheWallAreaTag);
+            var itemListAreas = context.GetFirstOrNew(() => new ItemList<Area>(), MapGenerator.HoleInTheWallRectangleTag);
 
             var area = new Area(lastRectangle.Positions());
 
-            itemListAreas.Add(area, MapGenerator.HoleInTheWallAreaTag);
+            itemListAreas.Add(area, MapGenerator.HoleInTheWallRectangleTag);
 
             break;
         }

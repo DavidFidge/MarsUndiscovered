@@ -19,6 +19,8 @@ using MarsUndiscovered.Interfaces;
 using Microsoft.Xna.Framework.Input;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+
+using ShaiRandom.Distributions.Wrappers;
 using ShaiRandom.Generators;
 using Random = System.Random;
 
@@ -45,6 +47,7 @@ namespace MarsUndiscovered.Game.Components
         public MonsterCollection Monsters { get; private set; }
         public ItemCollection Items { get; private set; }
         public MachineCollection Machines { get; private set; }
+        public WaypointCollection Waypoints { get; private set; }
         public EnvironmentalEffectCollection EnvironmentalEffects { get; private set; }
         public MapExitCollection MapExits { get; private set; }
         public ShipCollection Ships { get; private set; }
@@ -176,13 +179,19 @@ namespace MarsUndiscovered.Game.Components
                 .OfType<Door>()
                 .Where(g => Equals(g.CurrentMap, marsMap))
                 .ToList();
-            
+
             var features = GameObjects
                 .Values
                 .OfType<Feature>()
                 .Where(g => Equals(g.CurrentMap, marsMap))
                 .ToList();
-            
+
+            var waypoints = GameObjects
+                .Values
+                .OfType<Waypoint>()
+                .Where(g => Equals(g.CurrentMap, marsMap))
+                .ToList();
+
             foreach (var wall in terrain.OfType<Wall>())
                 Walls.Add(wall.ID, wall);
 
@@ -194,7 +203,10 @@ namespace MarsUndiscovered.Game.Components
             
             foreach (var feature in features)
                 Features.Add(feature.ID, feature);
-            
+
+            foreach (var waypoint in waypoints)
+                Waypoints.Add(waypoint.ID, waypoint);
+
             Maps.Add(marsMap);
         }
 
@@ -210,6 +222,7 @@ namespace MarsUndiscovered.Game.Components
             Monsters = new MonsterCollection(GameObjectFactory);
             Items = new ItemCollection(GameObjectFactory);
             Machines = new MachineCollection(GameObjectFactory);
+            Waypoints = new WaypointCollection(GameObjectFactory);
             EnvironmentalEffects = new EnvironmentalEffectCollection(GameObjectFactory);
             MapExits = new MapExitCollection(GameObjectFactory);
             Ships = new ShipCollection(GameObjectFactory);

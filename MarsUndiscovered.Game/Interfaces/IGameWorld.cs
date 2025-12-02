@@ -31,6 +31,7 @@ namespace MarsUndiscovered.Interfaces
         MonsterCollection Monsters { get; }
         ItemCollection Items { get; }
         MachineCollection Machines { get; }
+        WaypointCollection Waypoints { get; }
         EnvironmentalEffectCollection EnvironmentalEffects { get; }
         Inventory Inventory { get; }
         MapExitCollection MapExits { get; }

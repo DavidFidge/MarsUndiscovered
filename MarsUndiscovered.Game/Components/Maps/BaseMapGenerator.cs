@@ -15,12 +15,13 @@ namespace MarsUndiscovered.Game.Components.Maps
         public static string WallFloorTypeTag = "WallFloorType"; // Similar to WallFloor but gives the actual type of wall or floor. It is an ArrayView of GameObjectType where the type is WallType or FloorType.
         public static string MiningFacilityAreaTag = "MiningFacilityArea";
         public static string MiningFacilityAreaWithPerimeterTag = "MiningFacilityAreaWithPerimeterTag";
-        public static string HoleInTheWallAreaTag = "HoleInTheWallRectangle";
+        public static string HoleInTheWallRectangleTag = "HoleInTheWallRectangle";
         public static string DoorsTag = "Doors";
         public static string AreasTag = "Areas";
         public static string AreasWallsDoorsTag = "AreasWallsDoors";
         public static string PrefabTag = "Prefabs"; // ItemList<Prefab>
         public static string RubbleTag = "RubbleTag"; // ItemList<Prefab>
+        public static string WaypointTag = "WaypointTag"; 
 
         public MarsMap Map { get; set; }
         public int Steps { get; set; }
@@ -33,7 +34,7 @@ namespace MarsUndiscovered.Game.Components.Maps
         public abstract void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null);
 
         public abstract void CreatePrefabMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null);
-        
+
         // The generators create structures with tags. This method then extracts those
         // structures and creates a map, converting the structures to walls, floors and doors.
         protected void ExecuteMapSteps(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int? upToStep,
@@ -77,57 +78,71 @@ namespace MarsUndiscovered.Game.Components.Maps
                 wallsFloors = new ArrayView<GameObjectType>(wallsFloorsBool, generator.Context.Width);
             }
 
-             var walls = new List<Wall>(wallsFloors.Count);
-             var floors = new List<Floor>(wallsFloors.Count);
+            var walls = new List<Wall>(wallsFloors.Count);
+            var floors = new List<Floor>(wallsFloors.Count);
 
-             for (var index = 0; index < wallsFloors.Count; index++)
-             {
-                 var wallFloor = wallsFloors[index];
+            for (var index = 0; index < wallsFloors.Count; index++)
+            {
+                var wallFloor = wallsFloors[index];
 
-                 Terrain terrain;
+                Terrain terrain;
 
-                 switch (wallFloor)
-                 {
-                     case WallType wallType:
-                     {
-                         var wall = gameObjectFactory.CreateGameObject<Wall>();
-                         terrain = wall;
-                         wall.WallType = wallType;
-                         walls.Add(wall);
-                         break;
-                     }
-                     case FloorType floorType:
-                     {
-                         var floor = gameObjectFactory.CreateGameObject<Floor>();
-                         terrain = floor;
-                         floor.FloorType = floorType;
-                         floors.Add(floor);
-                         break;
-                     }
-                     default:
-                         throw new Exception("Unknown wall/floor type");
-                 }
+                switch (wallFloor)
+                {
+                    case WallType wallType:
+                        {
+                            var wall = gameObjectFactory.CreateGameObject<Wall>();
+                            terrain = wall;
+                            wall.WallType = wallType;
+                            walls.Add(wall);
+                            break;
+                        }
+                    case FloorType floorType:
+                        {
+                            var floor = gameObjectFactory.CreateGameObject<Floor>();
+                            terrain = floor;
+                            floor.FloorType = floorType;
+                            floors.Add(floor);
+                            break;
+                        }
+                    default:
+                        throw new Exception("Unknown wall/floor type");
+                }
 
-                 terrain.Index = index;
-             }
-             
-             var doorTypes = generator.Context
-                 .GetFirstOrNew(() => new ItemList<GameObjectTypePosition<DoorType>>(), DoorsTag);
+                terrain.Index = index;
+            }
 
-             var doors = new List<Door>(doorTypes.Count());
-             
-             foreach (var doorType in doorTypes.Items)
-             {
-                 var door = gameObjectFactory.CreateGameObject<Door>();
-                 door.DoorType = doorType.GameObjectType;
-                 door.Position = doorType.Position;
-                 
-                 doors.Add(door);
-             }
+            var doorTypes = generator.Context
+                .GetFirstOrNew(() => new ItemList<GameObjectTypePosition<DoorType>>(), DoorsTag);
 
-             Map = CreateMap(gameWorld, generator.Context.Width, generator.Context.Height)
+            var doors = new List<Door>(doorTypes.Count());
+
+            foreach (var doorType in doorTypes.Items)
+            {
+                var door = gameObjectFactory.CreateGameObject<Door>();
+                door.DoorType = doorType.GameObjectType;
+                door.Position = doorType.Position;
+
+                doors.Add(door);
+            }
+
+            var waypointNamePositions = generator.Context
+              .GetFirstOrNew(() => new ItemList<NamePosition>(), WaypointTag);
+
+            var waypoints = new List<Waypoint>(waypointNamePositions.Count());
+
+            foreach (var waypointNamePosition in waypointNamePositions)
+            {
+                var waypoint = gameObjectFactory.CreateGameObject<Waypoint>();
+                waypoint.Name = waypointNamePosition.Item.Name;
+                waypoint.Position = waypointNamePosition.Item.Position;
+                waypoints.Add(waypoint);
+            }
+
+            Map = CreateMap(gameWorld, generator.Context.Width, generator.Context.Height)
                 .WithTerrain(walls, floors)
-                .WithDoors(doors);
+                .WithGameObjects(doors)
+                .WithGameObjects(waypoints);
         }
 
         protected void Clear()

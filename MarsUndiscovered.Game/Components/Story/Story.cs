@@ -12,8 +12,6 @@ using MarsUndiscovered.Interfaces;
 
 using SadRogue.Primitives;
 
-using Serilog.Events;
-
 namespace MarsUndiscovered.Game.Components;
 
 public class Story : BaseComponent, IStory, ISaveable
@@ -39,7 +37,7 @@ public class Story : BaseComponent, IStory, ISaveable
     {
         _level2MinerLeader = gameWorld.Monsters.Values
             .Where(m => m.CurrentMap.MarsMap().Level == 2)
-            .Where(m => m.Breed == Breed.GetBreed("CrazedForeman"))
+            .Where(m => m.Breed == Breed.GetBreed("Ricky"))
             .First();
 
         _data.Level2MinerLeaderId = _level2MinerLeader.ID;
@@ -167,7 +165,7 @@ public class Story : BaseComponent, IStory, ISaveable
         var behaviour = FluentBuilder.Create<Story>()
             .Selector("level 3 story selector")
                 .Sequence("start level 3")
-                    .Condition("has guided miner leader down", s =>
+                    .Condition("has not yet guided miner leader down", s =>
                     {
                         return !s._data.HasGuidedMinerLeaderDown;
                     })
@@ -221,6 +219,8 @@ public class Story : BaseComponent, IStory, ISaveable
                                     }
 
                                     leader.SetLeader(null);
+
+                                    leader.TravelTarget = _gameWorld.Waypoints.Values.Single(m => m.Name == Constants.WaypointCanteen).Position;
 
                                     _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.GuidedMinerLeaderDown, s._gameWorld.Player);
                                 }

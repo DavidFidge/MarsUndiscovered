@@ -107,11 +107,12 @@ namespace MarsUndiscovered.Game.Components
             return this;
         }
 
-        public MarsMap WithDoors(IEnumerable<Door> doors)
+        public MarsMap WithGameObjects<T>(IEnumerable<T> gameObjects)
+            where T : GameObject
         {
-            foreach (var door in doors)
+            foreach (var gameObject in gameObjects)
             {
-                AddEntity(door);
+                AddEntity(gameObject);
             }
 
             return this;
