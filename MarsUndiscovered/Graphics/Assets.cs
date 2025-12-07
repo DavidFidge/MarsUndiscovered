@@ -432,6 +432,7 @@ public class Assets : IAssets
             RadioCommsTypes.Level2StoryStart => ShipAiRadioComms,
             RadioCommsTypes.MetMiners1 => MinersRadioComms,
             RadioCommsTypes.MetMiners2 => MinersRadioComms,
+            RadioCommsTypes.GuidedMinerLeaderDown => MinersRadioComms,
             _ => null
         };
     }

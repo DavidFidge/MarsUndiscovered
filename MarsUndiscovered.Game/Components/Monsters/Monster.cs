@@ -51,7 +51,7 @@ namespace MarsUndiscovered.Game.Components
 
         public Actor Leader { get; set; }
         public Actor Target { get; set; }
-        public Point TravelTarget { get; set; }
+        public Point TravelTarget { get; set; } = Point.None;
         public Actor TargetOutOfFov { get; set; }
         public bool ReturnToIdle { get; set; }
 
@@ -641,6 +641,14 @@ namespace MarsUndiscovered.Game.Components
                             {
                                 var moveCommand = CreateMoveCommand(nextDirection);
                                 _nextCommands.Add(moveCommand);
+                            }
+
+                            // See if target is reached
+                            if (ChebyshevDistance.Chebyshev.Calculate(TravelTarget, Position) <= 2)
+                            {
+                                TravelTarget = Point.None;
+                                MonsterState = MonsterState.Wandering;
+                                return BehaviourStatus.Succeeded;
                             }
 
                             return BehaviourStatus.Succeeded;
@@ -1247,6 +1255,25 @@ namespace MarsUndiscovered.Game.Components
 
             if (CanBeConcussed)
                 IsConcussed = true;
+        }
+
+        public void NewMap()
+        {
+            MonsterState = MonsterState.Wandering;
+            TravelTarget = Point.None;
+            TargetOutOfFov = null;
+            Target = null;
+            SearchCooldown = 0;
+            Target = null;
+            _wanderPath = null;
+            _travelPath = null;
+            _toLeaderPath = null;
+            _seenTiles = null;
+            _seenTilesAfterLoad = null;
+            _goalMap = null;
+            _goalStates = null;
+            _chebyshevGoalState = null;
+            _manhattanGoalState = null;
         }
     }
 }

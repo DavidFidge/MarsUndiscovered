@@ -204,7 +204,11 @@ public class Story : BaseComponent, IStory, ISaveable
                                     leader.AddToMap(_gameWorld.CurrentMap);
 
                                     // Move miners following leader
-                                    var minerFollowers = _gameWorld.Monsters.Values.Where(m => m.Leader == leader).ToList();
+                                    var minerFollowers = _gameWorld.Monsters.Values
+                                        .Where(m => m.Leader == leader)
+                                        .Where(m => !m.IsDead)
+                                        .Where(m => m.CurrentMap != null)
+                                        .ToList();
 
                                     foreach (var minerFollower in minerFollowers)
                                     {
@@ -215,6 +219,7 @@ public class Story : BaseComponent, IStory, ISaveable
                                             minerFollower.CurrentMap.RemoveEntity(minerFollower);
                                             minerFollower.Position = freeFloor;
                                             _gameWorld.CurrentMap.AddEntity(minerFollower);
+                                            minerFollower.NewMap();
                                         }
                                     }
 

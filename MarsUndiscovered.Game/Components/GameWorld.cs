@@ -643,6 +643,7 @@ namespace MarsUndiscovered.Game.Components
             Items.LoadState(saveGameService, gameWorld);
             Machines.LoadState(saveGameService, gameWorld);
             EnvironmentalEffects.LoadState(saveGameService, gameWorld);
+            Waypoints.LoadState(saveGameService, gameWorld);
             MapExits.LoadState(saveGameService, gameWorld);
             Ships.LoadState(saveGameService, gameWorld);
 
@@ -686,6 +687,7 @@ namespace MarsUndiscovered.Game.Components
             Items.SaveState(saveGameService, gameWorld);
             Machines.SaveState(saveGameService, gameWorld);
             EnvironmentalEffects.SaveState(saveGameService, gameWorld);
+            Waypoints.SaveState(saveGameService, gameWorld);
             MapExits.SaveState(saveGameService, gameWorld);
             Ships.SaveState(saveGameService, gameWorld);
             MessageLog.SaveState(saveGameService, gameWorld);

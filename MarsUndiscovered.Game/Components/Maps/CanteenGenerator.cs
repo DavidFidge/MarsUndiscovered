@@ -82,6 +82,15 @@ public class CanteenGenerator : GenerationStep
             else if (wallsFloors[randomPerimeterPosition.Add(Direction.Right)] == true)
                 seekDirection = Direction.Left;
 
+            // reject if seek direction is none
+            if (seekDirection == Direction.None)
+                continue;
+
+            // check the opposite direction point, if is blocked by a wall then reject - it is
+            // likely we are on a corner of the canteen and the free side happened to be a free wall.
+            if (wallsFloors[randomPerimeterPosition.Add(seekDirection.Opposite())] == false)
+                continue;
+
             var tunnelSuccess = false;
             var tunnel = new List<Point>();
             var nextPoint = randomPerimeterPosition;
