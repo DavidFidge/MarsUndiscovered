@@ -190,8 +190,6 @@ public class Story : BaseComponent, IStory, ISaveable
 
                             if (Distance.Manhattan.Calculate(leader.Position, exit.Position) <= 5)
                             {
-                                leader.CurrentMap.RemoveEntity(leader);
-
                                 var freeFloor = _gameWorld.CurrentMap.FindClosestFreeFloor(_gameWorld.Player.Position);
 
                                 if (freeFloor != Point.None)
@@ -199,9 +197,7 @@ public class Story : BaseComponent, IStory, ISaveable
                                     _data.HasGuidedMinerLeaderDown = true;
                                     _data.IsLevel2StoryActive = false;
 
-                                    leader.Position = freeFloor;
-
-                                    leader.AddToMap(_gameWorld.CurrentMap);
+                                    leader.ChangeMaps(_gameWorld.CurrentMap, freeFloor);
 
                                     // Move miners following leader
                                     var minerFollowers = _gameWorld.Monsters.Values
@@ -216,10 +212,7 @@ public class Story : BaseComponent, IStory, ISaveable
 
                                         if (freeFloor != Point.None)
                                         {
-                                            minerFollower.CurrentMap.RemoveEntity(minerFollower);
-                                            minerFollower.Position = freeFloor;
-                                            _gameWorld.CurrentMap.AddEntity(minerFollower);
-                                            minerFollower.NewMap();
+                                            minerFollower.ChangeMaps(_gameWorld.CurrentMap, freeFloor);
                                         }
                                     }
 

@@ -483,7 +483,7 @@ namespace MarsUndiscovered.Game.Components
             RechargeItems();
             UpdateMonstersInView();
             Story.NextTurn();
-            CommandCollection.ClearCommandsOnNextAdd();
+            CommandCollection.ClearCommandsOnNextAdd = true;
         }
 
         private void RechargeItems()
@@ -958,11 +958,14 @@ namespace MarsUndiscovered.Game.Components
         public void CancelIdentify()
         {
             // Restore the machine's used item status to unused
+            CommandCollection.ClearCommandsOnNextAdd = false;
             var lastCommand = CommandCollection.GetLastCommand<ApplyMachineCommand>();
             
             var undoCommand = CommandCollection.CreateCommand<UndoCommand>(this);
             undoCommand.Initialise(lastCommand.Id);
             ExecuteCommand(undoCommand).ToList();
+
+            CommandCollection.ClearCommandsOnNextAdd = true;
         }
 
         public Rectangle GetCurrentMapDimensions()

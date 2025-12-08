@@ -132,7 +132,9 @@ public class LevelGenerator : ILevelGenerator
             var rubbleParams = new SpawnFeatureParams()
                 .WithFeatureType(FeatureType.RubbleType)
                 .OnMap(map.Id);
-            
+
+            rubbleParams.MapPointChoiceRules.Add(new EmptyFloorRule());
+
             SpawnFeature(rubbleParams);
         }
 

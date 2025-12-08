@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
+
 using BehaviourTree;
 using BehaviourTree.FluentBuilder;
+
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
@@ -13,14 +15,18 @@ using GoRogue.FOV;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
+
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Game.Extensions;
+using MarsUndiscovered.Game.ViewMessages;
 using MarsUndiscovered.Interfaces;
+
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components
@@ -144,8 +150,14 @@ namespace MarsUndiscovered.Game.Components
             return monsterStatus;
         }
 
+        // can be called for a new spawn or when moving between maps
         public Monster AddToMap(MarsMap marsMap)
         {
+            _wanderPath = null;
+            _travelPath = null;
+            _toLeaderPath = null;
+            _seenTilesAfterLoad = null;
+            
             CreateGoalStates(marsMap);
 
             // Normally actors are not walkable as they can't be on the same square, but if an actor is on a wall it has to be walkable so that
@@ -340,9 +352,11 @@ namespace MarsUndiscovered.Game.Components
 
                         var distance = Distance.Chebyshev.Calculate(monster.Position, Leader.Position);
 
-                        if (distance <= 2)
+                        if (distance <= 3 && _fieldOfView.CurrentFOV.Contains(Leader.Position))
                         {
-                            // Let the monster 'flutter' away from the leader if too close
+                            // Let the monster 'flutter' away from the leader if too close,
+                            // but only if visible, otherwise a monster can be behind a wall
+                            // that is actually a long distnace away.
                             MonsterState = MonsterState.Wandering;
                             return BehaviourStatus.Failed;
                         }
@@ -1257,23 +1271,17 @@ namespace MarsUndiscovered.Game.Components
                 IsConcussed = true;
         }
 
-        public void NewMap()
+        public void ChangeMaps(MarsMap marsMap, Point position)
         {
+            CurrentMap.RemoveEntity(this);
             MonsterState = MonsterState.Wandering;
             TravelTarget = Point.None;
             TargetOutOfFov = null;
             Target = null;
             SearchCooldown = 0;
-            Target = null;
-            _wanderPath = null;
-            _travelPath = null;
-            _toLeaderPath = null;
-            _seenTiles = null;
-            _seenTilesAfterLoad = null;
-            _goalMap = null;
-            _goalStates = null;
-            _chebyshevGoalState = null;
-            _manhattanGoalState = null;
+            Position = position;
+            AddToMap(marsMap);
+            Mediator.Publish(new MapTileChangedNotification(position));
         }
     }
 }
