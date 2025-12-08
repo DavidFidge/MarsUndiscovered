@@ -72,7 +72,7 @@ public class Story : BaseComponent, IStory, ISaveable
                 .Condition("is active", s => s._data.IsLevel2StoryActive)
                 .Condition("on level 2", s =>
                 {
-                    return s._gameWorld.CurrentMap.Level == 2; 
+                    return s._gameWorld.CurrentMap.Level == 2;
                 })
                 // If not a Do() then further leaves need to be put into a subtree
                 .Subtree(Level2StorySelector())
@@ -227,42 +227,6 @@ public class Story : BaseComponent, IStory, ISaveable
                         }
                     )
                     .End()
-                .Sequence("Spawn Missiles")
-                    .Condition("Randomise spawn", s =>
-                    {
-                        return GlobalRandom.DefaultRNG.NextInt(6) == 0;
-                    })
-                    .Do("Add missiles",
-                        s =>
-                        {
-                            SpawnMissiles();
-
-                            return BehaviourStatus.Succeeded;
-                        }
-                    )
-                    .End()
-                .Sequence("Meet Miners")
-                    .Condition("has not met leader", s =>
-                    {
-                        return !_data.HasMetMinerLeader;
-                    })
-                    .Do("try meet leader",
-                        s =>
-                        {
-                            if (_gameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(_level2MinerLeader.Position))
-                            {
-                                _data.HasMetMinerLeader = true;
-
-                                _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.MetMiners1, _level2MinerLeader);
-                                _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.MetMiners2, _level2MinerLeader);
-
-                                _level2MinerLeader.SetLeader(_gameWorld.Player);
-                            }
-
-                            return BehaviourStatus.Succeeded;
-                        }
-                    )
-                    .End()
             .End()
             .Build();
 
@@ -277,7 +241,6 @@ public class Story : BaseComponent, IStory, ISaveable
 
         foreach (var point in points)
         {
-
             var monster = _gameWorld.CurrentMap.GetObjectAt<Monster>(point);
 
             if (monster != null)
