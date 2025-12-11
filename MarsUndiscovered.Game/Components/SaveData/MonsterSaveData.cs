@@ -8,6 +8,8 @@ namespace MarsUndiscovered.Game.Components.SaveData
         public string BreedName { get; set; }
         public IList<IMemento<SeenTileSaveData>> SeenTiles { get; set; }
         public List<Point> WanderPath { get; set; }
+        public List<Point> TravelPath { get; set; }
+        public List<Point> ToLeaderPath { get; set; }
         public bool UseGoalMapWander { get; set; }
         public uint? LeaderId { get; set; }
         public uint? TargetId { get; set; }
@@ -16,5 +18,6 @@ namespace MarsUndiscovered.Game.Components.SaveData
         public int SearchCooldown { get; set; }
         public bool ReturnToIdle { get; set; }
         public AllegianceCategory AllegianceCategory { get; set; }
+        public Point TravelTarget { get; set; }
     }
 }

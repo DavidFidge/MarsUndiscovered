@@ -187,10 +187,13 @@ namespace MarsUndiscovered.Game.Components
             Breed = Breed.Breeds[memento.State.BreedName];
             UseGoalMapWander = memento.State.UseGoalMapWander;
             _wanderPath = memento.State.WanderPath != null ? new Path(memento.State.WanderPath) : null;
+            _travelPath = memento.State.TravelPath != null ? new Path(memento.State.TravelPath) : null;
+            _toLeaderPath = memento.State.ToLeaderPath != null ? new Path(memento.State.ToLeaderPath) : null;
             MonsterState = memento.State.MonsterState;
             SearchCooldown = memento.State.SearchCooldown;
             ReturnToIdle = memento.State.ReturnToIdle;
             AllegianceCategory = memento.State.AllegianceCategory;
+            TravelTarget = memento.State.TravelTarget;
 
             if (!IsDead)
             {
@@ -217,6 +220,8 @@ namespace MarsUndiscovered.Game.Components
 
             memento.State.BreedName = Breed.NameWithoutSpaces;
             memento.State.WanderPath = _wanderPath?.Steps.ToList();
+            memento.State.TravelPath = _travelPath?.Steps.ToList();
+            memento.State.ToLeaderPath = _toLeaderPath?.Steps.ToList();
             memento.State.UseGoalMapWander = UseGoalMapWander;
             memento.State.LeaderId = Leader?.ID;
             memento.State.TargetId = Target?.ID;
@@ -225,6 +230,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.ReturnToIdle = ReturnToIdle;
             memento.State.SearchCooldown = SearchCooldown;
             memento.State.AllegianceCategory = AllegianceCategory;
+            memento.State.TravelTarget = TravelTarget;
 
             if (!IsDead)
             {
