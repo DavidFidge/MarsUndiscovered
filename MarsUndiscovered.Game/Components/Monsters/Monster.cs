@@ -254,9 +254,15 @@ namespace MarsUndiscovered.Game.Components
 
         public IEnumerable<BaseGameActionCommand> NextTurn()
         {
-            _fieldOfView.Calculate(Position, VisualRange);
-            UpdateSeenTiles(_fieldOfView.NewlySeen);
+            if (!IsDead)
+            {
+                _fieldOfView.Calculate(Position, VisualRange);
+                UpdateSeenTiles(_fieldOfView.NewlySeen);
+            }
+
             _nextCommands.Clear();
+            
+            // Run the AI and create commands
             _behaviourTree.Tick(this);
 
             return _nextCommands;
@@ -293,6 +299,7 @@ namespace MarsUndiscovered.Game.Components
 
             _behaviourTree = fluentBuilder
                 .Sequence("root")
+                    .Condition("not dead", monster => !IsDead)
                     .Condition("map is not null", monster => CurrentMap != null)
                     .Condition("on same map as player", monster => CurrentMap.Equals(GameWorld.Player.CurrentMap))
                     .Selector("pick target")

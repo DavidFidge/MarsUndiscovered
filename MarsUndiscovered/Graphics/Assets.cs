@@ -433,6 +433,7 @@ public class Assets : IAssets
             RadioCommsTypes.MetMiners1 => MinersRadioComms,
             RadioCommsTypes.MetMiners2 => MinersRadioComms,
             RadioCommsTypes.GuidedMinerLeaderDown => MinersRadioComms,
+            RadioCommsTypes.GuidedMinerLeaderToCanteen => MinersRadioComms,
             _ => null
         };
     }

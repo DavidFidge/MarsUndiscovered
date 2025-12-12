@@ -11,6 +11,7 @@ public class StorySaveData : BaseSaveData
 
     public bool IsLevel3StoryActive { get; set; } = true;
     public bool HasGuidedMinerLeaderDown { get; set; }
+    public bool HasGuidedMinerLeaderToCanteen { get; set; }
 
     public int LastLevel { get; set; }
     public int CurrentLevel { get; set; }

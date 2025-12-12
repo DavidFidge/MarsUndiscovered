@@ -227,6 +227,38 @@ public class Story : BaseComponent, IStory, ISaveable
                         }
                     )
                     .End()
+                .Sequence("miners escorted to canteen")
+                    .Condition("has not guided miner leader to canteen", s =>
+                    {
+                        return !s._data.HasGuidedMinerLeaderToCanteen;
+                    })
+                    .Condition("has guided miner leader down", s =>
+                    {
+                        return s._data.HasGuidedMinerLeaderDown;
+                    })
+                    .Condition("miner leader not dead", s =>
+                    {
+                        return !_level2MinerLeader.IsDead;
+                    })
+                    .Condition("miner leader reached target", s =>
+                    {
+                        return _level2MinerLeader.TravelTarget == Point.None;
+                    })
+                    .Condition("player nearby", s =>
+                    {
+                        return ChebyshevDistance.Chebyshev.Calculate(_level2MinerLeader.Position, _gameWorld.Player.Position) <= 2;
+                    })
+                    .Do(
+                        "comms message for guided miner leader to canteen",
+                        s =>
+                        {
+                            s._data.HasGuidedMinerLeaderToCanteen = true;
+
+                            _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.GuidedMinerLeaderToCanteen, s._gameWorld.Player);
+
+                            return BehaviourStatus.Succeeded;
+                        })
+                    .End()
             .End()
             .Build();
 

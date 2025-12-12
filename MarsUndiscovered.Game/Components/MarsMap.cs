@@ -72,11 +72,11 @@ namespace MarsUndiscovered.Game.Components
 
         private void MarsMap_ObjectAdded(object sender, SadRogue.Primitives.SpatialMaps.ItemEventArgs<IGameObject> e)
         {
-            if (e.Item is Actor actor)
+            if (e.Item is Actor actor && !actor.IsDead)
             {
                 LiveActors.Add(actor);
             }
-            if (e.Item is Monster monster)
+            if (e.Item is Monster monster && !monster.IsDead)
             {
                 LiveMonsters.Add(monster);
             }
