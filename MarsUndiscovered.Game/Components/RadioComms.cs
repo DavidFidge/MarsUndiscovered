@@ -15,7 +15,9 @@ public enum RadioCommsTypes
     PickupShipParts,
     Level2StoryStart,
     MetMiners1,
-    MetMiners2
+    MetMiners2,
+    GuidedMinerLeaderDown,
+    GuidedMinerLeaderToCanteen
 }
 
 public class RadioComms : List<RadioCommsEntry>, ISaveable
@@ -80,9 +82,22 @@ public class RadioComms : List<RadioCommsEntry>, ISaveable
             RadioCommsTypes.MetMiners2,
             new RadioCommsPrefab(RadioCommsTypes.MetMiners2,
                 Miners,
-                "Your AI can tell you where the next strike is occurring? That's some high tech gear! We'll follow you underground. There's nothing left out here, they've blown up all the jets and vehicles. We have months worth of supplies underground, and once the bombing stops we might be able to dig ourselves out again and rig up a vehicle to get out of here. Lead the way."
-            )
-        );
+                "Your AI can tell you where the next strike is occurring? That's some high tech gear! Let's find a way underground. There's no way we can survive out here even if we don't get bombed. They've blown up all our equipment and vehicles. Lead the way."
+            ));
+
+        _radioCommsPrefabs.Add(
+            RadioCommsTypes.GuidedMinerLeaderDown,
+            new RadioCommsPrefab(RadioCommsTypes.GuidedMinerLeaderDown,
+                Miners,
+                "Wow, I can't believe we made it down here alive! Our canteen and rest area is on this level which contains enough supplies to last us a few months at least. I'll lead the way. I have a few supplies there which might help you get down to the lower levels."
+            ));
+
+        _radioCommsPrefabs.Add(
+            RadioCommsTypes.GuidedMinerLeaderToCanteen,
+            new RadioCommsPrefab(RadioCommsTypes.GuidedMinerLeaderToCanteen,
+                Miners,
+                "Here we are. We're gonna stay here and wait for the chaos outside to stop. We got plenty of equipment and power generation, so time to rig something up to get us out of here when the time is right. Here, take this. It might come in handy lower down, especially if some of our bigger droids down below have also gone crazy."
+            ));
     }
 
     public void AddRadioCommsEntry(RadioCommsTypes radioCommsType, IGameObject gameObject)

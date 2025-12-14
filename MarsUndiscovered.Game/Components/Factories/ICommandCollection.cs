@@ -9,7 +9,7 @@ namespace MarsUndiscovered.Game.Components.Factories
         T GetLastCommand<T>() where T : BaseGameActionCommand;
         List<T> GetLastCommands<T>() where T : BaseGameActionCommand;
         void Initialise();
-        void ClearCommandsOnNextAdd();
         BaseGameActionCommand GetCommand(uint commandId);
+        bool ClearCommandsOnNextAdd { get; set; }
     }
 }

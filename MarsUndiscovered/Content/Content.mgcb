@@ -1223,6 +1223,30 @@
 
 /importer:TextureImporter
 /processor:TextureProcessor
+/build:Tiles/Ricky_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Ricky_2.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Foreman_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Foreman_2.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Miner_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles/Miner_2.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
 /build:Tiles/CrazedForeman_1.png
 
 /importer:TextureImporter

@@ -21,6 +21,9 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected Panel LeftPanel;
 
+        public Label StepLabel { get; private set; }
+        public Label FailedLabel { get; private set; }
+
         public WorldBuilderView(
             WorldBuilderViewModel worldBuilderViewModel,
             WorldBuilderOptionsView worldBuilderOptionsView,
@@ -75,6 +78,13 @@ namespace MarsUndiscovered.UserInterface.Views
             new Button("Previous Step")
                 .SendOnClick<PreviousWorldBuilderStepRequest>(Mediator)
                 .AddTo(LeftPanel);
+
+            StepLabel = new Label()
+                .AddTo(LeftPanel);
+
+            FailedLabel = new Label("Map generation failed")
+                .Hidden()
+                .AddTo(LeftPanel);
             
             RootPanel.AddChild(LeftPanel);
         }
@@ -86,6 +96,9 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public void Handle(BuildWorldRequest request)
         {
+            FailedLabel.Hidden();
+            StepLabel.Text = String.Empty;
+
             _viewModel.BuildWorld(request.WorldGenerationTypeParams);
             UpdateMapRenderTarget(_viewModel.MapViewModel.Width, _viewModel.MapViewModel.Height);
         }
@@ -103,11 +116,20 @@ namespace MarsUndiscovered.UserInterface.Views
         public void Handle(NextWorldBuilderStepRequest request)
         {
             _viewModel.NextStep();
+
+            if (_viewModel.Failed)
+                FailedLabel.Visible();
+
+            StepLabel.Text = $"{_viewModel.CurrentStep}{(_viewModel.IsFinalStep ? "Final" : String.Empty)}";
         }
 
         public void Handle(PreviousWorldBuilderStepRequest request)
         {
+            FailedLabel.Hidden();
+
             _viewModel.PreviousStep();
+
+            StepLabel.Text = $"{_viewModel.CurrentStep}";
         }
     }
 }

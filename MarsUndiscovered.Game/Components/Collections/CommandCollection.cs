@@ -39,20 +39,14 @@ namespace MarsUndiscovered.Game.Components
         // Note commands are not persisted between turns or on load game
         public List<BaseGameActionCommand> Commands { get; set; } = new List<BaseGameActionCommand>();
 
-        // Allows commands to be accessed between turns, only used for unit tests right now
-        private bool _clearCommandsOnNextAdd;
-
-        public void ClearCommandsOnNextAdd()
-        {
-            _clearCommandsOnNextAdd = true;
-        }
+        public bool ClearCommandsOnNextAdd { get; set; }
 
         public T CreateCommand<T>(IGameWorld gameWorld) where T : BaseGameActionCommand
         {
-            if (_clearCommandsOnNextAdd)
+            if (ClearCommandsOnNextAdd)
             {
                 Commands.Clear();
-                _clearCommandsOnNextAdd = false;
+                ClearCommandsOnNextAdd = false;
             }
 
             var command = CreateCommand<T>(gameWorld, _nextId);

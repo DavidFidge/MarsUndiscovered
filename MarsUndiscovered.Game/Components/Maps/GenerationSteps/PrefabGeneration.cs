@@ -1,4 +1,6 @@
-﻿using GoRogue.MapGeneration;
+﻿using FrigidRogue.MonoGame.Core.Extensions;
+
+using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Components.Maps;
@@ -90,7 +92,9 @@ namespace MarsUndiscovered.Game.Components.GenerationSteps
 
                         foreach (var point in newPrefab.Area)
                         {
-                            var isFloor = newPrefab.GetPrefabCharAt(point) == Constants.FloorPrefab;
+                            var prefabCharacter = newPrefab.GetPrefabCharAt(point);
+
+                            var isFloor = prefabCharacter.In(Constants.FloorPrefab, Constants.DoorPrefab);
                         
                             // if a floor, change the wall/floor context
                             wallFloorContext[point] = isFloor;

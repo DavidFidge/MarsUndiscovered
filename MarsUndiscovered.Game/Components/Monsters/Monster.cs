@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
+
 using BehaviourTree;
 using BehaviourTree.FluentBuilder;
+
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Extensions;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
@@ -13,14 +15,18 @@ using GoRogue.FOV;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.Random;
+
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Game.Extensions;
+using MarsUndiscovered.Game.ViewMessages;
 using MarsUndiscovered.Interfaces;
+
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+
 using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Components
@@ -51,6 +57,7 @@ namespace MarsUndiscovered.Game.Components
 
         public Actor Leader { get; set; }
         public Actor Target { get; set; }
+        public Point TravelTarget { get; set; } = Point.None;
         public Actor TargetOutOfFov { get; set; }
         public bool ReturnToIdle { get; set; }
 
@@ -65,7 +72,7 @@ namespace MarsUndiscovered.Game.Components
         private ICommandCollection _commandFactory => GameWorld.CommandCollection;
         private SeenTile[] _seenTilesAfterLoad;
         private Path _wanderPath;
-
+        private Path _travelPath;
         private Path _toLeaderPath;
 
         public string GetInformation(Player player)
@@ -143,8 +150,14 @@ namespace MarsUndiscovered.Game.Components
             return monsterStatus;
         }
 
+        // can be called for a new spawn or when moving between maps
         public Monster AddToMap(MarsMap marsMap)
         {
+            _wanderPath = null;
+            _travelPath = null;
+            _toLeaderPath = null;
+            _seenTilesAfterLoad = null;
+            
             CreateGoalStates(marsMap);
 
             // Normally actors are not walkable as they can't be on the same square, but if an actor is on a wall it has to be walkable so that
@@ -174,10 +187,13 @@ namespace MarsUndiscovered.Game.Components
             Breed = Breed.Breeds[memento.State.BreedName];
             UseGoalMapWander = memento.State.UseGoalMapWander;
             _wanderPath = memento.State.WanderPath != null ? new Path(memento.State.WanderPath) : null;
+            _travelPath = memento.State.TravelPath != null ? new Path(memento.State.TravelPath) : null;
+            _toLeaderPath = memento.State.ToLeaderPath != null ? new Path(memento.State.ToLeaderPath) : null;
             MonsterState = memento.State.MonsterState;
             SearchCooldown = memento.State.SearchCooldown;
             ReturnToIdle = memento.State.ReturnToIdle;
             AllegianceCategory = memento.State.AllegianceCategory;
+            TravelTarget = memento.State.TravelTarget;
 
             if (!IsDead)
             {
@@ -204,6 +220,8 @@ namespace MarsUndiscovered.Game.Components
 
             memento.State.BreedName = Breed.NameWithoutSpaces;
             memento.State.WanderPath = _wanderPath?.Steps.ToList();
+            memento.State.TravelPath = _travelPath?.Steps.ToList();
+            memento.State.ToLeaderPath = _toLeaderPath?.Steps.ToList();
             memento.State.UseGoalMapWander = UseGoalMapWander;
             memento.State.LeaderId = Leader?.ID;
             memento.State.TargetId = Target?.ID;
@@ -212,6 +230,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.ReturnToIdle = ReturnToIdle;
             memento.State.SearchCooldown = SearchCooldown;
             memento.State.AllegianceCategory = AllegianceCategory;
+            memento.State.TravelTarget = TravelTarget;
 
             if (!IsDead)
             {
@@ -235,9 +254,15 @@ namespace MarsUndiscovered.Game.Components
 
         public IEnumerable<BaseGameActionCommand> NextTurn()
         {
-            _fieldOfView.Calculate(Position, VisualRange);
-            UpdateSeenTiles(_fieldOfView.NewlySeen);
+            if (!IsDead)
+            {
+                _fieldOfView.Calculate(Position, VisualRange);
+                UpdateSeenTiles(_fieldOfView.NewlySeen);
+            }
+
             _nextCommands.Clear();
+            
+            // Run the AI and create commands
             _behaviourTree.Tick(this);
 
             return _nextCommands;
@@ -274,6 +299,7 @@ namespace MarsUndiscovered.Game.Components
 
             _behaviourTree = fluentBuilder
                 .Sequence("root")
+                    .Condition("not dead", monster => !IsDead)
                     .Condition("map is not null", monster => CurrentMap != null)
                     .Condition("on same map as player", monster => CurrentMap.Equals(GameWorld.Player.CurrentMap))
                     .Selector("pick target")
@@ -305,6 +331,7 @@ namespace MarsUndiscovered.Game.Components
                         .Subtree(SearchingBehavior())
                         .Subtree(FollowLeader())
                         .Subtree(WanderBehavior())
+                        .Subtree(TravellingBehavior())
                     .End()
                 .End()
                 .Build();
@@ -338,9 +365,11 @@ namespace MarsUndiscovered.Game.Components
 
                         var distance = Distance.Chebyshev.Calculate(monster.Position, Leader.Position);
 
-                        if (distance <= 2)
+                        if (distance <= 3 && _fieldOfView.CurrentFOV.Contains(Leader.Position))
                         {
-                            // Let the monster 'flutter' away from the leader if too close
+                            // Let the monster 'flutter' away from the leader if too close,
+                            // but only if visible, otherwise a monster can be behind a wall
+                            // that is actually a long distnace away.
                             MonsterState = MonsterState.Wandering;
                             return BehaviourStatus.Failed;
                         }
@@ -527,6 +556,7 @@ namespace MarsUndiscovered.Game.Components
             return BehaviourStatus.Succeeded;
         }
 
+        // Wander behavior is a default behavior, and from here monsters can switch to almost any state.
         private IBehaviour<Monster> WanderBehavior()
         {
             var behaviour = FluentBuilder.Create<Monster>()
@@ -550,6 +580,12 @@ namespace MarsUndiscovered.Game.Components
                             // Blocked, can't do anything
                             if (IsBlocked())
                                 return BehaviourStatus.Succeeded;
+
+                            if (TravelTarget != Point.None)
+                            {
+                                MonsterState = MonsterState.Travelling;
+                                return BehaviourStatus.Failed;
+                            }
 
                             var nextDirection = monster.UseGoalMapWander ? WanderUsingGoalMap() : WanderUsingAStar();
 
@@ -586,6 +622,60 @@ namespace MarsUndiscovered.Game.Components
                                     MonsterState = MonsterState.Idle;
                                     return BehaviourStatus.Succeeded;
                                 }
+                            }
+
+                            return BehaviourStatus.Succeeded;
+                        })
+                .End()
+                .Build();
+
+            return behaviour;
+        }
+
+        private IBehaviour<Monster> TravellingBehavior()
+        {
+            var behaviour = FluentBuilder.Create<Monster>()
+                .Sequence("travel")
+                    .Condition("is travelling", monster => monster.MonsterState == MonsterState.Travelling)
+                    .Do(
+                        "move to next unexplored square",
+                        monster =>
+                        {
+                            if (TravelTarget == Point.None)
+                            {
+                                MonsterState = MonsterState.Wandering;
+                                return BehaviourStatus.Succeeded;
+                            }
+
+                            if (Target != null)
+                            {
+                                MonsterState = MonsterState.Searching;
+                                return BehaviourStatus.Failed;
+                            }
+
+                            // Blocked, can't do anything
+                            if (IsBlocked())
+                                return BehaviourStatus.Succeeded;
+
+                            var nextDirection = TravelUsingAStar();
+
+                            if (nextDirection == Direction.None)
+                            {
+                                // move is still blocked for some reason, do nothing
+                                return BehaviourStatus.Succeeded;
+                            }
+                            else
+                            {
+                                var moveCommand = CreateMoveCommand(nextDirection);
+                                _nextCommands.Add(moveCommand);
+                            }
+
+                            // See if target is reached
+                            if (ChebyshevDistance.Chebyshev.Calculate(TravelTarget, Position) <= 2)
+                            {
+                                TravelTarget = Point.None;
+                                MonsterState = MonsterState.Wandering;
+                                return BehaviourStatus.Succeeded;
                             }
 
                             return BehaviourStatus.Succeeded;
@@ -854,6 +944,12 @@ namespace MarsUndiscovered.Game.Components
                             }
                         }
 
+                        if (TravelTarget != Point.None)
+                        {
+                            MonsterState = MonsterState.Travelling;
+                            return BehaviourStatus.Failed;
+                        }
+
                         // let an idle monster move every now and then so it appears less static
                         if (GlobalRandom.DefaultRNG.NextInt(5) == 0)
                         {
@@ -1013,7 +1109,53 @@ namespace MarsUndiscovered.Game.Components
                 // Path is blocked. Stay stationary this turn and find a new path next turn.
                 _wanderPath = null;
                 ResetFieldOfViewAndSeenTiles();
-                return Direction.None;                
+                return Direction.None;
+            }
+
+            if (nextPointInPath == Point.None)
+            {
+                Debug.Fail("Could not find a next point in path and path lookup logic did not return Direction.None. This should never happen.");
+                return Direction.None;
+            }
+
+            return Direction.GetDirection(Position, nextPointInPath);
+        }
+
+        public Direction TravelUsingAStar()
+        {
+            var currentPathLocation = Point.None;
+
+            if (_travelPath.IsPointOnPathAndNotAtEnd(Position))
+                currentPathLocation = Position;
+
+            if (currentPathLocation == Point.None)
+            {
+                _travelPath = GetNewTravelPath();
+
+                if (_travelPath != null)
+                    currentPathLocation = _travelPath.Start;
+
+                if (currentPathLocation == Point.None)
+                {
+                    // No travel path found even when searching only with terrain. It means the target can never
+                    // be reached.
+                    // At the moment we are not dealing with it and so the actor will just stand still.
+                    _travelPath = null;
+                    return Direction.None;
+                }
+            }
+
+            Debug.Assert(currentPathLocation != Point.None);
+
+            var nextPointInPath = _travelPath.GetStepAfterPointWithStart(currentPathLocation);
+
+            if (!CurrentMap.GameObjectCanMove(this, nextPointInPath))
+            {
+                // Path is blocked. Stay stationary this turn and find a new path next turn.
+                // NOTE - there's a chance that a monster can become completely stuck
+                // if there are non-traversable objects that never move. Currently this is not being dealt with.
+                _travelPath = null;
+                return Direction.None;
             }
 
             if (nextPointInPath == Point.None)
@@ -1051,6 +1193,24 @@ namespace MarsUndiscovered.Game.Components
             }
 
             return wanderPath;
+        }
+
+        private Path GetNewTravelPath()
+        {
+            Path travelPath = null;
+
+            var targetPoint = CurrentMap.MarsMap().FindClosestFreeFloor(TravelTarget);
+            travelPath = CurrentMap.AStar.ShortestPath(Position, targetPoint);
+
+            if (travelPath == null)
+            {
+                var terrainOnlyWalkabilityView = new TerrainOnlyMapWalkabilityView(CurrentMap);
+                var fastAStar = new FastAStar(terrainOnlyWalkabilityView, Distance.Chebyshev);
+
+                travelPath = fastAStar.ShortestPath(Position, targetPoint);
+            }
+
+            return travelPath;
         }
 
         private int GetRandomUnseenFloorTileIndex(List<int> checkedIndexes)
@@ -1122,6 +1282,19 @@ namespace MarsUndiscovered.Game.Components
 
             if (CanBeConcussed)
                 IsConcussed = true;
+        }
+
+        public void ChangeMaps(MarsMap marsMap, Point position)
+        {
+            CurrentMap.RemoveEntity(this);
+            MonsterState = MonsterState.Wandering;
+            TravelTarget = Point.None;
+            TargetOutOfFov = null;
+            Target = null;
+            SearchCooldown = 0;
+            Position = position;
+            AddToMap(marsMap);
+            Mediator.Publish(new MapTileChangedNotification(position));
         }
     }
 }

@@ -52,6 +52,8 @@ namespace MarsUndiscovered.Game.Components
             _mapHeight = mapHeight;
             SeenTiles = SeenTile.CreateArrayViewFromMap(this);
 
+            AStar = new GoRogue.Pathing.FastAStar(WalkabilityView, Distance.Chebyshev);
+            
             this.ObjectAdded += MarsMap_ObjectAdded;
             this.ObjectRemoved += MarsMap_ObjectRemoved;
         }
@@ -70,11 +72,11 @@ namespace MarsUndiscovered.Game.Components
 
         private void MarsMap_ObjectAdded(object sender, SadRogue.Primitives.SpatialMaps.ItemEventArgs<IGameObject> e)
         {
-            if (e.Item is Actor actor)
+            if (e.Item is Actor actor && !actor.IsDead)
             {
                 LiveActors.Add(actor);
             }
-            if (e.Item is Monster monster)
+            if (e.Item is Monster monster && !monster.IsDead)
             {
                 LiveMonsters.Add(monster);
             }
@@ -105,11 +107,12 @@ namespace MarsUndiscovered.Game.Components
             return this;
         }
 
-        public MarsMap WithDoors(IEnumerable<Door> doors)
+        public MarsMap WithGameObjects<T>(IEnumerable<T> gameObjects)
+            where T : GameObject
         {
-            foreach (var door in doors)
+            foreach (var gameObject in gameObjects)
             {
-                AddEntity(door);
+                AddEntity(gameObject);
             }
 
             return this;

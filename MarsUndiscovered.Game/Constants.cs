@@ -12,6 +12,7 @@
         public const int ItemLayer = 4;
         public const int IndestructiblesLayer = 5;
         public const int EnvironmentalEffectLayer = 6;
+        public const int WaypointLayer = 7;
         
         public const int OutdoorAreaBorder = 3;
         public const int ShipOffset = 3;
@@ -24,5 +25,7 @@
 
         // Random lookup names
         public const string RngMonsterDetectLongRange = "MonsterDetectLongRange";
+
+        public const string WaypointCanteen = "WaypointCanteen";
     }
 }

@@ -55,6 +55,10 @@ namespace MarsUndiscovered.Game.Installers
                 Component.For<IEnvironmentalEffectGenerator>()
                     .ImplementedBy<EnvironmentalEffectGenerator>()
                     .LifestyleTransient(),
+                
+                Component.For<IWaypointGenerator>()
+                    .ImplementedBy<WaypointGenerator>()
+                    .LifestyleTransient(),
 
                 Component.For<IMachineGenerator>()
                     .ImplementedBy<MachineGenerator>()

@@ -8,5 +8,6 @@ public enum MonsterState
     Searching,
     Fleeing,
     Wandering,
-    FollowingLeader
+    FollowingLeader,
+    Travelling
 }

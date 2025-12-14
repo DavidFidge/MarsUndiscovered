@@ -4,5 +4,6 @@
     {
         public ulong Seed { get; set; }
         public bool IsFinalStep { get; set; }
+        public bool Failed { get; set; }
     }
 }

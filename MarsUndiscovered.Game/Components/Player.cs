@@ -11,7 +11,7 @@ namespace MarsUndiscovered.Game.Components
     {
         public override char AsciiCharacter => '@';
 
-        public const int BaseHealth = 1000;
+        public const int BaseHealth = 200;
         public override string Name => "I";
         public override string ObjectiveName => "Me";
         public override string PossessiveName => "My";

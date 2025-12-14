@@ -5,6 +5,7 @@ using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.GameFramework;
+using GoRogue.MapGeneration;
 using GoRogue.Pathing;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Commands;
@@ -18,6 +19,8 @@ using MarsUndiscovered.Interfaces;
 using Microsoft.Xna.Framework.Input;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+
+using ShaiRandom.Distributions.Wrappers;
 using ShaiRandom.Generators;
 using Random = System.Random;
 
@@ -44,6 +47,7 @@ namespace MarsUndiscovered.Game.Components
         public MonsterCollection Monsters { get; private set; }
         public ItemCollection Items { get; private set; }
         public MachineCollection Machines { get; private set; }
+        public WaypointCollection Waypoints { get; private set; }
         public EnvironmentalEffectCollection EnvironmentalEffects { get; private set; }
         public MapExitCollection MapExits { get; private set; }
         public ShipCollection Ships { get; private set; }
@@ -136,9 +140,22 @@ namespace MarsUndiscovered.Game.Components
             Logger.Debug("Generating world in world builder");
 
             LevelGenerator.Initialise(this);
-             var result = LevelGenerator.CreateProgressive(Seed, step, worldGenerationTypeParams);
 
-             return result;
+            try
+            {
+                var result = LevelGenerator.CreateProgressive(Seed, step, worldGenerationTypeParams);
+
+                return result;
+            }
+            catch (MapGenerationFailedException ex)
+            {
+                return new ProgressiveWorldGenerationResult
+                {
+                    Seed = seed.Value,
+                    Failed = true,
+                    IsFinalStep = true
+                };
+            }
         }
 
         protected void ResetFieldOfView()
@@ -162,13 +179,19 @@ namespace MarsUndiscovered.Game.Components
                 .OfType<Door>()
                 .Where(g => Equals(g.CurrentMap, marsMap))
                 .ToList();
-            
+
             var features = GameObjects
                 .Values
                 .OfType<Feature>()
                 .Where(g => Equals(g.CurrentMap, marsMap))
                 .ToList();
-            
+
+            var waypoints = GameObjects
+                .Values
+                .OfType<Waypoint>()
+                .Where(g => Equals(g.CurrentMap, marsMap))
+                .ToList();
+
             foreach (var wall in terrain.OfType<Wall>())
                 Walls.Add(wall.ID, wall);
 
@@ -180,7 +203,10 @@ namespace MarsUndiscovered.Game.Components
             
             foreach (var feature in features)
                 Features.Add(feature.ID, feature);
-            
+
+            foreach (var waypoint in waypoints)
+                Waypoints.Add(waypoint.ID, waypoint);
+
             Maps.Add(marsMap);
         }
 
@@ -196,6 +222,7 @@ namespace MarsUndiscovered.Game.Components
             Monsters = new MonsterCollection(GameObjectFactory);
             Items = new ItemCollection(GameObjectFactory);
             Machines = new MachineCollection(GameObjectFactory);
+            Waypoints = new WaypointCollection(GameObjectFactory);
             EnvironmentalEffects = new EnvironmentalEffectCollection(GameObjectFactory);
             MapExits = new MapExitCollection(GameObjectFactory);
             Ships = new ShipCollection(GameObjectFactory);
@@ -456,7 +483,7 @@ namespace MarsUndiscovered.Game.Components
             RechargeItems();
             UpdateMonstersInView();
             Story.NextTurn();
-            CommandCollection.ClearCommandsOnNextAdd();
+            CommandCollection.ClearCommandsOnNextAdd = true;
         }
 
         private void RechargeItems()
@@ -616,6 +643,7 @@ namespace MarsUndiscovered.Game.Components
             Items.LoadState(saveGameService, gameWorld);
             Machines.LoadState(saveGameService, gameWorld);
             EnvironmentalEffects.LoadState(saveGameService, gameWorld);
+            Waypoints.LoadState(saveGameService, gameWorld);
             MapExits.LoadState(saveGameService, gameWorld);
             Ships.LoadState(saveGameService, gameWorld);
 
@@ -659,6 +687,7 @@ namespace MarsUndiscovered.Game.Components
             Items.SaveState(saveGameService, gameWorld);
             Machines.SaveState(saveGameService, gameWorld);
             EnvironmentalEffects.SaveState(saveGameService, gameWorld);
+            Waypoints.SaveState(saveGameService, gameWorld);
             MapExits.SaveState(saveGameService, gameWorld);
             Ships.SaveState(saveGameService, gameWorld);
             MessageLog.SaveState(saveGameService, gameWorld);
@@ -929,11 +958,14 @@ namespace MarsUndiscovered.Game.Components
         public void CancelIdentify()
         {
             // Restore the machine's used item status to unused
+            CommandCollection.ClearCommandsOnNextAdd = false;
             var lastCommand = CommandCollection.GetLastCommand<ApplyMachineCommand>();
             
             var undoCommand = CommandCollection.CreateCommand<UndoCommand>(this);
             undoCommand.Initialise(lastCommand.Id);
             ExecuteCommand(undoCommand).ToList();
+
+            CommandCollection.ClearCommandsOnNextAdd = true;
         }
 
         public Rectangle GetCurrentMapDimensions()
