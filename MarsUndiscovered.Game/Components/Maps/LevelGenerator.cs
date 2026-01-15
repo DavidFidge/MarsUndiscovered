@@ -1,5 +1,4 @@
-﻿using FrigidRogue.MonoGame.Core.Components.MapPointChoiceRules;
-using GoRogue.Random;
+﻿using GoRogue.Random;
 using MarsUndiscovered.Game.Components.Maps.MapPointChoiceRules;
 using MarsUndiscovered.Game.Extensions;
 using SadRogue.Primitives;
@@ -288,13 +287,49 @@ public class LevelGenerator : ILevelGenerator
 
         return map;
     }
-    
+
     private MarsMap CreateLevel4(MarsMap previousMap)
+    {
+        MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60);
+        _gameWorld.AddMapToGame(MapGenerator.Map);
+        var map = MapGenerator.Map;
+        map.Level = 4;
+
+        CreateMapExitUpToPreviousMap(map, previousMap);
+        CreateMapExitDownToNextMap(map);
+
+        var probabilityTable = new ProbabilityTable<MonsterSpawner>(
+            new List<(MonsterSpawner monsterSpawner, double weight)>
+            {
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Rat")), 1),
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Roach")), 1),
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Blood Fly")), 1),
+                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Repair Droid"), RNG, 2, 4), 1),
+                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Wriggler Mass"), RNG, 3, 6), 3),
+                (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Cleaning Droid")), 1)
+            }
+        );
+
+        probabilityTable.Random = RNG;
+
+        for (var i = 0; i < 5; i++)
+            probabilityTable.NextItem().Spawn(map);
+
+        var itemsToPlace = RNG.NextInt(5, 10);
+        SpawnItems(itemsToPlace, map);
+
+        var machinesToPlace = RNG.NextInt(0, 2);
+        SpawnMachines(machinesToPlace, map);
+
+        return map;
+    }
+
+    private MarsMap CreateLevel5(MarsMap previousMap)
     {
         MapGenerator.CreatePrefabMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60);
         _gameWorld.AddMapToGame(MapGenerator.Map);
         var map = MapGenerator.Map;
-        map.Level = 4;
+        map.Level = 5;
 
         SpawnItem(new SpawnItemParams().OnMap(map.Id).WithItemType(ItemType.ShipRepairParts));
         SpawnMonster(new SpawnMonsterParams().WithBreed(Breed.GetBreed("Yendorian Master")).OnMap(map.Id));
@@ -318,8 +353,9 @@ public class LevelGenerator : ILevelGenerator
         var level1Map = CreateLevel1();
         var level2Map = CreateLevel2(level1Map);
         var level3Map = CreateLevel3(level2Map);
+        var level4Map = CreateLevel4(level3Map);
         
-        CreateLevel4(level3Map);
+        CreateLevel5(level4Map);
 
         foreach (var mapExit in _gameWorld.MapExits.Values)
         {

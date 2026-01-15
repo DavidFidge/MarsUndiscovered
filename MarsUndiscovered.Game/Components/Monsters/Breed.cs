@@ -44,8 +44,8 @@ namespace MarsUndiscovered.Game.Components
                 breed.DetectionRange = int.Parse(csvBreed.DetectionRange.ToString());
                 breed.SearchCooldown = int.Parse(csvBreed.SearchCooldown);
 
-                breed.CanConcuss = bool.Parse(csvBreed.CanConcuss);
-                breed.WeaknessToConcuss = bool.Parse(csvBreed.WeaknessToConcuss);
+                breed.CanConcuss = ((string)csvBreed.CanConcuss).ParseOrFalse();
+                breed.WeaknessToConcuss = ((string)csvBreed.WeaknessToConcuss).ParseOrFalse();
                 
                 var bytes = int.Parse(csvBreed.CodePage437Character.ToString(), NumberStyles.HexNumber);
                 
@@ -83,11 +83,8 @@ namespace MarsUndiscovered.Game.Components
                 {
                     breed.LightningAttack = new LightningAttack(int.Parse(csvBreed.LightningAttack.ToString()));
                 }
-
-                if (!string.IsNullOrEmpty(csvBreed.IsWallTurret) && csvBreed.IsWallTurret.ToString().ToLower() == "true")
-                {
-                    breed.IsWallTurret = true;
-                }
+                
+                breed.IsWallTurret = ((string)csvBreed.IsWallTurret).ParseOrFalse();
                 
                 Breeds.Add(breed.NameWithoutSpaces, breed);
             }
