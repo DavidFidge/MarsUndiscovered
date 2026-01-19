@@ -16,6 +16,7 @@ namespace MarsUndiscovered.Game.Components.SaveData
         public uint? TargetOutOfFovId { get; set; }
         public MonsterState MonsterState { get; set; }
         public int SearchCooldown { get; set; }
+        public int TimeToMove { get; set; }
         public bool ReturnToIdle { get; set; }
         public AllegianceCategory AllegianceCategory { get; set; }
         public Point TravelTarget { get; set; }

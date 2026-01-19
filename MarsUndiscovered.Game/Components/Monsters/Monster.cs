@@ -52,6 +52,7 @@ namespace MarsUndiscovered.Game.Components
         public bool IsConcussed { get; set; }
         
         public int SearchCooldown { get; set; }
+        public int TimeToMove { get; set; }
 
         public MonsterState MonsterState { get; set; }
 
@@ -127,6 +128,7 @@ namespace MarsUndiscovered.Game.Components
             MaxHealth = breed.MaxHealth;
             RegenRate = breed.RegenRate;
             Health = MaxHealth;
+            TimeToMove = breed.TimeToMove;
 
             return this;
         }
@@ -191,6 +193,7 @@ namespace MarsUndiscovered.Game.Components
             _toLeaderPath = memento.State.ToLeaderPath != null ? new Path(memento.State.ToLeaderPath) : null;
             MonsterState = memento.State.MonsterState;
             SearchCooldown = memento.State.SearchCooldown;
+            TimeToMove = memento.State.TimeToMove;
             ReturnToIdle = memento.State.ReturnToIdle;
             AllegianceCategory = memento.State.AllegianceCategory;
             TravelTarget = memento.State.TravelTarget;
@@ -229,6 +232,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.MonsterState = MonsterState;
             memento.State.ReturnToIdle = ReturnToIdle;
             memento.State.SearchCooldown = SearchCooldown;
+            memento.State.TimeToMove = TimeToMove;
             memento.State.AllegianceCategory = AllegianceCategory;
             memento.State.TravelTarget = TravelTarget;
 
@@ -323,6 +327,18 @@ namespace MarsUndiscovered.Game.Components
             var behaviour = FluentBuilder.Create<Monster>()
                 .Sequence("move sequence")
                     .Condition("is not a turret", monster => !IsWallTurret)
+                    .Condition("time to move reached", monster => {
+
+                        TimeToMove--;
+
+                        if (TimeToMove == 0)
+                        {
+                            TimeToMove = Breed.TimeToMove;
+                            return true;
+                        }
+
+                        return false;
+                        })
                     .Selector("move selector")
                         .Subtree(IdleBehavior())
                         .Subtree(SearchingBehavior())

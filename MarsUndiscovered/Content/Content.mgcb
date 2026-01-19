@@ -1197,277 +1197,290 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/TitleText.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:tiles/BlackOpsDefender_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:tiles/BlackOpsDefender_2.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:tiles/BlackOpsSniper_1.png
+
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/BlackOpsDefender_1.png
+/build:tiles/BlackOpsSniper_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/BlackOpsDefender_2.png
+/build:tiles/BlankFloor_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/BlackOpsSniper_1.png
+/build:tiles/BlankWall_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/BlackOpsSniper_2.png
+/build:tiles/CrazedForeman_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/BlankFloor_1.png
+/build:tiles/CrazedForeman_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/BlankWall_1.png
+/build:tiles/CrazedMiner_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Ricky_1.png
+/build:tiles/CrazedMiner_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Ricky_2.png
+/build:tiles/EldritchWorm_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Foreman_1.png
+/build:tiles/EldritchWorm_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Foreman_2.png
+/build:tiles/FlameTurret_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Miner_1.png
+/build:tiles/FlameTurret_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Miner_2.png
+/build:tiles/Foreman_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/CrazedForeman_1.png
+/build:tiles/Foreman_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/CrazedForeman_2.png
+/build:tiles/Gadget_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/CrazedMiner_1.png
+/build:tiles/Gadget_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/CrazedMiner_2.png
+/build:tiles/MegalithCarrier_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/EldritchWorm_1.png
+/build:tiles/MegalithCarrier_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/EldritchWorm_2.png
+/build:tiles/MegalithChucker_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/FlameTurret_1.png
+/build:tiles/MegalithChucker_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/FlameTurret_2.png
+/build:tiles/Miner_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Gadget_1.png
+/build:tiles/Miner_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Gadget_2.png
+/build:tiles/MiningFacilityFloor_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MegalithCarrier_1.png
+/build:tiles/MiningFacilityWall_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MegalithCarrier_2.png
+/build:tiles/MissileTurret_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MegalithChucker_1.png
+/build:tiles/MissileTurret_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MegalithChucker_2.png
+/build:tiles/NanoFlask_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MiningFacilityFloor_1.png
+/build:tiles/NanoFlask_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MiningFacilityWall_1.png
+/build:tiles/NirgalBomber_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MissileTurret_1.png
+/build:tiles/NirgalBomber_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/MissileTurret_2.png
+/build:tiles/NirgalRebel_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/NanoFlask_1.png
+/build:tiles/NirgalRebel_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/NanoFlask_2.png
+/build:tiles/PhasmidHunter_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/NirgalBomber_1.png
+/build:tiles/PhasmidHunter_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/NirgalBomber_2.png
+/build:tiles/Player_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/NirgalRebel_1.png
+/build:tiles/Player_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/NirgalRebel_2.png
+/build:tiles/PlayerDead_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/PhasmidHunter_1.png
+/build:tiles/RepairDroid_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/PhasmidHunter_2.png
+/build:tiles/RepairDroid_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Player_1.png
+/build:tiles/Ricky_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Player_2.png
+/build:tiles/Ricky_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/PlayerDead_1.png
+/build:tiles/Roach_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/RepairDroid_1.png
+/build:tiles/Roach_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/RepairDroid_2.png
+/build:tiles/RockFloor_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Roach_1.png
+/build:tiles/RockWall_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Roach_2.png
+/build:tiles/ShipRepairParts_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/RockFloor_1.png
+/build:tiles/ShipRepairParts_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/RockWall_1.png
+/build:tiles/SpiralBorer_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/ShipRepairParts_1.png
+/build:tiles/SpiralBorer_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/ShipRepairParts_2.png
+/build:tiles/SteamElemental_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/SpiralBorer_1.png
+/build:tiles/SteamElemental_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/SpiralBorer_2.png
+/build:tiles/StockpileFloor_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/SteamElemental_1.png
+/build:tiles/StockpileWall_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/SteamElemental_2.png
+/build:tiles/TentacleHorror_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/StockpileFloor_1.png
+/build:tiles/TentacleHorror_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/StockpileWall_1.png
+/build:tiles/TeslaTurret_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/TentacleHorror_1.png
+/build:tiles/TeslaTurret_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/TentacleHorror_2.png
+/build:tiles/TunnelBorer_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/TeslaTurret_1.png
+/build:tiles/TunnelBorer_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/TeslaTurret_2.png
+/build:tiles/Weapon_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/TunnelBorer_1.png
+/build:tiles/Weapon_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/TunnelBorer_2.png
+/build:tiles/Werewolf_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Weapon_1.png
+/build:tiles/Werewolf_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Weapon_2.png
+/build:tiles/wrigglerMass_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Werewolf_1.png
+/build:tiles/wrigglerMass_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/Werewolf_2.png
+/build:tiles/YendorianGrunt_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/YendorianGrunt_1.png
+/build:tiles/YendorianGrunt_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/YendorianGrunt_2.png
+/build:tiles/YendorianMaster_1.png
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Tiles/YendorianMaster_1.png
+/build:tiles/YendorianMaster_2.png
 
 /importer:TextureImporter
 /processor:TextureProcessor

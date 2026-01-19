@@ -305,7 +305,7 @@ public class LevelGenerator : ILevelGenerator
                 (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Roach")), 1),
                 (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Blood Fly")), 1),
                 (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Repair Droid"), RNG, 2, 4), 1),
-                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Wriggler Mass"), RNG, 3, 6), 3),
+                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Wriggler Mass"), RNG, 3, 10), 3),
                 (new SingleMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Cleaning Droid")), 1)
             }
         );
@@ -313,6 +313,19 @@ public class LevelGenerator : ILevelGenerator
         probabilityTable.Random = RNG;
 
         for (var i = 0; i < 5; i++)
+            probabilityTable.NextItem().Spawn(map);
+
+        // Guaranteed wriggler spawns
+        probabilityTable = new ProbabilityTable<MonsterSpawner>(
+            new List<(MonsterSpawner monsterSpawner, double weight)>
+            {
+                (new VariableCountMonsterSpawner(MonsterGenerator, _gameWorld, Breed.GetBreed("Wriggler Mass"), RNG, 1, 10), 1),
+            }
+        );
+
+        probabilityTable.Random = RNG;
+
+        for (var i = 0; i < probabilityTable.Random.NextInt(3, 6); i++)
             probabilityTable.NextItem().Spawn(map);
 
         var itemsToPlace = RNG.NextInt(5, 10);
