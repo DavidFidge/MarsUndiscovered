@@ -21,7 +21,7 @@ namespace MarsUndiscovered.Tests.Components
             GenerateSpecificMap(gameWorld, width, height);
         }
 
-        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
+        public override void CreateMineMapWithCanteen(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
             GenerateSpecificMap(gameWorld, width, height);
         }
@@ -71,6 +71,11 @@ namespace MarsUndiscovered.Tests.Components
             
             Steps = 1;
             IsComplete = true;
+        }
+
+        public override void CreateMineMapWithHoleInTheRubble(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
+        {
+            GenerateSpecificMap(gameWorld, width, height);
         }
     }
 }

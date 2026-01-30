@@ -17,7 +17,7 @@ namespace MarsUndiscovered.Tests.Components
             GenerateHalfWallsToBlankMap(gameWorld, width, height, upToStep);
         }
 
-        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
+        public override void CreateMineMapWithCanteen(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
             GenerateHalfWallsToBlankMap(gameWorld, width, height, upToStep);
         }
@@ -90,6 +90,11 @@ namespace MarsUndiscovered.Tests.Components
                 Steps = 2;
                 IsComplete = true;
             }
+        }
+
+        public override void CreateMineMapWithHoleInTheRubble(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
+        {
+            GenerateHalfWallsToBlankMap(gameWorld, width, height, upToStep);
         }
     }
 }

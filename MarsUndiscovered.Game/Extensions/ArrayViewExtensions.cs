@@ -1,8 +1,14 @@
 using FrigidRogue.MonoGame.Core.Extensions;
+
 using GoRogue.GameFramework;
+
 using MarsUndiscovered.Game.Components;
+
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+
+using ShaiRandom.Collections;
+using ShaiRandom.Generators;
 
 namespace MarsUndiscovered.Game.Extensions
 {

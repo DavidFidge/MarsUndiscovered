@@ -53,7 +53,7 @@ namespace MarsUndiscovered.Game.Components.Maps
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
         }
 
-        public override void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
+        public override void CreateMineMapWithCanteen(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
         {
             Clear();
 
@@ -66,8 +66,28 @@ namespace MarsUndiscovered.Game.Components.Maps
             {
                 new MineWorkerGeneration(),
                 new WallFloorTypeConverterGenerator(),
-                new HoleInTheWallGenerator(),
+                new HoleInTheWallGenerator(5, 5, 12, 12),
                 new CanteenGenerator()
+            };
+
+            ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);
+        }
+
+        public override void CreateMineMapWithHoleInTheRubble(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null)
+        {
+            Clear();
+
+            var generator = new Generator(
+                width,
+                GlobalRandom.DefaultRNG.NextInt(width, height)
+                );
+
+            var generationSteps = new GenerationStep[]
+            {
+                new MineWorkerGeneration(),
+                new WallFloorTypeConverterGenerator(),
+                new HoleInTheWallGenerator(4, 4, 6, 6),
+                new HoleToUnderground()
             };
 
             ExecuteMapSteps(gameWorld, gameObjectFactory, upToStep, generator, generationSteps);

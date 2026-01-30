@@ -17,6 +17,7 @@ namespace MarsUndiscovered.Game.Components.Maps
         public static string MiningFacilityAreaWithPerimeterTag = "MiningFacilityAreaWithPerimeterTag";
         public static string HoleInTheWallRectangleTag = "HoleInTheWallRectangle";
         public static string DoorsTag = "Doors";
+        public static string FeaturesTag = "Features";
         public static string AreasTag = "Areas";
         public static string AreasWallsDoorsTag = "AreasWallsDoors";
         public static string PrefabTag = "Prefabs"; // ItemList<Prefab>
@@ -29,7 +30,9 @@ namespace MarsUndiscovered.Game.Components.Maps
 
         public abstract void CreateOutdoorMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null);
 
-        public abstract void CreateMineMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null);
+        public abstract void CreateMineMapWithCanteen(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null);
+
+        public abstract void CreateMineMapWithHoleInTheRubble(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null);
 
         public abstract void CreateMiningFacilityMap(IGameWorld gameWorld, IGameObjectFactory gameObjectFactory, int width, int height, int? upToStep = null);
 
@@ -139,10 +142,25 @@ namespace MarsUndiscovered.Game.Components.Maps
                 waypoints.Add(waypoint);
             }
 
+            var featureTypes = generator.Context
+                .GetFirstOrNew(() => new ItemList<GameObjectTypePosition<FeatureType>>(), FeaturesTag);
+
+            var features = new List<Feature>(featureTypes.Count());
+
+            foreach (var featureType in featureTypes.Items)
+            {
+                var feature = gameObjectFactory.CreateGameObject<Feature>();
+                feature.FeatureType = featureType.GameObjectType;
+                feature.Position = featureType.Position;
+
+                features.Add(feature);
+            }
+
             Map = CreateMap(gameWorld, generator.Context.Width, generator.Context.Height)
                 .WithTerrain(walls, floors)
                 .WithGameObjects(doors)
-                .WithGameObjects(waypoints);
+                .WithGameObjects(waypoints)
+                .WithGameObjects(features);
         }
 
         protected void Clear()

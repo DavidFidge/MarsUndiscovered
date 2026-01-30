@@ -63,6 +63,10 @@ namespace MarsUndiscovered.UserInterface.Views
                 .SendOnClick(Mediator, new BuildWorldRequest { WorldGenerationTypeParams = new WorldGenerationTypeParams(MapType.Mine)})
                 .AddTo(LeftPanel);
 
+            new Button("Build New Mine World with Hole")
+                .SendOnClick(Mediator, new BuildWorldRequest { WorldGenerationTypeParams = new WorldGenerationTypeParams(MapType.MineWithHoleEntrance) })
+                .AddTo(LeftPanel);
+
             new Button("Build New Mining Facility")
                 .SendOnClick(Mediator, new BuildWorldRequest { WorldGenerationTypeParams = new WorldGenerationTypeParams(MapType.MiningFacility)})
                 .AddTo(LeftPanel);

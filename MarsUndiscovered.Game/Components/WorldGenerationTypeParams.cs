@@ -3,6 +3,7 @@
     public enum MapType
     {
         Mine,
+        MineWithHoleEntrance,
         Outdoor,
         MiningFacility,
         Prefab

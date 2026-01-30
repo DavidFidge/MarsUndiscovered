@@ -255,7 +255,7 @@ public class LevelGenerator : ILevelGenerator
 
     private MarsMap CreateLevel3(MarsMap previousMap)
     {
-        MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60);
+        MapGenerator.CreateMineMapWithCanteen(_gameWorld, _gameWorld.GameObjectFactory, 60, 60);
         _gameWorld.AddMapToGame(MapGenerator.Map);
         var map = MapGenerator.Map;
         map.Level = 3;
@@ -290,7 +290,7 @@ public class LevelGenerator : ILevelGenerator
 
     private MarsMap CreateLevel4(MarsMap previousMap)
     {
-        MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60);
+        MapGenerator.CreateMineMapWithHoleInTheRubble(_gameWorld, _gameWorld.GameObjectFactory, 60, 60);
         _gameWorld.AddMapToGame(MapGenerator.Map);
         var map = MapGenerator.Map;
         map.Level = 4;
@@ -440,7 +440,10 @@ public class LevelGenerator : ILevelGenerator
                 MapGenerator.CreateOutdoorMap(_gameWorld, _gameWorld.GameObjectFactory, 70, 70, step);
                 break;
             case MapType.Mine:
-                MapGenerator.CreateMineMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60, step);
+                MapGenerator.CreateMineMapWithCanteen(_gameWorld, _gameWorld.GameObjectFactory, 60, 60, step);
+                break;
+            case MapType.MineWithHoleEntrance:
+                MapGenerator.CreateMineMapWithHoleInTheRubble(_gameWorld, _gameWorld.GameObjectFactory, 60, 60, step);
                 break;
             case MapType.MiningFacility:
                 MapGenerator.CreateMiningFacilityMap(_gameWorld, _gameWorld.GameObjectFactory, 60, 60, step);

@@ -16,6 +16,19 @@ namespace MarsUndiscovered.Game.Components.Maps;
 // This will not do the digging, it will identify an area.
 public class HoleInTheWallGenerator : GenerationStep
 {
+    public HoleInTheWallGenerator(int minWidth, int minHeight, int maxWidth, int maxHeight)
+    {
+        MinWidth = minWidth;
+        MinHeight = minHeight;
+        MaxWidth = maxWidth;
+        MaxHeight = maxHeight;
+    }
+
+    public int MinWidth { get; }
+    public int MinHeight { get; }
+    public int MaxWidth { get; }
+    public int MaxHeight { get; }
+
     protected override IEnumerator<object> OnPerform(GenerationContext context)
     {
         var wallsFloors = context
@@ -44,7 +57,7 @@ public class HoleInTheWallGenerator : GenerationStep
             validExpansionDirections.Add(Direction.Up, true);
             validExpansionDirections.Add(Direction.Down, true);
 
-            while (validExpansionDirections.Values.Any(d => d == true) && lastRectangle.Height < 12 && lastRectangle.Width < 12)
+            while (validExpansionDirections.Values.Any(d => d == true) && lastRectangle.Height < MaxHeight && lastRectangle.Width < MaxWidth)
             {
                 var newRectangle = lastRectangle;
 
@@ -111,7 +124,7 @@ public class HoleInTheWallGenerator : GenerationStep
             }
 
             // Try next intersection if this one is not big enough
-            if (lastRectangle.Width < 4 || lastRectangle.Height < 4)
+            if (lastRectangle.Width < MinWidth || lastRectangle.Height < MinHeight)
             {
                 triedPoints.Add(point);
                 continue;
