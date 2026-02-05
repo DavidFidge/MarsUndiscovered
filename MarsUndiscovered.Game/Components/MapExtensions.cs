@@ -47,5 +47,25 @@ namespace MarsUndiscovered.Game.Components
         {
             return (MarsMap)map;
         }
+
+
+        public static Point GetFreeFloorAdjacentToPosition(this MarsMap map, Point position)
+        {
+            var landingPosition = position;
+
+            foreach (var dir in AdjacencyRule.Cardinals.DirectionsOfNeighbors())
+            {
+                // Guaranteed to find a valid landing position due to GetPointOnWallAwayFromOtherExitPoints
+                var candidateLandingPosition = landingPosition.Add(dir);
+                if (map.Bounds().Contains(candidateLandingPosition) &&
+                    map.GetTerrainAt(candidateLandingPosition) is Floor)
+                {
+                    landingPosition = candidateLandingPosition;
+                    break;
+                }
+            }
+
+            return landingPosition;
+        }
     }
 }

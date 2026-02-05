@@ -433,6 +433,9 @@ namespace MarsUndiscovered.Game.Components
                     while (wallPoints.Count > 0)
                         queue.Enqueue(wallPoints.Dequeue());
                 }
+
+                if (queue.Count == 0)
+                    break;
             }
 
             return Point.None;

@@ -192,6 +192,12 @@ namespace MarsUndiscovered.Game.Components
                 .Where(g => Equals(g.CurrentMap, marsMap))
                 .ToList();
 
+            var mapExits = GameObjects
+                .Values
+                .OfType<MapExit>()
+                .Where(g => Equals(g.CurrentMap, marsMap))
+                .ToList();
+
             foreach (var wall in terrain.OfType<Wall>())
                 Walls.Add(wall.ID, wall);
 
@@ -206,6 +212,9 @@ namespace MarsUndiscovered.Game.Components
 
             foreach (var waypoint in waypoints)
                 Waypoints.Add(waypoint.ID, waypoint);
+
+            foreach (var mapExit in mapExits)
+                MapExits.Add(mapExit.ID, mapExit);
 
             Maps.Add(marsMap);
         }

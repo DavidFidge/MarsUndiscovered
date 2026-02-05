@@ -1224,6 +1224,14 @@
 
 /importer:TextureImporter
 /processor:TextureProcessor
+/build:tiles/AlienFloor_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:tiles/AlienWall_1.png
+
+/importer:TextureImporter
+/processor:TextureProcessor
 /build:tiles/CrazedForeman_1.png
 
 /importer:TextureImporter

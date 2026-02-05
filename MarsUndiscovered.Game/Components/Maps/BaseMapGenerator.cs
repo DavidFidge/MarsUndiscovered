@@ -18,6 +18,7 @@ namespace MarsUndiscovered.Game.Components.Maps
         public static string HoleInTheWallRectangleTag = "HoleInTheWallRectangle";
         public static string DoorsTag = "Doors";
         public static string FeaturesTag = "Features";
+        public static string MapExitsTag = "MapExits";
         public static string AreasTag = "Areas";
         public static string AreasWallsDoorsTag = "AreasWallsDoors";
         public static string PrefabTag = "Prefabs"; // ItemList<Prefab>
@@ -156,11 +157,30 @@ namespace MarsUndiscovered.Game.Components.Maps
                 features.Add(feature);
             }
 
+            // Map exits are usually created by the level generator
+            // but some are pre-positioned by the map generator. The level
+            // generator will still need to connect them.
+            var mapExitTypes = generator.Context
+                .GetFirstOrNew(() => new ItemList<GameObjectTypePosition<MapExitType>>(), MapExitsTag);
+
+            var mapExits = new List<MapExit>(mapExitTypes.Count());
+
+            foreach (var mapExitItem in mapExitTypes.Items)
+            {
+                var mapExit = gameObjectFactory.CreateGameObject<MapExit>();
+                mapExit.MapExitType = mapExitItem.GameObjectType;
+                mapExit.Position = mapExitItem.Position;
+                mapExit.LandingPosition = mapExitItem.Data.LandingPosition;
+
+                mapExits.Add(mapExit);
+            }
+
             Map = CreateMap(gameWorld, generator.Context.Width, generator.Context.Height)
                 .WithTerrain(walls, floors)
                 .WithGameObjects(doors)
                 .WithGameObjects(waypoints)
-                .WithGameObjects(features);
+                .WithGameObjects(features)
+                .WithGameObjects(mapExits);
         }
 
         protected void Clear()

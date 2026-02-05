@@ -31,15 +31,15 @@ public class HoleToUnderground : GenerationStep
 
         var area = itemListAreas.First();
 
-        var wallTypeCanteen = WallType.MiningFacilityWall;
-        var floorTypeCanteen = FloorType.MiningFacilityFloor;
+        var alienWallType = WallType.AlienWall;
+        var alienFloorType = FloorType.AlienFloor;
         var floorTypeRock = FloorType.RockFloor;
 
         // change all to floor, then change perimeter to wall
         foreach (var point in area.Item)
         {
             wallsFloors[point] = true;
-            wallsFloorTypes[point] = floorTypeCanteen;
+            wallsFloorTypes[point] = alienFloorType;
         }
 
         var perimeterPositions = area.Item.PerimeterPositions(AdjacencyRule.EightWay).ToList();
@@ -47,7 +47,7 @@ public class HoleToUnderground : GenerationStep
         foreach (var point in perimeterPositions)
         {
             wallsFloors[point] = false;
-            wallsFloorTypes[point] = wallTypeCanteen;
+            wallsFloorTypes[point] = alienWallType;
         }
 
         yield return null;
@@ -163,7 +163,19 @@ public class HoleToUnderground : GenerationStep
             }
 
             wallsFloors[randomPerimeterPosition] = true;
-            wallsFloorTypes[randomPerimeterPosition] = floorTypeCanteen;
+            wallsFloorTypes[randomPerimeterPosition] = alienFloorType;
+
+            var mapExits = context.GetFirstOrNew(() => new ItemList<GameObjectTypePosition<MapExitType>>(), MapGenerator.MapExitsTag);
+
+            var mapExitPositions = area.Item.Except(perimeterPositions).ToList();
+
+            var mapExitPosition = RNG.RandomElement(mapExitPositions);
+
+            GameObjectTypePosition<MapExitType> mapExitTypePosition = new(MapExitType.MapExitDown, mapExitPosition);
+
+            mapExitTypePosition.Data.LandingPosition = RNG.RandomElement(mapExitPosition.Neighbours().Except(perimeterPositions).ToList());
+
+            mapExits.Add(mapExitTypePosition, Name);
 
             yield return null;
         }

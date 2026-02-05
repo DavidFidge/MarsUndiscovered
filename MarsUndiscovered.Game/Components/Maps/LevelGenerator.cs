@@ -295,8 +295,8 @@ public class LevelGenerator : ILevelGenerator
         var map = MapGenerator.Map;
         map.Level = 4;
 
+        // Map exit down is created in the map generation stage
         CreateMapExitUpToPreviousMap(map, previousMap);
-        CreateMapExitDownToNextMap(map);
 
         var probabilityTable = new ProbabilityTable<MonsterSpawner>(
             new List<(MonsterSpawner monsterSpawner, double weight)>
