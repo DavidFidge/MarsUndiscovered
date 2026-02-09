@@ -92,7 +92,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
         private InventoryItem _selectedItem;
         
-        private SelectList _messageLog;
+        private RichParagraph _messageLog;
         protected Panel LeftPanel;
         protected Panel BottomPanel;
         protected PlayerPanel PlayerPanel;
@@ -110,6 +110,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel GameViewPanel { get; set; }
         protected Panel HoverPanelLeft { get; set; }
         protected Panel HoverPanelRight { get; set; }
+        protected Panel MessageLogContainer { get; private set; }
 
         public GameView(
             GameViewModel gameViewModel,
@@ -232,22 +233,28 @@ namespace MarsUndiscovered.UserInterface.Views
      
         protected void CreateMessageLog()
         {
-            _messageLog = new SelectList()
-                .SkinSimple()
+            _messageLog = new RichParagraph()
                 .Anchor(Anchor.TopLeft)
+                .WidthOfContainer()
                 .Height(UiConstants.MessageLogHeight)
                 .NoPadding();
 
-            _messageLog.ExtraSpaceBetweenLines = -14;
-            _messageLog.LockSelection = true;
-            BottomPanel.AddChild(_messageLog);
+            _messageLog.Wrap();
 
-            _messageLog.OnListChange = entity =>
-            {
-                var list = (SelectList)entity;
-                if (list.Count > 100)
-                    list.RemoveItem(0);
-            };
+            MessageLogContainer = new Panel()
+                .Anchor(Anchor.TopLeft)
+                .SkinNone()
+                .NoPadding()
+                .WidthOfContainer()
+                .Height(UiConstants.MessageLogHeight);
+
+            MessageLogContainer.PanelOverflowBehavior = PanelOverflowBehavior.VerticalScroll;
+            MessageLogContainer.Scrollbar.LockedToMax = true;
+            MessageLogContainer.Scrollbar.LockToMaxOnMaxScroll = true;
+
+            MessageLogContainer.AddChild(_messageLog);
+
+            BottomPanel.AddChild(MessageLogContainer);
         }
 
         protected void CreatePlayerPanel()
@@ -259,7 +266,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected void ResetViews()
         {
             _gameCamera.Reset();
-            _messageLog.ClearItems();
+            _messageLog.Text = string.Empty;
             PlayerPanel.Reset();
             
             _isAutoExploring = false;
@@ -272,10 +279,9 @@ namespace MarsUndiscovered.UserInterface.Views
 
             if (newMessages.Any())
             {
-                foreach (var message in newMessages)
-                    _messageLog.AddItem(message);
+                var messages = _viewModel.MessageStatus.Messages.Join(Environment.NewLine);
 
-                _messageLog.scrollToEnd();
+                _messageLog.Text = messages;
             }
         }
 
