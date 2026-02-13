@@ -160,5 +160,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             Opacity = opacity;
             IsVisible = true;
         }
+
+        public void SetHealthBar(float val)
+        {
+            // TODO
+        }
     }
 }

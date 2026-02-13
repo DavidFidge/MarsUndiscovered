@@ -36,5 +36,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             Transform.ChangeTranslation(new Vector3(Position.X * UiConstants.TileQuadWidth, -Position.Y * UiConstants.TileQuadHeight, 0));
             GoalMapTileTexture = Assets.GoalMapTileTexture;
         }
+
+        public void OverlayDraw(SpriteBatch spriteBatch)
+        {
+        }
     }
 }
