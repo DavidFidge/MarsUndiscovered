@@ -6,6 +6,9 @@ using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
+using MonoGame.Extended;
+
 using SadRogue.Primitives;
 using Point = SadRogue.Primitives.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -19,6 +22,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public IMapTileTexture MapTileTexture { get; set; }
         public bool IsVisible { get; set; }
         public float? Opacity { get; set; }
+        public bool IsOverlayVisible { get; set; }
+
+        private float _healthBarWidth;
+        private Gradient _healthBarGradient = new Gradient(SadRogue.Primitives.Color.Red, SadRogue.Primitives.Color.Orange, SadRogue.Primitives.Color.Yellow, SadRogue.Primitives.Color.Green);
 
         public MapTileEntity(Point position)
         {
@@ -161,9 +168,35 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             IsVisible = true;
         }
 
-        public void SetHealthBar(float val)
+        public void SetHealthBarOverlay(float healthBarWidth)
         {
-            // TODO
+            if (healthBarWidth <= float.Epsilon || healthBarWidth >= 1.0f - float.Epsilon)
+            {
+                IsOverlayVisible = false;
+                _healthBarWidth = 0;
+
+                return;
+            }
+
+            IsOverlayVisible = true;
+
+            _healthBarWidth = healthBarWidth;
+
+            if (_healthBarWidth < 0.04f)
+                _healthBarWidth = 0.04f;
+        }
+
+        public void OverlayDraw(SpriteBatch spriteBatch)
+        {
+            if (IsVisible && IsOverlayVisible)
+            {
+                var rectangle = new RectangleF(Position.X * UiConstants.TileWidth, Position.Y * UiConstants.TileHeight + (UiConstants.TileHeight * 7f / 8f),
+                    UiConstants.TileWidth * _healthBarWidth, UiConstants.TileHeight / 8f);
+
+                var colour = _healthBarGradient.Lerp(_healthBarWidth);
+
+                spriteBatch.FillRectangle(rectangle, colour.ToXna());
+            }
         }
     }
 }

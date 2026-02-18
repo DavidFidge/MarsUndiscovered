@@ -1,5 +1,7 @@
 using FrigidRogue.MonoGame.Core.Components;
+
 using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Game.ViewMessages;
 using MarsUndiscovered.Interfaces;
 
 namespace MarsUndiscovered.Game.Commands
@@ -37,6 +39,8 @@ namespace MarsUndiscovered.Game.Commands
             var commandResult = CommandResult.Success(this, message);
             
             SetHuntingIfAttackedByPlayer(Source, Target);
+
+            Mediator.Publish(new MapTileChangedNotification(Target.Position));
 
             if (Target.Health <= 0)
             {

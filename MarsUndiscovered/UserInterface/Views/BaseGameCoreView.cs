@@ -69,6 +69,8 @@ namespace MarsUndiscovered.UserInterface.Views
 
             var drawableTiles = _viewModel.MapViewModel.GetVisibleDrawableTiles();
             
+            // Draws each tile onto the render target only with no transforms. _renderTarget is set
+            // on the map earlier.
             foreach (var tile in drawableTiles)
                 tile.SpriteBatchDraw(_spriteBatch);
 
@@ -76,8 +78,16 @@ namespace MarsUndiscovered.UserInterface.Views
 
             Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
 
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
+
+            foreach (var tile in drawableTiles)
+                tile.OverlayDraw(_spriteBatch);
+
+            _spriteBatch.End();
+
             Game.GraphicsDevice.SetRenderTargets(oldRenderTargets);
 
+            // Does the actual drawing (one big map texture) with transforms
             _viewModel.MapViewModel.SceneGraph.Draw(_gameCamera.View, _gameCamera.Projection);
         }
 
