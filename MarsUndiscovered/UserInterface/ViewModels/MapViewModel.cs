@@ -1,20 +1,27 @@
-﻿using FrigidRogue.MonoGame.Core.Components;
+﻿using System.Threading;
+
+using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Graphics.Map;
 using FrigidRogue.MonoGame.Core.Interfaces.Graphics;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Messages;
+
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
+
 using MarsUndiscovered.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Data;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+
 using Point = SadRogue.Primitives.Point;
 using Rectangle = SadRogue.Primitives.Rectangle;
 
@@ -309,7 +316,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (environmentalEffect != null)
                 _environmentalEffectTiles[point].SetEnvironmentalEffect(environmentalEffect.EnvironmentalEffectType);
 
-            var actor = gameObjects.FirstOrDefault(go => go is Actor);
+            var actor = gameObjects.FirstOrDefault(go => go is Actor) as Actor;
 
             if (actor != null)
             {
@@ -318,7 +325,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                 else if (actor is Monster monster)
                     _actorTiles[point].SetMonster(monster.Breed);
 
+                _actorTiles[point].SetHealthBarOverlay((float)actor.Health / actor.MaxHealth);
+
                 return;
+            }
+            else
+            {
+                _actorTiles[point].SetHealthBarOverlay(0);
             }
 
             var item = gameObjects.FirstOrDefault(go => go is Item);

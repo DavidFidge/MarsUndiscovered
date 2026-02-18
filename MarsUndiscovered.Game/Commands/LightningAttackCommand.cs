@@ -1,7 +1,10 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
+
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Extensions;
+using MarsUndiscovered.Game.ViewMessages;
 using MarsUndiscovered.Interfaces;
+
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
@@ -43,7 +46,9 @@ namespace MarsUndiscovered.Game.Commands
                 commandResult.Messages.Add(message);
                 
                 SetHuntingIfAttackedByPlayer(Source, target);
-                
+
+                Mediator.Publish(new MapTileChangedNotification(target.Position));
+
                 if (target.Health <= 0)
                 {
                     var deathCommand = GameWorld.CommandCollection.CreateCommand<DeathCommand>(GameWorld);

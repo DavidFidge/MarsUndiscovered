@@ -1,7 +1,10 @@
 ﻿using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Extensions;
+
 using MarsUndiscovered.Game.Components;
+using MarsUndiscovered.Game.ViewMessages;
 using MarsUndiscovered.Interfaces;
+
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
@@ -47,6 +50,8 @@ namespace MarsUndiscovered.Game.Commands
                 
                 var message = $"{Source.GetSentenceName(false, false)} hit {target.GetSentenceName(true, false)}";
                 commandResult.Messages.Add(message);
+
+                Mediator.Publish(new MapTileChangedNotification(target.Position));
 
                 if (target.Health <= 0)
                 {
