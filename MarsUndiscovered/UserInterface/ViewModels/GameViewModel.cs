@@ -6,6 +6,7 @@ using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Dto;
 using MarsUndiscovered.Messages;
+using MarsUndiscovered.UserInterface.Animation;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Xna.Framework;
@@ -21,6 +22,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public uint? RetainedSquareChoiceMonsterId { get; set; }
         
         private List<RadioCommsItem> _radioCommsItems = new();
+
         public PlayerStatus PlayerStatus { get; set; }
         public IList<MonsterStatus> MonsterStatusInView { get; set; }
 
@@ -34,7 +36,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         protected override void RefreshView()
         {
-            MonsterStatusInView = GameWorldProvider.GameWorld.GetStatusOfMonstersInView();
             PlayerStatus = GameWorldProvider.GameWorld.GetPlayerStatus();
             _radioCommsItems.AddRange(GameWorldProvider.GameWorld.GetNewRadioCommsItems());
             MessageStatus.AddMessages(GameWorldProvider.GameWorld.GetMessagesSince(MessageStatus.SeenMessageCount));
@@ -95,7 +96,11 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         private void AfterTurnExecuted(IList<CommandResult> commandResults)
         {
+            MonsterStatusInView = GameWorldProvider.GameWorld.GetStatusOfMonstersInView();
+
             QueueAnimations(commandResults);
+            QueueMonsterStatusAnimations();
+
             MapViewModel.RecentreMap();
             Mediator.Publish(new RefreshViewNotification());
 
@@ -112,6 +117,18 @@ namespace MarsUndiscovered.UserInterface.ViewModels
                     }
                 }
             }
+        }
+
+        private void QueueMonsterStatusAnimations()
+        {
+            var monsterStatusAnimations = MonsterStatusInView
+                .Where(m => m.MonsterState != m.PreviousMonsterState)
+                .Select(m => new MonsterStatusAnimation(m, m.Position))
+                .ToList();
+
+            var allAnimations = new MonsterStatusGroupAnimation(monsterStatusAnimations);
+
+            Animations.Enqueue(allAnimations);
         }
 
         public Path GetPathToDestination(Ray pointerRay)

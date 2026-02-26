@@ -218,7 +218,7 @@ public class Story : BaseComponent, IStory, ISaveable
 
                                     leader.SetLeader(null);
 
-                                    leader.TravelTarget = _gameWorld.Waypoints.Values.Single(m => m.Name == Constants.WaypointCanteen).Position;
+                                    leader.TravelTarget = _gameWorld.Waypoints.Values.Single(m => m.WaypointName == Constants.WaypointCanteen).Position;
 
                                     _gameWorld.RadioComms.AddRadioCommsEntry(RadioCommsTypes.GuidedMinerLeaderDown, s._gameWorld.Player);
                                 }

@@ -148,6 +148,20 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             }
         }
 
+        public void SetMonsterState(MonsterState monsterState)
+        {
+            switch (monsterState)
+            {
+                case MonsterState.Hunting:
+                    IsVisible = true;
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.MonsterStateHunting.ToString());
+                    break;
+                default:
+                    IsVisible = false;
+                    break;
+            }
+        }
+
         public void SetLaser(float opacity)
         {
             IsVisible = true;
@@ -172,13 +186,10 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             if (healthBarWidth <= float.Epsilon || healthBarWidth >= 1.0f - float.Epsilon)
             {
-                IsOverlayVisible = false;
                 _healthBarWidth = 0;
 
                 return;
             }
-
-            IsOverlayVisible = true;
 
             _healthBarWidth = healthBarWidth;
 
@@ -188,14 +199,17 @@ namespace MarsUndiscovered.UserInterface.ViewModels
 
         public void OverlayDraw(SpriteBatch spriteBatch)
         {
-            if (IsVisible && IsOverlayVisible)
+            if (IsVisible)
             {
-                var rectangle = new RectangleF(Position.X * UiConstants.TileWidth, Position.Y * UiConstants.TileHeight + (UiConstants.TileHeight * 7f / 8f),
-                    UiConstants.TileWidth * _healthBarWidth, UiConstants.TileHeight / 8f);
+                if (_healthBarWidth > float.Epsilon)
+                {
+                    var rectangle = new RectangleF(Position.X * UiConstants.TileWidth, Position.Y * UiConstants.TileHeight + (UiConstants.TileHeight * 7f / 8f),
+                        UiConstants.TileWidth * _healthBarWidth, UiConstants.TileHeight / 8f);
 
-                var colour = _healthBarGradient.Lerp(_healthBarWidth);
+                    var colour = _healthBarGradient.Lerp(_healthBarWidth);
 
-                spriteBatch.FillRectangle(rectangle, colour.ToXna());
+                    spriteBatch.FillRectangle(rectangle, colour.ToXna());
+                }
             }
         }
     }

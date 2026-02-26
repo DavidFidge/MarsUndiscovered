@@ -50,14 +50,14 @@ namespace MarsUndiscovered.Game.Components.Maps
         {
             spawnWaypointParams.Result = null;
 
-            if (spawnWaypointParams.Name == null)
+            if (spawnWaypointParams.WaypointName == null)
                 return;
 
             var map = gameWorld.Maps.Single(m => m.Id == spawnWaypointParams.MapId);
 
             var waypoint = gameWorld.GameObjectFactory
                 .CreateGameObject<Waypoint>()
-                .WithName(spawnWaypointParams.Name);
+                .WithWaypointName(spawnWaypointParams.WaypointName);
 
             spawnWaypointParams.AssignMap(map);
 

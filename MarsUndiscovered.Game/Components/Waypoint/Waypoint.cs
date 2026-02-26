@@ -7,7 +7,7 @@ namespace MarsUndiscovered.Game.Components
 {
     public class Waypoint : MarsGameObject, IMementoState<WaypointSaveData>
     {
-        public string Name { get; set; }
+        public string WaypointName { get; set; }
 
         public Waypoint(IGameWorld gameWorld, uint id) : base(gameWorld, Constants.WaypointLayer, idGenerator: () => id)
         {
@@ -18,7 +18,7 @@ namespace MarsUndiscovered.Game.Components
             var memento = new Memento<WaypointSaveData>(new WaypointSaveData());
 
             PopulateSaveState(memento.State);
-            memento.State.Name = Name;
+            memento.State.WaypointName = Name;
 
             return memento;
         }
@@ -26,12 +26,12 @@ namespace MarsUndiscovered.Game.Components
         public void SetLoadState(IMemento<WaypointSaveData> memento)
         {
             PopulateLoadState(memento.State);
-            Name = memento.State.Name;
+            WaypointName = memento.State.WaypointName;
         }
 
-        public Waypoint WithName(string name)
+        public Waypoint WithWaypointName(string waypointName)
         {
-            Name = name;
+            WaypointName = waypointName;
 
             return this;
         }

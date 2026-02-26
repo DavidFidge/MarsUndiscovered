@@ -55,6 +55,7 @@ namespace MarsUndiscovered.Game.Components
         public int TimeToMove { get; set; }
 
         public MonsterState MonsterState { get; set; }
+        public MonsterState PreviousMonsterState { get; set; }
 
         public Actor Leader { get; set; }
         public Actor Target { get; set; }
@@ -142,7 +143,8 @@ namespace MarsUndiscovered.Game.Components
                 Health = Health,
                 MaxHealth = MaxHealth,
                 Name = Name,
-                Behaviour = MonsterState.ToString().ToSeparateWords(),
+                MonsterState = MonsterState,
+                PreviousMonsterState = PreviousMonsterState,
                 Position = Position,
                 SearchCooldown = SearchCooldown,
                 CanBeConcussed = CanBeConcussed,
@@ -192,6 +194,7 @@ namespace MarsUndiscovered.Game.Components
             _travelPath = memento.State.TravelPath != null ? new Path(memento.State.TravelPath) : null;
             _toLeaderPath = memento.State.ToLeaderPath != null ? new Path(memento.State.ToLeaderPath) : null;
             MonsterState = memento.State.MonsterState;
+            PreviousMonsterState = memento.State.PreviousMonsterState;
             SearchCooldown = memento.State.SearchCooldown;
             TimeToMove = memento.State.TimeToMove;
             ReturnToIdle = memento.State.ReturnToIdle;
@@ -230,6 +233,7 @@ namespace MarsUndiscovered.Game.Components
             memento.State.TargetId = Target?.ID;
             memento.State.TargetOutOfFovId = TargetOutOfFov?.ID;
             memento.State.MonsterState = MonsterState;
+            memento.State.PreviousMonsterState = PreviousMonsterState;
             memento.State.ReturnToIdle = ReturnToIdle;
             memento.State.SearchCooldown = SearchCooldown;
             memento.State.TimeToMove = TimeToMove;
@@ -265,8 +269,9 @@ namespace MarsUndiscovered.Game.Components
             }
 
             _nextCommands.Clear();
-            
+
             // Run the AI and create commands
+            PreviousMonsterState = MonsterState;
             _behaviourTree.Tick(this);
 
             return _nextCommands;

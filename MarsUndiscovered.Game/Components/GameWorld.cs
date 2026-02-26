@@ -147,7 +147,7 @@ namespace MarsUndiscovered.Game.Components
 
                 return result;
             }
-            catch (MapGenerationFailedException ex)
+            catch (MapGenerationFailedException)
             {
                 return new ProgressiveWorldGenerationResult
                 {

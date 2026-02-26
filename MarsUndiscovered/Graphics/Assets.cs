@@ -307,6 +307,18 @@ public class Assets : IAssets
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.LineAttackNorthWestSouthEast.ToString(),
             lineAttackNorthWestSouthEast);
 
+        var monsterStateHunting = new MapTileTexture(
+            _gameProvider.Game.GraphicsDevice,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
+            MapBitmapFont,
+            '!',
+            Color.Red
+        );
+
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MonsterStateHunting.ToString(),
+            monsterStateHunting);
+
         GoalMapTileTexture = new GoalMapTileTexture(
             _gameProvider.Game.GraphicsDevice,
             UiConstants.TileWidth,

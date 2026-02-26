@@ -96,7 +96,6 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel LeftPanel;
         protected Panel BottomPanel;
         protected PlayerPanel PlayerPanel;
-        protected IList<MonsterPanel> MonsterPanels = new List<MonsterPanel>();
         protected RichParagraph StatusParagraph;
         protected RichParagraph HoverPanelLeftTooltip;
         protected RichParagraph HoverPanelRightTooltip;
@@ -289,38 +288,6 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             PlayerPanel.Update(_viewModel.PlayerStatus);
             AmbientParagraph.Text = _viewModel.PlayerStatus.AmbientText;
-        }
-
-        protected void UpdateMonsterStatus()
-        {
-            foreach (var panel in MonsterPanels)
-            {
-                panel.RemoveFromParent();
-            }
-
-            var newMonsterStatuses = _viewModel.MonsterStatusInView
-                .OrderBy(m => m.DistanceFromPlayer)
-                .ToList();
-
-            var mergedMonsterPanelStatusQuery = (
-                from monsterStatus in newMonsterStatuses
-                join panel in MonsterPanels on monsterStatus.ID equals panel.ActorStatus.ID into gj
-                from subPanel in gj.DefaultIfEmpty()
-                select new
-                {
-                    MonsterStatus = monsterStatus,
-                    MonsterPanel = subPanel ?? new MonsterPanel(monsterStatus, Assets)
-                }).ToList();
-
-            MonsterPanels.Clear();
-
-            foreach (var monsterJoin in mergedMonsterPanelStatusQuery)
-            {
-                monsterJoin.MonsterPanel.Update(monsterJoin.MonsterStatus);
-
-                MonsterPanels.Add(monsterJoin.MonsterPanel);
-                monsterJoin.MonsterPanel.AddAsChildTo(MonsterPanelContainer);
-            }
         }
 
         protected string DelimitWithDashes(string text)
@@ -602,7 +569,6 @@ namespace MarsUndiscovered.UserInterface.Views
             
             StatusParagraph.Text = String.Empty;
 
-            UpdateMonsterStatus();
             UpdateMessageLog();
             UpdatePlayerStatus();
             RefreshHotBars();
@@ -996,34 +962,34 @@ namespace MarsUndiscovered.UserInterface.Views
             if (_viewModel.CurrentSquareChoiceMonsterId == null)
                 _viewModel.CurrentSquareChoiceMonsterId = _viewModel.RetainedSquareChoiceMonsterId;
             
-            if (!MonsterPanels.Any())
+            if (!_viewModel.MonsterStatusInView.Any())
                 return;
             
-            var monsterPanels = MonsterPanels.ToList();
+            var monsterStatusInView = _viewModel.MonsterStatusInView.ToList();
             
             if (reverse)
-                monsterPanels.Reverse();
+                monsterStatusInView.Reverse();
 
-            var panels = monsterPanels;
+            var nextMonsterChoices = monsterStatusInView;
             
             if (_viewModel.CurrentSquareChoiceMonsterId != null)
-                panels = monsterPanels
-                    .SkipWhile(m => m.ActorStatus.ID != _viewModel.CurrentSquareChoiceMonsterId
+                nextMonsterChoices = monsterStatusInView
+                    .SkipWhile(m => m.ID != _viewModel.CurrentSquareChoiceMonsterId
                         )
                     .ToList();
 
-            if (!panels.Any())
-                panels = monsterPanels;
+            if (!nextMonsterChoices.Any())
+                nextMonsterChoices = monsterStatusInView;
             else
-                panels = panels.Skip(1).ToList();
+                nextMonsterChoices = nextMonsterChoices.Skip(1).ToList();
 
-            var panel = panels.FirstOrDefault() ?? monsterPanels.FirstOrDefault();
+            var choice = nextMonsterChoices.FirstOrDefault() ?? monsterStatusInView.FirstOrDefault();
 
-            if (panel == null)
+            if (choice == null)
                 return;
 
-            _viewModel.CurrentSquareChoiceMonsterId = panel.ActorStatus.ID;
-            _viewModel.MapViewModel.ShowHoverForSquareChoice(panel.ActorStatus.Position);
+            _viewModel.CurrentSquareChoiceMonsterId = choice.ID;
+            _viewModel.MapViewModel.ShowHoverForSquareChoice(choice.Position);
         }
     }
 }

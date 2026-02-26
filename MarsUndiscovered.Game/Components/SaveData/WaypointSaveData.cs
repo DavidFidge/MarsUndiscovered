@@ -4,5 +4,5 @@ namespace MarsUndiscovered.Game.Components;
 
 public class WaypointSaveData : GameObjectSaveData
 {
-    public string Name { get; set; }
+    public string WaypointName { get; set; }
 }

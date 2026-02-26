@@ -2,15 +2,15 @@
 {
     public class SpawnWaypointParams : BaseSpawnGameObjectParams
     {
-        public string Name { get; set; }
+        public string WaypointName { get; set; }
         public Waypoint Result { get; set; }
     }
 
     public static class SpawnWaypointParamsFluentExtensions
     {
-        public static SpawnWaypointParams WithName(this SpawnWaypointParams spawnWaypointParams, string name)
+        public static SpawnWaypointParams WithWaypointName(this SpawnWaypointParams spawnWaypointParams, string waypointName)
         {
-            spawnWaypointParams.Name = name;
+            spawnWaypointParams.WaypointName = waypointName;
             return spawnWaypointParams;
         }
     }
