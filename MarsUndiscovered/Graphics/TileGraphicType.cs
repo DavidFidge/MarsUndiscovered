@@ -25,5 +25,6 @@ public enum TileGraphicType
     FieldOfViewHasBeenSeenTexture,
     Monster,
     Ship,
-    MonsterStateHunting
+    MonsterStateHunting,
+    MonsterStateHuntingBottomRight
 }
