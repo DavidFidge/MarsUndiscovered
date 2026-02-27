@@ -138,7 +138,7 @@ namespace MarsUndiscovered.Game.Components.Maps
             foreach (var waypointNamePosition in waypointNamePositions)
             {
                 var waypoint = gameObjectFactory.CreateGameObject<Waypoint>();
-                waypoint.Name = waypointNamePosition.Item.Name;
+                waypoint.WaypointName = waypointNamePosition.Item.Name;
                 waypoint.Position = waypointNamePosition.Item.Position;
                 waypoints.Add(waypoint);
             }

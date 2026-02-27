@@ -148,13 +148,35 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             }
         }
 
-        public void SetMonsterState(MonsterState monsterState)
+        public void SetMonsterStateOverlay(MonsterState monsterState)
         {
             switch (monsterState)
             {
                 case MonsterState.Hunting:
                     IsVisible = true;
                     MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.MonsterStateHunting.ToString());
+                    break;
+                default:
+                    IsVisible = false;
+                    break;
+            }
+        }
+
+        public void SetMonsterState(MonsterState monsterState)
+        {
+            switch (monsterState)
+            {
+                case MonsterState.Hunting:
+                    IsVisible = true;
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.MonsterStateHuntingBottomRight.ToString());
+                    break;
+                case MonsterState.Searching:
+                    IsVisible = true;
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.MonsterStateSearchingBottomRight.ToString());
+                    break;
+                case MonsterState.Travelling:
+                    IsVisible = true;
+                    MapTileTexture = Assets.GetMapTileTexture(TileGraphicType.MonsterStateTravellingBottomRight.ToString());
                     break;
                 default:
                     IsVisible = false;

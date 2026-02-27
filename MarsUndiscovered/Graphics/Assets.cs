@@ -325,11 +325,38 @@ public class Assets : IAssets
             UiConstants.TileHeight,
             MapBitmapFont,
             '!',
+            SadRogue.Primitives.Direction.DownRight,
             Color.Red
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MonsterStateHuntingBottomRight.ToString(),
             monsterStateHuntingBottomRight);
+
+        var monsterStateSearchingBottomRight = new MapTileTexture(
+            _gameProvider.Game.GraphicsDevice,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
+            MapBitmapFont,
+            '?',
+            SadRogue.Primitives.Direction.DownRight,
+            Color.White
+        );
+
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MonsterStateSearchingBottomRight.ToString(),
+            monsterStateSearchingBottomRight);
+
+        var monsterStateTravellingBottomRight = new MapTileTexture(
+            _gameProvider.Game.GraphicsDevice,
+            UiConstants.TileWidth,
+            UiConstants.TileHeight,
+            MapBitmapFont,
+            '?',
+            SadRogue.Primitives.Direction.DownRight,
+            Color.White
+        );
+
+        _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MonsterStateTravellingBottomRight.ToString(),
+            monsterStateTravellingBottomRight);
 
         GoalMapTileTexture = new GoalMapTileTexture(
             _gameProvider.Game.GraphicsDevice,

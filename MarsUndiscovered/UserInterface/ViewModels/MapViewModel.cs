@@ -55,6 +55,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         private ArrayView<MapTileEntity> _animationAttackTiles;
         private ArrayView<MapTileEntity> _terrainTiles;
         private ArrayView<MapTileEntity> _actorTiles;
+        private ArrayView<MapTileEntity> _monsterStateTiles;
         private ArrayView<MapTileEntity> _itemTiles;
         private ArrayView<MapTileEntity> _machineTiles;
         private ArrayView<MapTileEntity> _indestructibleTiles;
@@ -124,6 +125,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _animationAttackTiles = new ArrayView<MapTileEntity>(_width, _height);
             _terrainTiles = new ArrayView<MapTileEntity>(_width, _height);
             _actorTiles = new ArrayView<MapTileEntity>(_width, _height);
+            _monsterStateTiles = new ArrayView<MapTileEntity>(_width, _height);
             _itemTiles = new ArrayView<MapTileEntity>(_width, _height);
             _machineTiles = new ArrayView<MapTileEntity>(_width, _height);
             _environmentalEffectTiles = new ArrayView<MapTileEntity>(_width, _height);
@@ -156,6 +158,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _animationAttackTiles[point].IsVisible = false;
             _terrainTiles[point].IsVisible = false;
             _actorTiles[point].IsVisible = false;
+            _monsterStateTiles[point].IsVisible = false;
             _itemTiles[point].IsVisible = false;
             _machineTiles[point].IsVisible = false;
             _goalMapTiles[point].IsVisible = false;
@@ -231,6 +234,9 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             var actorTileEntity = _mapTileEntityFactory.Create(position);
             _actorTiles[position] = actorTileEntity;
 
+            var monsterStateTileEntity = _mapTileEntityFactory.Create(position);
+            _monsterStateTiles[position] = monsterStateTileEntity;
+
             var itemTileEntity = _mapTileEntityFactory.Create(position);
             _itemTiles[position] = itemTileEntity;
             
@@ -263,6 +269,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             _allTiles.Add(terrainTileEntity);
             _allTiles.Add(itemTileEntity);
             _allTiles.Add(actorTileEntity);
+            _allTiles.Add(monsterStateTileEntity);
             _allTiles.Add(indestructibleTile);
             _allTiles.Add(machineTileEntity);
             _allTiles.Add(environmentalEffectTileEntity);
@@ -321,9 +328,14 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             if (actor != null)
             {
                 if (actor is Player player)
+                {
                     _actorTiles[point].SetPlayer(player);
+                }
                 else if (actor is Monster monster)
+                {
                     _actorTiles[point].SetMonster(monster.Breed);
+                    _monsterStateTiles[point].SetMonsterState(monster.MonsterState);
+                }
 
                 _actorTiles[point].SetHealthBarOverlay((float)actor.Health / actor.MaxHealth);
 
@@ -332,6 +344,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             else
             {
                 _actorTiles[point].SetHealthBarOverlay(0);
+                _monsterStateTiles[point].IsVisible = false;
             }
 
             var item = gameObjects.FirstOrDefault(go => go is Item);

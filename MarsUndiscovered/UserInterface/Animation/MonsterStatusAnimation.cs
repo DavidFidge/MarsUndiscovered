@@ -33,7 +33,7 @@ namespace MarsUndiscovered.UserInterface.Animation
 
             if (cyclePos < BlinkSeconds)
             {
-                mapViewModel.AnimateAttackTile(_point, mapTileEntity => mapTileEntity.SetMonsterState(_monsterStatus.MonsterState));
+                mapViewModel.AnimateAttackTile(_point, mapTileEntity => mapTileEntity.SetMonsterStateOverlay(_monsterStatus.MonsterState));
             }
             else
             {

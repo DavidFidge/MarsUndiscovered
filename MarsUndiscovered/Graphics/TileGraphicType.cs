@@ -26,5 +26,7 @@ public enum TileGraphicType
     Monster,
     Ship,
     MonsterStateHunting,
-    MonsterStateHuntingBottomRight
+    MonsterStateHuntingBottomRight,
+    MonsterStateSearchingBottomRight,
+    MonsterStateTravellingBottomRight
 }
