@@ -350,9 +350,9 @@ public class Assets : IAssets
             UiConstants.TileWidth,
             UiConstants.TileHeight,
             MapBitmapFont,
-            '?',
+            (char)0x1a,
             SadRogue.Primitives.Direction.DownRight,
-            Color.White
+            Color.LimeGreen
         );
 
         _asciiMapTileGraphics.AddMapTileTextures(TileGraphicType.MonsterStateTravellingBottomRight.ToString(),
