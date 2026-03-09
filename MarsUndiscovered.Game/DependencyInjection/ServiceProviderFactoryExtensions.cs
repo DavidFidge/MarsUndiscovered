@@ -1,10 +1,13 @@
 using System.Reflection;
+using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MarsUndiscovered.Game.DependencyInjection
 {
     public static class ServiceProviderFactoryExtensions
     {
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> SettablePropertiesCache = new();
+
         public static IServiceCollection AddTransientWithProperties<TService, TImplementation>(this IServiceCollection services)
             where TService : class
             where TImplementation : class, TService
@@ -36,10 +39,12 @@ namespace MarsUndiscovered.Game.DependencyInjection
 
         public static void InjectSettableProperties(this IServiceProvider serviceProvider, object instance)
         {
-            var properties = instance
-                .GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(p => p.CanRead && p.CanWrite && p.GetIndexParameters().Length == 0);
+            var properties = SettablePropertiesCache.GetOrAdd(
+                instance.GetType(),
+                type => type
+                    .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                    .Where(p => p.CanRead && p.CanWrite && p.GetIndexParameters().Length == 0)
+                    .ToArray());
 
             foreach (var property in properties)
             {

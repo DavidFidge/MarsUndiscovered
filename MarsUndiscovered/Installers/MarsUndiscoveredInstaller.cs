@@ -130,11 +130,11 @@ namespace MarsUndiscovered.Installers
 
         private static void RegisterHandlers(IServiceCollection services)
         {
-            AddTransientSelfAndInterface<IKeyboardHandler>(services, Assembly.GetExecutingAssembly());
-            AddTransientSelfAndInterface<IMouseHandler>(services, Assembly.GetExecutingAssembly());
+            AddTransientSelf<IKeyboardHandler>(services, Assembly.GetExecutingAssembly());
+            AddTransientSelf<IMouseHandler>(services, Assembly.GetExecutingAssembly());
 
-            services.AddTransient<IKeyboardHandler, NullKeyboardHandler>();
-            services.AddTransient<IMouseHandler, NullMouseHandler>();
+            services.AddTransient<IKeyboardHandler>(sp => sp.GetRequiredService<NullKeyboardHandler>());
+            services.AddTransient<IMouseHandler>(sp => sp.GetRequiredService<NullMouseHandler>());
         }
 
         private static void AddTransientSelfAndInterface<TServiceBase>(IServiceCollection services, Assembly assembly)
@@ -158,6 +158,20 @@ namespace MarsUndiscovered.Installers
                 {
                     services.AddTransient(@interface, sp => sp.GetRequiredService(implementation));
                 }
+            }
+        }
+
+        private static void AddTransientSelf<TServiceBase>(IServiceCollection services, Assembly assembly)
+        {
+            var serviceType = typeof(TServiceBase);
+            var implementations = assembly
+                .GetTypes()
+                .Where(t => t is { IsClass: true, IsAbstract: false } && serviceType.IsAssignableFrom(t))
+                .ToList();
+
+            foreach (var implementation in implementations)
+            {
+                services.AddTransient(implementation, sp => sp.CreateWithInjectedProperties(implementation));
             }
         }
     }
