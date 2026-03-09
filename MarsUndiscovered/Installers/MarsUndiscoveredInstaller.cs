@@ -1,9 +1,5 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Reflection;
-using Castle.Facilities.TypedFactory;
-using Castle.MicroKernel.Registration;
-using Castle.MicroKernel.SubSystems.Configuration;
-using Castle.Windsor;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.MonoGame.Core.Graphics.Map;
@@ -15,6 +11,8 @@ using FrigidRogue.MonoGame.Core.View.Interfaces;
 using InputHandlers.Keyboard;
 using InputHandlers.Mouse;
 using MarsUndiscovered.Components;
+using MarsUndiscovered.Game.Components.Factories;
+using MarsUndiscovered.Game.DependencyInjection;
 using MarsUndiscovered.Graphics;
 using MarsUndiscovered.Interfaces;
 using MarsUndiscovered.UserInterface.Input;
@@ -22,316 +20,145 @@ using MarsUndiscovered.UserInterface.Input.CameraMovementSpace;
 using MarsUndiscovered.UserInterface.ViewModels;
 using MarsUndiscovered.UserInterface.Views;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MarsUndiscovered.Installers
 {
-    public class MarsUndiscoveredInstaller : IWindsorInstaller
+    public class MarsUndiscoveredInstaller
     {
         [Conditional("DEBUG")]
         private void SetDebugEnvironment(ref string environment)
         {
             environment = "Development";
         }
-        
-        public void Install(IWindsorContainer container, IConfigurationStore store)
+
+        public void Install(IServiceCollection services)
         {
             var environment = "Production";
-            
+
             SetDebugEnvironment(ref environment);
-            
-            var configuration =  new ConfigurationBuilder()
+
+            var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false)
                 .AddJsonFile($"appsettings.{environment}.json", optional: true)
                 .Build();
-            
-            container.Register(Component.For<IConfiguration>().Instance(configuration));
 
-            RegisterTitleView(container, store);
-            RegisterCustomGameSeedView(container, store);
-            RegisterLoadGameView(container, store);
-            RegisterOptionsView(container, store);
-            RegisterVideoOptionsView(container, store);
-            RegisterGameOptionsView(container, store);
-            RegisterDeveloperToolsView(container, store);
-            RegisterInGameOptionsView(container, store);
-            RegisterInReplayOptionsView(container, store);
-            RegisterWorldBuilderOptionsView(container, store);
-            RegisterConsoleView(container, store);
-            RegisterGameView(container, store);
-            RegisterWorldBuilderView(container, store);
-            RegisterSaveGameView(container, store);
-            RegisterInventoryGameView(container, store);
-            RegisterInventoryReplayView(container, store);
+            services.AddSingleton<IConfiguration>(configuration);
 
-            RegisterKeyboardHandlers(container);
-            RegisterMouseHandlers(container);
+            RegisterViews(services);
+            RegisterHandlers(services);
+            RegisterFactories(services);
 
-            RegisterFactories(container);
+            services.AddTransientWithProperties<IAssets, Assets>();
+            services.AddTransientWithProperties<IGame, MarsUndiscoveredGame>();
+            services.AddTransientWithProperties<ScreenCollection, ScreenCollection>();
+            services.AddTransientWithProperties<IActionMapStore, DefaultActionMapStore>();
+            services.AddTransient<MapViewModel>(sp => sp.CreateWithInjectedProperties<MapViewModel>());
+            services.AddTransientWithProperties<ICameraMovement, CameraMovement>();
 
-            container.Register(
-
-                Component.For<IAssets>()
-                    .ImplementedBy<Assets>(),
-
-                Component.For<IGame>()
-                    .ImplementedBy<MarsUndiscoveredGame>(),
-
-                Classes.FromAssembly(Assembly.GetExecutingAssembly())
-                    .BasedOn<IScreen>(),
-
-                Component.For<ScreenCollection>(),
-
-                Classes.FromAssemblyContaining<IGameCamera>()
-                    .BasedOn<IGameCamera>()
-                    .WithServiceDefaultInterfaces(),
-
-                Component.For<IActionMapStore>()
-                    .ImplementedBy<DefaultActionMapStore>(),
-
-                Component.For<MapViewModel>()
-                    .LifeStyle.Transient,
-
-                Classes.FromAssembly(Assembly.GetExecutingAssembly())
-                    .BasedOn<BaseGameActionCommand>()
-                    .LifestyleTransient(),
-
-                Component.For<ICameraMovement>()
-                    .ImplementedBy<CameraMovement>()
-            );
+            AddTransientSelfAndInterface<IScreen>(services, Assembly.GetExecutingAssembly());
+            AddTransientSelfAndInterface<IGameCamera>(services, typeof(IGameCamera).Assembly);
+            AddTransientSelfAndInterface<BaseGameActionCommand>(services, Assembly.GetExecutingAssembly());
+            AddTransientSelfAndInterface<IConsoleCommand>(services, Assembly.GetExecutingAssembly());
         }
 
-        private void RegisterFactories(IWindsorContainer container)
+        private void RegisterFactories(IServiceCollection services)
         {
-            container.Register(
+            services.AddTransient<MapTileEntity>(sp => sp.CreateWithInjectedProperties<MapTileEntity>());
+            services.AddTransient<IMapTileEntityFactory, MapTileEntityFactory>();
 
-                Component.For<MapTileEntity>()
-                    .LifeStyle.Transient,
+            services.AddTransient<FieldOfViewTileEntity>(sp => sp.CreateWithInjectedProperties<FieldOfViewTileEntity>());
+            services.AddTransient<IFieldOfViewTileEntityFactory, FieldOfViewTileEntityFactory>();
 
-                Component.For<IMapTileEntityFactory>()
-                    .AsFactory(),
+            services.AddTransient<MapEntity>(sp => sp.CreateWithInjectedProperties<MapEntity>());
+            services.AddTransient<IFactory<MapEntity>, ServiceFactory<MapEntity>>();
 
-                Component.For<FieldOfViewTileEntity>()
-                    .LifeStyle.Transient,
-
-                Component.For<IFieldOfViewTileEntityFactory>()
-                    .AsFactory(),
-
-                Component.For<MapEntity>()
-                    .LifeStyle.Transient,
-
-                Component.For<IFactory<MapEntity>>()
-                    .AsFactory(),
-
-                Component.For<GoalMapEntity>()
-                    .LifeStyle.Transient,
-
-                Component.For<IFactory<GoalMapEntity>>()
-                    .AsFactory()
-            );
+            services.AddTransient<GoalMapEntity>(sp => sp.CreateWithInjectedProperties<GoalMapEntity>());
+            services.AddTransient<IFactory<GoalMapEntity>, ServiceFactory<GoalMapEntity>>();
         }
 
-        private void RegisterMouseHandlers(IWindsorContainer container)
+        private static void RegisterViews(IServiceCollection services)
         {
-            container.Register(
-                Classes.FromAssembly(Assembly.GetExecutingAssembly())
-                    .BasedOn<IMouseHandler>() // Only covers dependencies asking for IMouseHandler, does not cover if they ask for specific class type e.g. see RegisterGameView
-                    .ConfigureFor<NullMouseHandler>(c => c.IsDefault())
-                    .WithServiceDefaultInterfaces()
-            );
+            services.AddTransient<TitleView>(sp => sp.CreateWithInjectedProperties<TitleView>());
+            services.AddTransient<TitleViewModel>(sp => sp.CreateWithInjectedProperties<TitleViewModel>());
+
+            services.AddTransient<LoadGameView>(sp => sp.CreateWithInjectedProperties<LoadGameView>());
+            services.AddTransient<LoadGameViewModel>(sp => sp.CreateWithInjectedProperties<LoadGameViewModel>());
+
+            services.AddTransient<CustomGameSeedView>(sp => sp.CreateWithInjectedProperties<CustomGameSeedView>());
+            services.AddTransient<CustomGameSeedViewModel>(sp => sp.CreateWithInjectedProperties<CustomGameSeedViewModel>());
+
+            services.AddTransient<SaveGameView>(sp => sp.CreateWithInjectedProperties<SaveGameView>());
+            services.AddTransient<SaveGameViewModel>(sp => sp.CreateWithInjectedProperties<SaveGameViewModel>());
+
+            services.AddTransient<OptionsView>(sp => sp.CreateWithInjectedProperties<OptionsView>());
+            services.AddTransient<OptionsViewModel>(sp => sp.CreateWithInjectedProperties<OptionsViewModel>());
+
+            services.AddTransient<VideoOptionsView>(sp => sp.CreateWithInjectedProperties<VideoOptionsView>());
+            services.AddTransient<VideoOptionsViewModel>(sp => sp.CreateWithInjectedProperties<VideoOptionsViewModel>());
+
+            services.AddTransient<GameOptionsView>(sp => sp.CreateWithInjectedProperties<GameOptionsView>());
+            services.AddTransient<GameOptionsViewModel>(sp => sp.CreateWithInjectedProperties<GameOptionsViewModel>());
+
+            services.AddTransient<DeveloperToolsView>(sp => sp.CreateWithInjectedProperties<DeveloperToolsView>());
+            services.AddTransient<DeveloperToolsViewModel>(sp => sp.CreateWithInjectedProperties<DeveloperToolsViewModel>());
+
+            services.AddTransient<GameView>(sp => sp.CreateWithInjectedProperties<GameView>());
+            services.AddTransient<GameViewModel>(sp => sp.CreateWithInjectedProperties<GameViewModel>());
+
+            services.AddTransient<WorldBuilderView>(sp => sp.CreateWithInjectedProperties<WorldBuilderView>());
+            services.AddTransient<WorldBuilderViewModel>(sp => sp.CreateWithInjectedProperties<WorldBuilderViewModel>());
+
+            services.AddTransient<InGameOptionsView>(sp => sp.CreateWithInjectedProperties<InGameOptionsView>());
+            services.AddTransient<InGameOptionsViewModel>(sp => sp.CreateWithInjectedProperties<InGameOptionsViewModel>());
+
+            services.AddTransient<InReplayOptionsView>(sp => sp.CreateWithInjectedProperties<InReplayOptionsView>());
+            services.AddTransient<InReplayOptionsViewModel>(sp => sp.CreateWithInjectedProperties<InReplayOptionsViewModel>());
+
+            services.AddTransient<WorldBuilderOptionsView>(sp => sp.CreateWithInjectedProperties<WorldBuilderOptionsView>());
+            services.AddTransient<WorldBuilderOptionsViewModel>(sp => sp.CreateWithInjectedProperties<WorldBuilderOptionsViewModel>());
+
+            services.AddTransient<ConsoleView>(sp => sp.CreateWithInjectedProperties<ConsoleView>());
+            services.AddTransient<ConsoleViewModel>(sp => sp.CreateWithInjectedProperties<ConsoleViewModel>());
+
+            services.AddTransient<InventoryGameView>(sp => sp.CreateWithInjectedProperties<InventoryGameView>());
+            services.AddTransient<InventoryGameViewModel>(sp => sp.CreateWithInjectedProperties<InventoryGameViewModel>());
+
+            services.AddTransient<InventoryReplayView>(sp => sp.CreateWithInjectedProperties<InventoryReplayView>());
+            services.AddTransient<InventoryReplayViewModel>(sp => sp.CreateWithInjectedProperties<InventoryReplayViewModel>());
         }
 
-        private void RegisterKeyboardHandlers(IWindsorContainer container)
+        private static void RegisterHandlers(IServiceCollection services)
         {
-            
-            container.Register(
-                Classes.FromAssembly(Assembly.GetExecutingAssembly())
-                    .BasedOn<IKeyboardHandler>() // Only covers dependencies asking for IKeyboardHandler, does not cover if they ask for specific class type e.g. see RegisterGameView
-                    .Unless(s => typeof(GlobalKeyboardHandler).IsAssignableFrom(s))
-                    .ConfigureFor<NullKeyboardHandler>(c => c.IsDefault())
-                    .WithServiceDefaultInterfaces(),
+            AddTransientSelfAndInterface<IKeyboardHandler>(services, Assembly.GetExecutingAssembly());
+            AddTransientSelfAndInterface<IMouseHandler>(services, Assembly.GetExecutingAssembly());
 
-                Component.For<GlobalKeyboardHandler>()
-            );
+            services.AddTransient<IKeyboardHandler, NullKeyboardHandler>();
+            services.AddTransient<IMouseHandler, NullMouseHandler>();
         }
 
-        private void RegisterTitleView(IWindsorContainer container, IConfigurationStore store)
+        private static void AddTransientSelfAndInterface<TServiceBase>(IServiceCollection services, Assembly assembly)
         {
-            container.Register(
-                Component.For<TitleView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, TitleViewKeyboardHandler>()),
+            var serviceType = typeof(TServiceBase);
+            var implementations = assembly
+                .GetTypes()
+                .Where(t => t is { IsClass: true, IsAbstract: false } && serviceType.IsAssignableFrom(t))
+                .ToList();
 
-                Component.For<TitleViewModel>()
-            );
-        }
+            foreach (var implementation in implementations)
+            {
+                services.AddTransient(implementation, sp => sp.CreateWithInjectedProperties(implementation));
 
-        private void RegisterLoadGameView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<LoadGameView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, LoadGameViewKeyboardHandler>()),
+                var interfaces = implementation
+                    .GetInterfaces()
+                    .Where(i => serviceType.IsAssignableFrom(i))
+                    .ToList();
 
-                Component.For<LoadGameViewModel>()
-            );
-        }
-
-        private void RegisterCustomGameSeedView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<CustomGameSeedView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, CustomGameSeedViewKeyboardHandler>()),
-
-                Component.For<CustomGameSeedViewModel>()
-            );
-        }
-
-        private void RegisterSaveGameView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<SaveGameView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, SaveGameViewKeyboardHandler>()),
-
-                Component.For<SaveGameViewModel>()
-            );
-        }
-
-        private void RegisterOptionsView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<OptionsView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, OptionsKeyboardHandler>()),
-
-                Component.For<OptionsViewModel>()
-            );
-        }
-
-        private void RegisterVideoOptionsView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-
-                Component.For<VideoOptionsViewModel>()
-                    .ImplementedBy<VideoOptionsViewModel>(),
-
-                Component.For<VideoOptionsView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, VideoOptionsKeyboardHandler>())
-            );
-        }
-        
-        private void RegisterGameOptionsView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-
-                Component.For<GameOptionsViewModel>()
-                    .ImplementedBy<GameOptionsViewModel>(),
-
-                Component.For<GameOptionsView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, GameOptionsKeyboardHandler>())
-            );
-        }
-
-        private void RegisterDeveloperToolsView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-
-                Component.For<DeveloperToolsViewModel>()
-                    .ImplementedBy<DeveloperToolsViewModel>(),
-
-                Component.For<DeveloperToolsView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, DeveloperToolsKeyboardHandler>())
-            );
-        }
-
-        private void RegisterGameView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<GameView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, GameViewKeyboardHandler>())
-                    .DependsOn(Dependency.OnComponent<IMouseHandler, GameViewMouseHandler>())
-                    .DependsOn(Dependency.OnComponent<GameViewRadioCommsMouseHandler, GameViewRadioCommsMouseHandler>())
-                    .DependsOn(Dependency.OnComponent<GameViewRadioCommsKeyboardHandler, GameViewRadioCommsKeyboardHandler>())
-                    .DependsOn(Dependency.OnComponent<SquareChoiceGameViewKeyboardHandler, SquareChoiceGameViewKeyboardHandler>())
-                    .DependsOn(Dependency.OnComponent<SquareChoiceGameViewMouseHandler, SquareChoiceGameViewMouseHandler>())
-                    .DependsOn(Dependency.OnComponent<GameViewGameOverMouseHandler, GameViewGameOverMouseHandler>())
-                    .DependsOn(Dependency.OnComponent<GameViewGameOverKeyboardHandler, GameViewGameOverKeyboardHandler>()),
-
-                Component.For<GameViewModel>()
-            );
-        }
-
-        private void RegisterWorldBuilderView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<WorldBuilderView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, WorldBuilderViewKeyboardHandler>())
-                    .DependsOn(Dependency.OnComponent<IMouseHandler, WorldBuilderViewMouseHandler>()),
-
-                Component.For<WorldBuilderViewModel>()
-            );
-        }
-
-        private void RegisterInGameOptionsView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<InGameOptionsView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, InGameOptionsKeyboardHandler>()),
-
-                Component.For<InGameOptionsViewModel>()
-            );
-        }
-
-        private void RegisterInReplayOptionsView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<InReplayOptionsView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, InReplayOptionsKeyboardHandler>()),
-
-                Component.For<InReplayOptionsViewModel>()
-            );
-        }
-        
-        private void RegisterWorldBuilderOptionsView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<WorldBuilderOptionsView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, WorldBuilderOptionsKeyboardHandler>()),
-
-                Component.For<WorldBuilderOptionsViewModel>()
-            );
-        }
-
-        private void RegisterConsoleView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<ConsoleView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, ConsoleKeyboardHandler>()),
-
-                Component.For<ConsoleViewModel>(),
-
-                Classes.FromAssembly(Assembly.GetExecutingAssembly())
-                    .BasedOn<IConsoleCommand>()
-                    .WithServiceDefaultInterfaces()
-            );
-        }
-
-        private void RegisterInventoryGameView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<InventoryGameView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, InventoryGameViewKeyboardHandler>())
-                    .DependsOn(Dependency.OnComponent<IMouseHandler, InventoryGameViewMouseHandler>()),
-
-                Component.For<InventoryGameViewModel>()
-            );
-        }
-
-        private void RegisterInventoryReplayView(IWindsorContainer container, IConfigurationStore store)
-        {
-            container.Register(
-                Component.For<InventoryReplayView>()
-                    .DependsOn(Dependency.OnComponent<IKeyboardHandler, InventoryReplayViewKeyboardHandler>())
-                    .DependsOn(Dependency.OnComponent<IMouseHandler, InventoryReplayViewMouseHandler>()),
-                
-                Component.For<InventoryReplayViewModel>()
-            );
+                foreach (var @interface in interfaces)
+                {
+                    services.AddTransient(@interface, sp => sp.GetRequiredService(implementation));
+                }
+            }
         }
     }
 }

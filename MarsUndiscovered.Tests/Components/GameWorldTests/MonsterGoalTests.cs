@@ -1,7 +1,5 @@
 using System.Text;
 
-using Castle.Core.Internal;
-
 using FrigidRogue.MonoGame.Core.Extensions;
 using GoRogue.Random;
 using MarsUndiscovered.Game.Commands;

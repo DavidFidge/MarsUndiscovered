@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 
-using Castle.Components.DictionaryAdapter.Xml;
-
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 

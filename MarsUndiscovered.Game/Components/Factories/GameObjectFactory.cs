@@ -1,8 +1,7 @@
-using Castle.MicroKernel;
-using Castle.Windsor;
 using FrigidRogue.MonoGame.Core.Interfaces.Services;
 using FrigidRogue.MonoGame.Core.Services;
 using GoRogue.GameFramework;
+using MarsUndiscovered.Game.DependencyInjection;
 using MarsUndiscovered.Game.Components.SaveData;
 using MarsUndiscovered.Interfaces;
 
@@ -10,7 +9,7 @@ namespace MarsUndiscovered.Game.Components.Factories
 {
     public class GameObjectFactory : IGameObjectFactory
     {
-        private readonly IWindsorContainer _container;
+        private readonly IServiceProvider _serviceProvider;
         private IGameWorld _gameWorld;
 
         public void Initialise(IGameWorld gameWorld)
@@ -28,9 +27,9 @@ namespace MarsUndiscovered.Game.Components.Factories
             return ++LastId;
         }
 
-        public GameObjectFactory(IWindsorContainer container)
+        public GameObjectFactory(IServiceProvider serviceProvider)
         {
-            _container = container;
+            _serviceProvider = serviceProvider;
         }
 
         public T CreateGameObject<T>() where T : IGameObject
@@ -45,7 +44,7 @@ namespace MarsUndiscovered.Game.Components.Factories
 
         private T ResolveWithNextId<T>() where T : IGameObject
         {
-            var gameObject = _container.Resolve<T>(new Arguments { { "gameWorld", _gameWorld }, { "id", GetNextId() } });
+            var gameObject = _serviceProvider.CreateWithInjectedProperties<T>(_gameWorld, GetNextId());
             GameObjects.Add(gameObject.ID, gameObject);
 
             return gameObject;
@@ -53,7 +52,7 @@ namespace MarsUndiscovered.Game.Components.Factories
 
         private T ResolveWithGivenId<T>(uint id) where T : IGameObject
         {
-            var gameObject = _container.Resolve<T>(new Arguments { { "gameWorld", _gameWorld }, { "id", id } });
+            var gameObject = _serviceProvider.CreateWithInjectedProperties<T>(_gameWorld, id);
             GameObjects.Add(gameObject.ID, gameObject);
 
             return gameObject;
