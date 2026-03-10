@@ -219,7 +219,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected void CreateAmbientPanel()
         {
             AmbientParagraph = new RichParagraph()
-                .Anchor(Anchor.BottomLeft)
+                .Anchor(Anchor.Auto)
                 .NoPadding()
                 .Height(0.5f);
 

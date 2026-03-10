@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "World Builder",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/MarsUndiscovered/bin/Debug/net8.0-windows/MarsUndiscovered.exe",
+      "args": [
+        "--WorldBuilder",
+        "--WizardMode"
+      ],
+      "cwd": "${workspaceFolder}/MarsUndiscovered",
+      "console": "internalConsole"
+    },
+    {
+      "name": "Mars Undiscovered",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/MarsUndiscovered/bin/Debug/net8.0-windows/MarsUndiscovered.exe",
+      "args": [
+        "--WizardMode"
+      ],
+      "cwd": "${workspaceFolder}/MarsUndiscovered",
+      "console": "internalConsole"
+    },
+    {
+      "name": "New Game",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/MarsUndiscovered/bin/Debug/net8.0-windows/MarsUndiscovered.exe",
+      "args": [
+        "--NewGame",
+        "--WizardMode"
+      ],
+      "cwd": "${workspaceFolder}/MarsUndiscovered",
+      "console": "internalConsole"
+    },
+    {
+      "name": "New Game Skip Comms",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/MarsUndiscovered/bin/Debug/net8.0-windows/MarsUndiscovered.exe",
+      "args": [
+        "--NewGame",
+        "--SkipRadioComms",
+        "--WizardMode"
+      ],
+      "cwd": "${workspaceFolder}/MarsUndiscovered",
+      "console": "internalConsole"
+    }
+  ]
+}
