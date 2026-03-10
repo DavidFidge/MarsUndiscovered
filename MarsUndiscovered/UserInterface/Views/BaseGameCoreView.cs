@@ -1,5 +1,7 @@
 ﻿using FrigidRogue.MonoGame.Core.Extensions;
+using FrigidRogue.MonoGame.Core.Graphics;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
+using FrigidRogue.MonoGame.Core.Graphics.Map;
 using MarsUndiscovered.UserInterface.Data;
 using MarsUndiscovered.UserInterface.ViewModels;
 using Microsoft.Xna.Framework;
@@ -71,8 +73,18 @@ namespace MarsUndiscovered.UserInterface.Views
             
             // Draws each tile onto the render target only with no transforms. _renderTarget is set
             // on the map earlier.
+            var fieldOfViewTiles = new List<ISpriteBatchDrawable>(drawableTiles.Count);
+
             foreach (var tile in drawableTiles)
+            {
+                if (tile is FieldOfViewTileEntity)
+                {
+                    fieldOfViewTiles.Add(tile);
+                    continue;
+                }
+
                 tile.SpriteBatchDraw(_spriteBatch);
+            }
 
             _spriteBatch.End();
 
@@ -82,6 +94,18 @@ namespace MarsUndiscovered.UserInterface.Views
 
             foreach (var tile in drawableTiles)
                 tile.OverlayDraw(_spriteBatch);
+
+            _spriteBatch.End();
+
+            Game.GraphicsDevice.RestoreGraphicsDeviceAfterSpriteBatchDraw();
+
+            // Draw field-of-view tiles after overlay draw so fog-of-war obscures overlays.
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+
+            foreach (var tile in fieldOfViewTiles)
+            {
+                tile.SpriteBatchDraw(_spriteBatch);
+            }
 
             _spriteBatch.End();
 

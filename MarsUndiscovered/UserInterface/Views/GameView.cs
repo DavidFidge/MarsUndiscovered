@@ -219,7 +219,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected void CreateAmbientPanel()
         {
             AmbientParagraph = new RichParagraph()
-                .Anchor(Anchor.BottomLeft)
+                .Anchor(Anchor.Auto)
                 .NoPadding()
                 .Height(0.5f);
 
@@ -301,13 +301,15 @@ namespace MarsUndiscovered.UserInterface.Views
             
             CreateLayoutPanels();
             SetupInGameOptionsButton(LeftPanel);
+            // Create player panel first so subsequent auto-anchored elements
+            // (like the hot bar) flow directly under it.
             CreatePlayerPanel();
+            CreateHotBarPanel();
             CreateMessageLog();
             CreateStatusPanel();
             CreateMonsterPanelContainer();
             CreateAmbientPanel();
             CreateRadioCommsPanel();
-            CreateHotBarPanel();
             SetupConsole();
             SetupInventoryGame();
             SetupChildPanel(_inGameOptionsView);
@@ -329,42 +331,37 @@ namespace MarsUndiscovered.UserInterface.Views
 
         protected void CreateHotBarPanel()
         {
+            // Move the hotbar into the left panel and lay out items vertically
             HotBarPanel = new Panel()
-                .Anchor(Anchor.BottomCenter)
+                // Use Auto so the panel will be placed directly after the player panel
+                // in the left panel's flow, rather than being anchored to the bottom.
+                .Anchor(Anchor.Auto)
                 .SkinNone()
                 .NoPadding()
-                .Height(UiConstants.HotBarHeight)
-                .WidthOfContainer();
-            
-            GameViewPanel.AddChild(HotBarPanel);
+                .WidthOfContainer()
+                .Height(0.5f);
 
-            HotBarPanelItems = new HotBarItemPanel[10];
-            
-            for (var i = 0; i < 10; i++)
+            LeftPanel.AddChild(HotBarPanel);
+
+            HotBarPanelItems = new HotBarItemPanel[6];
+
+            for (var i = 0; i < 6; i++)
             {
                 var key = i + 1;
-                
-                if (key == 10)
+
+                if (key == 6)
                     key = 0;
-                
+
+                // Use a vertical stacked layout for each hotbar item
                 var hotBarItemPanel = new HotBarItemPanel(Assets, GetHotBarKey(key))
-                    .Anchor(Anchor.AutoInlineNoBreak)
+                    .Anchor(Anchor.Auto)
                     .SkinAlternative()
                     .NoPadding()
-                    .Width(0.05f)
-                    .HeightOfParent();
-                
-                var separator = new Panel().Anchor(Anchor.AutoInlineNoBreak)
-                    .SkinNone()
-                    .NoPadding()
-                    .Width(0.01f)
-                    .HeightOfParent();
-                
+                    .Width(0.3f)
+                    .Height(0.15f);
+
                 HotBarPanelItems[i] = hotBarItemPanel;
                 HotBarPanel.AddChild(hotBarItemPanel);
-                
-                if (i != 9)
-                    HotBarPanel.AddChild(separator);
             }
         }
 
@@ -729,10 +726,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 return;
             
             StopAutoMovement();
-
-            var rect = BottomPanel.CalcDestRect();
-            HotBarPanel.Offset(0, -rect.Height);
-                
             _inventoryGameView.SetInventoryMode(request.InventoryMode);
             _inventoryGameView.Show();
         }
@@ -741,8 +734,6 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             if (!IsVisible)
                 return;
-
-            HotBarPanel.Offset(0, 0);
             _inventoryGameView.Hide();
         }
 

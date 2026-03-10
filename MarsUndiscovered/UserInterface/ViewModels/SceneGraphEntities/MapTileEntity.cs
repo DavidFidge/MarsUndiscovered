@@ -22,7 +22,6 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public IMapTileTexture MapTileTexture { get; set; }
         public bool IsVisible { get; set; }
         public float? Opacity { get; set; }
-        public bool IsOverlayVisible { get; set; }
 
         private float _healthBarWidth;
         private Gradient _healthBarGradient = new Gradient(SadRogue.Primitives.Color.Red, SadRogue.Primitives.Color.Orange, SadRogue.Primitives.Color.Yellow, SadRogue.Primitives.Color.Green);
