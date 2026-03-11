@@ -1,3 +1,4 @@
+using FrigidRogue.MonoGame.Core.Components;
 using MarsUndiscovered.Game.Commands;
 using MarsUndiscovered.Game.DependencyInjection;
 using MarsUndiscovered.Interfaces;

@@ -32,17 +32,17 @@ namespace MarsUndiscovered.Game.Components.Factories
             _serviceProvider = serviceProvider;
         }
 
-        public T CreateGameObject<T>() where T : IGameObject
+        public T CreateGameObject<T>() where T : class, IGameObject
         {
             return ResolveWithNextId<T>();
         }
 
-        public T CreateGameObject<T>(uint id) where T : IGameObject
+        public T CreateGameObject<T>(uint id) where T : class, IGameObject
         {
             return ResolveWithGivenId<T>(id);
         }
 
-        private T ResolveWithNextId<T>() where T : IGameObject
+        private T ResolveWithNextId<T>() where T : class, IGameObject
         {
             var gameObject = _serviceProvider.CreateWithInjectedProperties<T>(_gameWorld, GetNextId());
             GameObjects.Add(gameObject.ID, gameObject);
@@ -50,7 +50,7 @@ namespace MarsUndiscovered.Game.Components.Factories
             return gameObject;
         }
 
-        private T ResolveWithGivenId<T>(uint id) where T : IGameObject
+        private T ResolveWithGivenId<T>(uint id) where T : class, IGameObject
         {
             var gameObject = _serviceProvider.CreateWithInjectedProperties<T>(_gameWorld, id);
             GameObjects.Add(gameObject.ID, gameObject);

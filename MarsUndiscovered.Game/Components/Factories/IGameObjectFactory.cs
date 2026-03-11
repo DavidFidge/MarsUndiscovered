@@ -8,7 +8,7 @@ namespace MarsUndiscovered.Game.Components.Factories
         void Initialise(IGameWorld gameWorld);
         uint LastId { get; }
         IDictionary<uint, IGameObject> GameObjects { get; }
-        T CreateGameObject<T>() where T : IGameObject;
-        T CreateGameObject<T>(uint id) where T : IGameObject;
+        T CreateGameObject<T>() where T : class, IGameObject;
+        T CreateGameObject<T>(uint id) where T : class, IGameObject;
     }
 }

@@ -7,7 +7,7 @@ using MarsUndiscovered.Interfaces;
 namespace MarsUndiscovered.Game.Components
 {
     public class GameObjectCollection<T, TState> : Dictionary<uint, T>, ISaveable
-        where T : IMarsGameObject, IMementoState<TState>
+        where T : class, IMarsGameObject, IMementoState<TState>
         where TState : GameObjectSaveData
     {
         protected readonly IGameObjectFactory _gameObjectFactory;
