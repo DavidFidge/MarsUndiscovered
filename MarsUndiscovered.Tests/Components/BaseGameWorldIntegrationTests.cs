@@ -1,9 +1,9 @@
 using System.ComponentModel.Design;
-using Castle.MicroKernel.Registration;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Maps;
 using MarsUndiscovered.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,16 +22,9 @@ namespace MarsUndiscovered.Tests.Components
         {
             base.Setup();
 
-            Container.Register(
-                Component.For<IGameWorld>()
-                    .ImplementedBy<TestGameWorld>()
-                    .LifestyleTransient()
-                    .IsDefault(),
-                Component.For<IStory>()
-                    .ImplementedBy<TestStory>()
-                    .LifestyleTransient()
-                    .IsDefault()
-                );
+            Services.AddTransient<IGameWorld, TestGameWorld>();
+            Services.AddTransient<IStory, TestStory>();
+            Container = Services.BuildServiceProvider();
 
             _gameWorld = (TestGameWorld)Container.Resolve<IGameWorld>();
             _gameProvider = Container.Resolve<IGameProvider>();

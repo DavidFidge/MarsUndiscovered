@@ -1,5 +1,6 @@
+using System.Reflection;
 using System.Text;
-using Castle.Core.Internal;
+
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.ConsoleCommands;
 using FrigidRogue.MonoGame.Core.Extensions;
@@ -16,7 +17,7 @@ namespace MarsUndiscovered.ConsoleCommands
         {
             _consoleCommands = consoleCommands
                 .ToDictionary(k => 
-                    k.GetType().GetAttributes<ConsoleCommandAttribute>().Single().Name.ToLower(),
+                    k.GetType().GetCustomAttributes<ConsoleCommandAttribute>().Single().Name.ToLower(),
                     v => v);
         }
 
@@ -29,9 +30,9 @@ namespace MarsUndiscovered.ConsoleCommands
                 if (command != null)
                 {
                     var sb = new StringBuilder();
-                    sb.AppendLine($"Command: {command.GetType().GetAttributes<ConsoleCommandAttribute>().Single().Name}");
+                    sb.AppendLine($"Command: {command.GetType().GetCustomAttributes<ConsoleCommandAttribute>().Single().Name}");
                     
-                    sb.AppendLine($"Parameters: {command.GetType().GetAttributes<ConsoleCommandAttribute>().Single().Parameter1} {command.GetType().GetAttributes<ConsoleCommandAttribute>().Single().Parameter2}");
+                    sb.AppendLine($"Parameters: {command.GetType().GetCustomAttributes<ConsoleCommandAttribute>().Single().Parameter1} {command.GetType().GetCustomAttributes<ConsoleCommandAttribute>().Single().Parameter2}");
 
                     consoleCommand.Result = sb.ToString();
                 }
@@ -39,7 +40,7 @@ namespace MarsUndiscovered.ConsoleCommands
             else
             {
                 var commandNames = _consoleCommands.Values
-                    .Select(v => v.GetType().GetAttributes<ConsoleCommandAttribute>().Single().Name).ToCsv();
+                    .Select(v => v.GetType().GetCustomAttributes<ConsoleCommandAttribute>().Single().Name).ToCsv();
                 
                 consoleCommand.Result = $"List of commands (case insensitive): {commandNames}";
             }

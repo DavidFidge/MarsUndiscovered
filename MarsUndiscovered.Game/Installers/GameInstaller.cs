@@ -1,8 +1,4 @@
-﻿using System.Reflection;
-using Castle.Facilities.TypedFactory;
-using Castle.MicroKernel.Registration;
-using Castle.MicroKernel.SubSystems.Configuration;
-using Castle.Windsor;
+using System.Reflection;
 using FrigidRogue.MonoGame.Core.Components;
 using FrigidRogue.MonoGame.Core.Graphics.Camera;
 using FrigidRogue.WaveFunctionCollapse;
@@ -13,203 +9,100 @@ using MarsUndiscovered.Game.Components;
 using MarsUndiscovered.Game.Components.Factories;
 using MarsUndiscovered.Game.Components.GenerationSteps;
 using MarsUndiscovered.Game.Components.Maps;
+using MarsUndiscovered.Game.DependencyInjection;
 using MarsUndiscovered.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MarsUndiscovered.Game.Installers
 {
-    public class GameInstaller : IWindsorInstaller
+    public class GameInstaller
     {
-        public void Install(IWindsorContainer container, IConfigurationStore store)
+        public void Install(IServiceCollection services)
         {
-            RegisterFactories(container);
+            RegisterFactories(services);
 
-            container.Register(
-               
-                Component.For<IHttpClient>()
-                    .ImplementedBy<HttpClientWrapper>(),
+            services.AddTransientWithProperties<IHttpClient, HttpClientWrapper>();
+            services.AddTransientWithProperties<IMapGenerator, MapGenerator>();
+            services.AddTransientWithProperties<IPrefabProvider, PrefabProvider>();
+            services.AddTransientWithProperties<ILevelGenerator, LevelGenerator>();
+            services.AddTransientWithProperties<IMonsterGenerator, MonsterGenerator>();
+            services.AddTransientWithProperties<IItemGenerator, ItemGenerator>();
+            services.AddTransientWithProperties<IFeatureGenerator, FeatureGenerator>();
+            services.AddTransientWithProperties<IEnvironmentalEffectGenerator, EnvironmentalEffectGenerator>();
+            services.AddTransientWithProperties<IWaypointGenerator, WaypointGenerator>();
+            services.AddTransientWithProperties<IMachineGenerator, MachineGenerator>();
+            services.AddTransientWithProperties<IShipGenerator, ShipGenerator>();
+            services.AddTransientWithProperties<IMapExitGenerator, MapExitGenerator>();
+            services.AddTransientWithProperties<ISpawner, Spawner>();
+            services.AddSingletonWithProperties<IGameWorldProvider, GameWorldProvider>();
+            services.AddTransientWithProperties<IGameWorld, GameWorld>();
+            services.AddTransientWithProperties<IMorgue, Morgue>();
+            services.AddTransientWithProperties<IStory, Story>();
+            services.AddTransientWithProperties<IMorgueWebService, MorgueWebService>();
+            services.AddTransientWithProperties<IMorgueFileWriter, MorgueFileWriter>();
+            services.AddTransientWithProperties<IWaveFunctionCollapseGeneratorPasses, WaveFunctionCollapseGeneratorPasses>();
+            services.AddTransientWithProperties<IWaveFunctionCollapseGeneratorPassesRenderer, GameWorldWaveFunctionCollapseGeneratorPassesRenderer>();
+            services.AddTransientWithProperties<IWaveFunctionCollapseGeneratorPassesContentLoader, GameWorldWaveFunctionCollapseGeneratorPassesContentLoader>();
 
-                Component.For<IMapGenerator>()
-                    .ImplementedBy<MapGenerator>()
-                    .LifestyleTransient(),
-
-                Component.For<IPrefabProvider>()
-                    .ImplementedBy<PrefabProvider>()
-                    .LifestyleTransient(),
-                
-                Component.For<ILevelGenerator>()
-                    .ImplementedBy<LevelGenerator>()
-                    .LifestyleTransient(),
-
-                Component.For<IMonsterGenerator>()
-                    .ImplementedBy<MonsterGenerator>()
-                    .LifestyleTransient(),
-
-                Component.For<IItemGenerator>()
-                    .ImplementedBy<ItemGenerator>()
-                    .LifestyleTransient(),
-                
-                Component.For<IFeatureGenerator>()
-                    .ImplementedBy<FeatureGenerator>()
-                    .LifestyleTransient(),
-                
-                Component.For<IEnvironmentalEffectGenerator>()
-                    .ImplementedBy<EnvironmentalEffectGenerator>()
-                    .LifestyleTransient(),
-                
-                Component.For<IWaypointGenerator>()
-                    .ImplementedBy<WaypointGenerator>()
-                    .LifestyleTransient(),
-
-                Component.For<IMachineGenerator>()
-                    .ImplementedBy<MachineGenerator>()
-                    .LifestyleTransient(),
-
-                Component.For<IShipGenerator>()
-                    .ImplementedBy<ShipGenerator>()
-                    .LifestyleTransient(),
-
-                Component.For<IMapExitGenerator>()
-                    .ImplementedBy<MapExitGenerator>()
-                    .LifestyleTransient(),
-
-                Classes.FromAssemblyContaining<IGameCamera>()
-                    .BasedOn<IGameCamera>()
-                    .WithServiceDefaultInterfaces(),
-
-                Component.For<ISpawner>()
-                    .ImplementedBy<Spawner>()
-                    .LifestyleTransient(),
-                
-                Component.For<IGameWorldProvider>()
-                    .ImplementedBy<GameWorldProvider>()
-                    .LifestyleSingleton(),
-                
-                Component.For<IGameWorld>()
-                    .ImplementedBy<GameWorld>()
-                    .LifestyleTransient(),
-
-                Classes.FromAssembly(Assembly.GetExecutingAssembly())
-                    .BasedOn<MarsGameObject>()
-                    .LifestyleTransient(),
-
-                Classes.FromAssembly(Assembly.GetExecutingAssembly())
-                    .BasedOn<BaseGameActionCommand>()
-                    .LifestyleTransient(),
-                
-                Component.For<IMorgue>()
-                    .ImplementedBy<Morgue>()
-                    .LifestyleTransient(),
-                
-                Component.For<IStory>()
-                    .ImplementedBy<Story>()
-                    .LifestyleTransient(),
-                
-                Component.For<IMorgueWebService>()
-                    .ImplementedBy<MorgueWebService>(),
-                
-                Component.For<IMorgueFileWriter>()
-                    .ImplementedBy<MorgueFileWriter>()
-                    .LifestyleTransient(),
-
-                Component.For<IWaveFunctionCollapseGeneratorPasses>()
-                    .ImplementedBy<WaveFunctionCollapseGeneratorPasses>(),
-
-                Component.For<IWaveFunctionCollapseGeneratorPassesRenderer>()
-                    .ImplementedBy<GameWorldWaveFunctionCollapseGeneratorPassesRenderer>(),
-
-                Component.For<IWaveFunctionCollapseGeneratorPassesContentLoader>()
-                    .ImplementedBy<GameWorldWaveFunctionCollapseGeneratorPassesContentLoader>()
-            );
+            AddTransientSelfAndInterface<IGameCamera>(services, typeof(IGameCamera).Assembly);
+            AddTransientSelfAndInterface<MarsGameObject>(services, Assembly.GetExecutingAssembly());
+            AddTransientSelfAndInterface<BaseGameActionCommand>(services, Assembly.GetExecutingAssembly());
         }
 
-        private void RegisterFactories(IWindsorContainer container)
+        private void RegisterFactories(IServiceCollection services)
         {
-            container.Register(
+            services.AddTransientWithProperties<IGameObjectFactory, GameObjectFactory>();
+            services.AddTransient(typeof(IFactory<IGameWorld>), typeof(ServiceFactory<IGameWorld>));
+            services.AddTransient<ICommandCollection>(sp => sp.CreateWithInjectedProperties<CommandCollection>());
 
-                Component.For<IGameObjectFactory>()
-                    .ImplementedBy<GameObjectFactory>()
-                    .DependsOn(Dependency.OnValue<IWindsorContainer>(container))
-                    .LifeStyle.Transient,
+            services.AddTransient(typeof(ICommandFactory<MoveCommand>), typeof(CommandFactory<MoveCommand>));
+            services.AddTransient(typeof(ICommandFactory<WalkCommand>), typeof(CommandFactory<WalkCommand>));
+            services.AddTransient(typeof(ICommandFactory<MeleeAttackCommand>), typeof(CommandFactory<MeleeAttackCommand>));
+            services.AddTransient(typeof(ICommandFactory<LineAttackCommand>), typeof(CommandFactory<LineAttackCommand>));
+            services.AddTransient(typeof(ICommandFactory<LightningAttackCommand>), typeof(CommandFactory<LightningAttackCommand>));
+            services.AddTransient(typeof(ICommandFactory<LaserAttackCommand>), typeof(CommandFactory<LaserAttackCommand>));
+            services.AddTransient(typeof(ICommandFactory<DeathCommand>), typeof(CommandFactory<DeathCommand>));
+            services.AddTransient(typeof(ICommandFactory<PickUpItemCommand>), typeof(CommandFactory<PickUpItemCommand>));
+            services.AddTransient(typeof(ICommandFactory<DropItemCommand>), typeof(CommandFactory<DropItemCommand>));
+            services.AddTransient(typeof(ICommandFactory<EquipItemCommand>), typeof(CommandFactory<EquipItemCommand>));
+            services.AddTransient(typeof(ICommandFactory<UnequipItemCommand>), typeof(CommandFactory<UnequipItemCommand>));
+            services.AddTransient(typeof(ICommandFactory<ChangeMapCommand>), typeof(CommandFactory<ChangeMapCommand>));
+            services.AddTransient(typeof(ICommandFactory<ApplyItemCommand>), typeof(CommandFactory<ApplyItemCommand>));
+            services.AddTransient(typeof(ICommandFactory<ApplyShieldCommand>), typeof(CommandFactory<ApplyShieldCommand>));
+            services.AddTransient(typeof(ICommandFactory<ApplyHealingBotsCommand>), typeof(CommandFactory<ApplyHealingBotsCommand>));
+            services.AddTransient(typeof(ICommandFactory<EnchantItemCommand>), typeof(CommandFactory<EnchantItemCommand>));
+            services.AddTransient(typeof(ICommandFactory<WaitCommand>), typeof(CommandFactory<WaitCommand>));
+            services.AddTransient(typeof(ICommandFactory<ApplyMachineCommand>), typeof(CommandFactory<ApplyMachineCommand>));
+            services.AddTransient(typeof(ICommandFactory<IdentifyItemCommand>), typeof(CommandFactory<IdentifyItemCommand>));
+            services.AddTransient(typeof(ICommandFactory<UndoCommand>), typeof(CommandFactory<UndoCommand>));
+            services.AddTransient(typeof(ICommandFactory<ApplyForcePushCommand>), typeof(CommandFactory<ApplyForcePushCommand>));
+            services.AddTransient(typeof(ICommandFactory<PlayerRangeAttackCommand>), typeof(CommandFactory<PlayerRangeAttackCommand>));
+            services.AddTransient(typeof(ICommandFactory<ExplodeTileCommand>), typeof(CommandFactory<ExplodeTileCommand>));
+            services.AddTransient(typeof(ICommandFactory<SwapPositionCommand>), typeof(CommandFactory<SwapPositionCommand>));
+        }
 
-                Component.For<IFactory<IGameWorld>>()
-                    .AsFactory(),
+        private static void AddTransientSelfAndInterface<TServiceBase>(IServiceCollection services, Assembly assembly)
+        {
+            var serviceType = typeof(TServiceBase);
+            var implementations = assembly
+                .GetTypes()
+                .Where(t => t is { IsClass: true, IsAbstract: false } && serviceType.IsAssignableFrom(t))
+                .ToList();
 
-                Component.For<ICommandCollection>()
-                    .ImplementedBy<CommandCollection>()
-                    .LifeStyle.Transient,
+            foreach (var implementation in implementations)
+            {
+                services.AddTransient(implementation, sp => sp.CreateWithInjectedProperties(implementation));
 
-                Component.For<ICommandFactory<MoveCommand>>()
-                   .AsFactory(),
+                var interfaces = implementation
+                    .GetInterfaces()
+                    .Where(i => serviceType.IsAssignableFrom(i))
+                    .ToList();
 
-                Component.For<ICommandFactory<WalkCommand>>()
-                    .AsFactory(),
-
-                Component.For<ICommandFactory<MeleeAttackCommand>>()
-                    .AsFactory(),
-                
-                Component.For<ICommandFactory<LineAttackCommand>>()
-                    .AsFactory(),
-
-                Component.For<ICommandFactory<LightningAttackCommand>>()
-                    .AsFactory(),
-
-                Component.For<ICommandFactory<LaserAttackCommand>>()
-                    .AsFactory(),
-
-                Component.For<ICommandFactory<DeathCommand>>()
-                    .AsFactory(),
-
-                Component.For<ICommandFactory<PickUpItemCommand>>()
-                    .AsFactory(),
-
-                Component.For<ICommandFactory<DropItemCommand>>()
-                    .AsFactory(),
-
-                Component.For<ICommandFactory<EquipItemCommand>>()
-                    .AsFactory(),
-
-                Component.For<ICommandFactory<UnequipItemCommand>>()
-                    .AsFactory(),
-
-                Component.For<ICommandFactory<ChangeMapCommand>>()
-                    .AsFactory(),
-                
-                Component.For<ICommandFactory<ApplyItemCommand>>()
-                    .AsFactory(),
-                
-                Component.For<ICommandFactory<ApplyShieldCommand>>()
-                    .AsFactory(),
-                
-                Component.For<ICommandFactory<ApplyHealingBotsCommand>>()
-                    .AsFactory(),
-                
-                Component.For<ICommandFactory<EnchantItemCommand>>()
-                    .AsFactory(),
-                
-                Component.For<ICommandFactory<WaitCommand>>()
-                    .AsFactory(),
-                
-                Component.For<ICommandFactory<ApplyMachineCommand>>()
-                    .AsFactory(),
-                
-                Component.For<ICommandFactory<IdentifyItemCommand>>()
-                    .AsFactory(),
-                
-                Component.For<ICommandFactory<UndoCommand>>()
-                    .AsFactory(),
-                
-                Component.For<ICommandFactory<ApplyForcePushCommand>>()
-                    .AsFactory(),
-                
-                Component.For<ICommandFactory<PlayerRangeAttackCommand>>()
-                    .AsFactory(),
-            
-                Component.For<ICommandFactory<ExplodeTileCommand>>()
-                    .AsFactory(),
-
-                Component.For<ICommandFactory<SwapPositionCommand>>()
-                    .AsFactory()
-            );
+                foreach (var @interface in interfaces)
+                {
+                    services.AddTransient(@interface, sp => sp.GetRequiredService(implementation));
+                }
+            }
         }
     }
 }

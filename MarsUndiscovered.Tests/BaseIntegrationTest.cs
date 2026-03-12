@@ -1,9 +1,8 @@
-﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using FrigidRogue.MonoGame.Core.Installers;
+﻿using FrigidRogue.MonoGame.Core.Installers;
 using FrigidRogue.MonoGame.Core.View.Installers;
 using MarsUndiscovered.Game.Installers;
 using MarsUndiscovered.Installers;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 namespace MarsUndiscovered.Tests
@@ -11,21 +10,23 @@ namespace MarsUndiscovered.Tests
     [TestClass]
     public abstract class BaseIntegrationTest : BaseTest
     {
-        protected WindsorContainer Container;
+        protected IServiceProvider Container;
+        protected ServiceCollection Services;
 
         [TestInitialize]
         public override void Setup()
         {
             base.Setup();
-            
-            Container = new WindsorContainer();
 
-            Container.Install(new CoreInstaller());
-            Container.Install(new GameInstaller());
-            Container.Install(new ViewInstaller());
-            Container.Install(new MarsUndiscoveredInstaller());
+            Services = new ServiceCollection();
 
-            Container.Register(Component.For<ILogger>().Instance(FakeLogger).IsDefault());
+            new CoreInstaller().Install(Services);
+            new GameInstaller().Install(Services);
+            new ViewInstaller().Install(Services);
+            new MarsUndiscoveredInstaller().Install(Services);
+
+            Services.AddSingleton<ILogger>(FakeLogger);
+            Container = Services.BuildServiceProvider();
         }
     }
 }

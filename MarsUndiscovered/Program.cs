@@ -1,11 +1,10 @@
-﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
 using CommandLine;
 using FrigidRogue.MonoGame.Core.Installers;
 using FrigidRogue.MonoGame.Core.Interfaces.Components;
 using FrigidRogue.MonoGame.Core.View.Installers;
 using MarsUndiscovered.Game.Installers;
 using MarsUndiscovered.Installers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MarsUndiscovered
 {
@@ -20,19 +19,17 @@ namespace MarsUndiscovered
 
         static void RunGame(Options options)
         {
-            var container = new WindsorContainer();
+            var services = new ServiceCollection();
 
-            container.Install(new CoreInstaller());
-            container.Install(new GameInstaller());
-            container.Install(new ViewInstaller());
-            container.Install(new MarsUndiscoveredInstaller());
-            
-            container.Register(
-                Component.For<Options>()
-                    .Instance(options)
-            );
+            new CoreInstaller().Install(services);
+            new GameInstaller().Install(services);
+            new ViewInstaller().Install(services);
+            new MarsUndiscoveredInstaller().Install(services);
 
-            using var game = container.Resolve<IGame>();
+            services.AddSingleton(options);
+
+            using var provider = services.BuildServiceProvider();
+            using var game = provider.GetRequiredService<IGame>();
 
             game.Run();
         }
