@@ -109,7 +109,11 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel GameViewPanel { get; set; }
         protected Panel HoverPanelLeft { get; set; }
         protected Panel HoverPanelRight { get; set; }
+        protected Panel HoverPanelTop { get; set; }
         protected Panel MessageLogContainer { get; private set; }
+        public Panel BubbleThoughtPanel { get; private set; }
+        public RichParagraph BubbleThoughtMessage { get; private set; }
+        public Image BubbleThoughtImage { get; private set; }
 
         public GameView(
             GameViewModel gameViewModel,
@@ -194,12 +198,21 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Skin(PanelSkin.Alternative)
                 .AutoHeight()
                 .Hidden();
+            
+            GameViewPanel.AddChild(HoverPanelRight);
 
             HoverPanelRightTooltip = new RichParagraph();
 
             HoverPanelRight.AddChild(HoverPanelRightTooltip);
 
-            GameViewPanel.AddChild(HoverPanelRight);
+            HoverPanelTop = new Panel()
+                .Anchor(Anchor.TopCenter)
+                .Width(0.45f)
+                .Skin(PanelSkin.Alternative)
+                .AutoHeight()
+                .Hidden();
+
+            GameViewPanel.AddChild(HoverPanelTop);
 
             RootPanel.AddChild(GameViewPanel);
         }
@@ -423,6 +436,42 @@ namespace MarsUndiscovered.UserInterface.Views
             RadioCommsPanel.AddChild(RadioCommsMessage);
 
             RadioCommsPanel.Hidden();
+        }
+
+        protected void CreateBubbleThoughtPanel()
+        {
+            BubbleThoughtPanel = new Panel()
+                .Anchor(Anchor.TopLeft)
+                .Skin(PanelSkin.Alternative)
+                .Height(UiConstants.BubbleThoughtPanelHeight)
+                .WidthOfContainer();
+
+            HoverPanelTop.AddChild(BubbleThoughtPanel);
+
+            BubbleThoughtImage = new Image()
+                .Anchor(Anchor.AutoInline)
+                .Width(256)
+                .Height(256)
+                .NoPadding();
+
+            BubbleThoughtPanel.AddChild(BubbleThoughtImage);
+
+            var spacer = new Panel()
+                .Anchor(Anchor.AutoInline)
+                .NoPadding()
+                .SkinNone()
+                .Width(0.01f);
+
+            BubbleThoughtPanel.AddChild(spacer);
+
+            BubbleThoughtMessage = new RichParagraph()
+                .Anchor(Anchor.AutoInlineNoBreak)
+                .Width(0.87f)
+                .NoPadding();
+
+            BubbleThoughtPanel.AddChild(BubbleThoughtMessage);
+
+            BubbleThoughtPanel.Hidden();
         }
 
         public void NewGame(ulong? seed = null)

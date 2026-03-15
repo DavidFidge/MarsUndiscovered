@@ -61,6 +61,7 @@ namespace MarsUndiscovered.Game.Components
         public MessageLog MessageLog { get; } = new();
 
         public RadioComms RadioComms { get; set; }
+        public BubbleThoughts BubbleThoughts { get; set; }
 
         public ulong Seed { get; set; }
 
@@ -129,6 +130,7 @@ namespace MarsUndiscovered.Game.Components
 
             Inventory = new Inventory(this);
             RadioComms = new RadioComms(this);
+            BubbleThoughts = new BubbleThoughts(this);
             GameTimeService.Reset();
             GameTimeService.Start();
         }
@@ -673,6 +675,9 @@ namespace MarsUndiscovered.Game.Components
             RadioComms = new RadioComms(this);
             RadioComms.LoadState(saveGameService, gameWorld);
 
+            BubbleThoughts = new BubbleThoughts(this);
+            BubbleThoughts.LoadState(saveGameService, gameWorld);
+
             Maps.LoadState(saveGameService, gameWorld);
             GameTimeService.LoadState(saveGameService);
             ActorAllegiances.LoadState(saveGameService, gameWorld);
@@ -701,6 +706,7 @@ namespace MarsUndiscovered.Game.Components
             Ships.SaveState(saveGameService, gameWorld);
             MessageLog.SaveState(saveGameService, gameWorld);
             RadioComms.SaveState(saveGameService, gameWorld);
+            BubbleThoughts.SaveState(saveGameService, gameWorld);
             Player.SaveState(saveGameService, gameWorld);
             Inventory.SaveState(saveGameService, gameWorld);
             Maps.SaveState(saveGameService, gameWorld);
