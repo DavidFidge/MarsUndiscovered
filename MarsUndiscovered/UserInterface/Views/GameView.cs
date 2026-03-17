@@ -80,6 +80,7 @@ namespace MarsUndiscovered.UserInterface.Views
         private double _lastMoveTime;
         private double _delayBetweenMove = 50;
         private Queue<RadioCommsItem> _radioCommsItems = new();
+        private Queue<BubbleThoughtEntry> _bubbleThoughts = new();
         private bool _isWaitingForRadioComms;
         
         protected Panel RadioCommsPanel;
@@ -323,6 +324,7 @@ namespace MarsUndiscovered.UserInterface.Views
             CreateMonsterPanelContainer();
             CreateAmbientPanel();
             CreateRadioCommsPanel();
+            CreateBubbleThoughtPanel();
             SetupConsole();
             SetupInventoryGame();
             SetupChildPanel(_inGameOptionsView);
@@ -470,8 +472,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 .NoPadding();
 
             BubbleThoughtPanel.AddChild(BubbleThoughtMessage);
-
-            BubbleThoughtPanel.Hidden();
         }
 
         public void NewGame(ulong? seed = null)
@@ -639,6 +639,21 @@ namespace MarsUndiscovered.UserInterface.Views
             else
             {
                 ProcessRadioComms();
+                ProcessBubbleThoughts();
+            }
+        }
+
+        protected void ProcessBubbleThoughts()
+        {
+            foreach (var bubbleThought in _viewModel.GetNewBubbleThoughts())
+                _bubbleThoughts.Enqueue(bubbleThought);
+
+            if (_bubbleThoughts.Any())
+            {
+                var nextBubbleThought = _bubbleThoughts.Dequeue();
+                BubbleThoughtMessage.Text = nextBubbleThought.Message;
+                HoverPanelTop.Visible = true;
+                BubbleThoughtPanel.Visible();
             }
         }
 

@@ -22,6 +22,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         public uint? RetainedSquareChoiceMonsterId { get; set; }
         
         private List<RadioCommsItem> _radioCommsItems = new();
+        private List<BubbleThoughtEntry> _bubbleThoughts = new();
 
         public PlayerStatus PlayerStatus { get; set; }
         public IList<MonsterStatus> MonsterStatusInView { get; set; }
@@ -38,6 +39,7 @@ namespace MarsUndiscovered.UserInterface.ViewModels
         {
             PlayerStatus = GameWorldProvider.GameWorld.GetPlayerStatus();
             _radioCommsItems.AddRange(GameWorldProvider.GameWorld.GetNewRadioCommsItems());
+            _bubbleThoughts.AddRange(GameWorldProvider.GameWorld.GetNewBubbleThoughts());
             MessageStatus.AddMessages(GameWorldProvider.GameWorld.GetMessagesSince(MessageStatus.SeenMessageCount));
             MapViewModel.UpdateDebugTiles();
         }
@@ -47,6 +49,13 @@ namespace MarsUndiscovered.UserInterface.ViewModels
             var radioCommsItems = _radioCommsItems.ToList();
             _radioCommsItems.Clear();
             return radioCommsItems;
+        }
+
+        public IList<BubbleThoughtEntry> GetNewBubbleThoughts()
+        {
+            var bubbleThoughts = _bubbleThoughts.ToList();
+            _bubbleThoughts.Clear();
+            return bubbleThoughts;
         }
 
         protected void FinishAnimations()

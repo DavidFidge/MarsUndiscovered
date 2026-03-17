@@ -17,6 +17,7 @@ public enum BubbleThoughtTypes
 public class BubbleThoughts : ISaveable
 {
     private Dictionary<BubbleThoughtTypes, BubbleThoughtEntry> _bubbleThoughtEntries = new();
+    private List<BubbleThoughtEntry> _newBubbleThoughts = new();
     private IGameWorld _gameWorld;
     private IBehaviour<BubbleThoughts> _behaviourTree;
 
@@ -30,6 +31,13 @@ public class BubbleThoughts : ISaveable
     public void NextTurn()
     {
         _behaviourTree.Tick(this);
+    }
+
+    public IList<BubbleThoughtEntry> GetNewBubbleThoughts()
+    {
+        var bubbleThoughts = _newBubbleThoughts.ToList();
+        _newBubbleThoughts.Clear();
+        return bubbleThoughts;
     }
 
     private void CreateBehaviourTree()
@@ -53,7 +61,9 @@ public class BubbleThoughts : ISaveable
                         .Any(m => m.Breed.Name == Breed.GetBreed("CleaningDroid").Name))
                 .Do("mark bubble thought as seen", s =>
                 {
-                    s._bubbleThoughtEntries[BubbleThoughtTypes.DroidsOutOfControl].HasBeenSeen = true;
+                    var bubbleThought = s._bubbleThoughtEntries[BubbleThoughtTypes.DroidsOutOfControl];
+                    bubbleThought.HasBeenSeen = true;
+                    s._newBubbleThoughts.Add(bubbleThought);
                     return BehaviourStatus.Succeeded;
                 })
             .End()

@@ -65,6 +65,7 @@ namespace MarsUndiscovered.Interfaces
         Task SendPendingMorgues();
         void SnapshotMorgue(string username, bool uploadMorgueFiles);
         IList<RadioCommsItem> GetNewRadioCommsItems();
+        IList<BubbleThoughtEntry> GetNewBubbleThoughts();
         IGridView<double?> GetGoalMap();
         IList<CommandResult> ForceLevelChange(ForceLevelChange forceLevelChange);
         IList<CommandResult> EnchantItemRequest(Keys requestKey);

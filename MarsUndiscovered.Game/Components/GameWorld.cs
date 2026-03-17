@@ -494,6 +494,7 @@ namespace MarsUndiscovered.Game.Components
             RechargeItems();
             UpdateMonstersInView();
             Story.NextTurn();
+            BubbleThoughts.NextTurn();
             CommandCollection.ClearCommandsOnNextAdd = true;
         }
 
@@ -567,6 +568,11 @@ namespace MarsUndiscovered.Game.Components
                 .GetNewRadioComms()
                 .Select(s => new RadioCommsItem(s))
                 .ToList();;
+        }
+
+        public IList<BubbleThoughtEntry> GetNewBubbleThoughts()
+        {
+            return BubbleThoughts.GetNewBubbleThoughts();
         }
 
         public IGridView<double?> GetGoalMap()
