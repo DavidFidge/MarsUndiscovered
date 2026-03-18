@@ -67,7 +67,7 @@ public class MonsterSpawnerTests : BaseGameWorldIntegrationTests
         SetupBaseComponent(monsterGenerator);
         
         var breed1 = Breed.GetBreed("Roach");
-        var breed2 = Breed.GetBreed("RepairDroid");
+        var breed2 = Breed.GetBreed("Repair Droid");
         var breed3 = Breed.GetBreed("Werewolf");
         
         var breeds = new List<Breed> { breed1, breed2, breed3 };
@@ -100,7 +100,7 @@ public class MonsterSpawnerTests : BaseGameWorldIntegrationTests
         SetupBaseComponent(monsterGenerator);
         
         var breed1 = Breed.GetBreed("Roach");
-        var breed2 = Breed.GetBreed("RepairDroid");
+        var breed2 = Breed.GetBreed("Repair Droid");
         
         var random = new KnownSeriesRandom(intSeries:new[]
             {
