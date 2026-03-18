@@ -1,4 +1,5 @@
 # Copilot Instructions
 
-## Project Guidelines
-- In this codebase, keep all Breed.GetBreed lookup strings as strings without spaces.
+## Agents.md files
+
+Look for an Agents.md file in the folder where the MarsUndiscovered.sln is for all projects in this solution.
