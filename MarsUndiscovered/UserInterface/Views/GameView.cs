@@ -288,8 +288,7 @@ namespace MarsUndiscovered.UserInterface.Views
             _isAutoExploring = false;
             _currentMovePath = null;
             _bubbleThoughts.Clear();
-            _bubbleThoughtTurnsRemaining = 0;
-            BubbleThoughtContainer.Hidden();
+            HideBubbleThoughtPanel();
         }
         
         private void UpdateMessageLog()
@@ -456,6 +455,8 @@ namespace MarsUndiscovered.UserInterface.Views
                 .NoPadding()
                 .WidthOfContainer();
 
+            BubbleThoughtPanel.OnMouseDown += _ => HideBubbleThoughtPanel();
+
             BubbleThoughtContainer.AddChild(BubbleThoughtPanel);
 
             BubbleThoughtImage = new Image()
@@ -479,6 +480,9 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Anchor(Anchor.AutoInlineNoBreak)
                 .Width(0.8f)
                 .NoPadding();
+
+            BubbleThoughtMessage.OnMouseDown += _ => HideBubbleThoughtPanel();
+            BubbleThoughtImage.OnMouseDown += _ => HideBubbleThoughtPanel();
 
             BubbleThoughtPanel.AddChild(BubbleThoughtMessage);
         }
@@ -661,9 +665,14 @@ namespace MarsUndiscovered.UserInterface.Views
             _bubbleThoughtTurnsRemaining--;
 
             if (_bubbleThoughtTurnsRemaining <= 0)
-            {
-                BubbleThoughtContainer.Hidden();
-            }
+                HideBubbleThoughtPanel();
+        }
+
+        private void HideBubbleThoughtPanel()
+        {
+            _bubbleThoughtTurnsRemaining = 0;
+            BubbleThoughtContainer.Hidden();
+            BubbleThoughtPanel.Hidden();
         }
 
         protected void ProcessBubbleThoughts()
@@ -677,6 +686,7 @@ namespace MarsUndiscovered.UserInterface.Views
                 BubbleThoughtMessage.Text = nextBubbleThought.Message;
 
                 BubbleThoughtContainer.Visible();
+                BubbleThoughtPanel.Visible();
 
                 BubbleThoughtContainer.AutoHeight();
                 BubbleThoughtPanel.AutoHeight();
