@@ -82,6 +82,8 @@ namespace MarsUndiscovered.UserInterface.Views
         private Queue<RadioCommsItem> _radioCommsItems = new();
         private Queue<BubbleThoughtEntry> _bubbleThoughts = new();
         private bool _isWaitingForRadioComms;
+        private const int BubbleThoughtTurnsToShow = 5;
+        private int _bubbleThoughtTurnsRemaining;
         
         protected Panel RadioCommsPanel;
         protected Panel HotBarPanel;
@@ -285,6 +287,9 @@ namespace MarsUndiscovered.UserInterface.Views
             
             _isAutoExploring = false;
             _currentMovePath = null;
+            _bubbleThoughts.Clear();
+            _bubbleThoughtTurnsRemaining = 0;
+            BubbleThoughtContainer.Hidden();
         }
         
         private void UpdateMessageLog()
@@ -643,7 +648,21 @@ namespace MarsUndiscovered.UserInterface.Views
             else
             {
                 ProcessRadioComms();
+                ProcessBubbleThoughtTurnTimeout();
                 ProcessBubbleThoughts();
+            }
+        }
+
+        private void ProcessBubbleThoughtTurnTimeout()
+        {
+            if (!BubbleThoughtContainer.Visible || _bubbleThoughtTurnsRemaining <= 0)
+                return;
+
+            _bubbleThoughtTurnsRemaining--;
+
+            if (_bubbleThoughtTurnsRemaining <= 0)
+            {
+                BubbleThoughtContainer.Hidden();
             }
         }
 
@@ -658,10 +677,10 @@ namespace MarsUndiscovered.UserInterface.Views
                 BubbleThoughtMessage.Text = nextBubbleThought.Message;
 
                 BubbleThoughtContainer.Visible();
-                BubbleThoughtPanel.Visible();
 
                 BubbleThoughtContainer.AutoHeight();
                 BubbleThoughtPanel.AutoHeight();
+                _bubbleThoughtTurnsRemaining = BubbleThoughtTurnsToShow;
             }
         }
 
