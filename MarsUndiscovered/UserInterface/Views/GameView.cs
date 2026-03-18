@@ -110,7 +110,7 @@ namespace MarsUndiscovered.UserInterface.Views
         protected Panel GameViewPanel { get; set; }
         protected Panel HoverPanelLeft { get; set; }
         protected Panel HoverPanelRight { get; set; }
-        protected Panel HoverPanelTop { get; set; }
+        protected Panel BubbleThoughtContainer { get; set; }
         protected Panel MessageLogContainer { get; private set; }
         public Panel BubbleThoughtPanel { get; private set; }
         public RichParagraph BubbleThoughtMessage { get; private set; }
@@ -206,14 +206,15 @@ namespace MarsUndiscovered.UserInterface.Views
 
             HoverPanelRight.AddChild(HoverPanelRightTooltip);
 
-            HoverPanelTop = new Panel()
-                .Anchor(Anchor.TopCenter)
-                .Width(0.45f)
-                .Skin(PanelSkin.Alternative)
+            BubbleThoughtContainer = new Panel()
+                .Anchor(Anchor.TopRight)
+                .Width(0.5f)
+                .SkinNone()
+                .Padding(new Vector2(10, 10))
                 .AutoHeight()
                 .Hidden();
 
-            GameViewPanel.AddChild(HoverPanelTop);
+            GameViewPanel.AddChild(BubbleThoughtContainer);
 
             RootPanel.AddChild(GameViewPanel);
         }
@@ -425,6 +426,7 @@ namespace MarsUndiscovered.UserInterface.Views
             var spacer = new Panel()
                 .Anchor(Anchor.AutoInline)
                 .NoPadding()
+                .AutoHeight()
                 .SkinNone()
                 .Width(0.01f);
             
@@ -443,15 +445,16 @@ namespace MarsUndiscovered.UserInterface.Views
         protected void CreateBubbleThoughtPanel()
         {
             BubbleThoughtPanel = new Panel()
-                .Anchor(Anchor.TopLeft)
+                .Anchor(Anchor.AutoInlineNoBreak)
                 .Skin(PanelSkin.Alternative)
-                .Height(UiConstants.BubbleThoughtPanelHeight)
+                .AutoHeight()
+                .NoPadding()
                 .WidthOfContainer();
 
-            HoverPanelTop.AddChild(BubbleThoughtPanel);
+            BubbleThoughtContainer.AddChild(BubbleThoughtPanel);
 
             BubbleThoughtImage = new Image()
-                .Anchor(Anchor.AutoInline)
+                .Anchor(Anchor.AutoInlineNoBreak)
                 .Width(256)
                 .Height(256)
                 .NoPadding();
@@ -459,8 +462,9 @@ namespace MarsUndiscovered.UserInterface.Views
             BubbleThoughtPanel.AddChild(BubbleThoughtImage);
 
             var spacer = new Panel()
-                .Anchor(Anchor.AutoInline)
+                .Anchor(Anchor.AutoInlineNoBreak)
                 .NoPadding()
+                .AutoHeight()
                 .SkinNone()
                 .Width(0.01f);
 
@@ -468,7 +472,7 @@ namespace MarsUndiscovered.UserInterface.Views
 
             BubbleThoughtMessage = new RichParagraph()
                 .Anchor(Anchor.AutoInlineNoBreak)
-                .Width(0.87f)
+                .Width(0.8f)
                 .NoPadding();
 
             BubbleThoughtPanel.AddChild(BubbleThoughtMessage);
@@ -652,8 +656,12 @@ namespace MarsUndiscovered.UserInterface.Views
             {
                 var nextBubbleThought = _bubbleThoughts.Dequeue();
                 BubbleThoughtMessage.Text = nextBubbleThought.Message;
-                HoverPanelTop.Visible = true;
+
+                BubbleThoughtContainer.Visible();
                 BubbleThoughtPanel.Visible();
+
+                BubbleThoughtContainer.AutoHeight();
+                BubbleThoughtPanel.AutoHeight();
             }
         }
 

@@ -53,12 +53,12 @@ public class BubbleThoughts : ISaveable
     {
         return FluentBuilder.Create<BubbleThoughts>()
             .Sequence("level 1")
-                .Condition("on level 1", s => s._gameWorld.CurrentMap.Level == 1)
+                .Condition("on level 1 or level 2", s => s._gameWorld.CurrentMap.Level == 1 || s._gameWorld.CurrentMap.Level == 2)
                 .Condition("not already seen", s => !s._bubbleThoughtEntries[BubbleThoughtTypes.DroidsOutOfControl].HasBeenSeen)
-                .Condition("player sees cleaning droid", s =>
+                .Condition("player sees repair droid", s =>
                     s._gameWorld.GetCurrentMapMonsters()
                         .Where(m => s._gameWorld.CurrentMap.PlayerFOV.CurrentFOV.Contains(m.Position))
-                        .Any(m => m.Breed.Name == Breed.GetBreed("CleaningDroid").Name))
+                        .Any(m => m.Breed.Name == Breed.GetBreed("Repair Droid").Name))
                 .Do("mark bubble thought as seen", s =>
                 {
                     var bubbleThought = s._bubbleThoughtEntries[BubbleThoughtTypes.DroidsOutOfControl];

@@ -19,7 +19,7 @@
         public const float MessageLogHeight = 0.9f;
         public const float RadioCommsPanelHeight = 0.9f;
 
-        public const float BubbleThoughtPanelHeight = 0.9f;
+        public const float BubbleThoughtContainerHeight = 0.9f;
         
         public const float HotBarHeight = 0.08f;
 
