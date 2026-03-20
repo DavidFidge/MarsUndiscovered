@@ -455,8 +455,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 .NoPadding()
                 .WidthOfContainer();
 
-            BubbleThoughtPanel.OnMouseDown += _ => HideBubbleThoughtPanel();
-
             BubbleThoughtContainer.AddChild(BubbleThoughtPanel);
 
             BubbleThoughtImage = new Image()
@@ -480,9 +478,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 .Anchor(Anchor.AutoInlineNoBreak)
                 .Width(0.8f)
                 .NoPadding();
-
-            BubbleThoughtMessage.OnMouseDown += _ => HideBubbleThoughtPanel();
-            BubbleThoughtImage.OnMouseDown += _ => HideBubbleThoughtPanel();
 
             BubbleThoughtPanel.AddChild(BubbleThoughtMessage);
         }
@@ -558,9 +553,32 @@ namespace MarsUndiscovered.UserInterface.Views
 
         public void Handle(LeftClickViewRequest request)
         {
+            if (HandleUiPanelHovers(request))
+                return;
+
             StopAutoMovement();
             var ray = _gameCamera.GetPointerRay(request.X, request.Y);
             _currentMovePath = _viewModel.GetPathToDestination(ray);
+        }
+
+        /// <summary>
+        /// Any left click that happens in the game view when not in a modal popup mode should
+        /// first check whether any hovering panels were clicked. Certain other hovers / popups like
+        /// inventory will swap out the game view mouse handler for their own handler so we only have
+        /// to worry about non-modal hovers here.
+        /// </summary>
+        private bool HandleUiPanelHovers(LeftClickViewRequest request)
+        {
+            if (!BubbleThoughtContainer.Visible)
+                return false;
+
+            var bubbleThoughtBounds = BubbleThoughtContainer.GetActualDestRect();
+
+            if (!bubbleThoughtBounds.Contains(request.X, request.Y))
+                return false;
+
+            HideBubbleThoughtPanel();
+            return true;
         }
 
         public void Handle(RightClickViewRequest request)
@@ -672,7 +690,6 @@ namespace MarsUndiscovered.UserInterface.Views
         {
             _bubbleThoughtTurnsRemaining = 0;
             BubbleThoughtContainer.Hidden();
-            BubbleThoughtPanel.Hidden();
         }
 
         protected void ProcessBubbleThoughts()
@@ -686,7 +703,6 @@ namespace MarsUndiscovered.UserInterface.Views
                 BubbleThoughtMessage.Text = nextBubbleThought.Message;
 
                 BubbleThoughtContainer.Visible();
-                BubbleThoughtPanel.Visible();
 
                 BubbleThoughtContainer.AutoHeight();
                 BubbleThoughtPanel.AutoHeight();
