@@ -573,12 +573,31 @@ namespace MarsUndiscovered.UserInterface.Views
                 return false;
 
             var bubbleThoughtBounds = BubbleThoughtContainer.GetActualDestRect();
+            var uiClickPosition = GetUiClickPosition(request.X, request.Y);
 
-            if (!bubbleThoughtBounds.Contains(request.X, request.Y))
+            if (!bubbleThoughtBounds.Contains(uiClickPosition))
                 return false;
 
             HideBubbleThoughtPanel();
             return true;
+        }
+
+        private Microsoft.Xna.Framework.Point GetUiClickPosition(int x, int y)
+        {
+            var activeUserInterface = GeonBit.UI.UserInterface.Active;
+
+            if (activeUserInterface == null)
+                return new Microsoft.Xna.Framework.Point(x, y);
+
+            var viewport = Game.GraphicsDevice.Viewport;
+
+            if (viewport.Width == 0 || viewport.Height == 0)
+                return new Microsoft.Xna.Framework.Point(x, y);
+
+            var uiX = (int)(x * (activeUserInterface.RenderWidth / (float)viewport.Width));
+            var uiY = (int)(y * (activeUserInterface.RenderHeight / (float)viewport.Height));
+
+            return new Microsoft.Xna.Framework.Point(uiX, uiY);
         }
 
         public void Handle(RightClickViewRequest request)
